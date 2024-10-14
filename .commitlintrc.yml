@@ -1,0 +1,28 @@
+extends:
+  - '@commitlint/config-conventional'
+
+rules:
+  # Sévérité 2 (erreur), doit être un type valide
+  'type-enum': [2, 'always', [
+    'docs',
+    'feat',
+    'fix',
+    'perf',
+    'refactor',
+    'revert',
+    'style',
+    'test',
+    'chore'
+  ]]
+
+  # Sévérité 2 (erreur), le message doit commencer par un type suivi d'un sujet
+  'header-max-length': [2, 'always', 72]
+
+  # Le scope est facultatif
+  'scope-empty': [0]
+
+  # Le body du commit est optionnel
+  'body-max-length': [0]
+
+  # Les pieds de commit (footers) sont optionnels
+  'footer-max-length': [0]
