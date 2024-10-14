@@ -8,18 +8,15 @@ type Wildcard = string
 type WildcardID = string
 
 const (
-	StringId WildcardID = "{string}"
-	NumberId            = "{number}"
-)
-
-const (
-	NumberWildcard Wildcard = `(\d+)`
-	StringWildcard          = `([^"]*)`
+	StringID       WildcardID = "{string}"
+	NumberID       WildcardID = "{number}"
+	NumberWildcard Wildcard   = `(\d+)`
+	StringWildcard Wildcard   = `([^"]*)`
 )
 
 var wildcards = map[WildcardID]Wildcard{
-	NumberId: NumberWildcard,
-	StringId: StringWildcard,
+	NumberID: NumberWildcard,
+	StringID: StringWildcard,
 }
 
 func ConvertWildcards(current string) string {

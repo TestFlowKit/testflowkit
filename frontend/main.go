@@ -1,6 +1,10 @@
 package frontend
 
 import (
+	"slices"
+
+	"github.com/cucumber/godog"
+
 	"cucumber/config"
 	"cucumber/frontend/common"
 	"cucumber/frontend/form"
@@ -8,8 +12,6 @@ import (
 	"cucumber/frontend/navigation"
 	"cucumber/frontend/visual"
 	"cucumber/utils"
-	"github.com/cucumber/godog"
-	"slices"
 )
 
 func InitializeScenario(ctx *godog.ScenarioContext) {

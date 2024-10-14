@@ -2,17 +2,18 @@ package main
 
 import (
 	"cucumber/frontend"
-	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/colors"
 	"log"
 	"os"
+
+	"github.com/cucumber/godog"
+	"github.com/cucumber/godog/colors"
 )
 
 func main() {
-
+	const concurrency = 2
 	var opts = godog.Options{
 		Output:      colors.Colored(os.Stdout),
-		Concurrency: 2,
+		Concurrency: concurrency,
 		Format:      "pretty",
 		Paths:       []string{"features"},
 	}
@@ -30,5 +31,4 @@ func main() {
 	if status != 0 {
 		log.Fatalf("zero status code expected, %d received", status)
 	}
-
 }

@@ -2,10 +2,11 @@ package config
 
 import (
 	"fmt"
-	"github.com/goccy/go-yaml"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/goccy/go-yaml"
 )
 
 var yamlContent string
@@ -18,40 +19,40 @@ func InitializeFrontConfig() {
 	yamlContent = string(file)
 }
 
-func GetPageUrl(page string) (pageUrl string, err error) {
+func GetPageURL(page string) (string, error) {
 	page = wildcardToKey(page)
-
+	var pageURL string
 	path, err := yaml.PathString(fmt.Sprintf("$.global.pages.%s", page))
 	if err != nil {
-		return
+		return "", err
 	}
 
-	err = path.Read(strings.NewReader(yamlContent), &pageUrl)
-	return
+	err = path.Read(strings.NewReader(yamlContent), &pageURL)
+	return pageURL, err
 }
 
-func GetElementSelectors(label string) (selectors []string) {
+func GetElementSelectors(label string) ([]string, error) {
+	var selectors []string
 	label = wildcardToKey(label)
 
 	path, err := yaml.PathString(fmt.Sprintf("$.global.elements.%s", label))
-	if err != nil {
-		return
+	if err == nil {
+		err = path.Read(strings.NewReader(yamlContent), &selectors)
 	}
 
-	err = path.Read(strings.NewReader(yamlContent), &selectors)
-	return
+	return selectors, err
 }
 
-func GetInputSelectors(name string) (selectors []string) {
+func GetInputSelectors(name string) ([]string, error) {
+	var selectors []string
+
 	name = wildcardToKey(name)
 
 	path, err := yaml.PathString(fmt.Sprintf("$.global.inputs.%s", name))
-	if err != nil {
-		return
+	if err == nil {
+		err = path.Read(strings.NewReader(yamlContent), &selectors)
 	}
-
-	err = path.Read(strings.NewReader(yamlContent), &selectors)
-	return
+	return selectors, err
 }
 
 func wildcardToKey(label string) string {

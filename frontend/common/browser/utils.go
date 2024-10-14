@@ -6,12 +6,15 @@ import (
 )
 
 func GetElement(page Page, label string) Element {
-	selectors := config.GetElementSelectors(label)
+	selectors, _ := config.GetElementSelectors(label)
 	return GetElementBySelectors(page, selectors)
 }
 
 func GetInputElement(page Page, label string) Element {
-	selectors := config.GetInputSelectors(label)
+	selectors, err := config.GetInputSelectors(label)
+	if err != nil {
+		return nil
+	}
 	return GetElementBySelectors(page, selectors)
 }
 
@@ -20,7 +23,6 @@ func GetElementBySelectors(page Page, potentialSelectors []string) Element {
 	defer close(ch)
 
 	for _, selector := range potentialSelectors {
-		selector := selector
 		go func() {
 			element, _ := page.GetOneBySelector(selector)
 			ch <- element
@@ -35,7 +37,6 @@ func GetActiveSelector(page Page, potentialSelectors []string) string {
 	defer close(ch)
 
 	for _, selector := range potentialSelectors {
-		selector := selector
 		go func() {
 			exists := page.HasSelector(selector)
 			if exists {
@@ -48,7 +49,7 @@ func GetActiveSelector(page Page, potentialSelectors []string) string {
 }
 
 func GetElementCount(page Page, label string) int {
-	potentialSelectors := config.GetElementSelectors(label)
+	potentialSelectors, _ := config.GetElementSelectors(label)
 	selector := GetActiveSelector(page, potentialSelectors)
 	elements, err := page.GetAllBySelector(selector)
 	if err != nil {

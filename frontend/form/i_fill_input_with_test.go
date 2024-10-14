@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestIFillTheInputWithSentences(t *testing.T) {
-	wildcard := "([^\"]*)"
+func TestPrivateIFillTheInputWithSentences(t *testing.T) {
+	wildcard := "{string}"
 	expectedWildcardNumber := 2
 
 	re := regexp.MustCompile(wildcard)

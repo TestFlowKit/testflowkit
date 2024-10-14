@@ -13,14 +13,14 @@ var iAmRedirectedToPage = common.FrontStep{
 		return func(pageName string) error {
 			page := ctx.GetCurrentPage()
 			page.WaitLoading()
-			url, err := config.GetPageUrl(pageName)
+			url, err := config.GetPageURL(pageName)
 			if err != nil {
 				return err
 			}
 
-			currentUrl := page.GetInfo().URL
-			if !strings.HasPrefix(currentUrl, url) {
-				return fmt.Errorf("redirection failed current url is %s", currentUrl)
+			currentURL := page.GetInfo().URL
+			if !strings.HasPrefix(currentURL, url) {
+				return fmt.Errorf("redirection failed current url is %s", currentURL)
 			}
 
 			return nil
