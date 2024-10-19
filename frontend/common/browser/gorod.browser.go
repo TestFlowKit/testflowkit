@@ -2,6 +2,7 @@ package browser
 
 import (
 	"os"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -26,12 +27,12 @@ func newRodBrowser() Browser {
 }
 
 func instantiateRodBrowser() *rod.Browser {
+	headlessMode := os.Getenv("DEBUG") != "true"
 	path, _ := launcher.LookPath()
-	if os.Getenv("DEBUG") == "true" {
-		u := launcher.New().Bin(path).
-			Headless(false).
-			MustLaunch()
-		return rod.New().ControlURL(u).MustConnect()
-	}
-	return rod.New().ControlURL(launcher.New().Bin(path).MustLaunch()).MustConnect()
+	u := launcher.New().Bin(path).
+		Headless(headlessMode).
+		MustLaunch()
+
+	const seconds = 10
+	return rod.New().ControlURL(u).MustConnect().Timeout(seconds * time.Second)
 }
