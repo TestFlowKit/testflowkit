@@ -19,3 +19,5 @@ go.work.sum
 
 # env file
 .env
+report.html
+cover
