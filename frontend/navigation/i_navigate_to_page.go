@@ -10,7 +10,7 @@ var iNavigateToPage = common.FrontStep{
 	Sentences: []string{`^I navigate to {string} page$`},
 	Definition: func(ctx *common.Context) common.FrontStepDefinition {
 		return func(page string) error {
-			url, err := config.GetPageURL(page)
+			url, err := config.FrontConfig{}.GetPageURL(page)
 			if err != nil {
 				log.Fatalf("Url for page %s not configured", page)
 				return err

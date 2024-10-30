@@ -1,5 +1,5 @@
 package browser
 
-func CreateInstance() Browser {
-	return newRodBrowser()
+func CreateInstance(headlessMode bool) Browser {
+	return newRodBrowser(headlessMode)
 }

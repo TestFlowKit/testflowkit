@@ -13,7 +13,7 @@ var iAmRedirectedToPage = common.FrontStep{
 		return func(pageName string) error {
 			page := ctx.GetCurrentPage()
 			page.WaitLoading()
-			url, err := config.GetPageURL(pageName)
+			url, err := config.FrontConfig{}.GetPageURL(pageName)
 			if err != nil {
 				return err
 			}

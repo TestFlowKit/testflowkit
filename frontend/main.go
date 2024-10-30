@@ -1,22 +1,21 @@
 package frontend
 
 import (
+	"cucumber/config"
 	"slices"
 
-	"github.com/cucumber/godog"
-
-	"cucumber/config"
 	"cucumber/frontend/common"
 	"cucumber/frontend/form"
 	"cucumber/frontend/keyboard"
 	"cucumber/frontend/navigation"
 	"cucumber/frontend/visual"
 	"cucumber/utils"
+
+	"github.com/cucumber/godog"
 )
 
-func InitializeScenario(ctx *godog.ScenarioContext) {
-	config.InitializeFrontConfig()
-	frontendCtx := common.NewFrontendContext()
+func InitializeScenario(ctx *godog.ScenarioContext, config config.ClI) {
+	frontendCtx := common.NewFrontendContext(config.Timeout, !config.DisplayBrowser)
 
 	allSteps := slices.Concat(form.Steps, keyboard.Steps, navigation.Steps, visual.Steps)
 

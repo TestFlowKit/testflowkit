@@ -5,13 +5,15 @@ import (
 	"log"
 )
 
+var fc = config.FrontConfig{}
+
 func GetElement(page Page, label string) Element {
-	selectors, _ := config.GetElementSelectors(label)
+	selectors, _ := fc.GetElementSelectors(label)
 	return GetElementBySelectors(page, selectors)
 }
 
 func GetInputElement(page Page, label string) Element {
-	selectors, err := config.GetInputSelectors(label)
+	selectors, err := fc.GetInputSelectors(label)
 	if err != nil {
 		return nil
 	}
@@ -49,7 +51,7 @@ func GetActiveSelector(page Page, potentialSelectors []string) string {
 }
 
 func GetElementCount(page Page, label string) int {
-	potentialSelectors, _ := config.GetElementSelectors(label)
+	potentialSelectors, _ := fc.GetElementSelectors(label)
 	selector := GetActiveSelector(page, potentialSelectors)
 	elements, err := page.GetAllBySelector(selector)
 	if err != nil {
