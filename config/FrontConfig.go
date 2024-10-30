@@ -9,52 +9,58 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-var yamlContent string
+var content string
 
-func InitializeFrontConfig() {
-	file, err := os.ReadFile("frontend.yml")
+type FrontConfig struct{}
+
+func (c FrontConfig) init(filePath string) {
+	if len(content) != 0 {
+		return
+	}
+
+	file, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatal("frontend config file not found")
 	}
-	yamlContent = string(file)
+	content = string(file)
 }
 
-func GetPageURL(page string) (string, error) {
-	page = wildcardToKey(page)
+func (c FrontConfig) GetPageURL(page string) (string, error) {
+	page = c.wildcardToKey(page)
 	var pageURL string
 	path, err := yaml.PathString(fmt.Sprintf("$.global.pages.%s", page))
 	if err != nil {
 		return "", err
 	}
 
-	err = path.Read(strings.NewReader(yamlContent), &pageURL)
+	err = path.Read(strings.NewReader(content), &pageURL)
 	return pageURL, err
 }
 
-func GetElementSelectors(label string) ([]string, error) {
+func (c FrontConfig) GetElementSelectors(label string) ([]string, error) {
 	var selectors []string
-	label = wildcardToKey(label)
+	label = c.wildcardToKey(label)
 
 	path, err := yaml.PathString(fmt.Sprintf("$.global.elements.%s", label))
 	if err == nil {
-		err = path.Read(strings.NewReader(yamlContent), &selectors)
+		err = path.Read(strings.NewReader(content), &selectors)
 	}
 
 	return selectors, err
 }
 
-func GetInputSelectors(name string) ([]string, error) {
+func (c FrontConfig) GetInputSelectors(name string) ([]string, error) {
 	var selectors []string
 
-	name = wildcardToKey(name)
+	name = c.wildcardToKey(name)
 
 	path, err := yaml.PathString(fmt.Sprintf("$.global.inputs.%s", name))
 	if err == nil {
-		err = path.Read(strings.NewReader(yamlContent), &selectors)
+		err = path.Read(strings.NewReader(content), &selectors)
 	}
 	return selectors, err
 }
 
-func wildcardToKey(label string) string {
+func (c FrontConfig) wildcardToKey(label string) string {
 	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
 }

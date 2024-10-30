@@ -1,23 +1,22 @@
 package config
 
 import (
-	"os"
 	"slices"
 	"testing"
 )
 
-func setup(t *testing.T) {
-	bytes, fileErr := os.ReadFile("frontend.test.yml")
-	if fileErr != nil {
-		t.Error(fileErr)
-	}
-	yamlContent = string(bytes)
+func setup(_ *testing.T) *FrontConfig {
+	config := FrontConfig{}
+
+	config.init("frontend.test.yml")
+
+	return &config
 }
 
 func TestGetPageUrl(t *testing.T) {
-	setup(t)
+	config := setup(t)
 
-	url, err := GetPageURL("home")
+	url, err := config.GetPageURL("home")
 	if err != nil {
 		t.Error(err)
 	}
@@ -29,20 +28,20 @@ func TestGetPageUrl(t *testing.T) {
 }
 
 func TestGetElementSelectors(t *testing.T) {
-	setup(t)
+	config := setup(t)
 
 	expected := []string{"#login", ".login", "button .login"}
-	if selectors, _ := GetElementSelectors("login"); !slices.Equal(selectors, expected) {
+	if selectors, _ := config.GetElementSelectors("login"); !slices.Equal(selectors, expected) {
 		t.Errorf("error ")
 	}
 }
 
 func TestGetInputSelectors(t *testing.T) {
-	setup(t)
+	config := setup(t)
 
 	expected := []string{"#username"}
 
-	if selectors, _ := GetInputSelectors("username"); !slices.Equal(selectors, expected) {
+	if selectors, _ := config.GetInputSelectors("username"); !slices.Equal(selectors, expected) {
 		t.Errorf("error ")
 	}
 }

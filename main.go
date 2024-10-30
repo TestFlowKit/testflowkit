@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"cucumber/config"
 	"cucumber/frontend"
 	"cucumber/report"
 	"log"
@@ -11,22 +12,23 @@ import (
 )
 
 func main() {
-	const concurrency = 2
+	cliConfig := config.Init()
+
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
-		Concurrency:         concurrency,
+		Concurrency:         cliConfig.GetConcurrency(),
 		Format:              "pretty",
 		ShowStepDefinitions: false,
-		Paths:               []string{"features"},
+		Tags:                cliConfig.GetTagsExpression(),
+		Paths:               []string{cliConfig.GherkinLocation},
 	}
 
-	testReport := report.New()
-
+	testReport := report.New(cliConfig.AppName, cliConfig.AppDescription, cliConfig.ReportEnabled, cliConfig.ReportFormat)
 	testSuite := godog.TestSuite{
-		Name:                 "App",
+		Name:                 cliConfig.AppName,
 		Options:              &opts,
 		TestSuiteInitializer: testSuiteInitializer(&testReport),
-		ScenarioInitializer:  scenarioInitializer(&testReport),
+		ScenarioInitializer:  scenarioInitializer(cliConfig, &testReport),
 	}
 
 	status := testSuite.Run()
@@ -47,9 +49,9 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 		})
 	}
 }
-func scenarioInitializer(testReport *report.Report) func(*godog.ScenarioContext) {
+func scenarioInitializer(config config.ClI, testReport *report.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
-		frontend.InitializeScenario(sc)
+		frontend.InitializeScenario(sc, config)
 		scenarioReport := report.NewScenario()
 
 		sc.StepContext().After(afterStepHookInitializer(&scenarioReport))

@@ -1,0 +1,25 @@
+configuration:
+  display_browser: true
+  timeout: 60s
+  concurrency: 4
+  gherkin_location: "./features"  # Chemin vers les fichiers Gherkin
+  tags:
+    include:
+      - "login"
+      - "user"
+    exclude:
+      - "slow"
+      - "experimental"
+
+
+
+
+application:
+  app_name: "MonApplication"
+  app_description: "ma chic app"
+  app_version: "1.0.0"
+
+reporting:
+  enable: true
+  report_format: "html"  # Options possibles : "html", "json", "xml"
+

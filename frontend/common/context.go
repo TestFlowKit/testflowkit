@@ -2,15 +2,19 @@ package common
 
 import (
 	"cucumber/frontend/common/browser"
+	"log"
+	"time"
 )
 
 type Context struct {
-	browser browser.Browser
-	page    browser.Page
+	browser      browser.Browser
+	page         browser.Page
+	timeout      time.Duration
+	headlessMode bool
 }
 
 func (fc *Context) InitBrowser() {
-	fc.browser = browser.CreateInstance()
+	fc.browser = browser.CreateInstance(fc.headlessMode)
 }
 
 func (fc *Context) OpenNewPage(url string) {
@@ -25,9 +29,16 @@ func (fc *Context) GetCurrentPageKeyboard() browser.Keyboard {
 	return fc.page.GetKeyboard()
 }
 
-func NewFrontendContext() *Context {
+func NewFrontendContext(timeout string, headlessMode bool) *Context {
+	duration, err := time.ParseDuration(timeout)
+	if err != nil {
+		log.Panicf("timeout is not correct (%s)", timeout)
+	}
+
 	return &Context{
-		page:    nil,
-		browser: nil,
+		browser:      nil,
+		page:         nil,
+		timeout:      duration,
+		headlessMode: headlessMode,
 	}
 }
