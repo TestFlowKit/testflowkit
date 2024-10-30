@@ -1,11 +1,5 @@
 package report
 
-type htmlVariables struct {
-	reportVariables
-	scenarioVariables
-	stepVariables
-}
-
 type reportVariables struct {
 	executionDate, totalTests, succeededTests, failedTests, successRate, scenariosTemplate string
 }
@@ -44,6 +38,6 @@ func getStepVariables() stepVariables {
 	return stepVariables{
 		title:       "STEP_TITLE",
 		status:      "STEP_STATUS",
-		statusColor: "SCENARIO_STATUS_COLOR",
+		statusColor: "STEP_STATUS_COLOR",
 	}
 }

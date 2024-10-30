@@ -15,6 +15,10 @@ import (
 
 const reportTemplateKey, scenarioTemplateKey, stepTemplateKey = "report", "scenario", "step"
 
+type templates struct {
+	report, scenario, step string
+}
+
 var htmlTemplates = map[string]string{
 	reportTemplateKey:   "",
 	scenarioTemplateKey: "",
@@ -24,7 +28,7 @@ var htmlTemplates = map[string]string{
 type htmlReportFormatter struct {
 }
 
-func (r htmlReportFormatter) fillReport(startDate time.Time, scenarios []Scenario, reportTemplate, scenarioTemplate, stepTemplate string) string {
+func (r htmlReportFormatter) fillReport(startDate time.Time, scenarios []Scenario, templates templates) string {
 	year, month, day := startDate.Date()
 	dateTime := fmt.Sprintf("%d-%d-%d at %d:%d", month, day, year, startDate.Hour(), startDate.Minute())
 
@@ -38,11 +42,11 @@ func (r htmlReportFormatter) fillReport(startDate time.Time, scenarios []Scenari
 			succeed++
 		}
 
-		content += fmt.Sprintln(r.fillScenarioTemplate(sc, scenarioTemplate, stepTemplate))
+		content += fmt.Sprintln(r.fillScenarioTemplate(sc, templates.scenario, templates.step))
 	}
 
 	reportVars := getReportVariables()
-	testSuiteReport := r.setTemplateVar(reportTemplate, reportVars.scenariosTemplate, content)
+	testSuiteReport := r.setTemplateVar(templates.report, reportVars.scenariosTemplate, content)
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.executionDate, dateTime)
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.totalTests, strconv.Itoa(total))
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.succeededTests, strconv.Itoa(succeed))
@@ -107,7 +111,12 @@ func (r htmlReportFormatter) setTemplateVar(template, variableName, value string
 
 func (r htmlReportFormatter) WriteReport(startDate time.Time, scenarios []Scenario) {
 	report, scenario, step := r.getTemplates()
-	content := r.fillReport(startDate, scenarios, report, scenario, step)
+	content := r.fillReport(startDate, scenarios, templates{
+		report:   report,
+		scenario: scenario,
+		step:     step,
+	})
+
 	file, err := os.Create("report.html")
 	if err != nil {
 		log.Panicf("cannot create report file in this folder ( %s )\n", err)

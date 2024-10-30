@@ -2,12 +2,11 @@ package report
 
 import (
 	"errors"
-	"html"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/tdewolff/minify/v2/minify"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFormatSuccessCaseScenarioTemplate(t *testing.T) {
@@ -24,123 +23,72 @@ func TestFormatSuccessCaseScenarioTemplate(t *testing.T) {
 		},
 	}, 10*time.Second, nil)
 
-	firstTpl := formatter.fillScenarioTemplate(first, template, "")
+	scenarioTemplate := `<details>
+{{ SCENARIO_NAME }}{{ SCENARIO_RESULT }}{{ SCENARIO_DURATION }}{{ SCENARIO_ERROR_MESSAGE }}
+<details>`
+	firstTpl := formatter.fillScenarioTemplate(first, scenarioTemplate, "")
 
-	if !strings.Contains(firstTpl, strings.TrimSpace(`
-		<details>
-		first
-		SUCCEEDED
-        10s
-        -
-		<details>
-	`)) {
-		t.Errorf("Template for scenario success case malformed\n generated template: %s", firstTpl)
-	}
+	assert.Equal(t, firstTpl, strings.TrimSpace(`<details>
+firstSUCCEEDED10s-
+<details>`))
 }
 
 func TestFormatFailedCaseScenarioTemplate(t *testing.T) {
 	formatter := htmlReportFormatter{}
 	failed := newScenario("connect", make([]Step, 0), 3*time.Second, errors.New("error"))
 
-	firstTpl := formatter.fillScenarioTemplate(failed, template, "")
+	tpl := `
+		<details>
+		{{ SCENARIO_NAME }}
+		{{ SCENARIO_RESULT }}
+        {{ SCENARIO_DURATION }}
+        {{ SCENARIO_ERROR_MESSAGE }}
+		<details>
+`
+	firstTpl := formatter.fillScenarioTemplate(failed, tpl, "")
 
-	if !strings.Contains(firstTpl, strings.TrimSpace(`
+	assert.Contains(t, firstTpl, strings.TrimSpace(`
 		<details>
 		connect
 		FAILED
         3s
         error
 		<details>
-	`)) {
-		t.Errorf("Template for scenario failed case malformed\n generated template: %s", firstTpl)
-	}
+	`))
 }
 
 func TestFormatStepTemplate(t *testing.T) {
-	formatter := htmlReportFormatter{}
+	htmlFormatter := htmlReportFormatter{}
 	step := Step{title: "etape", status: 0}
 	tpl := "{{ STEP_TITLE }} / {{ STEP_STATUS_COLOR }} / {{ STEP_STATUS }}"
 	expected := "etape / green / passed"
 
-	if result := formatter.fillStepTemplate(step, tpl); result != expected {
-		t.Errorf("Error when step formatting\n Expected: %s\nreceived:%s", expected, result)
-	}
-}
-
-func TestFormatScenario(t *testing.T) {
-	formatter := htmlReportFormatter{}
-
-	steps := []Step{
-		{
-			title:  "je",
-			status: 0,
-		},
-		{
-			title:  "fais",
-			status: 1,
-		},
-	}
-
-	sc := newScenario("TESTING", steps, 2*time.Second, errors.New("error"))
-
-	scenarioTpl := `
-			<h1>{{ SCENARIO_NAME }}</h1>
-			<div>
-				{{ STEPS }}
-			</div>
-`
-
-	stepTemplate := "<p>{{ STEP_TITLE }}</p>"
-
-	expected, _ := minify.HTML(`
-	<h1>TESTING</h1>
-	<div>
-		<p>je</p>
-		<p>fais</p>
-	</div>
-`)
-
-	result, _ := minify.HTML(formatter.fillScenarioTemplate(sc, scenarioTpl, stepTemplate))
-
-	if strings.TrimSpace(html.EscapeString(result)) != strings.TrimSpace(html.EscapeString(expected)) {
-		t.Errorf("Expected: %s, Received: %s", strings.TrimSpace(expected), strings.TrimSpace(result))
-	}
+	assert.Equal(t, expected, htmlFormatter.fillStepTemplate(step, tpl))
 }
 
 func TestFormatReport(t *testing.T) {
-	formatter := htmlReportFormatter{}
+	htmlFormatter := htmlReportFormatter{}
+
+	reportTpl := `
+{{ EXECUTION_DATE }}-{{ TOTAL_TESTS }}{{ SUCCEEDED_TESTS }}{{ FAILED_TESTS }}-{{ SUCCESS_RATE }}-{{ SCENARIOS }}
+`
+	scTpl := `{{ SCENARIO_NAME }}{{ STEPS }}`
+	stepTpl := "{{ STEP_TITLE }}"
+
+	const expected = "12-10-2024 at 10:0-110-100-SCetape"
+
+	sc := Scenario{title: "SC", steps: []Step{{title: "etape", status: 0}}}
 
 	startDate := time.Date(2024, 12, 10, 10, 00, 00, 00, time.Local)
 
-	reportTemplate := "<div></div>"
-	scenarioTpl := `<h1>{{ SCENARIO_NAME }}</h1><div>{{ STEPS }}</div>`
-	stepTemplate := "<p>{{ STEP_TITLE }}</p>"
-	formatter.fillReport(startDate)
-}
+	reportFormatted := htmlFormatter.fillReport(startDate, []Scenario{sc}, templates{
+		report:   reportTpl,
+		scenario: scTpl,
+		step:     stepTpl,
+	})
 
-const template = `
-	<doc>
-    <!--SCENARIO_TEMPLATE-->
-    <scenario>
-        <details>
-		{{ SCENARIO_NAME }}
-		{{ SCENARIO_RESULT }}
-        {{ SCENARIO_DURATION }}
-        {{ SCENARIO_ERROR_MESSAGE }}
-		<details>
-        <steps>
-          <!--STEP_TEMPLATE-->
-          <li>
-			{{ STEP_TITLE }}
-			{{ STEP_STATUS }}
-			text-{{ STEP_STATUS_COLOR }}-500
-          </li>
-          <!--STEP_TEMPLATE-->
-        <steps>
-	<scenario>
-    <!--SCENARIO_TEMPLATE-->
-	</doc>
-`
+	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(reportFormatted))
+}
 
 func newScenario(title string, steps []Step, duration time.Duration, err error) Scenario {
 	sc := Scenario{
