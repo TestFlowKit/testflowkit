@@ -33,7 +33,7 @@ func getScenarioVariables() scenarioVariables {
 }
 
 type stepVariables struct {
-	title, status, statusColor string
+	title, status, statusColor, duration string
 }
 
 func getStepVariables() stepVariables {
@@ -41,5 +41,6 @@ func getStepVariables() stepVariables {
 		title:       "STEP_TITLE",
 		status:      "STEP_STATUS",
 		statusColor: "STEP_STATUS_COLOR",
+		duration:    "STEP_DURATION",
 	}
 }

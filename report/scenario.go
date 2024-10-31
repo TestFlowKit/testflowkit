@@ -14,14 +14,15 @@ type Scenario struct {
 	duration  time.Duration
 }
 
-func (s *Scenario) AddStep(title string, status godog.StepResultStatus, err error) {
+func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration time.Duration, err error) {
 	if err != nil {
 		s.err = err.Error()
 	}
 
 	s.steps = append(s.steps, Step{
-		title:  title,
-		status: status,
+		title:    title,
+		status:   status,
+		duration: duration,
 	})
 }
 
@@ -34,8 +35,9 @@ func (s *Scenario) End() {
 }
 
 type Step struct {
-	title  string
-	status godog.StepResultStatus
+	title    string
+	status   godog.StepResultStatus
+	duration time.Duration
 }
 
 func NewScenario() Scenario {

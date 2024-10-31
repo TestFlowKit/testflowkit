@@ -59,9 +59,9 @@ func TestFormatFailedCaseScenarioTemplate(t *testing.T) {
 
 func TestFormatStepTemplate(t *testing.T) {
 	htmlFormatter := htmlReportFormatter{}
-	step := Step{title: "etape", status: 0}
-	tpl := "{{ STEP_TITLE }} / {{ STEP_STATUS_COLOR }} / {{ STEP_STATUS }}"
-	expected := "etape / green / passed"
+	step := Step{title: "etape", status: 0, duration: 61 * time.Millisecond}
+	tpl := "{{ STEP_TITLE }} / {{ STEP_STATUS_COLOR }} / {{ STEP_STATUS }} / {{ STEP_DURATION }}"
+	expected := "etape / green / passed / 61ms"
 
 	assert.Equal(t, expected, htmlFormatter.fillStepTemplate(step, tpl))
 }
@@ -85,7 +85,7 @@ My app 1.0.0
 
 	startDate := time.Date(2024, 12, 10, 10, 00, 00, 00, time.Local)
 
-	reportFormatted := htmlFormatter.fillReport(fillHtmlReportParams{
+	reportFormatted := htmlFormatter.fillReport(fillHTMLReportParams{
 		testSuiteDetails: testSuiteDetails{
 			appName:    "My app",
 			appVersion: "1.0.0",

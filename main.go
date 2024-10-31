@@ -6,6 +6,7 @@ import (
 	"cucumber/frontend"
 	"cucumber/report"
 	"log"
+	"time"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
@@ -52,24 +53,47 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 func scenarioInitializer(config config.ClI, testReport *report.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitializeScenario(sc, config)
-		scenarioReport := report.NewScenario()
-
-		sc.StepContext().After(afterStepHookInitializer(&scenarioReport))
-		sc.After(afterScenarioHookInitializer(testReport, &scenarioReport))
+		myCtx := newScenarioCtx()
+		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
+		sc.StepContext().After(afterStepHookInitializer(&myCtx))
+		sc.After(afterScenarioHookInitializer(testReport, &myCtx))
 	}
 }
-func afterStepHookInitializer(scenarioReport *report.Scenario) godog.AfterStepHook {
+func afterStepHookInitializer(myCtx *myScenarioCtx) godog.AfterStepHook {
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
-		scenarioReport.AddStep(st.Text, status, err)
+		myCtx.addStep(st.Text, status, err)
 		return ctx, err
 	}
 }
-func afterScenarioHookInitializer(testReport *report.Report, scenarioReport *report.Scenario) godog.AfterScenarioHook {
-	return func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
-		scenarioReport.SetTitle(sc.Name)
 
-		scenarioReport.End()
-		testReport.AddScenario(*scenarioReport)
+func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
+	return func(ctx context.Context, _ *godog.Step) (context.Context, error) {
+		myCtx.currentStepStartTime = time.Now()
+		return ctx, nil
+	}
+}
+
+func afterScenarioHookInitializer(testReport *report.Report, myCtx *myScenarioCtx) godog.AfterScenarioHook {
+	return func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
+		myCtx.scenarioReport.SetTitle(sc.Name)
+
+		myCtx.scenarioReport.End()
+		testReport.AddScenario(myCtx.scenarioReport)
 		return ctx, err
 	}
+}
+
+func newScenarioCtx() myScenarioCtx {
+	return myScenarioCtx{
+		scenarioReport: report.NewScenario(),
+	}
+}
+
+type myScenarioCtx struct {
+	currentStepStartTime time.Time
+	scenarioReport       report.Scenario
+}
+
+func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err error) {
+	c.scenarioReport.AddStep(title, status, time.Since(c.currentStepStartTime), err)
 }

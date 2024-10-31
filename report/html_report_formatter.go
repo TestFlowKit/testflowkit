@@ -3,12 +3,13 @@ package report
 import (
 	_ "embed"
 	"fmt"
-	"github.com/cucumber/godog"
 	"log"
 	"math"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/cucumber/godog"
 )
 
 //go:embed templates/report.template.html
@@ -26,7 +27,7 @@ type templates struct {
 
 type htmlReportFormatter struct{}
 
-func (r htmlReportFormatter) fillReport(p fillHtmlReportParams) string {
+func (r htmlReportFormatter) fillReport(p fillHTMLReportParams) string {
 	year, month, day := p.startDate.Date()
 	dateTime := fmt.Sprintf("%d-%d-%d at %d:%d", month, day, year, p.startDate.Hour(), p.startDate.Minute())
 
@@ -101,6 +102,7 @@ func (r htmlReportFormatter) fillStepTemplate(step Step, template string) string
 	tpl := r.setTemplateVar(template, vars.title, step.title)
 	tpl = r.setTemplateVar(tpl, vars.status, step.status.String())
 	tpl = r.setTemplateVar(tpl, vars.statusColor, getColor(step.status))
+	tpl = r.setTemplateVar(tpl, vars.duration, fmt.Sprintf("%dms", step.duration.Milliseconds()))
 	return strings.TrimSpace(tpl)
 }
 
@@ -110,7 +112,7 @@ func (r htmlReportFormatter) setTemplateVar(template, variableName, value string
 }
 
 func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
-	content := r.fillReport(fillHtmlReportParams{
+	content := r.fillReport(fillHTMLReportParams{
 		testSuiteDetails: details,
 		templates: templates{
 			report:   reportTemplate,
@@ -129,10 +131,9 @@ func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
 	if err != nil {
 		log.Panicf("error when report filling ( %s )", err)
 	}
-
 }
 
-type fillHtmlReportParams struct {
+type fillHTMLReportParams struct {
 	testSuiteDetails
 	templates
 }
