@@ -3,14 +3,12 @@ package report
 import (
 	_ "embed"
 	"fmt"
+	"github.com/cucumber/godog"
 	"log"
 	"math"
 	"os"
 	"strconv"
 	"strings"
-	"time"
-
-	"github.com/cucumber/godog"
 )
 
 //go:embed templates/report.template.html
@@ -26,32 +24,33 @@ type templates struct {
 	report, scenario, step string
 }
 
-type htmlReportFormatter struct {
-}
+type htmlReportFormatter struct{}
 
-func (r htmlReportFormatter) fillReport(startDate time.Time, scenarios []Scenario, templates templates) string {
-	year, month, day := startDate.Date()
-	dateTime := fmt.Sprintf("%d-%d-%d at %d:%d", month, day, year, startDate.Hour(), startDate.Minute())
+func (r htmlReportFormatter) fillReport(p fillHtmlReportParams) string {
+	year, month, day := p.startDate.Date()
+	dateTime := fmt.Sprintf("%d-%d-%d at %d:%d", month, day, year, p.startDate.Hour(), p.startDate.Minute())
 
-	total := len(scenarios)
+	total := len(p.scenarios)
 	var content string
 	var succeed, failed int
-	for _, sc := range scenarios {
+	for _, sc := range p.scenarios {
 		if len(sc.err) > 0 {
 			failed++
 		} else {
 			succeed++
 		}
 
-		content += fmt.Sprintln(r.fillScenarioTemplate(sc, templates.scenario, templates.step))
+		content += fmt.Sprintln(r.fillScenarioTemplate(sc, p.templates.scenario, p.templates.step))
 	}
 
 	reportVars := getReportVariables()
-	testSuiteReport := r.setTemplateVar(templates.report, reportVars.scenariosTemplate, content)
+	testSuiteReport := r.setTemplateVar(p.templates.report, reportVars.scenariosTemplate, content)
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.executionDate, dateTime)
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.totalTests, strconv.Itoa(total))
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.succeededTests, strconv.Itoa(succeed))
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.failedTests, strconv.Itoa(failed))
+	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.appName, p.appName)
+	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.appVersion, p.appVersion)
 
 	const totalRate = 100
 	successRate := succeed * totalRate / total
@@ -110,11 +109,14 @@ func (r htmlReportFormatter) setTemplateVar(template, variableName, value string
 	return strings.ReplaceAll(template, variable, value)
 }
 
-func (r htmlReportFormatter) WriteReport(startDate time.Time, scenarios []Scenario) {
-	content := r.fillReport(startDate, scenarios, templates{
-		report:   reportTemplate,
-		scenario: scenarioTemplate,
-		step:     stepTemplate,
+func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
+	content := r.fillReport(fillHtmlReportParams{
+		testSuiteDetails: details,
+		templates: templates{
+			report:   reportTemplate,
+			scenario: scenarioTemplate,
+			step:     stepTemplate,
+		},
 	})
 
 	file, err := os.Create("report.html")
@@ -127,4 +129,10 @@ func (r htmlReportFormatter) WriteReport(startDate time.Time, scenarios []Scenar
 	if err != nil {
 		log.Panicf("error when report filling ( %s )", err)
 	}
+
+}
+
+type fillHtmlReportParams struct {
+	testSuiteDetails
+	templates
 }

@@ -1,7 +1,7 @@
 package report
 
 type reportVariables struct {
-	executionDate, totalTests, succeededTests, failedTests, successRate, scenariosTemplate string
+	appName, appVersion, executionDate, totalTests, succeededTests, failedTests, successRate, scenariosTemplate string
 }
 
 func getReportVariables() reportVariables {
@@ -9,6 +9,8 @@ func getReportVariables() reportVariables {
 		executionDate:     "EXECUTION_DATE",
 		totalTests:        "TOTAL_TESTS",
 		succeededTests:    "SUCCEEDED_TESTS",
+		appName:           "APP_NAME",
+		appVersion:        "APP_VERSION",
 		failedTests:       "FAILED_TESTS",
 		successRate:       "SUCCESS_RATE",
 		scenariosTemplate: "SCENARIOS",

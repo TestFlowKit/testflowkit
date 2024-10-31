@@ -14,8 +14,8 @@ type Report struct {
 }
 
 func (r *Report) AddScenario(sc Scenario) {
-	text := fmt.Sprintf("%s executed in %fs", sc.title, sc.duration.Seconds())
-	log.Println(text)
+	addedScenarioLoggedMessage := fmt.Sprintf("%s executed in %fs", sc.title, sc.duration.Seconds())
+	log.Println(addedScenarioLoggedMessage)
 	r.scenarios = append(r.scenarios, sc)
 }
 
@@ -24,7 +24,12 @@ func (r *Report) Start() {
 }
 
 func (r *Report) Write() {
-	r.formatter.WriteReport(r.startDate, r.scenarios)
+	r.formatter.WriteReport(testSuiteDetails{
+		appName:    r.appName,
+		appVersion: r.appVersion,
+		startDate:  r.startDate,
+		scenarios:  r.scenarios,
+	})
 }
 
 func New(appName, appVersion string, enabled bool, formatType string) Report {

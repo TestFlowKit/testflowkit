@@ -10,7 +10,7 @@ import (
 )
 
 func TestFormatSuccessCaseScenarioTemplate(t *testing.T) {
-	formatter := htmlReportFormatter{}
+	reportFormatter := htmlReportFormatter{}
 
 	first := newScenario("first", []Step{
 		{
@@ -26,7 +26,7 @@ func TestFormatSuccessCaseScenarioTemplate(t *testing.T) {
 	scenarioTpl := `<details>
 {{ SCENARIO_NAME }}{{ SCENARIO_RESULT }}{{ SCENARIO_DURATION }}{{ SCENARIO_ERROR_MESSAGE }}
 <details>`
-	firstTpl := formatter.fillScenarioTemplate(first, scenarioTpl, "")
+	firstTpl := reportFormatter.fillScenarioTemplate(first, scenarioTpl, "")
 
 	assert.Equal(t, firstTpl, strings.TrimSpace(`<details>
 firstSUCCEEDED10s-
@@ -34,7 +34,7 @@ firstSUCCEEDED10s-
 }
 
 func TestFormatFailedCaseScenarioTemplate(t *testing.T) {
-	formatter := htmlReportFormatter{}
+	htmlFormatter := htmlReportFormatter{}
 	failed := newScenario("connect", make([]Step, 0), 3*time.Second, errors.New("error"))
 
 	tpl := `
@@ -45,7 +45,7 @@ func TestFormatFailedCaseScenarioTemplate(t *testing.T) {
         {{ SCENARIO_ERROR_MESSAGE }}
 		<details>
 `
-	firstTpl := formatter.fillScenarioTemplate(failed, tpl, "")
+	firstTpl := htmlFormatter.fillScenarioTemplate(failed, tpl, "")
 
 	assert.Contains(t, firstTpl, strings.TrimSpace(`
 		<details>
@@ -70,21 +70,33 @@ func TestFormatReport(t *testing.T) {
 	htmlFormatter := htmlReportFormatter{}
 
 	reportTpl := `
+{{ APP_NAME }} {{ APP_VERSION }}
 {{ EXECUTION_DATE }}-{{ TOTAL_TESTS }}{{ SUCCEEDED_TESTS }}{{ FAILED_TESTS }}-{{ SUCCESS_RATE }}-{{ SCENARIOS }}
 `
 	scTpl := `{{ SCENARIO_NAME }}{{ STEPS }}`
 	stepTpl := "{{ STEP_TITLE }}"
 
-	const expected = "12-10-2024 at 10:0-110-100-SCetape"
+	const expected = `
+My app 1.0.0
+12-10-2024 at 10:0-110-100-SCetape
+`
 
 	sc := Scenario{title: "SC", steps: []Step{{title: "etape", status: 0}}}
 
 	startDate := time.Date(2024, 12, 10, 10, 00, 00, 00, time.Local)
 
-	reportFormatted := htmlFormatter.fillReport(startDate, []Scenario{sc}, templates{
-		report:   reportTpl,
-		scenario: scTpl,
-		step:     stepTpl,
+	reportFormatted := htmlFormatter.fillReport(fillHtmlReportParams{
+		testSuiteDetails: testSuiteDetails{
+			appName:    "My app",
+			appVersion: "1.0.0",
+			startDate:  startDate,
+			scenarios:  []Scenario{sc},
+		},
+		templates: templates{
+			report:   reportTpl,
+			scenario: scTpl,
+			step:     stepTpl,
+		},
 	})
 
 	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(reportFormatted))
