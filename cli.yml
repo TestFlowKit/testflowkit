@@ -1,12 +1,12 @@
 configuration:
   display_browser: false
   timeout: 3s
-  concurrency: 1
+  slowMotion: 1s
+  concurrency: 4
   gherkin_location: "./features"  # Chemin vers les fichiers Gherkin
   tags:
     exclude:
-      - "FRONT"
-      - "FRONT_TEST"
+    include:
 
 
 

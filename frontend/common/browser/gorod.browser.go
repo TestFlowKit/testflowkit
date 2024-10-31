@@ -1,6 +1,8 @@
 package browser
 
 import (
+	"time"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 )
@@ -17,13 +19,13 @@ func (rb *rodBrowser) NewPage(url string) Page {
 	return newRodPage(page)
 }
 
-func newRodBrowser(headlessMode bool) Browser {
+func newRodBrowser(headlessMode bool, slowMotion time.Duration) Browser {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).
 		Headless(headlessMode).
 		MustLaunch()
 
-	browser := rod.New().ControlURL(u).MustConnect()
+	browser := rod.New().ControlURL(u).SlowMotion(slowMotion).MustConnect()
 	return &rodBrowser{
 		browser: browser,
 	}

@@ -1,6 +1,7 @@
 configuration:
   display_browser: true
   timeout: 60s
+  slowMotion: 2s
   concurrency: 4
   gherkin_location: "./features"  # Chemin vers les fichiers Gherkin
   tags:

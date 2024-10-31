@@ -2,7 +2,9 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"strings"
+	"time"
 
 	"github.com/goccy/go-yaml"
 )
@@ -21,8 +23,28 @@ type reportingConfig struct {
 type testingConfig struct {
 	DisplayBrowser  bool   `yaml:"display_browser"`
 	Timeout         string `yaml:"timeout"`
+	SlowMotion      string `yaml:"slowMotion"`
 	Concurrency     int    `yaml:"concurrency"`
 	GherkinLocation string `yaml:"gherkin_location"`
+}
+
+func (c testingConfig) IsHeadlessModeEnabled() bool {
+	return !c.DisplayBrowser
+}
+
+func (c testingConfig) GetSlowMotion() time.Duration {
+	hasSlowMotion := c.DisplayBrowser && len(c.SlowMotion) > 0
+
+	if !hasSlowMotion {
+		return 0
+	}
+
+	duration, err := time.ParseDuration(c.SlowMotion)
+	if err != nil {
+		log.Panicf("%s is not correct duration", c.SlowMotion)
+	}
+
+	return duration
 }
 
 type tagsConfig struct {

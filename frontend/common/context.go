@@ -7,14 +7,14 @@ import (
 )
 
 type Context struct {
-	browser      browser.Browser
-	page         browser.Page
-	timeout      time.Duration
-	headlessMode bool
+	browser             browser.Browser
+	page                browser.Page
+	timeout, slowMotion time.Duration
+	headlessMode        bool
 }
 
 func (fc *Context) InitBrowser() {
-	fc.browser = browser.CreateInstance(fc.headlessMode)
+	fc.browser = browser.CreateInstance(fc.headlessMode, fc.slowMotion)
 }
 
 func (fc *Context) OpenNewPage(url string) {
@@ -29,7 +29,7 @@ func (fc *Context) GetCurrentPageKeyboard() browser.Keyboard {
 	return fc.page.GetKeyboard()
 }
 
-func NewFrontendContext(timeout string, headlessMode bool) *Context {
+func NewFrontendContext(timeout string, headlessMode bool, slowMotion time.Duration) *Context {
 	duration, err := time.ParseDuration(timeout)
 	if err != nil {
 		log.Panicf("timeout is not correct (%s)", timeout)
@@ -40,5 +40,6 @@ func NewFrontendContext(timeout string, headlessMode bool) *Context {
 		page:         nil,
 		timeout:      duration,
 		headlessMode: headlessMode,
+		slowMotion:   slowMotion,
 	}
 }

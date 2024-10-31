@@ -15,7 +15,7 @@ import (
 )
 
 func InitializeScenario(ctx *godog.ScenarioContext, config config.ClI) {
-	frontendCtx := common.NewFrontendContext(config.Timeout, !config.DisplayBrowser)
+	frontendCtx := common.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
 
 	allSteps := slices.Concat(form.Steps, keyboard.Steps, navigation.Steps, visual.Steps)
 
