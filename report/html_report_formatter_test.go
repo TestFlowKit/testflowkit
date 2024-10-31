@@ -23,10 +23,10 @@ func TestFormatSuccessCaseScenarioTemplate(t *testing.T) {
 		},
 	}, 10*time.Second, nil)
 
-	scenarioTemplate := `<details>
+	scenarioTpl := `<details>
 {{ SCENARIO_NAME }}{{ SCENARIO_RESULT }}{{ SCENARIO_DURATION }}{{ SCENARIO_ERROR_MESSAGE }}
 <details>`
-	firstTpl := formatter.fillScenarioTemplate(first, scenarioTemplate, "")
+	firstTpl := formatter.fillScenarioTemplate(first, scenarioTpl, "")
 
 	assert.Equal(t, firstTpl, strings.TrimSpace(`<details>
 firstSUCCEEDED10s-

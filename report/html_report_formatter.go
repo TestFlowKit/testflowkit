@@ -1,11 +1,11 @@
 package report
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 	"math"
 	"os"
-	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -13,16 +13,17 @@ import (
 	"github.com/cucumber/godog"
 )
 
-const reportTemplateKey, scenarioTemplateKey, stepTemplateKey = "report", "scenario", "step"
+//go:embed templates/report.template.html
+var reportTemplate string
+
+//go:embed templates/scenario.template.html
+var scenarioTemplate string
+
+//go:embed templates/step.template.html
+var stepTemplate string
 
 type templates struct {
 	report, scenario, step string
-}
-
-var htmlTemplates = map[string]string{
-	reportTemplateKey:   "",
-	scenarioTemplateKey: "",
-	stepTemplateKey:     "",
 }
 
 type htmlReportFormatter struct {
@@ -110,11 +111,10 @@ func (r htmlReportFormatter) setTemplateVar(template, variableName, value string
 }
 
 func (r htmlReportFormatter) WriteReport(startDate time.Time, scenarios []Scenario) {
-	report, scenario, step := r.getTemplates()
 	content := r.fillReport(startDate, scenarios, templates{
-		report:   report,
-		scenario: scenario,
-		step:     step,
+		report:   reportTemplate,
+		scenario: scenarioTemplate,
+		step:     stepTemplate,
 	})
 
 	file, err := os.Create("report.html")
@@ -127,22 +127,4 @@ func (r htmlReportFormatter) WriteReport(startDate time.Time, scenarios []Scenar
 	if err != nil {
 		log.Panicf("error when report filling ( %s )", err)
 	}
-}
-
-func (r htmlReportFormatter) getTemplates() (report, scenario, step string) {
-	for name, content := range htmlTemplates {
-		if len(content) > 0 {
-			continue
-		}
-
-		templatePath := path.Join("report", "templates", fmt.Sprintf("%s.template.html", name))
-		file, err := os.ReadFile(templatePath)
-		if err != nil {
-			log.Printf("%s template not found\n", name)
-			panic(err)
-		}
-		htmlTemplates[name] = string(file)
-	}
-
-	return htmlTemplates[reportTemplateKey], htmlTemplates[scenarioTemplateKey], htmlTemplates[stepTemplateKey]
 }
