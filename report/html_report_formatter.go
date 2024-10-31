@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/cucumber/godog"
 )
@@ -52,6 +53,9 @@ func (r htmlReportFormatter) fillReport(p fillHTMLReportParams) string {
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.failedTests, strconv.Itoa(failed))
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.appName, p.appName)
 	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.appVersion, p.appVersion)
+
+	totalDuration := fmt.Sprintf("%ds", p.getTestSuiteDurationInSeconds())
+	testSuiteReport = r.setTemplateVar(testSuiteReport, reportVars.totalExecutionTime, totalDuration)
 
 	const totalRate = 100
 	successRate := succeed * totalRate / total
@@ -136,4 +140,12 @@ func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
 type fillHTMLReportParams struct {
 	testSuiteDetails
 	templates
+}
+
+func (params fillHTMLReportParams) getTestSuiteDurationInSeconds() int {
+	var total time.Duration
+	for _, sc := range params.scenarios {
+		total += sc.duration
+	}
+	return int(total.Seconds())
 }

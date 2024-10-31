@@ -1,19 +1,21 @@
 package report
 
 type reportVariables struct {
-	appName, appVersion, executionDate, totalTests, succeededTests, failedTests, successRate, scenariosTemplate string
+	appName, appVersion, executionDate, totalExecutionTime                  string
+	totalTests, succeededTests, failedTests, successRate, scenariosTemplate string
 }
 
 func getReportVariables() reportVariables {
 	return reportVariables{
-		executionDate:     "EXECUTION_DATE",
-		totalTests:        "TOTAL_TESTS",
-		succeededTests:    "SUCCEEDED_TESTS",
-		appName:           "APP_NAME",
-		appVersion:        "APP_VERSION",
-		failedTests:       "FAILED_TESTS",
-		successRate:       "SUCCESS_RATE",
-		scenariosTemplate: "SCENARIOS",
+		executionDate:      "EXECUTION_DATE",
+		totalTests:         "TOTAL_TESTS",
+		succeededTests:     "SUCCEEDED_TESTS",
+		appName:            "APP_NAME",
+		appVersion:         "APP_VERSION",
+		failedTests:        "FAILED_TESTS",
+		successRate:        "SUCCESS_RATE",
+		scenariosTemplate:  "SCENARIOS",
+		totalExecutionTime: "TOTAL_EXECUTION_TIME",
 	}
 }
 

@@ -70,18 +70,18 @@ func TestFormatReport(t *testing.T) {
 	htmlFormatter := htmlReportFormatter{}
 
 	reportTpl := `
-{{ APP_NAME }} {{ APP_VERSION }}
+{{ APP_NAME }} {{ APP_VERSION }} {{ TOTAL_EXECUTION_TIME }}
 {{ EXECUTION_DATE }}-{{ TOTAL_TESTS }}{{ SUCCEEDED_TESTS }}{{ FAILED_TESTS }}-{{ SUCCESS_RATE }}-{{ SCENARIOS }}
 `
 	scTpl := `{{ SCENARIO_NAME }}{{ STEPS }}`
 	stepTpl := "{{ STEP_TITLE }}"
 
 	const expected = `
-My app 1.0.0
+My app 1.0.0 10s
 12-10-2024 at 10:0-110-100-SCetape
 `
 
-	sc := Scenario{title: "SC", steps: []Step{{title: "etape", status: 0}}}
+	sc := Scenario{title: "SC", steps: []Step{{title: "etape", status: 0}}, duration: 10 * time.Second}
 
 	startDate := time.Date(2024, 12, 10, 10, 00, 00, 00, time.Local)
 
@@ -100,6 +100,15 @@ My app 1.0.0
 	})
 
 	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(reportFormatted))
+}
+
+func TestTotalDuration(t *testing.T) {
+	params := fillHTMLReportParams{}
+	params.scenarios = append(params.scenarios, Scenario{duration: 2 * time.Second})
+	params.scenarios = append(params.scenarios, Scenario{duration: 10 * time.Second})
+	params.scenarios = append(params.scenarios, Scenario{duration: 5 * time.Minute})
+
+	assert.Equal(t, 312, params.getTestSuiteDurationInSeconds())
 }
 
 func newScenario(title string, steps []Step, duration time.Duration, err error) Scenario {
