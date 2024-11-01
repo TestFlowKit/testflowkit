@@ -20,7 +20,7 @@ jobs:
       - name: Setup nodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '22'
 
       - name: Install commitlint
         run: |
