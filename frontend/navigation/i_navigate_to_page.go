@@ -8,7 +8,7 @@ import (
 
 var iNavigateToPage = common.FrontStep{
 	Sentences: []string{`^I navigate to {string} page$`},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(page string) error {
 			url, err := config.FrontConfig{}.GetPageURL(page)
 			if err != nil {

@@ -6,36 +6,36 @@ import (
 	"time"
 )
 
-type Context struct {
+type TestSuiteContext struct {
 	browser             browser.Browser
 	page                browser.Page
 	timeout, slowMotion time.Duration
 	headlessMode        bool
 }
 
-func (fc *Context) InitBrowser() {
+func (fc *TestSuiteContext) InitBrowser() {
 	fc.browser = browser.CreateInstance(fc.headlessMode, fc.slowMotion)
 }
 
-func (fc *Context) OpenNewPage(url string) {
+func (fc *TestSuiteContext) OpenNewPage(url string) {
 	fc.page = fc.browser.NewPage(url)
 }
 
-func (fc *Context) GetCurrentPage() browser.Page {
+func (fc *TestSuiteContext) GetCurrentPage() browser.Page {
 	return fc.page
 }
 
-func (fc *Context) GetCurrentPageKeyboard() browser.Keyboard {
+func (fc *TestSuiteContext) GetCurrentPageKeyboard() browser.Keyboard {
 	return fc.page.GetKeyboard()
 }
 
-func NewFrontendContext(timeout string, headlessMode bool, slowMotion time.Duration) *Context {
+func NewFrontendContext(timeout string, headlessMode bool, slowMotion time.Duration) *TestSuiteContext {
 	duration, err := time.ParseDuration(timeout)
 	if err != nil {
 		log.Panicf("timeout is not correct (%s)", timeout)
 	}
 
-	return &Context{
+	return &TestSuiteContext{
 		browser:      nil,
 		page:         nil,
 		timeout:      duration,

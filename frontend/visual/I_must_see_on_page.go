@@ -8,7 +8,7 @@ import (
 
 var iMustSeeOnThePage = common.FrontStep{
 	Sentences: []string{`^I must see {string} on the page$`},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(word string) error {
 			elt, err := ctx.GetCurrentPage().GetOneBySelector("body")
 			if err != nil {

@@ -6,7 +6,7 @@ import (
 
 var iOpenAPrivateBrowserTab = common.FrontStep{
 	Sentences: []string{"I open a new private browser tab"},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func() error {
 			ctx.InitBrowser()
 			return nil

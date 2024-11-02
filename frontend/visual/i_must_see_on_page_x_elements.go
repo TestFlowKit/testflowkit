@@ -8,7 +8,7 @@ import (
 
 var iMustSeeOnPageXElements = common.FrontStep{
 	Sentences: []string{`^I must see on page {number} {string}$`},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(expectedCount int, elementName string) error {
 			elementCount := browser.GetElementCount(ctx.GetCurrentPage(), elementName)
 			if elementCount != expectedCount {

@@ -9,7 +9,7 @@ import (
 
 var iAmRedirectedToPage = common.FrontStep{
 	Sentences: []string{"^I am redirected to {string} page$"},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(pageName string) error {
 			page := ctx.GetCurrentPage()
 			page.WaitLoading()

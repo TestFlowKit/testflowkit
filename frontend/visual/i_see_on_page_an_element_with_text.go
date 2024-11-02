@@ -7,7 +7,7 @@ import (
 
 var iMustSeeOnPageAnElementWithText = common.FrontStep{
 	Sentences: []string{`^I must see on page a (link|button|element) with text "{string}"$`},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(elementLabel, text string) error {
 			cases := map[string]string{
 				"link":    "a",

@@ -7,7 +7,7 @@ import (
 
 var iClickOnElementWhichContains = common.FrontStep{
 	Sentences: []string{`^I click on element which contains "{string}"$`},
-	Definition: func(ctx *common.Context) common.FrontStepDefinition {
+	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(text string) error {
 			xPath := fmt.Sprintf("//*[contains(text(),%s)]", text)
 			element, err := ctx.GetCurrentPage().GetOneByXPath(xPath)
