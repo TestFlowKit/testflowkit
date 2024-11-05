@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de test E2E</title>
+</head>
+<body>
+<h1>Formulaire de test E2E</h1>
+<form action="#" method="post">
+
+    <!-- Champ de texte -->
+    <label for="text">Texte :</label>
+    <input type="text" id="text" name="text"><br><br>
+
+    <!-- Adresse e-mail -->
+    <label for="email">E-mail :</label>
+    <input type="email" id="email" name="email"><br><br>
+
+    <!-- Mot de passe -->
+    <label for="password">Mot de passe :</label>
+    <input type="password" id="password" name="password"><br><br>
+
+    <!-- Numéro -->
+    <label for="number">Numéro :</label>
+    <input type="number" id="number" name="number" min="1" max="100"><br><br>
+
+    <!-- Téléphone -->
+    <label for="tel">Téléphone :</label>
+    <input type="tel" id="tel" name="tel"><br><br>
+
+    <!-- URL -->
+    <label for="url">URL :</label>
+    <input type="url" id="url" name="url"><br><br>
+
+    <!-- Date -->
+    <label for="date">Date :</label>
+    <input type="date" id="date" name="date"><br><br>
+
+    <!-- Mois -->
+    <label for="month">Mois :</label>
+    <input type="month" id="month" name="month"><br><br>
+
+    <!-- Semaine -->
+    <label for="week">Semaine :</label>
+    <input type="week" id="week" name="week"><br><br>
+
+    <!-- Heure -->
+    <label for="time">Heure :</label>
+    <input type="time" id="time" name="time"><br><br>
+
+    <!-- Date et Heure -->
+    <label for="datetime-local">Date et Heure locale :</label>
+    <input type="datetime-local" id="datetime-local" name="datetime-local"><br><br>
+
+    <!-- Couleur -->
+    <label for="color">Couleur :</label>
+    <input type="color" id="color" name="color"><br><br>
+
+    <!-- Champ caché -->
+    <input type="hidden" id="hidden" name="hidden" value="valeur_cachée">
+
+    <!-- Fichier -->
+    <label for="file">Fichier :</label>
+    <input type="file" id="file" name="file"><br><br>
+
+    <!-- Case à cocher -->
+    <label for="checkbox">Case à cocher :</label>
+    <input type="checkbox" id="checkbox" name="checkbox"><br><br>
+
+    <!-- Boutons radio -->
+    <p>Options :</p>
+    <label for="radio1">Option 1</label>
+    <input type="radio" id="radio1" name="radio" value="option1">
+    <label for="radio2">Option 2</label>
+    <input type="radio" id="radio2" name="radio" value="option2"><br><br>
+
+    <!-- Liste déroulante (select) -->
+    <label for="select">Choisissez une option :</label>
+    <select id="select" name="select">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+    </select><br><br>
+
+
+    <!-- Liste déroulante multiple (select) -->
+    <label for="select-multiple">Choisissez une ou plusieurs options :</label>
+    <select id="select-multiple" name="select" multiple>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+    </select><br><br>
+
+    <!-- Texte multiligne -->
+    <label for="textarea">Texte multiligne :</label>
+    <textarea id="textarea" name="textarea" rows="4" cols="50"></textarea><br><br>
+
+    <!-- Plage de valeurs -->
+    <label for="range">Plage de valeurs :</label>
+    <input type="range" id="range" name="range" min="0" max="100"><br><br>
+
+    <!-- Bouton de soumission -->
+    <input type="submit" value="Envoyer">
+
+</form>
+</body>
+</html>

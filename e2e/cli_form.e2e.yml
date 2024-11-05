@@ -1,0 +1,19 @@
+configuration:
+  display_browser: false
+  timeout: 10s
+  concurrency: 0
+  slowMotion: 0s
+  gherkin_location: "e2e/features"  # Chemin vers les fichiers Gherkin
+  tags:
+
+
+
+application:
+  app_name: "MonApplication"
+  app_description: "ma chic app"
+  app_version: "1.0.0"
+
+reporting:
+  enable: true
+  report_format: "html"
+
