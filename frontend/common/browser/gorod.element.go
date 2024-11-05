@@ -1,6 +1,8 @@
 package browser
 
 import (
+	"reflect"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
 )
@@ -31,6 +33,24 @@ func (e *rodElement) IsVisible() bool {
 		return false
 	}
 	return visible
+}
+
+func (e *rodElement) Select(options []string) error {
+	return e.element.Select(options, true, rod.SelectorTypeRegex)
+}
+
+func (e *rodElement) GetPropertyValue(property string, kind reflect.Kind) any {
+	value := e.element.MustProperty(property)
+
+	if kind == reflect.Bool {
+		return value.Bool()
+	}
+
+	if kind == reflect.String {
+		return value.String()
+	}
+
+	return nil
 }
 
 func newRodElement(element *rod.Element) Element {

@@ -58,6 +58,10 @@ func (c FrontConfig) GetInputSelectors(name string) ([]string, error) {
 	if err == nil {
 		err = path.Read(strings.NewReader(content), &selectors)
 	}
+
+	if len(selectors) == 0 {
+		return selectors, fmt.Errorf("no selectors found for %s", name)
+	}
 	return selectors, err
 }
 

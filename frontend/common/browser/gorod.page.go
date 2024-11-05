@@ -63,6 +63,11 @@ func (p *rodPage) WaitLoading() {
 	p.page = p.page.MustWaitDOMStable()
 	p.page = p.page.MustWaitIdle()
 }
+
+func (p *rodPage) ExecuteJS(js string, args ...any) string {
+	return p.page.MustEval(js, args...).String()
+}
+
 func newRodPage(page *rod.Page) Page {
 	return &rodPage{
 		page: page,

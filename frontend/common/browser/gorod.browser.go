@@ -25,8 +25,7 @@ func newRodBrowser(headlessMode bool, slowMotion time.Duration) Browser {
 		Headless(headlessMode).
 		MustLaunch()
 
-	browser := rod.New().ControlURL(u).SlowMotion(slowMotion).MustConnect()
 	return &rodBrowser{
-		browser: browser,
+		browser: rod.New().ControlURL(u).SlowMotion(slowMotion).MustConnect(),
 	}
 }

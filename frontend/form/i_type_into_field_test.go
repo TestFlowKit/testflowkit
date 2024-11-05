@@ -7,11 +7,12 @@ import (
 
 func TestPrivateIFillTheInputWithSentences(t *testing.T) {
 	wildcard := "{string}"
-	expectedWildcardNumber := 2
+	const expectedWildcardNumber = 2
 
+	handler := steps{}.iTypeXXXIntoInput()
 	re := regexp.MustCompile(wildcard)
 
-	for _, sentence := range iFillTheInputWith.Sentences {
+	for _, sentence := range handler.Sentences {
 		occurs := len(re.FindAllString(sentence, -1))
 		if occurs == expectedWildcardNumber {
 			continue

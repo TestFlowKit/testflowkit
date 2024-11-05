@@ -14,7 +14,13 @@ type Report struct {
 }
 
 func (r *Report) AddScenario(sc Scenario) {
-	addedScenarioLoggedMessage := fmt.Sprintf("%s executed in %fs", sc.title, sc.duration.Seconds())
+	result := "succeeded"
+
+	if len(sc.err) > 0 {
+		result = "failed"
+	}
+
+	addedScenarioLoggedMessage := fmt.Sprintf("'%s' %s in %fs", sc.title, result, sc.duration.Seconds())
 	log.Println(addedScenarioLoggedMessage)
 	r.scenarios = append(r.scenarios, sc)
 }

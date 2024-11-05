@@ -6,11 +6,11 @@ import (
 )
 
 var iClickOnButtonOrElement = common.FrontStep{
-	Sentences: []string{`^I click on "{string}" {string}$`},
+	Sentences: []string{`^I click on {string}$`},
 	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 		return func(label string) error {
-			button := browser.GetElement(ctx.GetCurrentPage(), label)
-			return button.Click()
+			element := browser.GetElement(ctx.GetCurrentPage(), label)
+			return element.Click()
 		}
 	},
 }

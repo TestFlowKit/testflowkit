@@ -12,12 +12,12 @@ func GetElement(page Page, label string) Element {
 	return GetElementBySelectors(page, selectors)
 }
 
-func GetInputElement(page Page, label string) Element {
+func GetInputElement(page Page, label string) (Element, error) {
 	selectors, err := fc.GetInputSelectors(label)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return GetElementBySelectors(page, selectors)
+	return GetElementBySelectors(page, selectors), nil
 }
 
 func GetElementBySelectors(page Page, potentialSelectors []string) Element {
