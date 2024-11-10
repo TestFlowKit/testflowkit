@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exemple d'effets avec JavaScript</title>
+  <style>
+    #monElement {
+      background-color: lightblue;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1 class="text">Voici le titre de la page.</h1>
+
+<div id="monElement">
+  Cet élément va disparaître quand vous cliquerez sur le bouton.
+</div>
+
+<button onclick="cacherElement()">Cacher l'élément</button>
+
+<script>
+  function cacherElement() {
+    document.getElementById("monElement").style.display = "none";
+    document.body.innerHTML += "<p>L'élément a été caché.</p>";
+  }
+</script>
+
+</body>
+</html>

@@ -1,5 +1,7 @@
 global:
     elements:
+        visual_test:
+            - "button"
         test_checkbox:
             - "#checkbox"
     inputs:
@@ -15,6 +17,7 @@ global:
             - "#textarea"
 
     pages:
-        form_e2e: "http://127.0.0.1:5500/e2e/form.e2e.html"
+        form_e2e: "http://127.0.0.1:5500/e2e/form.html"
         google: "https://www.google.com"
+        visual_e2e: "http://127.0.0.1:5500/e2e/visual.html"
 
