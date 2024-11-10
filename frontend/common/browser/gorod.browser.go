@@ -25,12 +25,9 @@ func newRodBrowser(headlessMode bool, slowMotion time.Duration, incognitoMode bo
 		Headless(headlessMode).
 		MustLaunch()
 
-	browser := rod.New().ControlURL(u).SlowMotion(slowMotion)
-
+	browser := rod.New().ControlURL(u).SlowMotion(slowMotion).MustConnect()
 	if incognitoMode {
 		browser = browser.MustIncognito()
-	} else {
-		browser.MustConnect()
 	}
 
 	return &rodBrowser{

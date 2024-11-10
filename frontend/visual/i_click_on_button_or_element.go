@@ -5,12 +5,18 @@ import (
 	"cucumber/frontend/common/browser"
 )
 
-var iClickOnButtonOrElement = common.FrontStep{
-	Sentences: []string{`^I click on {string}$`},
-	Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
-		return func(label string) error {
-			element := browser.GetElement(ctx.GetCurrentPage(), label)
-			return element.Click()
-		}
-	},
+func (s steps) iClickOn() common.FrontStep {
+	return common.FrontStep{
+		Sentences: []string{`^I click on {string}$`},
+		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+			return func(label string) error {
+				element, err := browser.GetElement(ctx.GetCurrentPage(), label)
+				if err != nil {
+					return err
+				}
+
+				return element.Click()
+			}
+		},
+	}
 }

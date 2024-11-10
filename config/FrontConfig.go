@@ -1,6 +1,7 @@
 package config
 
 import (
+	"cucumber/utils"
 	"fmt"
 	"log"
 	"os"
@@ -38,23 +39,20 @@ func (c FrontConfig) GetPageURL(page string) (string, error) {
 }
 
 func (c FrontConfig) GetElementSelectors(label string) ([]string, error) {
-	var selectors []string
-	label = c.wildcardToKey(label)
-
-	path, err := yaml.PathString(fmt.Sprintf("$.global.elements.%s", label))
-	if err == nil {
-		err = path.Read(strings.NewReader(content), &selectors)
-	}
-
-	return selectors, err
+	return c.GetHTMLElementSelectors(label, utils.HTMLElement)
 }
 
-func (c FrontConfig) GetInputSelectors(name string) ([]string, error) {
+func (c FrontConfig) GetInputSelectors(label string) ([]string, error) {
+	return c.GetHTMLElementSelectors(label, utils.HTMLInput)
+}
+
+func (c FrontConfig) GetHTMLElementSelectors(name string, eltType utils.ElementType) ([]string, error) {
 	var selectors []string
 
+	configKey := c.getHTMLElementConfigKey(eltType)
 	name = c.wildcardToKey(name)
 
-	path, err := yaml.PathString(fmt.Sprintf("$.global.inputs.%s", name))
+	path, err := yaml.PathString(fmt.Sprintf("$.global.%s.%s", configKey, name))
 	if err == nil {
 		err = path.Read(strings.NewReader(content), &selectors)
 	}
@@ -67,4 +65,13 @@ func (c FrontConfig) GetInputSelectors(name string) ([]string, error) {
 
 func (c FrontConfig) wildcardToKey(label string) string {
 	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
+}
+
+func (c FrontConfig) getHTMLElementConfigKey(htmlElementType utils.ElementType) string {
+	switch htmlElementType {
+	case utils.HTMLInput:
+		return "inputs"
+	default:
+		return "elements"
+	}
 }
