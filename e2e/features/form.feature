@@ -1,3 +1,4 @@
+@FORM
 Feature: Form e2e tests
 
   Background:

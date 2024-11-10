@@ -2,6 +2,6 @@ package browser
 
 import "time"
 
-func CreateInstance(headlessMode bool, slowMotion time.Duration) Browser {
-	return newRodBrowser(headlessMode, slowMotion)
+func CreateInstance(headlessMode bool, slowMotion time.Duration, incognitoMode bool) Browser {
+	return newRodBrowser(headlessMode, slowMotion, incognitoMode)
 }

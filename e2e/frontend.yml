@@ -16,4 +16,5 @@ global:
 
     pages:
         form_e2e: "http://127.0.0.1:5500/e2e/form.e2e.html"
+        google: "https://www.google.com"
 

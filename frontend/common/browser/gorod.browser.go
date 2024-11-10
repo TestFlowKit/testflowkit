@@ -19,13 +19,21 @@ func (rb *rodBrowser) NewPage(url string) Page {
 	return newRodPage(page)
 }
 
-func newRodBrowser(headlessMode bool, slowMotion time.Duration) Browser {
+func newRodBrowser(headlessMode bool, slowMotion time.Duration, incognitoMode bool) Browser {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).
 		Headless(headlessMode).
 		MustLaunch()
 
+	browser := rod.New().ControlURL(u).SlowMotion(slowMotion)
+
+	if incognitoMode {
+		browser = browser.MustIncognito()
+	} else {
+		browser.MustConnect()
+	}
+
 	return &rodBrowser{
-		browser: rod.New().ControlURL(u).SlowMotion(slowMotion).MustConnect(),
+		browser: browser,
 	}
 }

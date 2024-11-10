@@ -13,8 +13,8 @@ type TestSuiteContext struct {
 	headlessMode        bool
 }
 
-func (fc *TestSuiteContext) InitBrowser() {
-	fc.browser = browser.CreateInstance(fc.headlessMode, fc.slowMotion)
+func (fc *TestSuiteContext) InitBrowser(incognitoMode bool) {
+	fc.browser = browser.CreateInstance(fc.headlessMode, fc.slowMotion, incognitoMode)
 }
 
 func (fc *TestSuiteContext) OpenNewPage(url string) {
