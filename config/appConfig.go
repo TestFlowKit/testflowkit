@@ -12,7 +12,6 @@ type ClI struct {
 	appConfig
 	reportingConfig
 	testingConfig
-	tagsConfig
 }
 
 func (c *ClI) InitByFilePath(filePath string) {
@@ -20,7 +19,6 @@ func (c *ClI) InitByFilePath(filePath string) {
 	if err != nil {
 		log.Fatal("config file not found")
 	}
-
 	c.InitByFileContent(string(file))
 }
 
@@ -28,7 +26,6 @@ func (c *ClI) InitByFileContent(content string) {
 	c.appConfig = c.getAppDetailsConfig(content)
 	c.reportingConfig = c.getReportingConfig(content)
 	c.testingConfig = c.getTestingConfig(content)
-	c.tagsConfig = c.getTagsConfig(content)
 }
 
 func (c *ClI) getAppDetailsConfig(file string) appConfig {
@@ -65,19 +62,9 @@ func (c *ClI) getTestingConfig(file string) testingConfig {
 	return config
 }
 
-func (c *ClI) getTagsConfig(file string) tagsConfig {
-	config := tagsConfig{}
-	err := getConfig(file, "$.configuration.tags", &config)
-	if err != nil {
-		log.Panicln("tags config getting failed")
-	}
-
-	return config
-}
-
 func (c *ClI) GetConcurrency() int {
-	if c.DisplayBrowser {
+	if c.displayBrowser {
 		return 0
 	}
-	return c.Concurrency
+	return c.Parallel
 }

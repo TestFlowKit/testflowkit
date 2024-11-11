@@ -3,6 +3,7 @@ module cucumber
 go 1.22.4
 
 require (
+	github.com/alexflint/go-arg v1.5.1
 	github.com/cucumber/godog v0.14.1
 	github.com/go-rod/rod v0.116.2
 	github.com/goccy/go-yaml v1.12.0
@@ -11,6 +12,7 @@ require (
 )
 
 require (
+	github.com/alexflint/go-scalar v1.2.0 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -21,19 +20,24 @@ type reportingConfig struct {
 }
 
 type testingConfig struct {
-	DisplayBrowser  bool   `yaml:"display_browser"`
 	Timeout         string `yaml:"timeout"`
+	Tags            string `yaml:"tags"`
 	SlowMotion      string `yaml:"slowMotion"`
-	Concurrency     int    `yaml:"concurrency"`
+	Parallel        int
+	displayBrowser  bool
 	GherkinLocation string `yaml:"gherkin_location"`
 }
 
-func (c testingConfig) IsHeadlessModeEnabled() bool {
-	return !c.DisplayBrowser
+func (c *testingConfig) IsHeadlessModeEnabled() bool {
+	return !c.displayBrowser
 }
 
-func (c testingConfig) GetSlowMotion() time.Duration {
-	hasSlowMotion := c.DisplayBrowser && len(c.SlowMotion) > 0
+func (c *testingConfig) SetDisplayBrowser(val bool) {
+	c.displayBrowser = val
+}
+
+func (c *testingConfig) GetSlowMotion() time.Duration {
+	hasSlowMotion := c.displayBrowser && len(c.SlowMotion) > 0
 
 	if !hasSlowMotion {
 		return 0
@@ -47,46 +51,8 @@ func (c testingConfig) GetSlowMotion() time.Duration {
 	return duration
 }
 
-type tagsConfig struct {
-	IncludeTags []string `yaml:"include"`
-	ExcludeTags []string `yaml:"exclude"`
-}
-
-func (c tagsConfig) GetTagsExpression() string {
-	var expression string
-	if len(c.IncludeTags) == 0 && len(c.ExcludeTags) == 0 {
-		return expression
-	}
-
-	if len(c.IncludeTags) > 0 {
-		expression = strings.Join(c.formatTags(c.IncludeTags), ",")
-	}
-
-	if len(c.ExcludeTags) == 0 {
-		return expression
-	}
-
-	excludeExp := fmt.Sprintf("~%s", strings.Join(c.formatTags(c.ExcludeTags), " && ~"))
-
-	if len(expression) > 0 {
-		return fmt.Sprintf("%s && %s", expression, excludeExp)
-	}
-	return excludeExp
-}
-
-func (c tagsConfig) formatTags(tags []string) []string {
-	var formattedTags []string
-	for _, tag := range tags {
-		if !strings.HasPrefix(tag, "@") {
-			tag = fmt.Sprintf("@%s", tag)
-		}
-		formattedTags = append(formattedTags, tag)
-	}
-	return formattedTags
-}
-
 type configType interface {
-	tagsConfig | testingConfig | reportingConfig | appConfig
+	testingConfig | reportingConfig | appConfig
 }
 
 func getConfig[T configType](file, path string, config *T) error {

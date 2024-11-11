@@ -29,9 +29,11 @@ func TestTestingConfig(t *testing.T) {
 	cliConfig := config.ClI{}
 	cliConfig.InitByFilePath("cli.test.yml")
 
-	assert.True(t, cliConfig.DisplayBrowser)
+	cliConfig.SetDisplayBrowser(true)
+
+	assert.False(t, cliConfig.IsHeadlessModeEnabled())
 	assert.Equal(t, "60s", cliConfig.Timeout)
-	assert.Equal(t, 4, cliConfig.Concurrency)
+	assert.Equal(t, 4, cliConfig.Parallel)
 	assert.Equal(t, "2s", cliConfig.SlowMotion)
 	assert.Equal(t, 2*time.Second, cliConfig.GetSlowMotion())
 	assert.Equal(t, "./features", cliConfig.GherkinLocation)
@@ -48,13 +50,6 @@ configuration:
   slowMotion: 2s
   concurrency: 4
   gherkin_location: "./features"  # Chemin vers les fichiers Gherkin
-  tags:
-    include:
-      - "login"
-      - "user"
-    exclude:
-      - "slow"
-      - "experimental"
 application:
   app_name: "MonApplication"
   app_description: "ma chic app"
@@ -67,51 +62,22 @@ reporting:
 `
 	cliConfig.InitByFileContent(fileContent)
 
-	assert.False(t, cliConfig.DisplayBrowser)
+	assert.True(t, cliConfig.IsHeadlessModeEnabled())
 	assert.Equal(t, time.Duration(0), cliConfig.GetSlowMotion())
-}
-
-func TestTagsConfig(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.InitByFilePath("cli.test.yml")
-
-	assert.Equal(t, []string{"login", "user"}, cliConfig.IncludeTags)
-	assert.Equal(t, []string{"slow", "experimental"}, cliConfig.ExcludeTags)
 }
 
 func TestSetConcurrencyTo1WhenEnableBrowserIsEnabled(t *testing.T) {
 	cliConfig := config.ClI{}
-	cliConfig.DisplayBrowser = true
-	cliConfig.Concurrency = 10
+	cliConfig.SetDisplayBrowser(true)
+	cliConfig.Parallel = 10
 
 	assert.Equal(t, 0, cliConfig.GetConcurrency())
 }
 
 func TestGetConcurrencyValueWhenEnableBrowserIsDisabled(t *testing.T) {
 	cliConfig := config.ClI{}
-	cliConfig.DisplayBrowser = false
-	cliConfig.Concurrency = 10
+	cliConfig.SetDisplayBrowser(false)
+	cliConfig.Parallel = 10
 
 	assert.Equal(t, 10, cliConfig.GetConcurrency())
-}
-
-func TestTagsExpressionForOnlyIncludeTags(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.IncludeTags = []string{"LOGIN", "@USER-MANAGEMENT", "TEST_CHAP"}
-	expression := "@LOGIN,@USER-MANAGEMENT,@TEST_CHAP"
-
-	assert.Equal(t, cliConfig.GetTagsExpression(), expression)
-}
-
-func TestTagsExpressionForOnlyExcludeTags(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.ExcludeTags = []string{"LOGIN", "@USER-MANAGEMENT", "TEST_CHAP"}
-	expression := "~@LOGIN && ~@USER-MANAGEMENT && ~@TEST_CHAP"
-
-	assert.Equal(t, cliConfig.GetTagsExpression(), expression)
-}
-
-func TestTagsExpressionReturnEmptyExpBecauseNoTagsProvided(t *testing.T) {
-	cliConfig := config.ClI{}
-	assert.Equal(t, "", cliConfig.GetTagsExpression())
 }

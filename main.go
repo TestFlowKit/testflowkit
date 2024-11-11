@@ -20,7 +20,7 @@ func main() {
 		Concurrency:         cliConfig.GetConcurrency(),
 		Format:              "pretty",
 		ShowStepDefinitions: false,
-		Tags:                cliConfig.GetTagsExpression(),
+		Tags:                cliConfig.Tags,
 		Paths:               []string{cliConfig.GherkinLocation},
 	}
 

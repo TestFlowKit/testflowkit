@@ -4,7 +4,6 @@ configuration:
   concurrency: 0
   slowMotion: 0s
   gherkin_location: "e2e/features"  # Chemin vers les fichiers Gherkin
-  tags:
 
 
 

@@ -1,10 +1,12 @@
 package config
 
 func Init() ClI {
+	args := getAppArgs()
+
 	cli := ClI{}
-	cli.InitByFilePath("cli.yml")
+	cli.InitByFilePath(args.ClIConfigPath)
 
-	FrontConfig{}.init("frontend.yml")
+	FrontConfig{}.init(args.FrontendConfigPath)
 
-	return cli
+	return overrideClIConfig(args, cli)
 }
