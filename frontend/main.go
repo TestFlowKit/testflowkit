@@ -17,8 +17,7 @@ import (
 func InitializeScenario(ctx *godog.ScenarioContext, config config.ClI) {
 	frontendCtx := common.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
 
-	allSteps := slices.Concat(form.GetSteps(), keyboard.Steps, navigation.GetSteps(), visual.GetSteps())
-
+	allSteps := slices.Concat(form.GetSteps(), keyboard.GetSteps(), navigation.GetSteps(), visual.GetSteps())
 	for _, step := range allSteps {
 		handler := step.Definition(frontendCtx)
 		for _, sentence := range step.Sentences {

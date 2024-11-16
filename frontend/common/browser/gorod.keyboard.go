@@ -9,8 +9,8 @@ type rodKeyboard struct {
 	keyboard *rod.Keyboard
 }
 
-func (k *rodKeyboard) PressEnter() error {
-	return k.keyboard.Press(input.Enter)
+func (k *rodKeyboard) Press(key input.Key) error {
+	return k.keyboard.Press(key)
 }
 
 func newRodKeyboard(keyboard *rod.Keyboard) Keyboard {

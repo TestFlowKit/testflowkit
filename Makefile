@@ -1,5 +1,5 @@
 lint:
-	~/go/bin/golangci-lint run
+	golangci-lint run
 	
 run:
 	go run main.go

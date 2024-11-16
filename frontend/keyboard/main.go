@@ -1,9 +1,14 @@
 package keyboard
 
-import (
-	"cucumber/frontend/common"
-)
+import "cucumber/frontend/common"
 
-var Steps = []common.FrontStep{
-	iPressTheEnterButton,
+type keyboardSteps struct {
+}
+
+func GetSteps() []common.FrontStep {
+	steps := keyboardSteps{}
+
+	return []common.FrontStep{
+		steps.iPressButton(),
+	}
 }

@@ -1,6 +1,10 @@
 package browser
 
-import "reflect"
+import (
+	"reflect"
+
+	"github.com/go-rod/rod/lib/input"
+)
 
 type Browser interface {
 	NewPage(url string) Page
@@ -31,5 +35,5 @@ type Element interface {
 }
 
 type Keyboard interface {
-	PressEnter() error
+	Press(key input.Key) error
 }
