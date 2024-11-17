@@ -1,7 +1,6 @@
 package config
 
 import (
-	"cucumber/utils"
 	"slices"
 	"testing"
 )
@@ -32,17 +31,7 @@ func TestGetElementSelectors(t *testing.T) {
 	config := setup(t)
 
 	expected := []string{"#login", ".login", "button .login"}
-	if selectors, _ := config.GetHTMLElementSelectors("login", utils.HTMLElement); !slices.Equal(selectors, expected) {
-		t.Errorf("error ")
-	}
-}
-
-func TestGetInputSelectors(t *testing.T) {
-	config := setup(t)
-
-	expected := []string{"#username"}
-
-	if selectors, _ := config.GetHTMLElementSelectors("username", utils.HTMLInput); !slices.Equal(selectors, expected) {
+	if selectors, _ := config.GetHTMLElementSelectors("login"); !slices.Equal(selectors, expected) {
 		t.Errorf("error ")
 	}
 }

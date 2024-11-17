@@ -1,23 +1,19 @@
 global:
-    elements:
-        visual_test:
-            - "button"
-        test_checkbox:
-            - "#checkbox"
-    inputs:
-        test:
-            - "#select"
-        test_field:
-            - "#select"
-        multiple:
-            - "#select-multiple"
-        text_field:
-            - "#text"
-        textarea_field:
-            - "#textarea"
+  elements:
+    visual_test_button:
+      - "button"
+    test_checkbox:
+      - "#checkbox"
+    test_dropdown:
+      - "#select"
+    multiple_dropdown:
+      - "#select-multiple"
+    text_field:
+      - "#text"
+    textarea_field:
+      - "#textarea"
 
-    pages:
-        form_e2e: "http://127.0.0.1:5500/e2e/form.html"
-        google: "https://www.google.com"
-        visual_e2e: "http://127.0.0.1:5500/e2e/visual.html"
-
+  pages:
+    form_e2e: "http://127.0.0.1:5500/e2e/form.html"
+    google: "https://www.google.com"
+    visual_e2e: "http://127.0.0.1:5500/e2e/visual.html"

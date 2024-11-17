@@ -2,22 +2,13 @@ package browser
 
 import (
 	"cucumber/config"
-	"cucumber/utils"
 	"log"
 )
 
 var fc = config.FrontConfig{}
 
 func GetElement(page Page, label string) (Element, error) {
-	selectors, err := fc.GetHTMLElementSelectors(label, utils.HTMLElement)
-	if err != nil {
-		return nil, err
-	}
-	return GetElementBySelectors(page, selectors), nil
-}
-
-func GetInputElement(page Page, label string) (Element, error) {
-	selectors, err := fc.GetHTMLElementSelectors(label, utils.HTMLInput)
+	selectors, err := fc.GetHTMLElementSelectors(label)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +46,7 @@ func GetActiveSelector(page Page, potentialSelectors []string) string {
 }
 
 func GetElementCount(page Page, label string) int {
-	potentialSelectors, _ := fc.GetElementSelectors(label)
+	potentialSelectors, _ := fc.GetHTMLElementSelectors(label)
 	selector := GetActiveSelector(page, potentialSelectors)
 	elements, err := page.GetAllBySelector(selector)
 	if err != nil {
@@ -63,13 +54,4 @@ func GetElementCount(page Page, label string) int {
 	}
 
 	return len(elements)
-}
-
-func GetElementByType(page Page, label string, eltType utils.ElementType) (Element, error) {
-	selectors, err := fc.GetHTMLElementSelectors(label, eltType)
-	if err != nil {
-		return nil, err
-	}
-
-	return GetElementBySelectors(page, selectors), nil
 }

@@ -1,14 +1,12 @@
 global:
-    elements:
-        iphone_15:
-            - "div[data-catalog='true'] article"
-        newsletter_modal_close:
-            - "button[aria-label='newsletter_popup_close-cta']"
-    inputs:
-        search:
-            - "#fi-q"
-    pages:
-        jumia_home: "https://www.jumia.ci"
-        iphone_15_results: "https://www.jumia.ci/mlp-iphone-15/"
-        yyyyy_results: "https://www.jumia.ci/catalog/?q=yyyyy"
-
+  elements:
+    iphone_15:
+      - "div[data-catalog='true'] article"
+    newsletter_modal_close_button:
+      - "button[aria-label='newsletter_popup_close-cta']"
+    search_field:
+      - "#fi-q"
+  pages:
+    jumia_home: "https://www.jumia.ci"
+    iphone_15_results: "https://www.jumia.ci/mlp-iphone-15/"
+    yyyyy_results: "https://www.jumia.ci/catalog/?q=yyyyy"

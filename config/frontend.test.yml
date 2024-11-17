@@ -4,8 +4,8 @@ global:
           - "#login"
           - ".login"
           - "button .login"
-    inputs:
-     username:
-       - "#username"
+      username_input: "#username"
+
+
     pages:
       home: "https://google.com"

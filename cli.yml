@@ -4,9 +4,6 @@ configuration:
   slowMotion: 1s
   concurrency: 4
   gherkin_location: "./features"  # Chemin vers les fichiers Gherkin
-  tags:
-    exclude:
-    include:
 
 
 

@@ -8,16 +8,16 @@ import (
 
 func (s steps) elementShouldBeVisible() common.FrontStep {
 	return common.FrontStep{
-		Sentences: []string{`^{string} (input|button|element) should be visible$`},
+		Sentences: []string{`^{string} should be visible$`},
 		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
-			return func(name, elementType string) error {
-				element, err := browser.GetElementByType(ctx.GetCurrentPage(), name, elementType)
+			return func(name string) error {
+				element, err := browser.GetElement(ctx.GetCurrentPage(), name)
 				if err != nil {
 					return err
 				}
 
 				if !element.IsVisible() {
-					return fmt.Errorf("%s %s is not visible", name, elementType)
+					return fmt.Errorf("%s is not visible", name)
 				}
 
 				return nil
