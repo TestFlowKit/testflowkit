@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de produits avec Tailwind CSS</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <div id="clickedElt"></div>
+        <table class="min-w-full">
+            <thead>
+                <tr>
+                    <th
+                        class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                        Produit</th>
+                    <th
+                        class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                        Description</th>
+                    <th
+                        class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                        Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Produit 1</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Description détaillée du produit 1</td>
+                    <td class="px-6 py-4 whitespace-nowrap">19.99 €</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Produit 4</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Description détaillée du produit 4</td>
+                    <td class="px-6 py-4 whitespace-nowrap">20.99 €</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Produit 2</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Description détaillée du produit 2</td>
+                    <td class="px-6 py-4 whitespace-nowrap">29.99 €</td>
+                </tr>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Produit 10</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Description détaillée du produit 10</td>
+                    <td class="px-6 py-4 whitespace-nowrap">109.99 €</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+
+<script>
+    window.addEventListener("load", () => {
+        function handler(e) {
+            document.querySelector('#clickedElt').textContent = `${e.target.textContent} clicked !`;
+        }
+
+        const trs = document.querySelectorAll("tr")
+        trs.forEach(tr => tr.addEventListener("click", handler))
+    })
+</script>
+
+</html>
