@@ -12,7 +12,7 @@ type appArgs struct {
 	FrontendConfigPath string        `arg:"-f,--front-config" help:"front tests config path" default:"frontend.yml"`
 	Tags               string        `arg:"-t,--tags" help:"tags"`
 	Parallel           int           `arg:"-p,--parallel" help:"number of tests launch in parallel"`
-	Timeout            time.Duration `arg:"--timout" help:"test suite timeout"`
+	Timeout            time.Duration `arg:"--timeout" help:"test suite timeout"`
 	DisplayBrowser     bool          `arg:"-d,--display-browser" help:"display browser"`
 }
 
