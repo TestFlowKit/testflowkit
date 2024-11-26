@@ -2,6 +2,8 @@ package visual
 
 import (
 	"cucumber/frontend/common"
+	"cucumber/frontend/visual/table"
+	"slices"
 )
 
 type steps struct {
@@ -9,7 +11,8 @@ type steps struct {
 
 func GetSteps() []common.FrontStep {
 	handlers := steps{}
-	return []common.FrontStep{
+
+	var otherSteps = []common.FrontStep{
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.iClickOn(),
@@ -19,4 +22,5 @@ func GetSteps() []common.FrontStep {
 		handlers.iShouldSeeElementWitchContains(),
 		handlers.iShouldSeeXElements(),
 	}
+	return slices.Concat(table.GetSteps(), otherSteps)
 }
