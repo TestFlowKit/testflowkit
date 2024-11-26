@@ -50,8 +50,9 @@ func (p *rodPage) HasSelector(selector string) bool {
 }
 
 func (p *rodPage) GetOneByXPath(xpath string) (Element, error) {
-	element, err := p.page.ElementX(xpath)
-	if err != nil {
+	exists, element, err := p.page.HasX(xpath)
+
+	if !exists {
 		return nil, err
 	}
 	return newRodElement(element), nil
