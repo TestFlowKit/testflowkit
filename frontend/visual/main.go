@@ -21,6 +21,7 @@ func GetSteps() []common.FrontStep {
 		handlers.iShouldNotSeeOnPage(),
 		handlers.iShouldSeeElementWitchContains(),
 		handlers.iShouldSeeXElements(),
+		handlers.iShouldSeeDetailsOnPage(),
 	}
 	return slices.Concat(table.GetSteps(), otherSteps)
 }

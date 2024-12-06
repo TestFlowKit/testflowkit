@@ -12,11 +12,12 @@ func main() {
 		"form",
 		"table",
 		"visual",
+		"details",
 	}
 
 	for _, file := range files {
 		http.HandleFunc(fmt.Sprintf("/%s", file), func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, fmt.Sprintf("e2e/server/%s.html", file))
+			http.ServeFile(w, r, fmt.Sprintf("./%s.html", file))
 		})
 	}
 

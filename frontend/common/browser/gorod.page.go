@@ -1,6 +1,8 @@
 package browser
 
 import (
+	"errors"
+
 	"github.com/go-rod/rod"
 )
 
@@ -52,9 +54,14 @@ func (p *rodPage) HasSelector(selector string) bool {
 func (p *rodPage) GetOneByXPath(xpath string) (Element, error) {
 	exists, element, err := p.page.HasX(xpath)
 
-	if !exists {
+	if err != nil {
 		return nil, err
 	}
+
+	if !exists {
+		return nil, errors.New("element not found")
+	}
+
 	return newRodElement(element), nil
 }
 
