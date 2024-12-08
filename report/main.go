@@ -38,16 +38,8 @@ func (r *Report) Write() {
 	})
 }
 
-func New(appName, appVersion string, enabled bool, formatType string) Report {
-	if !enabled {
-		formatType = "DISABLED"
-	}
-
-	reportFormatter, err := getFormatter(formatType)
-	if err != nil {
-		log.Panic(err)
-	}
-
+func New(appName, appVersion string, formatType string) Report {
+	reportFormatter := getFormatter(formatType)
 	return Report{
 		formatter:  reportFormatter,
 		appName:    appName,
@@ -55,15 +47,12 @@ func New(appName, appVersion string, enabled bool, formatType string) Report {
 	}
 }
 
-func getFormatter(formatType string) (f formatter, err error) {
+func getFormatter(formatType string) formatter {
 	switch formatType {
 	case "html":
-		f = htmlReportFormatter{}
-	case "DISABLED":
-		f = disabledFormatter{}
+		return htmlReportFormatter{}
 	default:
-		return f, fmt.Errorf("'%s' report format not supported", formatType)
+		log.Printf("'%s' report format not supported\n", formatType)
+		return disabledFormatter{}
 	}
-
-	return f, nil
 }

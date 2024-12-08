@@ -14,7 +14,7 @@ type TestSuiteContext struct {
 }
 
 func (fc *TestSuiteContext) InitBrowser(incognitoMode bool) {
-	fc.browser = browser.CreateInstance(fc.headlessMode, fc.slowMotion, incognitoMode)
+	fc.browser = browser.CreateInstance(fc.headlessMode, fc.timeout, fc.slowMotion, incognitoMode)
 }
 
 func (fc *TestSuiteContext) OpenNewPage(url string) {

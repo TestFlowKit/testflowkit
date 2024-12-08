@@ -6,25 +6,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func newReport(enabled bool, formatType string) Report {
-	return New("app", "1.0.0", enabled, formatType)
+func newReport(formatType string) Report {
+	return New("app", "1.0.0", formatType)
 }
-func TestDisabledReportInstantiation(t *testing.T) {
-	report := newReport(false, "")
+func TestReportShouldBeDisabledBecauseReportFormatNotRecognized(t *testing.T) {
+	report := newReport("")
 	_, isDisabled := report.formatter.(disabledFormatter)
 
 	assert.True(t, isDisabled)
 }
 
 func TestHTMLReportInstantiation(t *testing.T) {
-	report := newReport(true, "html")
+	report := newReport("html")
 	_, isHTMLFormatter := report.formatter.(htmlReportFormatter)
 
 	assert.True(t, isHTMLFormatter)
-}
-
-func TestGetReporterPanicBecauseFormatterNotFound(t *testing.T) {
-	assert.Panics(t, func() {
-		newReport(true, "ttt")
-	})
 }

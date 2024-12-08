@@ -24,7 +24,7 @@ func main() {
 		Paths:               []string{cliConfig.GherkinLocation},
 	}
 
-	testReport := report.New(cliConfig.AppName, cliConfig.AppDescription, cliConfig.ReportEnabled, cliConfig.ReportFormat)
+	testReport := report.New(cliConfig.AppName, cliConfig.AppDescription, cliConfig.ReportFormat)
 	testSuite := godog.TestSuite{
 		Name:                 cliConfig.AppName,
 		Options:              &opts,
@@ -50,7 +50,7 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 		})
 	}
 }
-func scenarioInitializer(config config.ClI, testReport *report.Report) func(*godog.ScenarioContext) {
+func scenarioInitializer(config *config.AppConfig, testReport *report.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitializeScenario(sc, config)
 		myCtx := newScenarioCtx()
