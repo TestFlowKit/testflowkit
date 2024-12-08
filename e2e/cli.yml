@@ -1,11 +1,8 @@
 configuration:
-  display_browser: false
   timeout: 10s
   concurrency: 0
   slowMotion: 0s
-  gherkin_location: "e2e/features"  # Chemin vers les fichiers Gherkin
-
-
+  gherkin_location: "e2e/features"
 
 application:
   app_name: "MonApplication"
@@ -13,6 +10,4 @@ application:
   app_version: "1.0.0"
 
 reporting:
-  enable: true
   report_format: "html"
-

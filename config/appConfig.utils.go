@@ -8,15 +8,14 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-type appConfig struct {
+type appDetailsConfig struct {
 	AppName        string `yaml:"app_name"`
 	AppDescription string `yaml:"app_description,omitempty"`
 	AppVersion     string `yaml:"app_version"`
 }
 
 type reportingConfig struct {
-	ReportEnabled bool   `yaml:"enable"`
-	ReportFormat  string `yaml:"report_format"`
+	ReportFormat string `yaml:"report_format"`
 }
 
 type testingConfig struct {
@@ -24,22 +23,16 @@ type testingConfig struct {
 	Tags            string `yaml:"tags"`
 	SlowMotion      string `yaml:"slowMotion"`
 	Parallel        int
-	displayBrowser  bool
+	Headless        bool
 	GherkinLocation string `yaml:"gherkin_location"`
 }
 
 func (c *testingConfig) IsHeadlessModeEnabled() bool {
-	return !c.displayBrowser
-}
-
-func (c *testingConfig) SetDisplayBrowser(val bool) {
-	c.displayBrowser = val
+	return c.Headless
 }
 
 func (c *testingConfig) GetSlowMotion() time.Duration {
-	hasSlowMotion := c.displayBrowser && len(c.SlowMotion) > 0
-
-	if !hasSlowMotion {
+	if c.Headless {
 		return 0
 	}
 
@@ -52,7 +45,7 @@ func (c *testingConfig) GetSlowMotion() time.Duration {
 }
 
 type configType interface {
-	testingConfig | reportingConfig | appConfig
+	testingConfig | reportingConfig | appDetailsConfig
 }
 
 func getConfig[T configType](file, path string, config *T) error {

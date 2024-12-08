@@ -14,7 +14,7 @@ import (
 	"github.com/cucumber/godog"
 )
 
-func InitializeScenario(ctx *godog.ScenarioContext, config config.ClI) {
+func InitializeScenario(ctx *godog.ScenarioContext, config *config.AppConfig) {
 	frontendCtx := common.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
 	allSteps := slices.Concat(form.GetSteps(), keyboard.GetSteps(), navigation.GetSteps(), visual.GetSteps())
 	for _, step := range allSteps {

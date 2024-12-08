@@ -1,83 +1,115 @@
-package config_test
+package config
 
 import (
-	"cucumber/config"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMapAppDetailsConfig(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.InitByFilePath("cli.test.yml")
+func TestShouldInitializeAppConfig(t *testing.T) {
+	appArgs := appArgsConfig{
+		GherkinLocation:    "features",
+		ClIConfigPath:      "cli.yml",
+		FrontendConfigPath: "frontend.yml",
+		Tags:               "tags",
+		Parallel:           10,
+		Timeout:            15 * time.Second,
+		Headless:           true,
+		AppVersion:         "1.0",
+	}
 
-	assert.Equal(t, "MonApplication", cliConfig.AppName)
-	assert.Equal(t, "ma chic app", cliConfig.AppDescription)
-	assert.Equal(t, "1.0.0", cliConfig.AppVersion)
+	appConfigFile := appFileConfig{
+		AppName:         "appName",
+		AppDescription:  "appDescription",
+		Timeout:         "10s",
+		SlowMotion:      "2s",
+		GherkinLocation: "features",
+		reportingConfig: reportingConfig{
+			ReportFormat: "html",
+		},
+	}
+
+	appConfig := InitAppConfig(appArgs, appConfigFile)
+
+	assert.Equal(t, "appName", appConfig.AppName)
+	assert.Equal(t, "appDescription", appConfig.AppDescription)
+	assert.Equal(t, "1.0", appConfig.AppVersion)
+	assert.Equal(t, "html", appConfig.ReportFormat)
+	assert.Equal(t, "15s", appConfig.Timeout)
+	assert.Equal(t, "features", appConfig.GherkinLocation)
+	assert.Equal(t, "tags", appConfig.Tags)
+	assert.Equal(t, 10, appConfig.Parallel)
+	assert.True(t, appConfig.Headless)
+	assert.Equal(t, "2s", appConfig.SlowMotion)
 }
 
-func TestReportingConfig(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.InitByFilePath("cli.test.yml")
+func TestShouldDefineConcurrencyTo0BecauseHeadlessIsDisabled(t *testing.T) {
+	appArgs := appArgsConfig{
+		Parallel: 10,
+		Headless: false,
+	}
 
-	assert.Equal(t, "html", cliConfig.ReportFormat)
-	assert.True(t, cliConfig.ReportEnabled)
+	appConfigFile := appFileConfig{}
+
+	assert.False(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, 0, InitAppConfig(appArgs, appConfigFile).GetConcurrency())
 }
 
-func TestTestingConfig(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.InitByFilePath("cli.test.yml")
+func TestShouldDefineConcurrencyTo10BecauseHeadlessIsEnabled(t *testing.T) {
+	appArgs := appArgsConfig{
+		Parallel: 10,
+		Headless: true,
+	}
 
-	cliConfig.SetDisplayBrowser(true)
+	appConfigFile := appFileConfig{}
 
-	assert.False(t, cliConfig.IsHeadlessModeEnabled())
-	assert.Equal(t, "60s", cliConfig.Timeout)
-	assert.Equal(t, 4, cliConfig.Parallel)
-	assert.Equal(t, "2s", cliConfig.SlowMotion)
-	assert.Equal(t, 2*time.Second, cliConfig.GetSlowMotion())
-	assert.Equal(t, "./features", cliConfig.GherkinLocation)
+	assert.True(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, 10, InitAppConfig(appArgs, appConfigFile).GetConcurrency())
 }
 
-func TestSLowMotionMustBeZeroWhenHeadlessModeEnabled(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.InitByFilePath("cli.test.yml")
+func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
+	appArgs := appArgsConfig{
+		Headless: true,
+	}
 
-	const fileContent = `
-configuration:
-  display_browser: false
-  timeout: 60s
-  slowMotion: 2s
-  concurrency: 4
-  gherkin_location: "./features"  # Chemin vers les fichiers Gherkin
-application:
-  app_name: "MonApplication"
-  app_description: "ma chic app"
-  app_version: "1.0.0"
-reporting:
-  enable: true
-  report_format: "html"  # Options possibles : "html", "json", "xml"
+	appConfigFile := appFileConfig{
+		SlowMotion: "2s",
+	}
 
-
-`
-	cliConfig.InitByFileContent(fileContent)
-
-	assert.True(t, cliConfig.IsHeadlessModeEnabled())
-	assert.Equal(t, time.Duration(0), cliConfig.GetSlowMotion())
+	assert.True(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, time.Duration(0), InitAppConfig(appArgs, appConfigFile).GetSlowMotion())
 }
 
-func TestSetConcurrencyTo1WhenEnableBrowserIsEnabled(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.SetDisplayBrowser(true)
-	cliConfig.Parallel = 10
+func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
+	appArgs := appArgsConfig{
+		Headless: false,
+	}
 
-	assert.Equal(t, 0, cliConfig.GetConcurrency())
+	appConfigFile := appFileConfig{
+		SlowMotion: "20s",
+	}
+
+	assert.False(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, 20*time.Second, InitAppConfig(appArgs, appConfigFile).GetSlowMotion())
 }
 
-func TestGetConcurrencyValueWhenEnableBrowserIsDisabled(t *testing.T) {
-	cliConfig := config.ClI{}
-	cliConfig.SetDisplayBrowser(false)
-	cliConfig.Parallel = 10
+func TestShouldHeadlessModeEnabled(t *testing.T) {
+	appArgs := appArgsConfig{
+		Headless: true,
+	}
 
-	assert.Equal(t, 10, cliConfig.GetConcurrency())
+	appConfigFile := appFileConfig{}
+
+	assert.True(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+}
+
+func TestShouldHeadlessModeDisabled(t *testing.T) {
+	appArgs := appArgsConfig{
+		Headless: false,
+	}
+
+	appConfigFile := appFileConfig{}
+
+	assert.False(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 }
