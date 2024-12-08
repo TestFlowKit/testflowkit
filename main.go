@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	log.Println("Starting tests execution ...")
 	cliConfig := config.Init()
 
 	var opts = godog.Options{
@@ -32,8 +33,9 @@ func main() {
 		ScenarioInitializer:  scenarioInitializer(cliConfig, &testReport),
 	}
 
+	log.Println("Running tests ...")
 	status := testSuite.Run()
-
+	log.Println("Tests execution finished")
 	if status != 0 {
 		log.Fatalf("zero status code expected, %d received", status)
 	}
