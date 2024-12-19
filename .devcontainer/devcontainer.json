@@ -1,0 +1,16 @@
+{
+  "name": "Go EndToolsEnd framework",
+  "dockerFile": "Dockerfile",
+  "onCreateCommand": {
+    "install_dependencies": "go get"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "766b.go-outliner",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
