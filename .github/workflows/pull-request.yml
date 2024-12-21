@@ -7,6 +7,7 @@ on:
 env:
   BRANCH_NAME_REGEX: "^(docs|feat|fix|perf|refactor|revert|style|test|chore)/"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  GO_VERSION: "1.23"
 jobs:
   quality_check:
     name: code_quality
@@ -20,12 +21,12 @@ jobs:
       - name: Setup nodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install commitlint
         run: |
-            yarn init --yes
-            yarn add @commitlint/config-conventional commitlint@latest  validate-branch-name
+          yarn init --yes
+          yarn add @commitlint/config-conventional commitlint@latest  validate-branch-name
 
       - name: Validate PR commits with commitlint
         run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
@@ -36,7 +37,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Install golangci-lint
         run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
@@ -47,3 +48,27 @@ jobs:
       - name: Run unit tests
         run: go test ./...
 
+  e2e_tests:
+    name: e2e tests running
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: launch e2e tests
+        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e
+
+      - name: Get test results
+        if: failure()
+        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
+
+      - name: upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: report.html
+
+      - name: down server container
+        if: always()
+        run: docker compose -f e2e/compose.yml down
