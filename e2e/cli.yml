@@ -1,6 +1,6 @@
 configuration:
-  timeout: 10s
-  concurrency: 0
+  timeout: 15s
+  parralel: 5
   slowMotion: 0s
   gherkin_location: "e2e/features"
 

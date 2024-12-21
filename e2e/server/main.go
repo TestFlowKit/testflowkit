@@ -23,10 +23,16 @@ func main() {
 	}
 	for _, file := range files {
 		http.HandleFunc(fmt.Sprintf("/%s", file), func(w http.ResponseWriter, r *http.Request) {
+			log.Println(r.URL.Path, "requested")
 			filePath := path.Join(dir, fmt.Sprintf("%s.html", file))
 			http.ServeFile(w, r, filePath)
 		})
 	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		const code = 200
+		w.WriteHeader(code)
+	})
 
 	const port = 3000
 	const timeout = 3

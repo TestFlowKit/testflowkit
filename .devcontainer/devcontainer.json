@@ -9,7 +9,8 @@
       "extensions": [
         "golang.go",
         "766b.go-outliner",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "github.vscode-github-actions"
       ]
     }
   }

@@ -1,0 +1,29 @@
+services:
+  server:
+    container_name: server
+    networks:
+      - default
+    build:
+      context: server
+      dockerfile: Dockerfile
+    healthcheck:
+      test: "curl -f http://0.0.0.0:3000"
+      interval: 3s
+      timeout: 2s
+      retries: 3
+
+  e2e:
+    container_name: e2e_tests
+    networks:
+      - default
+    build:
+      context: ../
+      dockerfile: e2e/Dockerfile
+    depends_on:
+      server:
+        condition: service_healthy
+
+         
+networks:
+  default:
+    driver: bridge
