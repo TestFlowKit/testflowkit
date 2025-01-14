@@ -1,6 +1,9 @@
 {
-  "name": "Go EndToolsEnd framework",
+  "name": "Go EToolsE framework",
   "dockerFile": "Dockerfile",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
   "onCreateCommand": {
     "install_dependencies": "go get"
   },
@@ -10,8 +13,11 @@
         "golang.go",
         "766b.go-outliner",
         "ms-azuretools.vscode-docker",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "alexkrechik.cucumberautocomplete",
+        "vue.volar"
       ]
     }
-  }
+  },
+  "forwardPorts": [5173]
 }
