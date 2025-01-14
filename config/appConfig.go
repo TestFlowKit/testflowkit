@@ -25,7 +25,12 @@ func InitAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
 	c.Parallel = args.Parallel
 	c.AppVersion = args.AppVersion
 	c.Headless = args.Headless
-	c.GherkinLocation = args.GherkinLocation
+
+	if args.GherkinLocation == "" {
+		c.GherkinLocation = fileConfig.GherkinLocation
+	} else {
+		c.GherkinLocation = args.GherkinLocation
+	}
 
 	if args.Timeout > 0 {
 		c.Timeout = args.Timeout.String()
