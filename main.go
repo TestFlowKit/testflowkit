@@ -16,28 +16,32 @@ func main() {
 	log.Println("Starting tests execution ...")
 	cliConfig := config.Init()
 
-	var opts = godog.Options{
-		Output:              &buffer.Writer{},
-		Concurrency:         cliConfig.GetConcurrency(),
-		Format:              "pretty",
-		ShowStepDefinitions: false,
-		Tags:                cliConfig.Tags,
-		Paths:               []string{cliConfig.GherkinLocation},
-	}
+	if cliConfig.Mode == config.RunMode {
+		var opts = godog.Options{
+			Output:              &buffer.Writer{},
+			Concurrency:         cliConfig.GetConcurrency(),
+			Format:              "pretty",
+			ShowStepDefinitions: false,
+			Tags:                cliConfig.Tags,
+			Paths:               []string{cliConfig.GherkinLocation},
+		}
 
-	testReport := report.New(cliConfig.AppName, cliConfig.AppDescription, cliConfig.ReportFormat)
-	testSuite := godog.TestSuite{
-		Name:                 cliConfig.AppName,
-		Options:              &opts,
-		TestSuiteInitializer: testSuiteInitializer(&testReport),
-		ScenarioInitializer:  scenarioInitializer(cliConfig, &testReport),
-	}
+		testReport := report.New(cliConfig.AppName, cliConfig.AppDescription, cliConfig.ReportFormat)
+		testSuite := godog.TestSuite{
+			Name:                 cliConfig.AppName,
+			Options:              &opts,
+			TestSuiteInitializer: testSuiteInitializer(&testReport),
+			ScenarioInitializer:  scenarioInitializer(cliConfig, &testReport),
+		}
 
-	log.Println("Running tests ...")
-	status := testSuite.Run()
-	log.Println("Tests execution finished")
-	if status != 0 {
-		log.Fatalf("zero status code expected, %d received", status)
+		log.Println("Running tests ...")
+		status := testSuite.Run()
+		log.Println("Tests execution finished")
+		if status != 0 {
+			log.Fatalf("zero status code expected, %d received", status)
+		}
+	} else {
+		log.Fatalf("unknown mode: %s", cliConfig.Mode)
 	}
 }
 

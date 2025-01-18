@@ -5,15 +5,22 @@ import (
 )
 
 func Init() *AppConfig {
-	argsConfig, fileConfig := getAppArgs(), appFileConfig{}
+	argsConfig := getAppArgs()
 
-	fileConfig.InitByFilePath(argsConfig.ClIConfigPath)
-	FrontConfig{}.init(argsConfig.FrontendConfigPath)
+	return initRunConfig(argsConfig)
+}
+
+func initRunConfig(argsConfig appArgsConfig) *AppConfig {
+	fileConfig := appFileConfig{}
 	appConfig := InitAppConfig(argsConfig, fileConfig)
+	runConfig := argsConfig.Run
+
+	fileConfig.InitByFilePath(runConfig.ClIConfigPath)
+	FrontConfig{}.init(runConfig.FrontendConfigPath)
 
 	log.Println("--- configuration resume ---")
-	log.Println("cli config path: ", argsConfig.ClIConfigPath)
-	log.Println("frontend config path: ", argsConfig.FrontendConfigPath)
+	log.Println("cli config path: ", runConfig.ClIConfigPath)
+	log.Println("frontend config path: ", runConfig.FrontendConfigPath)
 
 	log.Println("app name: ", appConfig.AppName)
 	log.Println("app description: ", appConfig.AppDescription)
@@ -26,8 +33,7 @@ func Init() *AppConfig {
 	log.Println("app test suite timeout: ", appConfig.Timeout)
 	log.Println("app headless mode: ", appConfig.IsHeadlessModeEnabled())
 
-	log.Println("--- configuration resume end ---")
-	log.Println()
+	log.Print("--- configuration resume end ---\n\n")
 
 	return appConfig
 }

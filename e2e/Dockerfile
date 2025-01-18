@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o cli
+RUN go build -o etoolse
 
 
 
@@ -16,8 +16,8 @@ WORKDIR /app
 
 COPY ./e2e .
 
-COPY --from=build /app/cli .
+COPY --from=build /app/etoolse .
 
 RUN apk add --no-cache chromium
 
-ENTRYPOINT /app/cli -l ./features -c ./cli.yml -f ./frontend.yml --timeout 10s
+ENTRYPOINT /app/etoolse run -l ./features -c ./cli.yml -f ./frontend.yml --timeout 10s

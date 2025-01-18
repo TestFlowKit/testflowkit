@@ -9,7 +9,9 @@ import (
 
 func TestTestsTimeOutShouldBeOverridenByArgs(t *testing.T) {
 	args := appArgsConfig{
-		Timeout: 15 * time.Second,
+		Run: &RunCmd{
+			Timeout: 15 * time.Second,
+		},
 	}
 
 	file := appFileConfig{
@@ -30,7 +32,11 @@ func TestTestsTimeOutShouldBeTheSameThanFile(t *testing.T) {
 }
 
 func TestGherkinLocationShouldBeOverridenByCLIFileConfig(t *testing.T) {
-	args := appArgsConfig{GherkinLocation: "new_path"}
+	args := appArgsConfig{
+		Run: &RunCmd{
+			GherkinLocation: "new_path",
+		},
+	}
 
 	fileConfig := appFileConfig{
 		GherkinLocation: "old_path",

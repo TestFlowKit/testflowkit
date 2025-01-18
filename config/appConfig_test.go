@@ -9,14 +9,16 @@ import (
 
 func TestShouldInitializeAppConfig(t *testing.T) {
 	appArgs := appArgsConfig{
-		GherkinLocation:    "features",
-		ClIConfigPath:      "cli.yml",
-		FrontendConfigPath: "frontend.yml",
-		Tags:               "tags",
-		Parallel:           10,
-		Timeout:            15 * time.Second,
-		Headless:           true,
-		AppVersion:         "1.0",
+		Run: &RunCmd{
+			GherkinLocation:    "features",
+			ClIConfigPath:      "cli.yml",
+			FrontendConfigPath: "frontend.yml",
+			Tags:               "tags",
+			Parallel:           10,
+			Timeout:            15 * time.Second,
+			Headless:           true,
+			AppVersion:         "1.0",
+		},
 	}
 
 	appConfigFile := appFileConfig{
@@ -46,8 +48,10 @@ func TestShouldInitializeAppConfig(t *testing.T) {
 
 func TestShouldDefineConcurrencyTo0BecauseHeadlessIsDisabled(t *testing.T) {
 	appArgs := appArgsConfig{
-		Parallel: 10,
-		Headless: false,
+		Run: &RunCmd{
+			Parallel: 10,
+			Headless: false,
+		},
 	}
 
 	appConfigFile := appFileConfig{}
@@ -58,8 +62,10 @@ func TestShouldDefineConcurrencyTo0BecauseHeadlessIsDisabled(t *testing.T) {
 
 func TestShouldDefineConcurrencyTo10BecauseHeadlessIsEnabled(t *testing.T) {
 	appArgs := appArgsConfig{
-		Parallel: 10,
-		Headless: true,
+		Run: &RunCmd{
+			Parallel: 10,
+			Headless: true,
+		},
 	}
 
 	appConfigFile := appFileConfig{}
@@ -70,7 +76,9 @@ func TestShouldDefineConcurrencyTo10BecauseHeadlessIsEnabled(t *testing.T) {
 
 func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
 	appArgs := appArgsConfig{
-		Headless: true,
+		Run: &RunCmd{
+			Headless: true,
+		},
 	}
 
 	appConfigFile := appFileConfig{
@@ -83,7 +91,9 @@ func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
 
 func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
 	appArgs := appArgsConfig{
-		Headless: false,
+		Run: &RunCmd{
+			Headless: false,
+		},
 	}
 
 	appConfigFile := appFileConfig{
@@ -96,7 +106,9 @@ func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
 
 func TestShouldHeadlessModeEnabled(t *testing.T) {
 	appArgs := appArgsConfig{
-		Headless: true,
+		Run: &RunCmd{
+			Headless: true,
+		},
 	}
 
 	appConfigFile := appFileConfig{}
@@ -106,7 +118,9 @@ func TestShouldHeadlessModeEnabled(t *testing.T) {
 
 func TestShouldHeadlessModeDisabled(t *testing.T) {
 	appArgs := appArgsConfig{
-		Headless: false,
+		Run: &RunCmd{
+			Headless: false,
+		},
 	}
 
 	appConfigFile := appFileConfig{}

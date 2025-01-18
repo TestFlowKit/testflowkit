@@ -1,6 +1,7 @@
 package config
 
 type AppConfig struct {
+	Mode Mode
 	appDetailsConfig
 	reportingConfig
 	testingConfig
@@ -14,29 +15,39 @@ func (c *AppConfig) GetConcurrency() int {
 }
 
 func InitAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
-	c := AppConfig{}
+	c := AppConfig{
+		appDetailsConfig: appDetailsConfig{
+			AppName:        fileConfig.AppName,
+			AppDescription: fileConfig.AppDescription,
+		},
+		testingConfig: testingConfig{
+			GherkinLocation: fileConfig.GherkinLocation,
+			Timeout:         fileConfig.Timeout,
+		},
+	}
 
-	c.AppName = fileConfig.AppName
-	c.AppDescription = fileConfig.AppDescription
 	c.ReportFormat = fileConfig.ReportFormat
 	c.SlowMotion = fileConfig.SlowMotion
 
-	c.Tags = args.Tags
-	c.Parallel = args.Parallel
-	c.AppVersion = args.AppVersion
-	c.Headless = args.Headless
-
-	if args.GherkinLocation == "" {
-		c.GherkinLocation = fileConfig.GherkinLocation
-	} else {
-		c.GherkinLocation = args.GherkinLocation
-	}
-
-	if args.Timeout > 0 {
-		c.Timeout = args.Timeout.String()
-	} else {
-		c.Timeout = fileConfig.Timeout
+	if args.Run != nil {
+		fillConfigForRunCmd(&c, *args.Run)
 	}
 
 	return &c
+}
+
+func fillConfigForRunCmd(c *AppConfig, runArgs RunCmd) {
+	c.Mode = "run"
+	c.Tags = runArgs.Tags
+	c.Parallel = runArgs.Parallel
+	c.AppVersion = runArgs.AppVersion
+	c.Headless = runArgs.Headless
+
+	if runArgs.GherkinLocation != "" {
+		c.GherkinLocation = runArgs.GherkinLocation
+	}
+
+	if runArgs.Timeout > 0 {
+		c.Timeout = runArgs.Timeout.String()
+	}
 }
