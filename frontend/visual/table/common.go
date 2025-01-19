@@ -1,8 +1,8 @@
 package table
 
 import (
-	"cucumber/frontend/common/browser"
 	"errors"
+	"etoolse/frontend/common/browser"
 	"fmt"
 	"log"
 	"slices"

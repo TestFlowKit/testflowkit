@@ -1,7 +1,7 @@
 package browser
 
 import (
-	"cucumber/config"
+	"etoolse/config"
 	"log"
 )
 

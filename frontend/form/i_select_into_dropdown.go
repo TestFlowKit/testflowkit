@@ -1,9 +1,9 @@
 package form
 
 import (
-	"cucumber/frontend/common"
-	"cucumber/frontend/common/browser"
-	"cucumber/utils"
+	"etoolse/frontend/common"
+	"etoolse/frontend/common/browser"
+	"etoolse/utils"
 	"fmt"
 )
 

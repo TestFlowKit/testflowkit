@@ -1,6 +1,6 @@
 package keyboard
 
-import "cucumber/frontend/common"
+import "etoolse/frontend/common"
 
 type keyboardSteps struct {
 }

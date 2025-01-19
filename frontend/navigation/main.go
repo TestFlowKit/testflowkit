@@ -1,7 +1,7 @@
 package navigation
 
 import (
-	"cucumber/frontend/common"
+	"etoolse/frontend/common"
 )
 
 type navigation struct {

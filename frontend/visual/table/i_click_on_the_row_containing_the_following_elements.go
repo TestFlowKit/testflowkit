@@ -1,7 +1,7 @@
 package table
 
 import (
-	"cucumber/frontend/common"
+	"etoolse/frontend/common"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"

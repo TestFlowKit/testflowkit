@@ -1,8 +1,8 @@
 package navigation
 
 import (
-	"cucumber/config"
-	"cucumber/frontend/common"
+	"etoolse/config"
+	"etoolse/frontend/common"
 	"fmt"
 	"strings"
 )

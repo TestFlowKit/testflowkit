@@ -1,7 +1,7 @@
 package common
 
 import (
-	"cucumber/frontend/common/browser"
+	"etoolse/frontend/common/browser"
 	"log"
 	"time"
 )

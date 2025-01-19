@@ -1,15 +1,15 @@
 package frontend
 
 import (
-	"cucumber/config"
+	"etoolse/config"
 	"slices"
 
-	"cucumber/frontend/common"
-	"cucumber/frontend/form"
-	"cucumber/frontend/keyboard"
-	"cucumber/frontend/navigation"
-	"cucumber/frontend/visual"
-	"cucumber/utils"
+	"etoolse/frontend/common"
+	"etoolse/frontend/form"
+	"etoolse/frontend/keyboard"
+	"etoolse/frontend/navigation"
+	"etoolse/frontend/visual"
+	"etoolse/utils"
 
 	"github.com/cucumber/godog"
 )

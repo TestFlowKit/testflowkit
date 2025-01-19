@@ -1,8 +1,8 @@
 package visual
 
 import (
-	"cucumber/frontend/common"
-	"cucumber/frontend/visual/table"
+	"etoolse/frontend/common"
+	"etoolse/frontend/visual/table"
 	"slices"
 )
 

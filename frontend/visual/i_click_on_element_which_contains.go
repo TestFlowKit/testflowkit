@@ -1,7 +1,7 @@
 package visual
 
 import (
-	"cucumber/frontend/common"
+	"etoolse/frontend/common"
 	"fmt"
 )
 
