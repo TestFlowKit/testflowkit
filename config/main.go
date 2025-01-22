@@ -6,6 +6,20 @@ import (
 
 func Init() *AppConfig {
 	argsConfig := getAppArgs()
+	if argsConfig.Run != nil {
+		return initRunConfig(argsConfig)
+	}
+
+	if argsConfig.Init != nil {
+		return &AppConfig{
+			Mode: InitMode,
+			appDetailsConfig: appDetailsConfig{
+				AppName:        argsConfig.Init.AppName,
+				AppDescription: argsConfig.Init.AppDescription,
+				AppVersion:     argsConfig.Init.AppVersion,
+			},
+		}
+	}
 
 	return initRunConfig(argsConfig)
 }

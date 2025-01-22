@@ -22,3 +22,5 @@ go.work.sum
 report.html
 cover
 **/.DS_Store
+frontend.yml
+cli.yml

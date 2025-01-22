@@ -1,0 +1,13 @@
+configuration:
+  timeout: 15s
+  parralel: 1
+  slowMotion: 5s
+  gherkin_location: "features"
+
+application:
+  app_name: "{{.AppName}}"
+  app_description: "{{.AppDescription}}"
+  app_version: "{{.AppVersion}}"
+
+reporting:
+  report_format: "html"

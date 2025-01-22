@@ -17,8 +17,15 @@ type RunCmd struct {
 	AppVersion         string        `arg:"-v,--version" help:"app version" default:"1.0"`
 }
 
+type InitCmd struct {
+	AppName        string `arg:"required" help:"app name"`
+	AppDescription string `arg:"-d,--app-description" help:"app description" default:"Cool app"`
+	AppVersion     string `arg:"-v,--version" help:"app version" default:"1.0"`
+}
+
 type appArgsConfig struct {
-	Run *RunCmd `arg:"subcommand:run" help:"run tests"`
+	Run  *RunCmd  `arg:"subcommand:run" help:"run tests"`
+	Init *InitCmd `arg:"subcommand:init" help:"init cli config"`
 }
 
 func getAppArgs() appArgsConfig {
@@ -31,7 +38,7 @@ func getAppArgs() appArgsConfig {
 }
 
 func validateSubcommand(args appArgsConfig) {
-	if args.Run == nil {
+	if args.Run == nil && args.Init == nil {
 		panic("subcommand is required")
 	}
 }

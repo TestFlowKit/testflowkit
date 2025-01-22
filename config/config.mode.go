@@ -3,5 +3,6 @@ package config
 type Mode string
 
 const (
-	RunMode Mode = "run"
+	RunMode  Mode = "run"
+	InitMode Mode = "init"
 )
