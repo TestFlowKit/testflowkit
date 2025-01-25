@@ -47,7 +47,12 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 		})
 
 		suiteContext.AfterSuite(func() {
-			testReport.Write()
+			if testReport.HasScenarios() {
+				testReport.Write()
+				log.Println("Tests execution finished")
+			} else {
+				log.Println("No scenarios executed")
+			}
 		})
 	}
 }

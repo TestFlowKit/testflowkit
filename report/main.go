@@ -38,6 +38,10 @@ func (r *Report) Write() {
 	})
 }
 
+func (r *Report) HasScenarios() bool {
+	return len(r.scenarios) > 0
+}
+
 func New(appName, appVersion string, formatType string) Report {
 	reportFormatter := getFormatter(formatType)
 	return Report{
