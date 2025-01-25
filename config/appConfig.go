@@ -14,7 +14,7 @@ func (c *AppConfig) GetConcurrency() int {
 	return c.Parallel
 }
 
-func InitAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
+func initAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
 	c := AppConfig{
 		appDetailsConfig: appDetailsConfig{
 			AppName:        fileConfig.AppName,
@@ -31,6 +31,18 @@ func InitAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
 
 	if args.Run != nil {
 		fillConfigForRunCmd(&c, *args.Run)
+	}
+
+	if c.GherkinLocation == "" {
+		c.GherkinLocation = defaultCliConfigPath
+	}
+
+	if c.ReportFormat == "" {
+		c.ReportFormat = defaultReportFormat
+	}
+
+	if c.Timeout == "" {
+		c.Timeout = defaultTimeout
 	}
 
 	return &c

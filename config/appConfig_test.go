@@ -32,7 +32,7 @@ func TestShouldInitializeAppConfig(t *testing.T) {
 		},
 	}
 
-	appConfig := InitAppConfig(appArgs, appConfigFile)
+	appConfig := initAppConfig(appArgs, appConfigFile)
 
 	assert.Equal(t, "appName", appConfig.AppName)
 	assert.Equal(t, "appDescription", appConfig.AppDescription)
@@ -56,8 +56,8 @@ func TestShouldDefineConcurrencyTo0BecauseHeadlessIsDisabled(t *testing.T) {
 
 	appConfigFile := appFileConfig{}
 
-	assert.False(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
-	assert.Equal(t, 0, InitAppConfig(appArgs, appConfigFile).GetConcurrency())
+	assert.False(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, 0, initAppConfig(appArgs, appConfigFile).GetConcurrency())
 }
 
 func TestShouldDefineConcurrencyTo10BecauseHeadlessIsEnabled(t *testing.T) {
@@ -70,8 +70,8 @@ func TestShouldDefineConcurrencyTo10BecauseHeadlessIsEnabled(t *testing.T) {
 
 	appConfigFile := appFileConfig{}
 
-	assert.True(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
-	assert.Equal(t, 10, InitAppConfig(appArgs, appConfigFile).GetConcurrency())
+	assert.True(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, 10, initAppConfig(appArgs, appConfigFile).GetConcurrency())
 }
 
 func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
@@ -85,8 +85,8 @@ func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
 		SlowMotion: "2s",
 	}
 
-	assert.True(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
-	assert.Equal(t, time.Duration(0), InitAppConfig(appArgs, appConfigFile).GetSlowMotion())
+	assert.True(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, time.Duration(0), initAppConfig(appArgs, appConfigFile).GetSlowMotion())
 }
 
 func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
@@ -100,8 +100,8 @@ func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
 		SlowMotion: "20s",
 	}
 
-	assert.False(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
-	assert.Equal(t, 20*time.Second, InitAppConfig(appArgs, appConfigFile).GetSlowMotion())
+	assert.False(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.Equal(t, 20*time.Second, initAppConfig(appArgs, appConfigFile).GetSlowMotion())
 }
 
 func TestShouldHeadlessModeEnabled(t *testing.T) {
@@ -113,7 +113,7 @@ func TestShouldHeadlessModeEnabled(t *testing.T) {
 
 	appConfigFile := appFileConfig{}
 
-	assert.True(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.True(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 }
 
 func TestShouldHeadlessModeDisabled(t *testing.T) {
@@ -125,5 +125,5 @@ func TestShouldHeadlessModeDisabled(t *testing.T) {
 
 	appConfigFile := appFileConfig{}
 
-	assert.False(t, InitAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
+	assert.False(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 }

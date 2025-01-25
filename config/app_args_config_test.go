@@ -18,7 +18,7 @@ func TestTestsTimeOutShouldBeOverridenByArgs(t *testing.T) {
 		Timeout: "10s",
 	}
 
-	assert.Equal(t, "15s", InitAppConfig(args, file).Timeout)
+	assert.Equal(t, "15s", initAppConfig(args, file).Timeout)
 }
 
 func TestTestsTimeOutShouldBeTheSameThanFile(t *testing.T) {
@@ -28,7 +28,7 @@ func TestTestsTimeOutShouldBeTheSameThanFile(t *testing.T) {
 		Timeout: "10s",
 	}
 
-	assert.Equal(t, "10s", InitAppConfig(args, file).Timeout)
+	assert.Equal(t, "10s", initAppConfig(args, file).Timeout)
 }
 
 func TestGherkinLocationShouldBeOverridenByCLIFileConfig(t *testing.T) {
@@ -42,5 +42,5 @@ func TestGherkinLocationShouldBeOverridenByCLIFileConfig(t *testing.T) {
 		GherkinLocation: "old_path",
 	}
 
-	assert.Equal(t, "new_path", InitAppConfig(args, fileConfig).GherkinLocation)
+	assert.Equal(t, "new_path", initAppConfig(args, fileConfig).GherkinLocation)
 }
