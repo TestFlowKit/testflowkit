@@ -25,9 +25,3 @@ type appArgsConfig struct {
 	Run  *RunCmd  `arg:"subcommand:run" help:"run tests"`
 	Init *InitCmd `arg:"subcommand:init" help:"init cli config"`
 }
-
-func validateSubcommand(args appArgsConfig) {
-	if args.Run == nil && args.Init == nil {
-		panic("subcommand is required")
-	}
-}

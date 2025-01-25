@@ -34,7 +34,6 @@ func Run(appConfig *config.AppConfig) {
 
 	log.Println("Running tests ...")
 	status := testSuite.Run()
-	log.Println("Tests execution finished")
 	if status != 0 {
 		log.Fatalf("zero status code expected, %d received", status)
 	}

@@ -10,7 +10,9 @@ import (
 func Init() *AppConfig {
 	argsConfig := getAppArgs()
 	if argsConfig.Run != nil {
-		return initRunConfig(argsConfig)
+		fileConfig := getFileConfig(argsConfig.Run.ClIConfigPath)
+		FrontConfig{}.init(argsConfig.Run.FrontendConfigPath)
+		return initRunConfig(argsConfig, fileConfig)
 	}
 
 	if argsConfig.Init != nil {
@@ -24,11 +26,7 @@ func Init() *AppConfig {
 		}
 	}
 
-	fileConfig := getFileConfig(argsConfig.Run.ClIConfigPath)
-
-	FrontConfig{}.init(argsConfig.Run.FrontendConfigPath)
-
-	return initRunConfig(argsConfig, fileConfig)
+	return nil
 }
 
 func getFileConfig(filePath string) appFileConfig {
@@ -45,8 +43,5 @@ func getFileConfig(filePath string) appFileConfig {
 func getAppArgs() appArgsConfig {
 	args := appArgsConfig{}
 	arg.MustParse(&args)
-
-	validateSubcommand(args)
-
 	return args
 }

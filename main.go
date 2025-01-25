@@ -8,6 +8,9 @@ import (
 
 func main() {
 	cliConfig := config.Init()
+	if cliConfig == nil {
+		log.Fatal("no mode specified")
+	}
 
 	modes := map[config.Mode]func(*config.AppConfig){
 		config.RunMode:  cli.Run,
