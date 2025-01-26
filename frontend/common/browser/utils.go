@@ -3,6 +3,7 @@ package browser
 import (
 	"etoolse/config"
 	"log"
+	"sync"
 )
 
 var fc = config.FrontConfig{}
@@ -16,17 +17,35 @@ func GetElement(page Page, label string) (Element, error) {
 }
 
 func GetElementBySelectors(page Page, potentialSelectors []string) Element {
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	var foundElement Element
+
 	ch := make(chan Element, 1)
 	defer close(ch)
 
 	for _, selector := range potentialSelectors {
+		wg.Add(1)
+
 		go func() {
-			element, _ := page.GetOneBySelector(selector)
-			ch <- element
+			defer wg.Done()
+
+			element, err := page.GetOneBySelector(selector)
+			if err != nil {
+				log.Println("no element found with selector ", selector)
+				return
+			}
+			mu.Lock()
+			if foundElement == nil {
+				foundElement = element
+			}
+			mu.Unlock()
 		}()
 	}
 
-	return <-ch
+	wg.Wait()
+
+	return foundElement
 }
 
 func GetActiveSelector(page Page, potentialSelectors []string) string {
