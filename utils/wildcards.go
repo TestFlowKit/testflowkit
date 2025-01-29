@@ -11,7 +11,7 @@ const (
 	StringID       WildcardID = "{string}"
 	NumberID       WildcardID = "{number}"
 	NumberWildcard Wildcard   = `(\d+)`
-	StringWildcard Wildcard   = `([^"]*)`
+	StringWildcard Wildcard   = `"?([^"]*)"?`
 )
 
 var wildcards = map[WildcardID]Wildcard{

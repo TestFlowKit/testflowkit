@@ -9,7 +9,7 @@ import (
 
 func (s steps) dropdownHaveValuesSelected() common.FrontStep {
 	return common.FrontStep{
-		Sentences: []string{`^the {string} dropdown should have "{string}" selected$`},
+		Sentences: []string{`^the {string} dropdown should have {string} selected$`},
 		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 			return func(dropdownId, optionLabels string) error {
 				selector, err := config.FrontConfig{}.GetHTMLElementSelectors(fmt.Sprintf("%s_dropdown", dropdownId))

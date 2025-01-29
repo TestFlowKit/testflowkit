@@ -8,7 +8,7 @@ import (
 
 func (s steps) iShouldSeeOnPage() common.FrontStep {
 	return common.FrontStep{
-		Sentences: []string{`^I should see "{string}" on the page$`},
+		Sentences: []string{`^I should see {string} on the page$`},
 		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 			return func(word string) error {
 				elt, err := ctx.GetCurrentPage().GetOneBySelector("body")

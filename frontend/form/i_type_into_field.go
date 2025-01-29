@@ -7,7 +7,7 @@ import (
 
 func (s steps) iTypeXXXIntoInput() common.FrontStep {
 	return common.FrontStep{
-		Sentences: []string{`^I type "{string}" into the {string}`},
+		Sentences: []string{`^I type {string} into the {string}`},
 		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 			return func(text, inputLabel string) error {
 				input, err := browser.GetElement(ctx.GetCurrentPage(), inputLabel)

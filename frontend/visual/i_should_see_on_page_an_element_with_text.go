@@ -8,7 +8,7 @@ import (
 func (s steps) iShouldSeeElementWitchContains() common.FrontStep {
 	return common.FrontStep{
 		Sentences: []string{
-			`^I should see a (link|button|element) which contains "{string}"$`,
+			`^I should see a (link|button|element) which contains {string}$`,
 		},
 		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
 			return func(elementLabel, text string) error {
