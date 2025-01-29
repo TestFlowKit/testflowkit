@@ -3,6 +3,8 @@ package config
 import (
 	"slices"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func setup(_ *testing.T) *FrontConfig {
@@ -34,4 +36,23 @@ func TestGetElementSelectors(t *testing.T) {
 	if selectors, _ := config.GetHTMLElementSelectors("login"); !slices.Equal(selectors, expected) {
 		t.Errorf("error ")
 	}
+}
+
+func TestGetBaseUrl(t *testing.T) {
+	config := setup(t)
+
+	expected := "http://etoole.test"
+	assert.Equal(t, expected, config.getBaseURL())
+}
+
+func TestFFormatPageUrlWithPath(t *testing.T) {
+	config := setup(t)
+	pageURL, _ := config.formatPageURL("/home")
+	assert.Equal(t, "http://etoole.test/home", pageURL)
+}
+
+func TestFFormatPageUrlWithUrl(t *testing.T) {
+	config := setup(t)
+	pageURL, _ := config.formatPageURL("http://home.com/home")
+	assert.Equal(t, "http://home.com/home", pageURL)
 }

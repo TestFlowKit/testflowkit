@@ -9,3 +9,7 @@ global:
 
     pages:
       home: "https://google.com"
+      login: "login"
+
+    base_url: "http://etoole.test"
+

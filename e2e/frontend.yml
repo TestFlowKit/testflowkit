@@ -14,8 +14,10 @@ global:
       - "#textarea"
 
   pages:
-    form_e2e: "http://server:3000/form"
+    form_e2e: "form"
     google: "https://www.google.com"
-    visual_e2e: "http://server:3000/visual"
-    table_e2e: "http://server:3000/table"
-    details_e2e: "http://server:3000/details"
+    visual_e2e: "visual"
+    table_e2e: "/table"
+    details_e2e: "/details"
+
+  base_url: "http://server:3000"

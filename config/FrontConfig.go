@@ -1,8 +1,10 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"strings"
 
@@ -10,6 +12,9 @@ import (
 )
 
 var content string
+
+const pagesYamlKey = "$.global.pages"
+const elementsYamlKey = "$.global.elements"
 
 type FrontConfig struct{}
 
@@ -27,14 +32,49 @@ func (c FrontConfig) init(filePath string) {
 
 func (c FrontConfig) GetPageURL(page string) (string, error) {
 	page = c.wildcardToKey(page)
-	var pageURL string
-	path, err := yaml.PathString(fmt.Sprintf("$.global.pages.%s", page))
+
+	path, err := yaml.PathString(fmt.Sprintf("%s.%s", pagesYamlKey, page))
 	if err != nil {
 		return "", err
 	}
 
+	var pageURL string
 	err = path.Read(strings.NewReader(content), &pageURL)
-	return pageURL, err
+	if err != nil {
+		return "", errors.New("page not found in config")
+	}
+
+	return c.formatPageURL(pageURL)
+}
+
+func (c FrontConfig) formatPageURL(pathOrURL string) (string, error) {
+	parsedURL, err := url.Parse(pathOrURL)
+	if err != nil {
+		return "", err
+	}
+
+	if parsedURL.Host == "" {
+		pageUR, _ := url.JoinPath(c.getBaseURL(), pathOrURL)
+		return pageUR, nil
+	}
+
+	return pathOrURL, err
+}
+
+func (c FrontConfig) getBaseURL() string {
+	path, err := yaml.PathString("$.global.base_url")
+	if err != nil {
+		log.Panic("base_url path format error")
+	}
+
+	var baseURL string
+	err = path.Read(strings.NewReader(content), &baseURL)
+	if err != nil {
+		log.Println("base_url not found in config")
+		return ""
+	}
+
+	return baseURL
 }
 
 func (c FrontConfig) GetHTMLElementSelectors(name string) ([]string, error) {
@@ -42,7 +82,7 @@ func (c FrontConfig) GetHTMLElementSelectors(name string) ([]string, error) {
 
 	name = c.wildcardToKey(name)
 
-	path, err := yaml.PathString(fmt.Sprintf("$.global.elements.%s", name))
+	path, err := yaml.PathString(fmt.Sprintf("%s.%s", elementsYamlKey, name))
 	if err == nil {
 		err = path.Read(strings.NewReader(content), &selectors)
 	}
