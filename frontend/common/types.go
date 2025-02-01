@@ -1,9 +1,8 @@
 package common
 
-type FrontStepDefinition = any
-type FrontStepDefinitionClosure = func(*TestSuiteContext) FrontStepDefinition
+import "github.com/cucumber/godog"
 
-type FrontStep struct {
-	Sentences  []string
-	Definition FrontStepDefinitionClosure
+type stepSupportedTypes interface {
+	// Add supported types here
+	string | int | float64 | bool | *godog.Table
 }

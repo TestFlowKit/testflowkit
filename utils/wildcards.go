@@ -25,3 +25,7 @@ func ConvertWildcards(current string) string {
 	}
 	return current
 }
+
+func WildcardToKey(label string) string {
+	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
+}

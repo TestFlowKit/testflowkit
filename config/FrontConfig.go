@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"etoolse/utils"
 	"fmt"
 	"log"
 	"net/url"
@@ -31,7 +32,7 @@ func (c FrontConfig) init(filePath string) {
 }
 
 func (c FrontConfig) GetPageURL(page string) (string, error) {
-	page = c.wildcardToKey(page)
+	page = utils.WildcardToKey(page)
 
 	path, err := yaml.PathString(fmt.Sprintf("%s.%s", pagesYamlKey, page))
 	if err != nil {
@@ -80,7 +81,7 @@ func (c FrontConfig) getBaseURL() string {
 func (c FrontConfig) GetHTMLElementSelectors(name string) ([]string, error) {
 	var selectors []string
 
-	name = c.wildcardToKey(name)
+	name = utils.WildcardToKey(name)
 
 	path, err := yaml.PathString(fmt.Sprintf("%s.%s", elementsYamlKey, name))
 	if err == nil {
@@ -91,8 +92,4 @@ func (c FrontConfig) GetHTMLElementSelectors(name string) ([]string, error) {
 		return selectors, fmt.Errorf("no selectors found for %s", name)
 	}
 	return selectors, err
-}
-
-func (c FrontConfig) wildcardToKey(label string) string {
-	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
 }
