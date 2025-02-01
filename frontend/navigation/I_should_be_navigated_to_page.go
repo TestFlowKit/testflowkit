@@ -27,6 +27,13 @@ func (n navigation) iShouldBeNavigatedToPage() common.FrontStep {
 				return fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
 			}
 		},
-		nil,
+		func(pageName string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			if !config.IsPageDefined(pageName) {
+				vc.AddMissingPage(pageName)
+			}
+
+			return vc
+		},
 	)
 }

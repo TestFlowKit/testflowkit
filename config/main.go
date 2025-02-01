@@ -15,6 +15,15 @@ func Init() *AppConfig {
 		return initRunConfig(argsConfig, fileConfig)
 	}
 
+	if argsConfig.Validate != nil {
+		fileConfig := getFileConfig(argsConfig.Validate.ClIConfigPath)
+		FrontConfig{}.init(argsConfig.Validate.FrontendConfigPath)
+		curr := initAppConfig(argsConfig, fileConfig)
+		curr.Tags = argsConfig.Validate.Tags
+		curr.Mode = ValidationMode
+		return curr
+	}
+
 	if argsConfig.Init != nil {
 		return &AppConfig{
 			Mode: InitMode,

@@ -1,6 +1,7 @@
 package form
 
 import (
+	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
 	"fmt"
@@ -23,6 +24,13 @@ func (s steps) theFieldShouldContains() common.FrontStep {
 				return fmt.Errorf("field should be contains %s but contains %s", text, input.TextContent())
 			}
 		},
-		nil,
+		func(fieldId, _ string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			if !config.IsElementDefined(fieldId) {
+				vc.AddMissingElement(fieldId)
+			}
+
+			return vc
+		},
 	)
 }

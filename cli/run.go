@@ -57,7 +57,7 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 }
 func scenarioInitializer(config *config.AppConfig, testReport *report.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
-		frontend.InitializeScenario(sc, config)
+		frontend.InitTestRunnerScenarios(sc, config)
 		myCtx := newScenarioCtx()
 		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
 		sc.StepContext().After(afterStepHookInitializer(&myCtx))

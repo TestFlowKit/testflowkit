@@ -1,6 +1,7 @@
 package form
 
 import (
+	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
 )
@@ -17,6 +18,13 @@ func (s steps) iTypeXXXIntoInput() common.FrontStep {
 				return input.Input(text)
 			}
 		},
-		nil,
+		func(_, inputLabel string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			if !config.IsElementDefined(inputLabel) {
+				vc.AddMissingElement(inputLabel)
+			}
+
+			return vc
+		},
 	)
 }

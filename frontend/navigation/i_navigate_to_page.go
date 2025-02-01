@@ -20,6 +20,13 @@ func (n navigation) iNavigateToPage() common.FrontStep {
 				return nil
 			}
 		},
-		nil,
+		func(page string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			if !config.IsPageDefined(page) {
+				vc.AddMissingPage(page)
+			}
+
+			return vc
+		},
 	)
 }

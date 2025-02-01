@@ -1,6 +1,7 @@
 package form
 
 import (
+	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
 	"fmt"
@@ -27,9 +28,20 @@ func (s steps) checkCheckboxStatus() common.FrontStep {
 		}
 	}
 
+	validator := func(checkboxId, _ string) common.ValidationErrors {
+		vc := common.ValidationErrors{}
+		checkboxLabel := formatVar(checkboxId)
+
+		if !config.IsElementDefined(checkboxLabel) {
+			vc.AddMissingElement(checkboxLabel)
+		}
+
+		return vc
+	}
+
 	return common.NewStepWithTwoVariables(
 		[]string{`^the {string} checkbox should be (checked|unchecked)`},
 		definition,
-		nil,
+		validator,
 	)
 }

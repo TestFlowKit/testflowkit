@@ -21,7 +21,15 @@ type InitCmd struct {
 	AppVersion     string `arg:"-v,--version" help:"app version" default:"1.0"`
 }
 
+type ValidateCmd struct {
+	GherkinLocation    string `arg:"-l,--location" help:"path to gherkin files"`
+	ClIConfigPath      string `arg:"-c,--config" help:"app config path" default:"cli.yml"`
+	FrontendConfigPath string `arg:"-f,--front-config" help:"front tests config path" default:"frontend.yml"`
+	Tags               string `arg:"-t,--tags" help:"tags"`
+}
+
 type appArgsConfig struct {
-	Run  *RunCmd  `arg:"subcommand:run" help:"run tests"`
-	Init *InitCmd `arg:"subcommand:init" help:"init cli config"`
+	Run      *RunCmd      `arg:"subcommand:run" help:"run tests"`
+	Init     *InitCmd     `arg:"subcommand:init" help:"init cli config"`
+	Validate *ValidateCmd `arg:"subcommand:validate" help:"validate gherkin files"`
 }

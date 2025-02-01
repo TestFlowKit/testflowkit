@@ -1,6 +1,7 @@
 package form
 
 import (
+	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
 	"etoolse/utils"
@@ -24,6 +25,14 @@ func (s steps) iSelectXXXIntoDropdown() common.FrontStep {
 				return input.Select(utils.String{}.SplitAndTrim(options, ","))
 			}
 		},
-		nil,
+		func(_, dropdownId string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			label := formatVar(dropdownId)
+			if !config.IsElementDefined(label) {
+				vc.AddMissingElement(label)
+			}
+
+			return vc
+		},
 	)
 }

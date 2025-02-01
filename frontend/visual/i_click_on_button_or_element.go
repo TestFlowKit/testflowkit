@@ -1,6 +1,7 @@
 package visual
 
 import (
+	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
 )
@@ -17,6 +18,12 @@ func (s steps) iClickOn() common.FrontStep {
 				return element.Click()
 			}
 		},
-		nil,
+		func(label string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			if !config.IsElementDefined(label) {
+				vc.AddMissingElement(label)
+			}
+			return vc
+		},
 	)
 }

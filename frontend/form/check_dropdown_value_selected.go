@@ -33,6 +33,14 @@ func (s steps) dropdownHaveValuesSelected() common.FrontStep {
 				return fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
 			}
 		},
-		nil,
+		func(dropdownId, _ string) common.ValidationErrors {
+			vErr := common.ValidationErrors{}
+			label := formatVar(dropdownId)
+			if !config.IsElementDefined(label) {
+				vErr.AddMissingElement(label)
+			}
+
+			return vErr
+		},
 	)
 }

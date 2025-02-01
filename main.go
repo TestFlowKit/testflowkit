@@ -13,8 +13,9 @@ func main() {
 	}
 
 	modes := map[config.Mode]func(*config.AppConfig){
-		config.RunMode:  cli.Run,
-		config.InitMode: cli.Init,
+		config.RunMode:        cli.Run,
+		config.InitMode:       cli.Init,
+		config.ValidationMode: cli.Validate,
 	}
 
 	if mode, ok := modes[cliConfig.Mode]; ok {

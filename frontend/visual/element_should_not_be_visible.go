@@ -1,6 +1,7 @@
 package visual
 
 import (
+	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
 	"fmt"
@@ -23,6 +24,13 @@ func (s steps) elementShouldNotBeVisible() common.FrontStep {
 				return nil
 			}
 		},
-		nil,
+		func(name string) common.ValidationErrors {
+			vc := common.ValidationErrors{}
+			if !config.IsElementDefined(name) {
+				vc.AddMissingElement(name)
+			}
+
+			return vc
+		},
 	)
 }
