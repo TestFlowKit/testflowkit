@@ -9,9 +9,9 @@ import (
 )
 
 func (s steps) iShouldSeeRowContainingTheFollowingElements() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I should see a row containing the following elements$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable[*godog.Table](
+		[]string{`^I should see a row containing the following elements$`},
+		func(ctx *common.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, err := assistdog.NewDefault().ParseSlice(table)
 				if err != nil {
@@ -28,5 +28,6 @@ func (s steps) iShouldSeeRowContainingTheFollowingElements() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

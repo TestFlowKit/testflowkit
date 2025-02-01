@@ -5,13 +5,14 @@ import (
 )
 
 func (n navigation) iOpenNewPrivateBrowserTab() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{"I open a new private browser tab"},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithoutVariables(
+		[]string{"I open a new private browser tab"},
+		func(ctx *common.TestSuiteContext) func() error {
 			return func() error {
 				ctx.InitBrowser(true)
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

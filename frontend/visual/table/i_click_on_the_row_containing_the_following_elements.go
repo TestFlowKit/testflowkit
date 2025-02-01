@@ -10,9 +10,9 @@ import (
 
 // TODO: click on cell instead of row
 func (s steps) iClickOnTheRowContainingTheFollowingElements() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I click on the row containing the following elements$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable(
+		[]string{`^I click on the row containing the following elements$`},
+		func(ctx *common.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, parseErr := assistdog.NewDefault().ParseSlice(table)
 				if parseErr != nil {
@@ -34,5 +34,6 @@ func (s steps) iClickOnTheRowContainingTheFollowingElements() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

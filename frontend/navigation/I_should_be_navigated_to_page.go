@@ -8,9 +8,9 @@ import (
 )
 
 func (n navigation) iShouldBeNavigatedToPage() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{"^I should be navigated to {string} page$"},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable(
+		[]string{"^I should be navigated to {string} page$"},
+		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(pageName string) error {
 				page := ctx.GetCurrentPage()
 				page.WaitLoading()
@@ -27,5 +27,6 @@ func (n navigation) iShouldBeNavigatedToPage() common.FrontStep {
 				return fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
 			}
 		},
-	}
+		nil,
+	)
 }

@@ -6,10 +6,10 @@ import (
 )
 
 func (s steps) iClickOnElementWhichContains() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I click on {string} which contains {string}$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
-			return func(_, text string) error {
+	return common.NewStepWithTwoVariables(
+		[]string{`^I click on {string} which contains "{string}"$`},
+		func(ctx *common.TestSuiteContext) func(string, string) error {
+			return func(_ string, text string) error {
 				xPath := fmt.Sprintf(`//*[contains(text(),"%s")]`, text)
 				element, err := ctx.GetCurrentPage().GetOneByXPath(xPath)
 				if err != nil {
@@ -18,5 +18,6 @@ func (s steps) iClickOnElementWhichContains() common.FrontStep {
 				return element.Click()
 			}
 		},
-	}
+		nil,
+	)
 }

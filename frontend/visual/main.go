@@ -19,8 +19,8 @@ func GetSteps() []common.FrontStep {
 		handlers.iClickOnElementWhichContains(),
 		handlers.iShouldSeeOnPage(),
 		handlers.iShouldNotSeeOnPage(),
-		handlers.iShouldSeeElementWitchContains(),
-		handlers.iShouldSeeXElements(),
+		handlers.iShouldSeeElementWhichContains(),
+		handlers.iShouldSeeOnPageXElements(),
 		handlers.iShouldSeeDetailsOnPage(),
 	}
 	return slices.Concat(table.GetSteps(), otherSteps)

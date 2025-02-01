@@ -6,17 +6,17 @@ import (
 )
 
 func (s steps) iClickOn() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I click on {string}$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable(
+		[]string{`^I click on {string}$`},
+		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(label string) error {
 				element, err := browser.GetElement(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}
-
 				return element.Click()
 			}
 		},
-	}
+		nil,
+	)
 }

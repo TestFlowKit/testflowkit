@@ -6,9 +6,9 @@ import (
 )
 
 func (s steps) iTypeXXXIntoInput() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I type {string} into the {string}`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithTwoVariables(
+		[]string{`^I type "{string}" into the {string}`},
+		func(ctx *common.TestSuiteContext) func(string, string) error {
 			return func(text, inputLabel string) error {
 				input, err := browser.GetElement(ctx.GetCurrentPage(), inputLabel)
 				if err != nil {
@@ -17,5 +17,6 @@ func (s steps) iTypeXXXIntoInput() common.FrontStep {
 				return input.Input(text)
 			}
 		},
-	}
+		nil,
+	)
 }

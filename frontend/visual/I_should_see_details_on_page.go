@@ -11,9 +11,9 @@ import (
 )
 
 func (s steps) iShouldSeeDetailsOnPage() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I should see {string} details on the page$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithTwoVariables(
+		[]string{`^I should see "{string}" details on the page$`},
+		func(ctx *common.TestSuiteContext) func(string, *godog.Table) error {
 			return func(elementName string, table *godog.Table) error {
 				data, parseErr := assistdog.NewDefault().ParseMap(table)
 				if parseErr != nil {
@@ -41,5 +41,6 @@ func (s steps) iShouldSeeDetailsOnPage() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

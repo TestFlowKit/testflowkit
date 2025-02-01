@@ -1,8 +1,6 @@
 package form
 
-import (
-	"etoolse/frontend/common"
-)
+import "etoolse/frontend/common"
 
 type steps struct {
 }

@@ -5,12 +5,10 @@ import (
 	"fmt"
 )
 
-func (s steps) iShouldSeeElementWitchContains() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{
-			`^I should see a (link|button|element) which contains {string}$`,
-		},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+func (s steps) iShouldSeeElementWhichContains() common.FrontStep {
+	return common.NewStepWithTwoVariables(
+		[]string{`^I should see a (link|button|element) which contains "{string}"$`},
+		func(ctx *common.TestSuiteContext) func(string, string) error {
 			return func(elementLabel, text string) error {
 				cases := map[string]string{
 					"link":    "a",
@@ -33,5 +31,6 @@ func (s steps) iShouldSeeElementWitchContains() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

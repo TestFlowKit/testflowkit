@@ -7,9 +7,9 @@ import (
 )
 
 func (n navigation) iNavigateToPage() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I navigate to {string} page$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable[string](
+		[]string{`^I navigate to {string} page$`},
+		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(page string) error {
 				url, err := config.FrontConfig{}.GetPageURL(page)
 				if err != nil {
@@ -20,5 +20,6 @@ func (n navigation) iNavigateToPage() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

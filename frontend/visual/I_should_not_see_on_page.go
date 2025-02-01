@@ -7,9 +7,9 @@ import (
 )
 
 func (s steps) iShouldNotSeeOnPage() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I should not see {string} on the page$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable(
+		[]string{`^I should not see "{string}" on the page$`},
+		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(word string) error {
 				elt, err := ctx.GetCurrentPage().GetOneBySelector("body")
 				if err != nil {
@@ -21,5 +21,6 @@ func (s steps) iShouldNotSeeOnPage() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

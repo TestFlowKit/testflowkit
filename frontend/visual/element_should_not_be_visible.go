@@ -7,9 +7,9 @@ import (
 )
 
 func (s steps) elementShouldNotBeVisible() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^{string} should not be visible$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable(
+		[]string{`^{string} should not be visible$`},
+		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(name string) error {
 				element, err := browser.GetElement(ctx.GetCurrentPage(), name)
 				if err != nil {
@@ -23,5 +23,6 @@ func (s steps) elementShouldNotBeVisible() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

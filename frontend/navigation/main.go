@@ -1,8 +1,6 @@
 package navigation
 
-import (
-	"etoolse/frontend/common"
-)
+import "etoolse/frontend/common"
 
 type navigation struct {
 }

@@ -6,10 +6,10 @@ import (
 	"fmt"
 )
 
-func (s steps) iShouldSeeXElements() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^I should see {number} {string}$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+func (s steps) iShouldSeeOnPageXElements() common.FrontStep {
+	return common.NewStepWithTwoVariables(
+		[]string{`^I should see {number} {string} on the page$`},
+		func(ctx *common.TestSuiteContext) func(int, string) error {
 			return func(expectedCount int, elementName string) error {
 				elementCount := browser.GetElementCount(ctx.GetCurrentPage(), elementName)
 				if elementCount != expectedCount {
@@ -18,5 +18,6 @@ func (s steps) iShouldSeeXElements() common.FrontStep {
 				return nil
 			}
 		},
-	}
+		nil,
+	)
 }

@@ -26,9 +26,9 @@ func (k keyboardSteps) iPressButton() common.FrontStep {
 		supportedKeys = append(supportedKeys, key)
 	}
 
-	return common.FrontStep{
-		Sentences: []string{fmt.Sprintf(`^I press the "(%s)" button$`, strings.Join(supportedKeys, "|"))},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	return common.NewStepWithOneVariable(
+		[]string{fmt.Sprintf(`^I press the "(%s)" button$`, strings.Join(supportedKeys, "|"))},
+		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(button string) error {
 				inputKey := dic[button]
 				if inputKey == '0' {
@@ -38,5 +38,6 @@ func (k keyboardSteps) iPressButton() common.FrontStep {
 				return ctx.GetCurrentPageKeyboard().Press(inputKey)
 			}
 		},
-	}
+		nil,
+	)
 }

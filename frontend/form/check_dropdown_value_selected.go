@@ -8,11 +8,14 @@ import (
 )
 
 func (s steps) dropdownHaveValuesSelected() common.FrontStep {
-	return common.FrontStep{
-		Sentences: []string{`^the {string} dropdown should have {string} selected$`},
-		Definition: func(ctx *common.TestSuiteContext) common.FrontStepDefinition {
+	formatVar := func(label string) string {
+		return fmt.Sprintf("%s_dropdown", label)
+	}
+	return common.NewStepWithTwoVariables(
+		[]string{`^the {string} dropdown should have "{string}" selected$`},
+		func(ctx *common.TestSuiteContext) func(string, string) error {
 			return func(dropdownId, optionLabels string) error {
-				selector, err := config.FrontConfig{}.GetHTMLElementSelectors(fmt.Sprintf("%s_dropdown", dropdownId))
+				selector, err := config.FrontConfig{}.GetHTMLElementSelectors(formatVar(dropdownId))
 				if err != nil {
 					return err
 				}
@@ -30,5 +33,6 @@ func (s steps) dropdownHaveValuesSelected() common.FrontStep {
 				return fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
 			}
 		},
-	}
+		nil,
+	)
 }
