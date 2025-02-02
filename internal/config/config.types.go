@@ -48,6 +48,7 @@ type configType interface {
 	testingConfig | reportingConfig | appDetailsConfig
 }
 
+// TODO: rename in order to specify the type of the config
 func getConfig[T configType](file, path string, config *T) error {
 	configPath, err := yaml.PathString(path)
 	if err != nil {

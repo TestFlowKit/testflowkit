@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (s steps) iClickOnElementWhichContains() common.FrontStep {
+func (s steps) iClickOnElementWhichContains() common.TestStep {
 	return common.NewStepWithTwoVariables(
 		[]string{`^I click on {string} which contains "{string}"$`},
 		func(ctx *common.TestSuiteContext) func(string, string) error {

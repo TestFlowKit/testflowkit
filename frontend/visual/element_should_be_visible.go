@@ -1,13 +1,13 @@
 package visual
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
+	"etoolse/internal/config/testsConfig"
 	"fmt"
 )
 
-func (s steps) elementShouldBeVisible() common.FrontStep {
+func (s steps) elementShouldBeVisible() common.TestStep {
 	return common.NewStepWithOneVariable(
 		[]string{`^{string} should be visible$`},
 		func(ctx *common.TestSuiteContext) func(string) error {
@@ -26,7 +26,7 @@ func (s steps) elementShouldBeVisible() common.FrontStep {
 		},
 		func(name string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
-			if !config.IsElementDefined(name) {
+			if !testsConfig.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
 

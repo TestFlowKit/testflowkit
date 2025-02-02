@@ -1,8 +1,8 @@
 package main
 
 import (
-	"etoolse/cli"
-	"etoolse/config"
+	"etoolse/internal/actions"
+	"etoolse/internal/config"
 	"log"
 )
 
@@ -12,10 +12,10 @@ func main() {
 		log.Fatal("no mode specified")
 	}
 
-	modes := map[config.Mode]func(*config.AppConfig){
-		config.RunMode:        cli.Run,
-		config.InitMode:       cli.Init,
-		config.ValidationMode: cli.Validate,
+	modes := map[config.Mode]func(*config.App){
+		config.RunMode:        actions.Run,
+		config.InitMode:       actions.Init,
+		config.ValidationMode: actions.Validate,
 	}
 
 	if mode, ok := modes[cliConfig.Mode]; ok {

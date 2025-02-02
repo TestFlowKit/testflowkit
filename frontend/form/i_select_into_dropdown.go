@@ -1,14 +1,14 @@
 package form
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
+	"etoolse/internal/config/testsConfig"
 	"etoolse/utils"
 	"fmt"
 )
 
-func (s steps) iSelectXXXIntoDropdown() common.FrontStep {
+func (s steps) iSelectXXXIntoDropdown() common.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
@@ -28,7 +28,7 @@ func (s steps) iSelectXXXIntoDropdown() common.FrontStep {
 		func(_, dropdownId string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
 			label := formatVar(dropdownId)
-			if !config.IsElementDefined(label) {
+			if !testsConfig.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 

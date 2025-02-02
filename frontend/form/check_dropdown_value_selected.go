@@ -1,13 +1,13 @@
 package form
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
+	"etoolse/internal/config/testsConfig"
 	"etoolse/utils"
 	"fmt"
 )
 
-func (s steps) dropdownHaveValuesSelected() common.FrontStep {
+func (s steps) dropdownHaveValuesSelected() common.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
@@ -15,7 +15,7 @@ func (s steps) dropdownHaveValuesSelected() common.FrontStep {
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
 		func(ctx *common.TestSuiteContext) func(string, string) error {
 			return func(dropdownId, optionLabels string) error {
-				selector, err := config.FrontConfig{}.GetHTMLElementSelectors(formatVar(dropdownId))
+				selector, err := testsConfig.GetHTMLElementSelectors(formatVar(dropdownId))
 				if err != nil {
 					return err
 				}
@@ -36,7 +36,7 @@ func (s steps) dropdownHaveValuesSelected() common.FrontStep {
 		func(dropdownId, _ string) common.ValidationErrors {
 			vErr := common.ValidationErrors{}
 			label := formatVar(dropdownId)
-			if !config.IsElementDefined(label) {
+			if !testsConfig.IsElementDefined(label) {
 				vErr.AddMissingElement(label)
 			}
 

@@ -5,10 +5,10 @@ import "etoolse/frontend/common"
 type steps struct {
 }
 
-func GetSteps() []common.FrontStep {
+func GetSteps() []common.TestStep {
 	handlers := steps{}
 
-	return []common.FrontStep{
+	return []common.TestStep{
 		handlers.iTypeXXXIntoInput(),
 		handlers.iSelectXXXIntoDropdown(),
 		handlers.checkCheckboxStatus(),

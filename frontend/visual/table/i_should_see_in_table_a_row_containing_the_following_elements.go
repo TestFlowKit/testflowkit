@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) iShouldSeeRowContainingTheFollowingElements() common.FrontStep {
+func (s steps) iShouldSeeRowContainingTheFollowingElements() common.TestStep {
 	return common.NewStepWithOneVariable[*godog.Table](
 		[]string{`^I should see a row containing the following elements$`},
 		func(ctx *common.TestSuiteContext) func(*godog.Table) error {

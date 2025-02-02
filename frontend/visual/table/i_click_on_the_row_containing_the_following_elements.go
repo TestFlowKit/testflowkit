@@ -9,7 +9,7 @@ import (
 )
 
 // TODO: click on cell instead of row
-func (s steps) iClickOnTheRowContainingTheFollowingElements() common.FrontStep {
+func (s steps) iClickOnTheRowContainingTheFollowingElements() common.TestStep {
 	return common.NewStepWithOneVariable(
 		[]string{`^I click on the row containing the following elements$`},
 		func(ctx *common.TestSuiteContext) func(*godog.Table) error {

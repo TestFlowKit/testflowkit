@@ -9,10 +9,10 @@ import (
 type steps struct {
 }
 
-func GetSteps() []common.FrontStep {
+func GetSteps() []common.TestStep {
 	handlers := steps{}
 
-	var otherSteps = []common.FrontStep{
+	var otherSteps = []common.TestStep{
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.iClickOn(),

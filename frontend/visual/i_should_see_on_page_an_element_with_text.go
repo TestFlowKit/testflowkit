@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (s steps) iShouldSeeElementWhichContains() common.FrontStep {
+func (s steps) iShouldSeeElementWhichContains() common.TestStep {
 	return common.NewStepWithTwoVariables(
 		[]string{`^I should see a (link|button|element) which contains "{string}"$`},
 		func(ctx *common.TestSuiteContext) func(string, string) error {

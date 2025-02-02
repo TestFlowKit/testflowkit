@@ -1,6 +1,6 @@
 package common
 
-type FrontStep interface {
+type TestStep interface {
 	GetSentences() []string
 	GetDefinition(*TestSuiteContext) any
 	Validate(*ValidatorContext) any

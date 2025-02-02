@@ -1,33 +1,33 @@
 package config
 
-type AppConfig struct {
+type App struct {
 	Mode Mode
 	appDetailsConfig
 	reportingConfig
 	testingConfig
 }
 
-func (c *AppConfig) GetConcurrency() int {
+func (c *App) GetConcurrency() int {
 	if !c.Headless {
 		return 0
 	}
 	return c.Parallel
 }
 
-func initAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
-	c := AppConfig{
+func initAppConfig(args argsConfig, cliConfig cliConfig) *App {
+	c := App{
 		appDetailsConfig: appDetailsConfig{
-			AppName:        fileConfig.AppName,
-			AppDescription: fileConfig.AppDescription,
+			AppName:        cliConfig.AppName,
+			AppDescription: cliConfig.AppDescription,
 		},
 		testingConfig: testingConfig{
-			GherkinLocation: fileConfig.GherkinLocation,
-			Timeout:         fileConfig.Timeout,
+			GherkinLocation: cliConfig.GherkinLocation,
+			Timeout:         cliConfig.Timeout,
 		},
 	}
 
-	c.ReportFormat = fileConfig.ReportFormat
-	c.SlowMotion = fileConfig.SlowMotion
+	c.ReportFormat = cliConfig.ReportFormat
+	c.SlowMotion = cliConfig.SlowMotion
 
 	if args.Run != nil {
 		fillConfigForRunCmd(&c, *args.Run)
@@ -48,7 +48,7 @@ func initAppConfig(args appArgsConfig, fileConfig appFileConfig) *AppConfig {
 	return &c
 }
 
-func fillConfigForRunCmd(c *AppConfig, runArgs RunCmd) {
+func fillConfigForRunCmd(c *App, runArgs runCmd) {
 	c.Mode = "run"
 	c.Tags = runArgs.Tags
 	c.Parallel = runArgs.Parallel
@@ -63,3 +63,8 @@ func fillConfigForRunCmd(c *AppConfig, runArgs RunCmd) {
 		c.Timeout = runArgs.Timeout.String()
 	}
 }
+
+const (
+	defaultReportFormat = "html"
+	defaultTimeout      = "3m"
+)

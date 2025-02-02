@@ -29,7 +29,7 @@ func (s stepOneVar[T]) Validate(vc *ValidatorContext) any {
 
 func NewStepWithOneVariable[T stepSupportedTypes](sentences []string,
 	definition func(*TestSuiteContext) func(T) error,
-	validator func(T) ValidationErrors) FrontStep {
+	validator func(T) ValidationErrors) TestStep {
 	return stepOneVar[T]{
 		sentences,
 		definition,

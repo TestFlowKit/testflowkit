@@ -2,10 +2,14 @@ package config
 
 import (
 	"log"
-	"os"
 )
 
-type appFileConfig struct {
+const defaultCliConfigPath = "cliConfig.yml"
+const appDetailsYamlPath = "$.application"
+const testingYamlPath = "$.configuration"
+const reportingYamlPath = "$.reporting"
+
+type cliConfig struct {
 	reportingConfig
 	AppName         string `yaml:"app_name"`
 	AppDescription  string `yaml:"app_description,omitempty"`
@@ -14,15 +18,7 @@ type appFileConfig struct {
 	GherkinLocation string `yaml:"gherkin_location"`
 }
 
-func (c *appFileConfig) InitByFilePath(filePath string) {
-	file, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Fatal("config file not found")
-	}
-	c.InitByFileContent(string(file))
-}
-
-func (c *appFileConfig) InitByFileContent(content string) {
+func (c *cliConfig) init(content string) {
 	appDetails := c.getAppDetailsConfig(content)
 	testing := c.getTestingConfig(content)
 	reporting := c.getReportingConfig(content)
@@ -35,9 +31,9 @@ func (c *appFileConfig) InitByFileContent(content string) {
 	c.reportingConfig = reporting
 }
 
-func (c *appFileConfig) getAppDetailsConfig(file string) appDetailsConfig {
+func (c *cliConfig) getAppDetailsConfig(file string) appDetailsConfig {
 	config := appDetailsConfig{}
-	err := getConfig(file, "$.application", &config)
+	err := getConfig(file, appDetailsYamlPath, &config)
 	if err != nil {
 		return config
 	}
@@ -45,9 +41,9 @@ func (c *appFileConfig) getAppDetailsConfig(file string) appDetailsConfig {
 	return config
 }
 
-func (c *appFileConfig) getTestingConfig(file string) testingConfig {
+func (c *cliConfig) getTestingConfig(file string) testingConfig {
 	config := testingConfig{}
-	err := getConfig(file, "$.configuration", &config)
+	err := getConfig(file, testingYamlPath, &config)
 	if err != nil {
 		log.Println(err)
 		log.Panicln("testsuite config getting failed")
@@ -56,9 +52,9 @@ func (c *appFileConfig) getTestingConfig(file string) testingConfig {
 	return config
 }
 
-func (c *appFileConfig) getReportingConfig(file string) reportingConfig {
+func (c *cliConfig) getReportingConfig(file string) reportingConfig {
 	config := reportingConfig{}
-	err := getConfig(file, "$.reporting", &config)
+	err := getConfig(file, reportingYamlPath, &config)
 	if err != nil {
 		log.Println(err)
 		log.Panicln("reporting config getting failed")

@@ -1,9 +1,9 @@
-package cli
+package actions
 
 import (
 	"context"
-	"etoolse/config"
 	"etoolse/frontend"
+	"etoolse/internal/config"
 	"etoolse/report"
 	"log"
 	"time"
@@ -12,7 +12,7 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
-func Run(appConfig *config.AppConfig) {
+func Run(appConfig *config.App) {
 	log.Println("Starting tests execution ...")
 
 	var opts = godog.Options{
@@ -55,7 +55,7 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 		})
 	}
 }
-func scenarioInitializer(config *config.AppConfig, testReport *report.Report) func(*godog.ScenarioContext) {
+func scenarioInitializer(config *config.App, testReport *report.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitTestRunnerScenarios(sc, config)
 		myCtx := newScenarioCtx()

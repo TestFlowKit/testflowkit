@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func (s steps) iShouldSeeOnPageXElements() common.FrontStep {
+func (s steps) iShouldSeeOnPageXElements() common.TestStep {
 	return common.NewStepWithTwoVariables(
 		[]string{`^I should see {number} {string} on the page$`},
 		func(ctx *common.TestSuiteContext) func(int, string) error {

@@ -5,10 +5,10 @@ import "etoolse/frontend/common"
 type keyboardSteps struct {
 }
 
-func GetSteps() []common.FrontStep {
+func GetSteps() []common.TestStep {
 	steps := keyboardSteps{}
 
-	return []common.FrontStep{
+	return []common.TestStep{
 		steps.iPressButton(),
 	}
 }

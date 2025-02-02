@@ -9,7 +9,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) iShouldNotSeeRowContainingTheFollowingElements() common.FrontStep {
+func (s steps) iShouldNotSeeRowContainingTheFollowingElements() common.TestStep {
 	return common.NewStepWithOneVariable[*godog.Table](
 		[]string{`^I should not see a row containing the following elements$`},
 		func(ctx *common.TestSuiteContext) func(*godog.Table) error {

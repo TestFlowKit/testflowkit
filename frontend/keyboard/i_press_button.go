@@ -8,7 +8,7 @@ import (
 	"github.com/go-rod/rod/lib/input"
 )
 
-func (k keyboardSteps) iPressButton() common.FrontStep {
+func (k keyboardSteps) iPressButton() common.TestStep {
 	dic := map[string]input.Key{
 		"enter":       input.Enter,
 		"tab":         input.Tab,

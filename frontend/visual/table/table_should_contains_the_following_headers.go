@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) tableShouldContainsTheFollowingHeaders() common.FrontStep {
+func (s steps) tableShouldContainsTheFollowingHeaders() common.TestStep {
 	return common.NewStepWithOneVariable(
 		[]string{`^I should see a table with the following headers$`},
 		func(ctx *common.TestSuiteContext) func(*godog.Table) error {

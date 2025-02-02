@@ -1,20 +1,20 @@
 package navigation
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
+	"etoolse/internal/config/testsConfig"
 	"fmt"
 	"strings"
 )
 
-func (n navigation) iShouldBeNavigatedToPage() common.FrontStep {
+func (n navigation) iShouldBeNavigatedToPage() common.TestStep {
 	return common.NewStepWithOneVariable(
 		[]string{"^I should be navigated to {string} page$"},
 		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(pageName string) error {
 				page := ctx.GetCurrentPage()
 				page.WaitLoading()
-				url, err := config.FrontConfig{}.GetPageURL(pageName)
+				url, err := testsConfig.GetPageURL(pageName)
 				if err != nil {
 					return err
 				}
@@ -29,7 +29,7 @@ func (n navigation) iShouldBeNavigatedToPage() common.FrontStep {
 		},
 		func(pageName string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
-			if !config.IsPageDefined(pageName) {
+			if !testsConfig.IsPageDefined(pageName) {
 				vc.AddMissingPage(pageName)
 			}
 

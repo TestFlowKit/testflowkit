@@ -10,7 +10,7 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-func (s steps) iShouldSeeDetailsOnPage() common.FrontStep {
+func (s steps) iShouldSeeDetailsOnPage() common.TestStep {
 	return common.NewStepWithTwoVariables(
 		[]string{`^I should see "{string}" details on the page$`},
 		func(ctx *common.TestSuiteContext) func(string, *godog.Table) error {

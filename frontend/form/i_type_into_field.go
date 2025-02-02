@@ -1,12 +1,12 @@
 package form
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
+	"etoolse/internal/config/testsConfig"
 )
 
-func (s steps) iTypeXXXIntoInput() common.FrontStep {
+func (s steps) iTypeXXXIntoInput() common.TestStep {
 	return common.NewStepWithTwoVariables(
 		[]string{`^I type "{string}" into the {string}`},
 		func(ctx *common.TestSuiteContext) func(string, string) error {
@@ -20,7 +20,7 @@ func (s steps) iTypeXXXIntoInput() common.FrontStep {
 		},
 		func(_, inputLabel string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
-			if !config.IsElementDefined(inputLabel) {
+			if !testsConfig.IsElementDefined(inputLabel) {
 				vc.AddMissingElement(inputLabel)
 			}
 

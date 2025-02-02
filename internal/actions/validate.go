@@ -1,16 +1,16 @@
-package cli
+package actions
 
 import (
-	"etoolse/config"
 	"etoolse/frontend"
 	"etoolse/frontend/common"
+	"etoolse/internal/config"
 	"log"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
 )
 
-func Validate(appConfig *config.AppConfig) {
+func Validate(appConfig *config.App) {
 	log.Println("Validate gherkin files ...")
 
 	const concurrency = 5

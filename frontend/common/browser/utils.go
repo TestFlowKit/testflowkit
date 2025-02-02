@@ -1,15 +1,13 @@
 package browser
 
 import (
-	"etoolse/config"
+	"etoolse/internal/config/testsConfig"
 	"log"
 	"sync"
 )
 
-var fc = config.FrontConfig{}
-
 func GetElement(page Page, label string) (Element, error) {
-	selectors, err := fc.GetHTMLElementSelectors(label)
+	selectors, err := testsConfig.GetHTMLElementSelectors(label)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +63,7 @@ func GetActiveSelector(page Page, potentialSelectors []string) string {
 }
 
 func GetElementCount(page Page, label string) int {
-	potentialSelectors, _ := fc.GetHTMLElementSelectors(label)
+	potentialSelectors, _ := testsConfig.GetHTMLElementSelectors(label)
 	selector := GetActiveSelector(page, potentialSelectors)
 	elements, err := page.GetAllBySelector(selector)
 	if err != nil {

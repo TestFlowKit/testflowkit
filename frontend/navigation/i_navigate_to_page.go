@@ -1,17 +1,17 @@
 package navigation
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
+	"etoolse/internal/config/testsConfig"
 	"log"
 )
 
-func (n navigation) iNavigateToPage() common.FrontStep {
+func (n navigation) iNavigateToPage() common.TestStep {
 	return common.NewStepWithOneVariable[string](
 		[]string{`^I navigate to {string} page$`},
 		func(ctx *common.TestSuiteContext) func(string) error {
 			return func(page string) error {
-				url, err := config.FrontConfig{}.GetPageURL(page)
+				url, err := testsConfig.GetPageURL(page)
 				if err != nil {
 					log.Fatalf("Url for page %s not configured", page)
 					return err
@@ -22,7 +22,7 @@ func (n navigation) iNavigateToPage() common.FrontStep {
 		},
 		func(page string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
-			if !config.IsPageDefined(page) {
+			if !testsConfig.IsPageDefined(page) {
 				vc.AddMissingPage(page)
 			}
 

@@ -30,7 +30,7 @@ func (s stepWithoutVar) Validate(vc *ValidatorContext) any {
 type noVarDef func(*TestSuiteContext) func() error
 type noVarValidator func() ValidationErrors
 
-func NewStepWithoutVariables(sentences []string, definition noVarDef, validator noVarValidator) FrontStep {
+func NewStepWithoutVariables(sentences []string, definition noVarDef, validator noVarValidator) TestStep {
 	return stepWithoutVar{
 		sentences,
 		definition,

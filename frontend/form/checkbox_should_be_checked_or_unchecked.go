@@ -1,14 +1,14 @@
 package form
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
+	"etoolse/internal/config/testsConfig"
 	"fmt"
 	"reflect"
 )
 
-func (s steps) checkCheckboxStatus() common.FrontStep {
+func (s steps) checkCheckboxStatus() common.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_checkbox", label)
 	}
@@ -32,7 +32,7 @@ func (s steps) checkCheckboxStatus() common.FrontStep {
 		vc := common.ValidationErrors{}
 		checkboxLabel := formatVar(checkboxId)
 
-		if !config.IsElementDefined(checkboxLabel) {
+		if !testsConfig.IsElementDefined(checkboxLabel) {
 			vc.AddMissingElement(checkboxLabel)
 		}
 

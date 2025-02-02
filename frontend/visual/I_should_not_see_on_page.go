@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (s steps) iShouldNotSeeOnPage() common.FrontStep {
+func (s steps) iShouldNotSeeOnPage() common.TestStep {
 	return common.NewStepWithOneVariable(
 		[]string{`^I should not see "{string}" on the page$`},
 		func(ctx *common.TestSuiteContext) func(string) error {

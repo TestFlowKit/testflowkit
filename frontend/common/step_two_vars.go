@@ -29,7 +29,7 @@ func (s stepTwoVars[T, U]) Validate(vc *ValidatorContext) any {
 
 func NewStepWithTwoVariables[T stepSupportedTypes, U stepSupportedTypes](sentences []string,
 	definition func(*TestSuiteContext) func(T, U) error,
-	validator func(T, U) ValidationErrors) FrontStep {
+	validator func(T, U) ValidationErrors) TestStep {
 	return stepTwoVars[T, U]{
 		sentences,
 		definition,

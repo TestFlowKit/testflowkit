@@ -1,13 +1,13 @@
 package form
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
+	"etoolse/internal/config/testsConfig"
 	"fmt"
 )
 
-func (s steps) theFieldShouldContains() common.FrontStep {
+func (s steps) theFieldShouldContains() common.TestStep {
 	return common.NewStepWithTwoVariables(
 		[]string{`^the {string} should be contain "{string}"`},
 		func(ctx *common.TestSuiteContext) func(string, string) error {
@@ -26,7 +26,7 @@ func (s steps) theFieldShouldContains() common.FrontStep {
 		},
 		func(fieldId, _ string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
-			if !config.IsElementDefined(fieldId) {
+			if !testsConfig.IsElementDefined(fieldId) {
 				vc.AddMissingElement(fieldId)
 			}
 

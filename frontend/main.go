@@ -1,7 +1,7 @@
 package frontend
 
 import (
-	"etoolse/config"
+	"etoolse/internal/config"
 	"log"
 	"slices"
 
@@ -15,7 +15,7 @@ import (
 	"github.com/cucumber/godog"
 )
 
-func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.AppConfig) {
+func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.App) {
 	frontendCtx := common.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
 	allSteps := slices.Concat(form.GetSteps(), keyboard.GetSteps(), navigation.GetSteps(), visual.GetSteps())
 

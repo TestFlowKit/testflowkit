@@ -8,10 +8,10 @@ import (
 )
 
 func TestShouldInitializeAppConfig(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			GherkinLocation:    "features",
-			ClIConfigPath:      "cli.yml",
+			ClIConfigPath:      "cmd.yml",
 			FrontendConfigPath: "frontend.yml",
 			Tags:               "tags",
 			Parallel:           10,
@@ -21,7 +21,7 @@ func TestShouldInitializeAppConfig(t *testing.T) {
 		},
 	}
 
-	appConfigFile := appFileConfig{
+	appConfigFile := cliConfig{
 		AppName:         "appName",
 		AppDescription:  "appDescription",
 		Timeout:         "10s",
@@ -47,41 +47,41 @@ func TestShouldInitializeAppConfig(t *testing.T) {
 }
 
 func TestShouldDefineConcurrencyTo0BecauseHeadlessIsDisabled(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			Parallel: 10,
 			Headless: false,
 		},
 	}
 
-	appConfigFile := appFileConfig{}
+	appConfigFile := cliConfig{}
 
 	assert.False(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 	assert.Equal(t, 0, initAppConfig(appArgs, appConfigFile).GetConcurrency())
 }
 
 func TestShouldDefineConcurrencyTo10BecauseHeadlessIsEnabled(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			Parallel: 10,
 			Headless: true,
 		},
 	}
 
-	appConfigFile := appFileConfig{}
+	appConfigFile := cliConfig{}
 
 	assert.True(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 	assert.Equal(t, 10, initAppConfig(appArgs, appConfigFile).GetConcurrency())
 }
 
 func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			Headless: true,
 		},
 	}
 
-	appConfigFile := appFileConfig{
+	appConfigFile := cliConfig{
 		SlowMotion: "2s",
 	}
 
@@ -90,13 +90,13 @@ func TestShouldDefineSlowMotionTo0BecauseHeadlessIsEnabled(t *testing.T) {
 }
 
 func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			Headless: false,
 		},
 	}
 
-	appConfigFile := appFileConfig{
+	appConfigFile := cliConfig{
 		SlowMotion: "20s",
 	}
 
@@ -105,25 +105,25 @@ func TestShouldDefineSlowMotionTo20sBecauseHeadlessIsDisabled(t *testing.T) {
 }
 
 func TestShouldHeadlessModeEnabled(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			Headless: true,
 		},
 	}
 
-	appConfigFile := appFileConfig{}
+	appConfigFile := cliConfig{}
 
 	assert.True(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 }
 
 func TestShouldHeadlessModeDisabled(t *testing.T) {
-	appArgs := appArgsConfig{
-		Run: &RunCmd{
+	appArgs := argsConfig{
+		Run: &runCmd{
 			Headless: false,
 		},
 	}
 
-	appConfigFile := appFileConfig{}
+	appConfigFile := cliConfig{}
 
 	assert.False(t, initAppConfig(appArgs, appConfigFile).IsHeadlessModeEnabled())
 }

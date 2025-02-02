@@ -1,13 +1,15 @@
 package config
 
-import "log"
+import (
+	"log"
+)
 
-func initRunConfig(argsConfig appArgsConfig, fileConfig appFileConfig) *AppConfig {
+func initRunConfig(argsConfig argsConfig, fileConfig cliConfig) *App {
 	appConfig := initAppConfig(argsConfig, fileConfig)
 	runConfig := argsConfig.Run
 
 	log.Println("--- configuration resume ---")
-	log.Println("cli config path: ", runConfig.ClIConfigPath)
+	log.Println("cmd config path: ", runConfig.ClIConfigPath)
 	log.Println("frontend config path: ", runConfig.FrontendConfigPath)
 
 	log.Println("app name: ", appConfig.AppName)

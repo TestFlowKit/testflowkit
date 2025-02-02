@@ -1,12 +1,12 @@
 package visual
 
 import (
-	"etoolse/config"
 	"etoolse/frontend/common"
 	"etoolse/frontend/common/browser"
+	"etoolse/internal/config/testsConfig"
 )
 
-func (s steps) iClickOn() common.FrontStep {
+func (s steps) iClickOn() common.TestStep {
 	return common.NewStepWithOneVariable(
 		[]string{`^I click on {string}$`},
 		func(ctx *common.TestSuiteContext) func(string) error {
@@ -20,7 +20,7 @@ func (s steps) iClickOn() common.FrontStep {
 		},
 		func(label string) common.ValidationErrors {
 			vc := common.ValidationErrors{}
-			if !config.IsElementDefined(label) {
+			if !testsConfig.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc
