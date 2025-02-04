@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"path"
+	"path/filepath"
+	"runtime"
 	"time"
 )
 
@@ -17,14 +18,13 @@ func main() {
 		"details",
 	}
 
-	dir, wdErr := os.Getwd()
-	if wdErr != nil {
-		panic(wdErr)
-	}
+	_, filename, _, _ := runtime.Caller(0)
+	currDir := filepath.Dir(filename)
+
 	for _, file := range files {
 		http.HandleFunc(fmt.Sprintf("/%s", file), func(w http.ResponseWriter, r *http.Request) {
 			log.Println(r.URL.Path, "requested")
-			filePath := path.Join(dir, fmt.Sprintf("%s.html", file))
+			filePath := path.Join(currDir, fmt.Sprintf("%s.html", file))
 			http.ServeFile(w, r, filePath)
 		})
 	}

@@ -4,8 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o etoolse
+WORKDIR /app/cmd/etoolse
 
+RUN go build -o etoolse
 
 
 FROM alpine:3.21
@@ -16,7 +17,7 @@ WORKDIR /app
 
 COPY ./e2e .
 
-COPY --from=build /app/etoolse .
+COPY --from=build /app/cmd/etoolse .
 
 RUN apk add --no-cache chromium
 
