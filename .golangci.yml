@@ -330,6 +330,8 @@ issues:
   # Default: 3
   max-same-issues: 50
 
+  fix: true
+  
   exclude-rules:
     - source: "(noinspection|TODO)"
       linters: [godot]
