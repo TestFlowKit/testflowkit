@@ -1,7 +1,7 @@
 package config
 
 import (
-	"etoolse/internal/config/testsConfig"
+	"etoolse/internal/config/testsconfig"
 	"log"
 	"os"
 
@@ -9,33 +9,32 @@ import (
 )
 
 func Init() *App {
-	argsConfig := getAppArgs()
+	appArgsConfig := getAppArgs()
 
-	if argsConfig.Run != nil {
-		cliFileConfig := getCLIFileConfig(argsConfig.Run.ClIConfigPath)
-		initFrontTestsConfig(argsConfig.Run.FrontendConfigPath)
+	if appArgsConfig.Run != nil {
+		cliFileConfig := getCLIFileConfig(appArgsConfig.Run.ClIConfigPath)
+		initFrontTestsConfig(appArgsConfig.Run.FrontendConfigPath)
 
-		return initRunConfig(argsConfig, cliFileConfig)
+		return initAppConfig(appArgsConfig, cliFileConfig, RunMode)
 	}
 
-	if argsConfig.Validate != nil {
-		fileConfig := getCLIFileConfig(argsConfig.Validate.ClIConfigPath)
-		initFrontTestsConfig(argsConfig.Validate.FrontendConfigPath)
+	if appArgsConfig.Validate != nil {
+		fileConfig := getCLIFileConfig(appArgsConfig.Validate.ClIConfigPath)
+		initFrontTestsConfig(appArgsConfig.Validate.FrontendConfigPath)
 
-		curr := initAppConfig(argsConfig, fileConfig)
-		curr.Tags = argsConfig.Validate.Tags
-		curr.Mode = ValidationMode
+		curr := initAppConfig(appArgsConfig, fileConfig, ValidationMode)
+		curr.Tags = appArgsConfig.Validate.Tags
 
 		return curr
 	}
 
-	if argsConfig.Init != nil {
+	if appArgsConfig.Init != nil {
 		return &App{
 			Mode: InitMode,
 			appDetailsConfig: appDetailsConfig{
-				AppName:        argsConfig.Init.AppName,
-				AppDescription: argsConfig.Init.AppDescription,
-				AppVersion:     argsConfig.Init.AppVersion,
+				AppName:        appArgsConfig.Init.AppName,
+				AppDescription: appArgsConfig.Init.AppDescription,
+				AppVersion:     appArgsConfig.Init.AppVersion,
 			},
 		}
 	}
@@ -48,11 +47,11 @@ func getCLIFileConfig(filePath string) cliConfig {
 	if err != nil {
 		log.Fatal("CLI config file not found")
 	}
-	CLIFileConfig := cliConfig{}
+	cliFileConfig := cliConfig{}
 
-	CLIFileConfig.init(string(configFileContent))
+	cliFileConfig.init(string(configFileContent))
 
-	return CLIFileConfig
+	return cliFileConfig
 }
 
 func getAppArgs() argsConfig {
@@ -67,5 +66,5 @@ func initFrontTestsConfig(filePath string) {
 		log.Fatal("config file not found")
 	}
 
-	testsConfig.Init(string(configFile))
+	testsconfig.Init(string(configFile))
 }

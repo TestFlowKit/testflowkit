@@ -1,9 +1,9 @@
 package actions
 
 import (
-	"etoolse/frontend"
-	"etoolse/frontend/common"
 	"etoolse/internal/config"
+	"etoolse/internal/steps_definitions/core"
+	"etoolse/internal/steps_definitions/frontend"
 	"log"
 
 	"github.com/cucumber/godog"
@@ -23,7 +23,7 @@ func Validate(appConfig *config.App) {
 		Paths:               []string{appConfig.GherkinLocation},
 	}
 
-	ctx := common.ValidatorContext{}
+	ctx := core.ValidatorContext{}
 	testSuite := godog.TestSuite{
 		Name:                 "validate",
 		Options:              &opts,
@@ -37,13 +37,15 @@ func Validate(appConfig *config.App) {
 	}
 }
 
-func validateScenarioInitializer(ctx *common.ValidatorContext) func(*godog.ScenarioContext) {
+func validateScenarioInitializer(ctx *core.ValidatorContext) func(*godog.ScenarioContext) {
+	log.Println("Initializing scenarios for validation ...")
+
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitValidationScenarios(sc, ctx)
 	}
 }
 
-func validateTestSuiteInitializer(validatorCtx *common.ValidatorContext) func(*godog.TestSuiteContext) {
+func validateTestSuiteInitializer(validatorCtx *core.ValidatorContext) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.AfterSuite(func() {
 			log.Println("Errors:")

@@ -2,9 +2,9 @@ package actions
 
 import (
 	"context"
-	"etoolse/frontend"
 	"etoolse/internal/config"
-	"etoolse/report"
+	"etoolse/internal/steps_definitions/frontend"
+	"etoolse/pkg/reporters"
 	"log"
 	"time"
 
@@ -24,7 +24,7 @@ func Run(appConfig *config.App) {
 		Paths:               []string{appConfig.GherkinLocation},
 	}
 
-	testReport := report.New(appConfig.AppName, appConfig.AppDescription, appConfig.ReportFormat)
+	testReport := reporters.New(appConfig.AppName, appConfig.AppDescription, appConfig.ReportFormat)
 	testSuite := godog.TestSuite{
 		Name:                 appConfig.AppName,
 		Options:              &opts,
@@ -39,7 +39,7 @@ func Run(appConfig *config.App) {
 	}
 }
 
-func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContext) {
+func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.BeforeSuite(func() {
 			testReport.Start()
@@ -55,7 +55,8 @@ func testSuiteInitializer(testReport *report.Report) func(*godog.TestSuiteContex
 		})
 	}
 }
-func scenarioInitializer(config *config.App, testReport *report.Report) func(*godog.ScenarioContext) {
+func scenarioInitializer(config *config.App, testReport *reporters.Report) func(*godog.ScenarioContext) {
+	log.Println("Initializing scenario for test running ...")
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitTestRunnerScenarios(sc, config)
 		myCtx := newScenarioCtx()
@@ -78,7 +79,7 @@ func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
 	}
 }
 
-func afterScenarioHookInitializer(testReport *report.Report, myCtx *myScenarioCtx) godog.AfterScenarioHook {
+func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenarioCtx) godog.AfterScenarioHook {
 	return func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
 		myCtx.scenarioReport.SetTitle(sc.Name)
 
@@ -90,13 +91,13 @@ func afterScenarioHookInitializer(testReport *report.Report, myCtx *myScenarioCt
 
 func newScenarioCtx() myScenarioCtx {
 	return myScenarioCtx{
-		scenarioReport: report.NewScenario(),
+		scenarioReport: reporters.NewScenario(),
 	}
 }
 
 type myScenarioCtx struct {
 	currentStepStartTime time.Time
-	scenarioReport       report.Scenario
+	scenarioReport       reporters.Scenario
 }
 
 func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err error) {

@@ -14,8 +14,9 @@ func (c *App) GetConcurrency() int {
 	return c.Parallel
 }
 
-func initAppConfig(args argsConfig, cliConfig cliConfig) *App {
+func initAppConfig(args argsConfig, cliConfig cliConfig, mode Mode) *App {
 	c := App{
+		Mode: mode,
 		appDetailsConfig: appDetailsConfig{
 			AppName:        cliConfig.AppName,
 			AppDescription: cliConfig.AppDescription,
@@ -29,8 +30,12 @@ func initAppConfig(args argsConfig, cliConfig cliConfig) *App {
 	c.ReportFormat = cliConfig.ReportFormat
 	c.SlowMotion = cliConfig.SlowMotion
 
-	if args.Run != nil {
+	if mode == RunMode {
 		fillConfigForRunCmd(&c, *args.Run)
+	}
+
+	if mode == ValidationMode {
+		c.Tags = args.Validate.Tags
 	}
 
 	if c.GherkinLocation == "" {
@@ -49,7 +54,7 @@ func initAppConfig(args argsConfig, cliConfig cliConfig) *App {
 }
 
 func fillConfigForRunCmd(c *App, runArgs runCmd) {
-	c.Mode = "run"
+	c.Mode = RunMode
 	c.Tags = runArgs.Tags
 	c.Parallel = runArgs.Parallel
 	c.AppVersion = runArgs.AppVersion
