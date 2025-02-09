@@ -1,0 +1,134 @@
+name: Releases Building CI
+
+on:
+  push:
+    branches:
+      - "releases/*"
+  workflow_dispatch:
+
+env:
+  BRANCH_NAME_REGEX: "^(releases|feat)/"
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+
+permissions:
+  contents: write
+  packages: write
+  issues: write
+  checks: write
+
+
+
+jobs:
+  quality_check:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Install Commitlint
+        run: |
+          yarn init --yes
+          yarn add @commitlint/config-conventional commitlint@latest
+      - name: Validate Commits with Commitlint
+        run: |
+          npx commitlint --from ${{ github.base_ref }} --to ${{ github.sha }} --verbose
+
+      - name: Validate Branch Name
+        run: npx validate-branch-name -r "${{ env.BRANCH_NAME_REGEX }}" -t "${{ env.BRANCH_NAME }}"
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ vars.GO_VERSION }}
+
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+      - name: Run golangci-lint
+        run: golangci-lint run ./...
+
+      - name: Run Unit Tests
+        run: go test ./...
+
+  e2e_tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Launch E2E Tests
+        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e
+
+      - name: Get Test Results
+        if: failure()
+        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
+
+      - name: Upload Test Results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: report.html
+
+      - name: Down Server Container
+        if: always()
+        run: docker compose -f e2e/compose.yml down
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Go Environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ vars.GO_VERSION }}
+
+      - name: Install Dependencies (Optional)
+        run: |
+          go mod tidy
+          go mod download
+
+      - name: Build Go Project
+        run: |
+          make releases
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Run Semantic Release
+        id: semantic_release
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output Semantic Release Results
+        run: |
+          echo "Release version: ${{ steps.semantic_release.outputs.new_release_version }}"
+          echo "Release notes: ${{ steps.semantic_release.outputs.new_release_notes }}"
+      - name: upload artifacts
+        if: steps.semantic_release.outputs.new_release_version != ''
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ steps.semantic_release.outputs.new_release_version }}
+          files: >
+            build/*
+          allow_override: true
+          gzip: false
