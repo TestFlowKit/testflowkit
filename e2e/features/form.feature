@@ -24,8 +24,7 @@ Feature: Form e2e tests
 
   @CHECKBOX
   Scenario: a user can uncheck a checkbox
-    Given I click on test checkbox
-    And the test checkbox should be checked
+    Given I already checked test checkbox
     When I click on test checkbox
     Then the test checkbox should be unchecked
 

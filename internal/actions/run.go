@@ -4,6 +4,7 @@ import (
 	"context"
 	"etoolse/internal/config"
 	"etoolse/internal/steps_definitions/frontend"
+	"etoolse/pkg/gherkinparser"
 	"etoolse/pkg/reporters"
 	"log"
 	"time"
@@ -15,16 +16,25 @@ import (
 func Run(appConfig *config.App) {
 	log.Println("Starting tests execution ...")
 
+	parsedFeatures := gherkinparser.Parse(appConfig.GherkinLocation)
+	features := make([]godog.Feature, len(parsedFeatures))
+	for i, f := range parsedFeatures {
+		features[i] = godog.Feature{
+			Name:     f.Name,
+			Contents: f.Contents,
+		}
+	}
+
+	testReport := reporters.New(appConfig.AppName, appConfig.AppDescription, appConfig.ReportFormat)
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         appConfig.GetConcurrency(),
 		Format:              "pretty",
 		ShowStepDefinitions: false,
 		Tags:                appConfig.Tags,
-		Paths:               []string{appConfig.GherkinLocation},
+		FeatureContents:     features,
 	}
 
-	testReport := reporters.New(appConfig.AppName, appConfig.AppDescription, appConfig.ReportFormat)
 	testSuite := godog.TestSuite{
 		Name:                 appConfig.AppName,
 		Options:              &opts,
