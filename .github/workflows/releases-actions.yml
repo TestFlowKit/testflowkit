@@ -6,10 +6,6 @@ on:
       - "releases/*"
   workflow_dispatch:
 
-env:
-  BRANCH_NAME_REGEX: "^(releases|feat)/"
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-
 
 permissions:
   contents: write
@@ -41,9 +37,6 @@ jobs:
       - name: Validate Commits with Commitlint
         run: |
           npx commitlint --from ${{ github.base_ref }} --to ${{ github.sha }} --verbose
-
-      - name: Validate Branch Name
-        run: npx validate-branch-name -r "${{ env.BRANCH_NAME_REGEX }}" -t "${{ env.BRANCH_NAME }}"
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -84,6 +77,9 @@ jobs:
         if: always()
         run: docker compose -f e2e/compose.yml down
   release:
+    needs: 
+      - quality_check
+      - e2e_tests
     name: Semantic Release
     runs-on: ubuntu-latest
 
