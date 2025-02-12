@@ -12,7 +12,7 @@ func (s steps) elementShouldNotBeVisible() core.TestStep {
 		[]string{`^{string} should not be visible$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(name string) error {
-				element, err := browser.GetElement(ctx.GetCurrentPage(), name)
+				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
 				if err != nil {
 					return err
 				}

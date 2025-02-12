@@ -12,7 +12,7 @@ func (s steps) theFieldShouldContains() core.TestStep {
 		[]string{`^the {string} should be contain "{string}"`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(fieldId, text string) error {
-				input, err := browser.GetElement(ctx.GetCurrentPage(), fieldId)
+				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), fieldId)
 				if err != nil {
 					return err
 				}

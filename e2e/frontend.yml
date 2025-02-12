@@ -4,6 +4,8 @@ global:
       - "button"
     test_checkbox:
       - "#checkbox"
+      - "#rtt"
+      - "input[type='checkbox']"
     test_dropdown:
       - "#select"
     multiple_dropdown:

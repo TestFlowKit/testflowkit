@@ -17,7 +17,7 @@ func (s steps) iSelectXXXIntoDropdown() core.TestStep {
 		[]string{`^I select "{string}" into the {string} dropdown$`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(options, dropdownId string) error {
-				input, err := browser.GetElement(ctx.GetCurrentPage(), formatVar(dropdownId))
+				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
 				if err != nil {
 					return err
 				}

@@ -11,7 +11,7 @@ func (s steps) iClickOn() core.TestStep {
 		[]string{`^I click on {string}$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(label string) error {
-				element, err := browser.GetElement(ctx.GetCurrentPage(), label)
+				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}

@@ -14,7 +14,7 @@ func (s steps) checkCheckboxStatus() core.TestStep {
 	}
 	definition := func(ctx *core.TestSuiteContext) func(string, string) error {
 		return func(checkboxId, status string) error {
-			input, err := browser.GetElement(ctx.GetCurrentPage(), formatVar(checkboxId))
+			input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(checkboxId))
 			if err != nil {
 				return err
 			}

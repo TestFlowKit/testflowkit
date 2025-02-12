@@ -11,7 +11,7 @@ func (s steps) iTypeXXXIntoInput() core.TestStep {
 		[]string{`^I type "{string}" into the {string}`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(text, inputLabel string) error {
-				input, err := browser.GetElement(ctx.GetCurrentPage(), inputLabel)
+				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), inputLabel)
 				if err != nil {
 					return err
 				}
