@@ -1,6 +1,5 @@
 configuration:
   timeout: 15s
-  parralel: 1
   slowMotion: 5s
   gherkin_location: "features"
 
