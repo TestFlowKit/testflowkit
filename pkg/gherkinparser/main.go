@@ -1,7 +1,8 @@
 package gherkinparser
 
 import (
-	"log"
+	"etoolse/pkg/logger"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -19,9 +20,6 @@ func Parse(featureFilesLocation string) []*Feature {
 	macros := getMacros(macroFeatures)
 	featuresContainingMacros, featuresWithoutMacros := separateFeaturesContainingMacrosOrNot(macros, testFeatures)
 
-	log.Println("Features with macro: ", len(featuresContainingMacros))
-	log.Println("Features without macro: ", len(featuresWithoutMacros))
-
 	applyMacros(macros, featuresContainingMacros)
 
 	return slices.Concat(featuresWithoutMacros, featuresContainingMacros)
@@ -30,7 +28,7 @@ func Parse(featureFilesLocation string) []*Feature {
 func getFeaturesAndMacros(featureFilesLocation string) []*Feature {
 	featuresPaths, getFeaturesErr := getFeaturesPaths(featureFilesLocation)
 	if getFeaturesErr != nil {
-		log.Fatal(getFeaturesErr)
+		logger.Fatal("Error getting features paths", getFeaturesErr)
 	}
 
 	var features []*Feature
@@ -50,7 +48,7 @@ func getFeaturesPaths(featureFilesLocation string) ([]string, error) {
 	var featuresPaths []string
 	getFeaturesErr := filepath.Walk(featureFilesLocation, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal("Error getting features paths", err)
 		}
 		if info.IsDir() {
 			return nil
@@ -65,15 +63,15 @@ func getFeaturesPaths(featureFilesLocation string) ([]string, error) {
 func parseFeatureFile(featurePath string) *Feature {
 	fileContent, readFileErr := os.ReadFile(featurePath)
 	if readFileErr != nil {
-		log.Println("Error reading fileContent: ", featurePath)
+		msg := fmt.Sprintf("Error reading fileContent: %s", featurePath)
+		logger.Warn(msg, []string{"Please check the file read permissions"})
 	}
-
 	gherkinDoc, gherkinParseErr := gherkin.ParseGherkinDocument(strings.NewReader(string(fileContent)), func() string {
 		return uuid.Must(uuid.NewV4()).String()
 	})
 
 	if gherkinParseErr != nil {
-		log.Println("Error parsing gherkin document: ", gherkinParseErr)
+		logger.Warn(fmt.Sprintf("Error parsing feature file: %s", featurePath), []string{"Please check the file syntax"})
 		return nil
 	}
 

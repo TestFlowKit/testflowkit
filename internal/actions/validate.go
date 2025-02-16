@@ -4,14 +4,15 @@ import (
 	"etoolse/internal/config"
 	"etoolse/internal/steps_definitions/core"
 	"etoolse/internal/steps_definitions/frontend"
-	"log"
+	"etoolse/pkg/logger"
+	"os"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
 )
 
 func Validate(appConfig *config.App) {
-	log.Println("Validate gherkin files ...")
+	logger.Info("Validate gherkin files ...")
 
 	const concurrency = 5
 	var opts = godog.Options{
@@ -31,14 +32,11 @@ func Validate(appConfig *config.App) {
 		TestSuiteInitializer: validateTestSuiteInitializer(&ctx),
 	}
 
-	status := testSuite.Run()
-	if status != 0 {
-		log.Fatalf("zero status code expected, %d received", status)
-	}
+	testSuite.Run()
 }
 
 func validateScenarioInitializer(ctx *core.ValidatorContext) func(*godog.ScenarioContext) {
-	log.Println("Initializing scenarios for validation ...")
+	logger.Info("Initializing scenarios for validation ...")
 
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitValidationScenarios(sc, ctx)
@@ -48,8 +46,32 @@ func validateScenarioInitializer(ctx *core.ValidatorContext) func(*godog.Scenari
 func validateTestSuiteInitializer(validatorCtx *core.ValidatorContext) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.AfterSuite(func() {
-			log.Println("Errors:")
-			log.Println(validatorCtx.GetErrors())
+			if !validatorCtx.HasErrors() {
+				logger.Success("All is good !")
+				os.Exit(0)
+			}
+
+			if validatorCtx.HasMissingElements() {
+				logger.Error("Elements validation failed", []string{
+					"Elements variables malformed in gherkin files",
+					"Elements variables not defined in the config file",
+				}, []string{
+					"Verify the elements variables in the gherkin files",
+					validatorCtx.GetElementsErrorsFormatted(),
+				})
+			}
+
+			if validatorCtx.HasMissingPages() {
+				logger.Error("Pages validation failed", []string{
+					"Pages variables malformed in gherkin files",
+					"Pages variables not defined in the config file",
+				}, []string{
+					"Verify the pages variables in the gherkin files",
+					validatorCtx.GetPagesErrorsFormatted(),
+				})
+			}
+
+			os.Exit(1)
 		})
 	}
 }

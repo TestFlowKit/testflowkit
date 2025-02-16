@@ -2,6 +2,7 @@ package testsconfig
 
 import (
 	"errors"
+	"etoolse/pkg/logger"
 	"fmt"
 	"log"
 	"net/url"
@@ -21,7 +22,7 @@ func HasAlreadyInitialized() bool {
 
 func Init(fileContent string) {
 	if HasAlreadyInitialized() {
-		log.Println("frontend config already initialized")
+		logger.Info("frontend config already initialized")
 		return
 	}
 	content = fileContent
@@ -40,7 +41,7 @@ func IsPageDefined(pageName string) bool {
 func GetHTMLElementSelectors(name string) ([]string, error) {
 	var selectors []string
 
-	name = wildcardToKey(name)
+	name = GetLabelKey(name)
 
 	path, err := yaml.PathString(fmt.Sprintf("%s.%s", elementsYamlKey, name))
 	if err == nil {
@@ -54,7 +55,7 @@ func GetHTMLElementSelectors(name string) ([]string, error) {
 }
 
 func GetPageURL(page string) (string, error) {
-	page = wildcardToKey(page)
+	page = GetLabelKey(page)
 
 	path, err := yaml.PathString(fmt.Sprintf("%s.%s", pagesYamlKey, page))
 	if err != nil {
@@ -93,13 +94,13 @@ func getBaseURL() string {
 	var baseURL string
 	err = path.Read(strings.NewReader(content), &baseURL)
 	if err != nil {
-		log.Println("base_url not found in config")
+		logger.Info("base_url not found in config")
 		return ""
 	}
 
 	return baseURL
 }
 
-func wildcardToKey(label string) string {
+func GetLabelKey(label string) string {
 	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
 }

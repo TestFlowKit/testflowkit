@@ -3,7 +3,8 @@ package navigation
 import (
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
-	"log"
+	"etoolse/pkg/logger"
+	"fmt"
 )
 
 func (n navigation) iNavigateToPage() core.TestStep {
@@ -13,7 +14,7 @@ func (n navigation) iNavigateToPage() core.TestStep {
 			return func(page string) error {
 				url, err := testsconfig.GetPageURL(page)
 				if err != nil {
-					log.Fatalf("Url for page %s not configured", page)
+					logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
 					return err
 				}
 				ctx.OpenNewPage(url)

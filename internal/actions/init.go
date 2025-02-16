@@ -3,7 +3,7 @@ package actions
 import (
 	_ "embed"
 	"etoolse/internal/config"
-	"log"
+	"etoolse/pkg/logger"
 	"os"
 	"text/template"
 )
@@ -21,14 +21,14 @@ type cliConfigVars struct {
 }
 
 func Init(appConfig *config.App) {
-	log.Println("init cmd config ...")
+	logger.Info("init cmd config ...")
 
 	if _, err := os.Stat("cmd.yml"); err == nil {
-		log.Fatal("cmd already initialized")
+		logger.Fatal("cmd already initialized", err)
 	}
 
 	if _, err := os.Stat("frontend.yml"); err == nil {
-		log.Fatal("cmd already initialized")
+		logger.Fatal("cmd already initialized", err)
 	}
 
 	vars := cliConfigVars{
@@ -39,7 +39,7 @@ func Init(appConfig *config.App) {
 
 	tmpl, err := template.New("cmd").Parse(cliConfigTemplate)
 	if err != nil {
-		log.Fatal("failed to parse cmd config template: ", err)
+		logger.Fatal("failed to parse cmd config template: ", err)
 	}
 
 	f, err := os.Create("cmd.yml")
@@ -50,14 +50,14 @@ func Init(appConfig *config.App) {
 	err = tmpl.Execute(f, vars)
 	if err != nil {
 		f.Close()
-		log.Fatal("failed to execute cmd config template: ", err)
+		logger.Fatal("failed to execute cmd config template: ", err)
 	}
 
 	err = os.WriteFile("frontend.yml", []byte(frontTestsConfigTemplate), 0600)
 	if err != nil {
 		f.Close()
 		os.Remove("cmd.yml")
-		log.Fatal("failed to write frontend config: ", err)
+		logger.Fatal("failed to write frontend config: ", err)
 	}
 
 	f.Close()

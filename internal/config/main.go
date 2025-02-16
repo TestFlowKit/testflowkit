@@ -2,7 +2,7 @@ package config
 
 import (
 	"etoolse/internal/config/testsconfig"
-	"log"
+	"etoolse/pkg/logger"
 	"os"
 
 	"github.com/alexflint/go-arg"
@@ -45,7 +45,7 @@ func Init() *App {
 func getCLIFileConfig(filePath string) cliConfig {
 	configFileContent, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatal("CLI config file not found")
+		logger.Fatal("CLI config file not found", err)
 	}
 	cliFileConfig := cliConfig{}
 
@@ -63,7 +63,7 @@ func getAppArgs() argsConfig {
 func initFrontTestsConfig(filePath string) {
 	configFile, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatal("config file not found")
+		logger.Fatal("config file not found", err)
 	}
 
 	testsconfig.Init(string(configFile))

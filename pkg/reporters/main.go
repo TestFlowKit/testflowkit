@@ -1,9 +1,17 @@
 package reporters
 
 import (
+	"etoolse/pkg/logger"
 	"fmt"
 	"log"
 	"time"
+)
+
+type scenarioResult string
+
+const (
+	succeeded scenarioResult = "succeeded"
+	failed    scenarioResult = "failed"
 )
 
 type Report struct {
@@ -14,15 +22,20 @@ type Report struct {
 }
 
 func (r *Report) AddScenario(sc Scenario) {
-	result := "succeeded"
+	r.scenarios = append(r.scenarios, sc)
 
+	result := succeeded
 	if len(sc.err) > 0 {
-		result = "failed"
+		result = failed
 	}
 
 	addedScenarioLoggedMessage := fmt.Sprintf("'%s' %s in %fs", sc.title, result, sc.duration.Seconds())
-	log.Println(addedScenarioLoggedMessage)
-	r.scenarios = append(r.scenarios, sc)
+
+	if result == failed {
+		logger.Error(addedScenarioLoggedMessage, nil, nil)
+	} else {
+		logger.Success(addedScenarioLoggedMessage)
+	}
 }
 
 func (r *Report) Start() {

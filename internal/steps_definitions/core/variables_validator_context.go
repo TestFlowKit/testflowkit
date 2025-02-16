@@ -1,43 +1,95 @@
 package core
 
 import (
+	"etoolse/internal/config/testsconfig"
+	"etoolse/pkg/logger"
+	"fmt"
 	"slices"
+	"strings"
 	"sync"
 )
 
 var addLock sync.Mutex
 
+const categoryTypeIdent = 2
+const variableIdent = 3
+
 type ValidatorContext struct {
-	missingPageErrors    []string
-	missingElementErrors []string
+	missingPages    []string
+	missingElements []string
 }
 
-func (vc *ValidatorContext) AddMissingPage(name string) {
-	if slices.Contains(vc.missingPageErrors, name) {
+func (vc *ValidatorContext) addMissingPage(label string) {
+	key := testsconfig.GetLabelKey(label)
+
+	if slices.Contains(vc.missingPages, key) {
 		return
 	}
-	vc.missingPageErrors = append(vc.missingPageErrors, name)
+	vc.missingPages = append(vc.missingPages, key)
 }
 
-func (vc *ValidatorContext) AddMissingElement(name string) {
-	if slices.Contains(vc.missingElementErrors, name) {
+func (vc *ValidatorContext) addMissingElement(label string) {
+	key := testsconfig.GetLabelKey(label)
+	if slices.Contains(vc.missingElements, key) {
 		return
 	}
-	vc.missingElementErrors = append(vc.missingElementErrors, name)
+	vc.missingElements = append(vc.missingElements, key)
 }
 
 func (vc *ValidatorContext) HasErrors() bool {
-	return len(vc.missingPageErrors) > 0 || len(vc.missingElementErrors) > 0
+	return vc.HasMissingPages() || vc.HasMissingElements()
 }
 
-func (vc *ValidatorContext) GetErrors() []string {
-	return append(vc.missingPageErrors, vc.missingElementErrors...)
+func (vc *ValidatorContext) HasMissingPages() bool {
+	return len(vc.missingPages) > 0
+}
+
+func (vc *ValidatorContext) HasMissingElements() bool {
+	return len(vc.missingElements) > 0
+}
+
+func (vc *ValidatorContext) GetElementsErrorsFormatted() string {
+	lines := []string{
+		"Add the following elements to the configuration file:",
+		fmt.Sprintf("%sglobal:", logger.GetIndents(1)),
+		fmt.Sprintf("%selements:", logger.GetIndents(categoryTypeIdent)),
+		fmt.Sprintf("%s...", logger.GetIndents(variableIdent)),
+	}
+
+	idnt := logger.GetIndents(variableIdent)
+	elementFormat := idnt + "%s:\n" + idnt + " -"
+
+	for _, element := range vc.missingElements {
+		lines = append(lines, fmt.Sprintf(elementFormat, element))
+	}
+	return strings.Join(lines, "\n")
+}
+
+func (vc *ValidatorContext) GetPagesErrorsFormatted() string {
+	lines := []string{
+		"Add the following pages to the configuration file:",
+		fmt.Sprintf("%sglobal:", logger.GetIndents(1)),
+		fmt.Sprintf("%spages:", logger.GetIndents(categoryTypeIdent)),
+		fmt.Sprintf("%s...", logger.GetIndents(variableIdent)),
+	}
+
+	pageFormat := logger.GetIndents(variableIdent) + "%s:"
+
+	for _, page := range vc.missingPages {
+		lines = append(lines, fmt.Sprintf(pageFormat, page))
+	}
+	return strings.Join(lines, "\n")
 }
 
 func (vc *ValidatorContext) AddValidationErrors(errors ValidationErrors) {
 	addLock.Lock()
 	defer addLock.Unlock()
 
-	vc.missingPageErrors = append(vc.missingPageErrors, errors.missingPages...)
-	vc.missingElementErrors = append(vc.missingElementErrors, errors.missingElements...)
+	for _, mp := range errors.missingPages {
+		vc.addMissingPage(mp)
+	}
+
+	for _, me := range errors.missingElements {
+		vc.addMissingElement(me)
+	}
 }

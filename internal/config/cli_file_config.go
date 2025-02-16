@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"etoolse/pkg/logger"
 )
 
 const defaultCliConfigPath = "cliConfig.yml"
@@ -45,8 +45,7 @@ func (c *cliConfig) getTestingConfig(file string) testingConfig {
 	config := testingConfig{}
 	err := getConfig(file, testingYamlPath, &config)
 	if err != nil {
-		log.Println(err)
-		log.Panicln("testsuite config getting failed")
+		logger.Fatal("testing config getting failed", err)
 	}
 
 	return config
@@ -56,8 +55,7 @@ func (c *cliConfig) getReportingConfig(file string) reportingConfig {
 	config := reportingConfig{}
 	err := getConfig(file, reportingYamlPath, &config)
 	if err != nil {
-		log.Println(err)
-		log.Panicln("reporting config getting failed")
+		logger.Fatal("reporting config getting failed", err)
 	}
 	return config
 }

@@ -5,7 +5,8 @@ import (
 	"etoolse/internal/browser/common"
 	"etoolse/internal/browser/rod"
 	"etoolse/internal/config/testsconfig"
-	"log"
+	"etoolse/pkg/logger"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -45,7 +46,10 @@ func getElementBySelectors(page common.Page, potentialSelectors []string) common
 func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p common.Page, sel string, ch chan<- common.Element) {
 	element, err := p.GetOneBySelector(sel)
 	if err != nil {
-		log.Println("no element found with selector ", sel)
+		logger.Warn(fmt.Sprintf("element not found with selector %s", sel), []string{
+			"Please fix the selector in the configuration file",
+			"Please verify that page is accessible",
+		})
 	}
 
 	if element != nil {
@@ -62,17 +66,6 @@ func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p common.Page, sel 
 	}
 }
 
-func GetElementCount(page common.Page, label string) int {
-	potentialSelectors, _ := testsconfig.GetHTMLElementSelectors(label)
-	selector := getActiveSelector(page, potentialSelectors)
-	elements, err := page.GetAllBySelector(selector)
-	if err != nil {
-		log.Fatal("no elements found with selector ", selector)
-	}
-
-	return len(elements)
-}
-
 func getActiveSelector(page common.Page, potentialSelectors []string) string {
 	ch := make(chan string, 1)
 	defer close(ch)
@@ -87,6 +80,20 @@ func getActiveSelector(page common.Page, potentialSelectors []string) string {
 	}
 
 	return <-ch
+}
+
+func GetElementCount(page common.Page, label string) int {
+	potentialSelectors, _ := testsconfig.GetHTMLElementSelectors(label)
+	selector := getActiveSelector(page, potentialSelectors)
+	elements, err := page.GetAllBySelector(selector)
+	if err != nil {
+		msg := fmt.Sprintf("Error getting elements with selector %s", selector)
+		logger.Error(msg, []string{
+			"Incorrect selector defined in the configuration file",
+		}, []string{"Check the selector in the configuration file"})
+	}
+
+	return len(elements)
 }
 
 type contextWrapper struct {

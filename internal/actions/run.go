@@ -5,8 +5,9 @@ import (
 	"etoolse/internal/config"
 	"etoolse/internal/steps_definitions/frontend"
 	"etoolse/pkg/gherkinparser"
+	"etoolse/pkg/logger"
 	"etoolse/pkg/reporters"
-	"log"
+	"os"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -14,7 +15,7 @@ import (
 )
 
 func Run(appConfig *config.App) {
-	log.Println("Starting tests execution ...")
+	logger.Info("Starting tests execution ...")
 
 	parsedFeatures := gherkinparser.Parse(appConfig.GherkinLocation)
 	features := make([]godog.Feature, len(parsedFeatures))
@@ -42,11 +43,29 @@ func Run(appConfig *config.App) {
 		ScenarioInitializer:  scenarioInitializer(appConfig, &testReport),
 	}
 
-	log.Println("Running tests ...")
+	logger.Info("Running tests ...")
 	status := testSuite.Run()
-	if status != 0 {
-		log.Fatalf("zero status code expected, %d received", status)
+	if status == 0 {
+		logger.Success("All tests passed")
+	} else {
+		logger.Error("Some tests failed", []string{
+			"some selectors may be missing in the configuration file",
+			"Some selectors may be malformed",
+			"Some selectors may no longer be available",
+			"Some selectors may be incorrect",
+			"Tests steps may be malformed",
+		}, []string{
+			"please check the configuration file",
+			"please check the test steps",
+			"please verify the availability of the selectors",
+			"please verify the correctness of the selectors",
+			"please verify the correctness of the test steps",
+			"please see logs for more details",
+			"please see the test report for more details",
+		})
 	}
+
+	os.Exit(status)
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
@@ -58,15 +77,14 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 		suiteContext.AfterSuite(func() {
 			if testReport.HasScenarios() {
 				testReport.Write()
-				log.Println("Tests execution finished")
 			} else {
-				log.Println("No scenarios executed")
+				logger.Info("No scenarios executed")
 			}
 		})
 	}
 }
 func scenarioInitializer(config *config.App, testReport *reporters.Report) func(*godog.ScenarioContext) {
-	log.Println("Initializing scenario for test running ...")
+	logger.Info("Initializing scenario for test running ...")
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitTestRunnerScenarios(sc, config)
 		myCtx := newScenarioCtx()

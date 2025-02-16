@@ -3,13 +3,14 @@ package main
 import (
 	"etoolse/internal/actions"
 	"etoolse/internal/config"
-	"log"
+	"etoolse/pkg/logger"
+	"fmt"
 )
 
 func main() {
 	cliConfig := config.Init()
 	if cliConfig == nil {
-		log.Fatal("no mode specified")
+		logger.Fatal("no mode specified", nil)
 	}
 
 	modes := map[config.Mode]actions.Type{
@@ -21,25 +22,25 @@ func main() {
 	if mode, ok := modes[cliConfig.Mode]; ok {
 		mode(cliConfig)
 	} else {
-		log.Fatalf("unknown mode: %s", cliConfig.Mode)
+		logger.Fatal(fmt.Sprintf("unknown mode: %s", cliConfig.Mode), nil)
 	}
 }
 
 func runMode(appConfig *config.App) {
-	log.Println("--- configuration resume ---")
+	logger.Info("--- configuration resume ---")
 
-	log.Println("app name: ", appConfig.AppName)
-	log.Println("app description: ", appConfig.AppDescription)
-	log.Println("app version: ", appConfig.AppVersion)
-	log.Println("app tags: ", appConfig.Tags)
-	log.Println("app gherkin location: ", appConfig.GherkinLocation)
-	log.Println("app reporters format: ", appConfig.ReportFormat)
-	log.Println("app concurrency: ", appConfig.GetConcurrency())
-	log.Println("app slow motion: ", appConfig.GetSlowMotion())
-	log.Println("app test suite timeout: ", appConfig.Timeout)
-	log.Println("app headless mode: ", appConfig.IsHeadlessModeEnabled())
+	logger.InfoFf("app name: %s", appConfig.AppName)
+	logger.InfoFf("app description: %s", appConfig.AppDescription)
+	logger.InfoFf("app version: %s", appConfig.AppVersion)
+	logger.InfoFf("app tags: %s", appConfig.Tags)
+	logger.InfoFf("app gherkin location: %s", appConfig.GherkinLocation)
+	logger.InfoFf("app reporters format: %s", appConfig.ReportFormat)
+	logger.InfoFf("app concurrency: %d", appConfig.GetConcurrency())
+	logger.InfoFf("app slow motion: %s", appConfig.GetSlowMotion())
+	logger.InfoFf("app test suite timeout: %s", appConfig.Timeout)
+	logger.InfoFf("app headless mode: %t", appConfig.IsHeadlessModeEnabled())
 
-	log.Print("--- configuration resume end ---\n\n")
+	logger.Info("--- configuration resume end ---\n\n")
 
 	actions.Run(appConfig)
 }
