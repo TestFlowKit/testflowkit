@@ -25,11 +25,11 @@ func (r *Report) AddScenario(sc Scenario) {
 	r.scenarios = append(r.scenarios, sc)
 
 	result := succeeded
-	if len(sc.err) > 0 {
+	if len(sc.ErrorMsg) > 0 {
 		result = failed
 	}
 
-	addedScenarioLoggedMessage := fmt.Sprintf("'%s' %s in %fs", sc.title, result, sc.duration.Seconds())
+	addedScenarioLoggedMessage := fmt.Sprintf("'%s' %s in %fs", sc.Title, result, sc.Duration.Seconds())
 
 	if result == failed {
 		logger.Error(addedScenarioLoggedMessage, nil, nil)
@@ -44,10 +44,10 @@ func (r *Report) Start() {
 
 func (r *Report) Write() {
 	r.formatter.WriteReport(testSuiteDetails{
-		appName:    r.appName,
-		appVersion: r.appVersion,
-		startDate:  r.startDate,
-		scenarios:  r.scenarios,
+		AppName:    r.appName,
+		AppVersion: r.appVersion,
+		StartDate:  r.startDate,
+		Scenarios:  r.scenarios,
 	})
 }
 
