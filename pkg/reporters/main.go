@@ -19,19 +19,17 @@ type Report struct {
 	scenarios           []Scenario
 	startDate           time.Time
 	formatter           formatter
+	AreAllTestsPassed   bool
 }
 
 func (r *Report) AddScenario(sc Scenario) {
 	r.scenarios = append(r.scenarios, sc)
 
-	result := succeeded
-	if len(sc.ErrorMsg) > 0 {
-		result = failed
-	}
-
+	result := sc.Result
 	addedScenarioLoggedMessage := fmt.Sprintf("'%s' %s in %fs", sc.Title, result, sc.Duration.Seconds())
 
 	if result == failed {
+		r.AreAllTestsPassed = false
 		logger.Error(addedScenarioLoggedMessage, nil, nil)
 	} else {
 		logger.Success(addedScenarioLoggedMessage)
@@ -58,9 +56,10 @@ func (r *Report) HasScenarios() bool {
 func New(appName, appVersion string, formatType string) Report {
 	reportFormatter := getFormatter(formatType)
 	return Report{
-		formatter:  reportFormatter,
-		appName:    appName,
-		appVersion: appVersion,
+		formatter:         reportFormatter,
+		appName:           appName,
+		appVersion:        appVersion,
+		AreAllTestsPassed: true,
 	}
 }
 

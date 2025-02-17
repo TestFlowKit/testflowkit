@@ -16,7 +16,7 @@ type Scenario struct {
 	Duration             time.Duration
 	FmtDuration          string
 	HTMLStatusColorClass string
-	Result               string
+	Result               scenarioResult
 }
 
 func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration time.Duration, err error) {
@@ -26,9 +26,9 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 
 	getColor := func(status godog.StepResultStatus) string {
 		switch status {
-		case 0:
+		case godog.StepPassed:
 			return "green"
-		case 1:
+		case godog.StepFailed:
 			return "red"
 		default:
 			return "gray"
@@ -54,9 +54,9 @@ func (s *Scenario) End() {
 	durationInS := duration.Seconds()
 	durationInS = math.Max(math.Ceil(durationInS), durationInS)
 
-	result, color, err := "FAILED", "red", s.ErrorMsg
-	if err == "" {
-		result, color, err = "SUCCEEDED", "green", "-"
+	result, color, err := failed, "red", s.ErrorMsg
+	if len(err) == 0 {
+		result, color, err = succeeded, "green", "-"
 	}
 
 	s.ErrorMsg = err

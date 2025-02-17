@@ -57,10 +57,10 @@ func (ts *testSuiteDetails) resume() {
 func (ts *testSuiteDetails) getScenarioResults() (int, int) {
 	var succeedSc, failedSc int
 	for _, sc := range ts.Scenarios {
-		if len(sc.ErrorMsg) > 0 {
-			failedSc++
-		} else {
+		if sc.Result == succeeded {
 			succeedSc++
+		} else {
+			failedSc++
 		}
 	}
 	return succeedSc, failedSc

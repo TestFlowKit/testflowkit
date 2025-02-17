@@ -44,28 +44,28 @@ func Run(appConfig *config.App) {
 	}
 
 	logger.Info("Running tests ...")
-	status := testSuite.Run()
-	if status == 0 {
+	testSuite.Run()
+	if testReport.AreAllTestsPassed {
 		logger.Success("All tests passed")
-	} else {
-		logger.Error("Some tests failed", []string{
-			"some selectors may be missing in the configuration file",
-			"Some selectors may be malformed",
-			"Some selectors may no longer be available",
-			"Some selectors may be incorrect",
-			"Tests steps may be malformed",
-		}, []string{
-			"please check the configuration file",
-			"please check the test steps",
-			"please verify the availability of the selectors",
-			"please verify the correctness of the selectors",
-			"please verify the correctness of the test steps",
-			"please see logs for more details",
-			"please see the test report for more details",
-		})
+		os.Exit(0)
 	}
+	logger.Error("Some tests failed", []string{
+		"some selectors may be missing in the configuration file",
+		"Some selectors may be malformed",
+		"Some selectors may no longer be available",
+		"Some selectors may be incorrect",
+		"Tests steps may be malformed",
+	}, []string{
+		"please check the configuration file",
+		"please check the test steps",
+		"please verify the availability of the selectors",
+		"please verify the correctness of the selectors",
+		"please verify the correctness of the test steps",
+		"please see logs for more details",
+		"please see the test report for more details",
+	})
 
-	os.Exit(status)
+	os.Exit(1)
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
