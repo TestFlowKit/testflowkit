@@ -10,6 +10,7 @@ import (
 )
 
 var addLock sync.Mutex
+var addStepLock sync.Mutex
 
 const categoryTypeIdent = 2
 const variableIdent = 3
@@ -17,6 +18,7 @@ const variableIdent = 3
 type ValidatorContext struct {
 	missingPages    []string
 	missingElements []string
+	undefinedSteps  []string
 }
 
 func (vc *ValidatorContext) addMissingPage(label string) {
@@ -37,7 +39,7 @@ func (vc *ValidatorContext) addMissingElement(label string) {
 }
 
 func (vc *ValidatorContext) HasErrors() bool {
-	return vc.HasMissingPages() || vc.HasMissingElements()
+	return vc.HasMissingPages() || vc.HasMissingElements() || vc.HasUndefinedSteps()
 }
 
 func (vc *ValidatorContext) HasMissingPages() bool {
@@ -46,6 +48,14 @@ func (vc *ValidatorContext) HasMissingPages() bool {
 
 func (vc *ValidatorContext) HasMissingElements() bool {
 	return len(vc.missingElements) > 0
+}
+
+func (vc *ValidatorContext) HasUndefinedSteps() bool {
+	return len(vc.undefinedSteps) > 0
+}
+
+func (vc *ValidatorContext) GetUndefinedSteps() []string {
+	return vc.undefinedSteps
 }
 
 func (vc *ValidatorContext) GetElementsErrorsFormatted() string {
@@ -92,4 +102,15 @@ func (vc *ValidatorContext) AddValidationErrors(errors ValidationErrors) {
 	for _, me := range errors.missingElements {
 		vc.addMissingElement(me)
 	}
+}
+
+func (vc *ValidatorContext) AddUndefinedStep(text string) {
+	addStepLock.Lock()
+	defer addStepLock.Unlock()
+
+	if slices.Contains(vc.undefinedSteps, text) {
+		return
+	}
+
+	vc.undefinedSteps = append(vc.undefinedSteps, text)
 }

@@ -1,11 +1,15 @@
 package actions
 
 import (
+	"context"
 	"etoolse/internal/config"
 	"etoolse/internal/steps_definitions/core"
 	"etoolse/internal/steps_definitions/frontend"
+	"etoolse/pkg/gherkinparser"
 	"etoolse/pkg/logger"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
@@ -14,14 +18,23 @@ import (
 func Validate(appConfig *config.App) {
 	logger.Info("Validate gherkin files ...")
 
+	parsedFeatures := gherkinparser.Parse(appConfig.GherkinLocation)
+	features := make([]godog.Feature, len(parsedFeatures))
+	for i, f := range parsedFeatures {
+		features[i] = godog.Feature{
+			Name:     f.Name,
+			Contents: f.Contents,
+		}
+	}
+
 	const concurrency = 5
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         concurrency,
-		Format:              "pretty",
 		ShowStepDefinitions: false,
+		Format:              "pretty",
 		Tags:                appConfig.Tags,
-		Paths:               []string{appConfig.GherkinLocation},
+		FeatureContents:     features,
 	}
 
 	ctx := core.ValidatorContext{}
@@ -40,6 +53,16 @@ func validateScenarioInitializer(ctx *core.ValidatorContext) func(*godog.Scenari
 
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitValidationScenarios(sc, ctx)
+		sc.StepContext().After(validateAfterStepHookInitializer(ctx))
+	}
+}
+
+func validateAfterStepHookInitializer(vCtx *core.ValidatorContext) godog.AfterStepHook {
+	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
+		if status == godog.StepUndefined {
+			vCtx.AddUndefinedStep(st.Text)
+		}
+		return ctx, err
 	}
 }
 
@@ -69,6 +92,22 @@ func validateTestSuiteInitializer(validatorCtx *core.ValidatorContext) func(*god
 					"Verify the pages variables in the gherkin files",
 					validatorCtx.GetPagesErrorsFormatted(),
 				})
+			}
+
+			if validatorCtx.HasUndefinedSteps() {
+				indent := 3
+				indents := logger.GetIndents(indent)
+				steps := strings.Join(validatorCtx.GetUndefinedSteps(), indents)
+				msg := fmt.Sprintf("this is the list of undefined steps: \n%s%s", indents, steps)
+				logger.Error("Steps validation failed",
+					[]string{
+						"Steps are malformed in the gherkin files",
+						msg,
+					},
+					[]string{
+						"Verify the steps in the gherkin files",
+						"Please refer to documentation for complete list of steps",
+					})
 			}
 
 			os.Exit(1)
