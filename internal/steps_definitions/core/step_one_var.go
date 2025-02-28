@@ -1,9 +1,12 @@
 package core
 
+import "etoolse/shared"
+
 type stepOneVar[T stepSupportedTypes] struct {
 	sentences  []string
 	definition func(*TestSuiteContext) func(T) error
 	validator  func(T) ValidationErrors
+	doc        StepDefDocParams
 }
 
 func (s stepOneVar[T]) GetSentences() []string {
@@ -12,6 +15,16 @@ func (s stepOneVar[T]) GetSentences() []string {
 
 func (s stepOneVar[T]) GetDefinition(ctx *TestSuiteContext) any {
 	return s.definition(ctx)
+}
+
+func (s stepOneVar[T]) GetDocumentation() shared.StepDocumentation {
+	return shared.StepDocumentation{
+		Sentence:    s.sentences[0],
+		Description: s.doc.Description,
+		Example:     s.doc.Example,
+		Category:    s.doc.Category,
+		Variables:   s.doc.Variables,
+	}
 }
 
 func (s stepOneVar[T]) Validate(vc *ValidatorContext) any {
@@ -27,12 +40,16 @@ func (s stepOneVar[T]) Validate(vc *ValidatorContext) any {
 	}
 }
 
-func NewStepWithOneVariable[T stepSupportedTypes](sentences []string,
+func NewStepWithOneVariable[T stepSupportedTypes](
+	sentences []string,
 	definition func(*TestSuiteContext) func(T) error,
-	validator func(T) ValidationErrors) TestStep {
+	validator func(T) ValidationErrors,
+	documentation StepDefDocParams,
+) TestStep {
 	return stepOneVar[T]{
 		sentences,
 		definition,
 		validator,
+		documentation,
 	}
 }
