@@ -5,6 +5,7 @@ import (
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
 	"etoolse/internal/utils"
+	"etoolse/shared"
 	"fmt"
 )
 
@@ -33,6 +34,15 @@ func (s steps) iSelectXXXIntoDropdown() core.TestStep {
 			}
 
 			return vc
+		},
+		core.StepDefDocParams{
+			Description: "selects the specified options into the dropdown.",
+			Variables: []shared.StepVariable{
+				{Name: "options", Description: "The options to select.", Type: shared.DocVarTypeString},
+				{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
+			},
+			Example:  `When I select "USA,Canada" into the "country" dropdown`,
+			Category: shared.Form,
 		},
 	)
 }

@@ -4,6 +4,7 @@ import (
 	"etoolse/internal/browser"
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 	"reflect"
 )
@@ -40,8 +41,17 @@ func (s steps) checkCheckboxStatus() core.TestStep {
 	}
 
 	return core.NewStepWithTwoVariables(
-		[]string{`^the {string} checkbox should be (checked|unchecked)`},
+		[]string{`the {string} checkbox should be (checked|unchecked)`},
 		definition,
 		validator,
+		core.StepDefDocParams{
+			Description: "checks if the checkbox is checked or unchecked.",
+			Variables: []shared.StepVariable{
+				{Name: "checkboxId", Description: "The id of the checkbox.", Type: shared.DocVarTypeString},
+				{Name: "status", Description: "The status of the checkbox.", Type: shared.DocVarTypeEnum("checked", "unchecked")},
+			},
+			Example:  `Then the "terms" checkbox should be checked`,
+			Category: shared.Form,
+		},
 	)
 }

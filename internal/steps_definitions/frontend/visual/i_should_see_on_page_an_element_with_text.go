@@ -2,6 +2,7 @@ package visual
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 )
 
@@ -32,5 +33,14 @@ func (s steps) iShouldSeeElementWhichContains() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "checks if a link, button or element is visible and contains a specific text.",
+			Variables: []shared.StepVariable{
+				{Name: "elementLabel", Description: "The label of the element to check.", Type: shared.DocVarTypeString},
+				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
+			},
+			Example:  "Then I should see a button which contains \"Submit\"",
+			Category: shared.Visual,
+		},
 	)
 }

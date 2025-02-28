@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 )
 
 func (n navigation) iOpenNewPrivateBrowserTab() core.TestStep {
@@ -14,5 +15,11 @@ func (n navigation) iOpenNewPrivateBrowserTab() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "opens a new private browser tab.",
+			Variables:   nil,
+			Example:     "Given I open a new private browser tab",
+			Category:    shared.Navigation,
+		},
 	)
 }

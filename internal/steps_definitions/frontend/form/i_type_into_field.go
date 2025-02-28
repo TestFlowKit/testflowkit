@@ -4,6 +4,7 @@ import (
 	"etoolse/internal/browser"
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 )
 
 func (s steps) iTypeXXXIntoInput() core.TestStep {
@@ -25,6 +26,15 @@ func (s steps) iTypeXXXIntoInput() core.TestStep {
 			}
 
 			return vc
+		},
+		core.StepDefDocParams{
+			Description: "types the specified text into the input.",
+			Variables: []shared.StepVariable{
+				{Name: "text", Description: "The text to type.", Type: shared.DocVarTypeString},
+				{Name: "inputLabel", Description: "The label of the input.", Type: shared.DocVarTypeString},
+			},
+			Example:  `When I type "John" into the "username field"`,
+			Category: shared.Form,
 		},
 	)
 }

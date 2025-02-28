@@ -4,6 +4,7 @@ import (
 	"etoolse/internal/browser"
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 )
 
@@ -31,6 +32,14 @@ func (s steps) elementShouldBeVisible() core.TestStep {
 			}
 
 			return vc
+		},
+		core.StepDefDocParams{
+			Description: "checks if an element is visible.",
+			Variables: []shared.StepVariable{
+				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
+			},
+			Example:  "Then Submit button should be visible",
+			Category: shared.Visual,
 		},
 	)
 }

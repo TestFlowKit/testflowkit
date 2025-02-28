@@ -2,6 +2,7 @@ package keyboard
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 	"strings"
 
@@ -39,5 +40,13 @@ func (k keyboardSteps) iPressButton() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "presses a button on the keyboard.",
+			Variables: []shared.StepVariable{
+				{Name: "button", Description: "The button to press.", Type: shared.DocVarTypeEnum(supportedKeys...)},
+			},
+			Example:  "Then I press the \"enter\" button",
+			Category: shared.Keyboard,
+		},
 	)
 }

@@ -2,6 +2,7 @@ package table
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
@@ -9,6 +10,11 @@ import (
 )
 
 func (s steps) tableShouldContainsTheFollowingHeaders() core.TestStep {
+	example := `
+	When I should see a table with the following headers
+	| Name | Age |
+	`
+
 	return core.NewStepWithOneVariable(
 		[]string{`^I should see a table with the following headers$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
@@ -23,5 +29,13 @@ func (s steps) tableShouldContainsTheFollowingHeaders() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "checks if a table contains the following headers.",
+			Variables: []shared.StepVariable{
+				{Name: "table", Description: "The table containing the headers to check.", Type: shared.DocVarTypeTable},
+			},
+			Example:  example,
+			Category: shared.Visual,
+		},
 	)
 }

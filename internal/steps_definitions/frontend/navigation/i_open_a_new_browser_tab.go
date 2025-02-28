@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 )
 
 func (n navigation) iOpenNewBrowserTab() core.TestStep {
@@ -14,5 +15,11 @@ func (n navigation) iOpenNewBrowserTab() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "opens a new browser tab.",
+			Variables:   nil,
+			Example:     "Given I open a new browser tab",
+			Category:    shared.Navigation,
+		},
 	)
 }

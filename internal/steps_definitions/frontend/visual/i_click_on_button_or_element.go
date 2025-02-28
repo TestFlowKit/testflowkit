@@ -4,6 +4,7 @@ import (
 	"etoolse/internal/browser"
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 )
 
 func (s steps) iClickOn() core.TestStep {
@@ -24,6 +25,14 @@ func (s steps) iClickOn() core.TestStep {
 				vc.AddMissingElement(label)
 			}
 			return vc
+		},
+		core.StepDefDocParams{
+			Description: "clicks on a button or element.",
+			Variables: []shared.StepVariable{
+				{Name: "label", Description: "The label of the button or element to click on.", Type: shared.DocVarTypeString},
+			},
+			Example:  "When I click on \"Submit button\"",
+			Category: shared.Visual,
 		},
 	)
 }

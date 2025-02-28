@@ -2,6 +2,7 @@ package visual
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 )
 
@@ -19,5 +20,14 @@ func (s steps) iClickOnElementWhichContains() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "clicks on an element which contains a specific text.",
+			Variables: []shared.StepVariable{
+				{Name: "label", Description: "The label of the element to click on.", Type: shared.DocVarTypeString},
+				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
+			},
+			Example:  "When I click on \"Submit button\" which contains \"Submit\"",
+			Category: shared.Visual,
+		},
 	)
 }

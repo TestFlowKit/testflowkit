@@ -2,6 +2,7 @@ package visual
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 	"strings"
 )
@@ -22,5 +23,13 @@ func (s steps) iShouldSeeOnPage() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "checks if a word is visible on the page.",
+			Variables: []shared.StepVariable{
+				{Name: "word", Description: "The word to check.", Type: shared.DocVarTypeString},
+			},
+			Example:  "Then I should see \"Submit\" on the page",
+			Category: shared.Visual,
+		},
 	)
 }

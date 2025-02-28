@@ -3,6 +3,7 @@ package navigation
 import (
 	"etoolse/internal/config/testsconfig"
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 	"fmt"
 	"strings"
 )
@@ -34,6 +35,14 @@ func (n navigation) iShouldBeNavigatedToPage() core.TestStep {
 			}
 
 			return vc
+		},
+		core.StepDefDocParams{
+			Description: "checks if the user is navigated to a page.",
+			Variables: []shared.StepVariable{
+				{Name: "pageName", Description: "The name of the page to navigate to.", Type: shared.DocVarTypeString},
+			},
+			Example:  "Then I should be navigated to \"Home\" page",
+			Category: shared.Navigation,
 		},
 	)
 }

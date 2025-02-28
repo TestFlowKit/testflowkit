@@ -2,6 +2,7 @@ package table
 
 import (
 	"etoolse/internal/steps_definitions/core"
+	"etoolse/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
@@ -10,6 +11,11 @@ import (
 
 // TODO: click on cell instead of row
 func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
+	const example = `
+	When I click on the row containing the following elements
+	| Name | Age |
+	| John | 30  |
+	`
 	return core.NewStepWithOneVariable(
 		[]string{`^I click on the row containing the following elements$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
@@ -35,5 +41,13 @@ func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 			}
 		},
 		nil,
+		core.StepDefDocParams{
+			Description: "clicks on the row containing the following elements.",
+			Variables: []shared.StepVariable{
+				{Name: "table", Description: "The table containing the elements to click on.", Type: shared.DocVarTypeTable},
+			},
+			Example:  example,
+			Category: shared.Visual,
+		},
 	)
 }
