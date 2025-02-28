@@ -27,4 +27,4 @@ cli.yml
 build/
 dist/
 .DS_Store
-.idea/*
+**/.idea/*

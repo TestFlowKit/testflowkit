@@ -21,6 +21,9 @@ run_e2e:
 run_e2e_server:
 	go run e2e/server/main.go
 
+generate_doc:
+	go run scripts/doc_generator/main.go
+	
 .PHONY: clean
 clean:
 	@echo "Cleaning up build directory..."
