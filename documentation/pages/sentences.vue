@@ -15,7 +15,6 @@
         </div>
     </div>
 
-
     <div v-if="status === 'pending'" class="text-center mt-8">
         <p>Loading...</p>
     </div>
@@ -40,8 +39,8 @@ const { data, status, error } = await useAsyncData("get-sentences", () => queryC
 const searchInput = ref<HTMLInputElement>();
 
 
-async function search(e: InputEvent) {
-    const value = (e.target as HTMLInputElement).value;
+async function search(e: Event) {
+    const value = ((e as InputEvent).target as HTMLInputElement).value;
     const queryBuilder = queryCollection('sentence')
 
     if (value.trim() === '') {
@@ -57,17 +56,8 @@ async function search(e: InputEvent) {
         })
         .all();
 
-    console.log(result);
-
     data.value = result;
 }
-
-
-
-
-
-const searchValue = ref('');
-
 </script>
 
 <style scoped>

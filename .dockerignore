@@ -1,0 +1,21 @@
+# Go ignores
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+/vendor/
+
+# Nuxt.js ignores
+**/.nuxt
+**/.output
+**/node_modules
+**/dist
+**/.cache
+**/.env
+**/.env.*
+**/*.log
+**/.DS_Store
