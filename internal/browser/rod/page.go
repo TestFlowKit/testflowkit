@@ -2,7 +2,7 @@ package rod
 
 import (
 	"errors"
-	"etoolse/internal/browser/common"
+	"testflowkit/internal/browser/common"
 
 	"github.com/go-rod/rod"
 )

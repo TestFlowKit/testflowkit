@@ -1,9 +1,9 @@
 <template>
     <ul class="list-disc list-inside mb-4">
         <li>
-            <b>Chromium installed:</b> EToolsE uses Chromium for web testing.
+            <b>Chromium installed:</b> testflowkit uses Chromium for web testing.
             <ul class=" list-inside ml-4">
-                <li>EtoolsE install automatically chromium but you can install yourself chormium</li>
+                <li>testflowkit install automatically chromium but you can install yourself chormium</li>
                 <li>
                     <a href="https://www.chromium.org/getting-involved/download-chromium/" target="_blank"
                         rel="noopener noreferrer" class="text-blue-500 hover:underline">
@@ -20,14 +20,14 @@
             </a>
         </li>
         <li>
-            <b>Understanding of YAML:</b> EToolsE uses YAML for configuration.
+            <b>Understanding of YAML:</b> testflowkit uses YAML for configuration.
             <a href="https://learnxinyminutes.com/docs/yaml/" target="_blank" rel="noopener noreferrer"
                 class="text-blue-500 hover:underline">
                 This tutorial provides a quick introduction to YAML.
             </a>
         </li>
         <li>
-            <b>Command Line Interface (CLI):</b> You'll need to be comfortable using a CLI to run EToolsE
+            <b>Command Line Interface (CLI):</b> You'll need to be comfortable using a CLI to run testflowkit
             commands.
         </li>
     </ul>

@@ -2,11 +2,11 @@ package table
 
 import (
 	"errors"
-	"etoolse/internal/browser/common"
 	"fmt"
 	"log"
 	"slices"
 	"strings"
+	"testflowkit/internal/browser/common"
 )
 
 func getTableRowByCellsContent(currentPage common.Page, cellsContent []string) (common.Element, error) {

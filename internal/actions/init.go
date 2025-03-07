@@ -2,9 +2,9 @@ package actions
 
 import (
 	_ "embed"
-	"etoolse/internal/config"
-	"etoolse/pkg/logger"
 	"os"
+	"testflowkit/internal/config"
+	"testflowkit/pkg/logger"
 	"text/template"
 )
 

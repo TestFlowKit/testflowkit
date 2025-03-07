@@ -1,9 +1,9 @@
 package visual
 
 import (
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/internal/steps_definitions/frontend/visual/table"
 	"slices"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/frontend/visual/table"
 )
 
 type steps struct {

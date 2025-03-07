@@ -1,7 +1,7 @@
 package form
 
 import (
-	"etoolse/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core"
 )
 
 type steps struct {

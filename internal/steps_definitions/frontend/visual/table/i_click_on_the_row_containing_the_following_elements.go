@@ -1,8 +1,8 @@
 package table
 
 import (
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/shared"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"

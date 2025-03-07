@@ -94,14 +94,14 @@
             <h3 class="text-xl font-bold mb-2">Configuration via CLI Arguments</h3>
 
             <p class="mb-4">
-                You can also configure EToolsE by using command-line arguments. These arguments provide flexibility
+                You can also configure testflowkit by using command-line arguments. These arguments provide flexibility
                 and allow you to override settings from the YAML configuration file.
             </p>
 
             <ul class="list-disc list-inside mb-4">
                 <li><code>-l, --location &lt;path&gt;</code>: Specifies the path to the directory containing your
                     Gherkin feature files. (e.g., <code>--location ./features</code>)</li>
-                <li><code>-c, --config &lt;path&gt;</code>: Sets the path to the main EToolsE configuration YAML
+                <li><code>-c, --config &lt;path&gt;</code>: Sets the path to the main testflowkit configuration YAML
                     file. Defaults to "cli.yml". (e.g., <code>--config config.yaml</code>)</li>
                 <li><code>-f, --front-config &lt;path&gt;</code>: Sets the path to a YAML file specifically for
                     frontend testing configuration. Defaults to "frontend.yml". (e.g.,

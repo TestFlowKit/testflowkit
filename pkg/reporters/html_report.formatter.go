@@ -2,11 +2,11 @@ package reporters
 
 import (
 	_ "embed"
-	"etoolse/pkg/logger"
-	"etoolse/pkg/utils"
 	"html/template"
 	"log"
 	"os"
+	"testflowkit/pkg/logger"
+	"testflowkit/pkg/utils"
 )
 
 //go:embed html_report.template.html

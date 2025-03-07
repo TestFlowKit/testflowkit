@@ -1,8 +1,8 @@
 package navigation
 
 import (
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/shared"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/shared"
 )
 
 func (n navigation) iOpenNewBrowserTab() core.TestStep {

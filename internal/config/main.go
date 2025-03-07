@@ -1,9 +1,9 @@
 package config
 
 import (
-	"etoolse/internal/config/testsconfig"
-	"etoolse/pkg/logger"
 	"os"
+	"testflowkit/internal/config/testsconfig"
+	"testflowkit/pkg/logger"
 
 	"github.com/alexflint/go-arg"
 )

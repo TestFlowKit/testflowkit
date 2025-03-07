@@ -1,6 +1,6 @@
 package core
 
-import "etoolse/shared"
+import "testflowkit/shared"
 
 type stepWithoutVar struct {
 	sentences  []string

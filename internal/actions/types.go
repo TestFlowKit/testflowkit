@@ -1,5 +1,5 @@
 package actions
 
-import "etoolse/internal/config"
+import "testflowkit/internal/config"
 
 type Type func(*config.App)

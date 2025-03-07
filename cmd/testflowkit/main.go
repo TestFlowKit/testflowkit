@@ -1,10 +1,10 @@
 package main
 
 import (
-	"etoolse/internal/actions"
-	"etoolse/internal/config"
-	"etoolse/pkg/logger"
 	"fmt"
+	"testflowkit/internal/actions"
+	"testflowkit/internal/config"
+	"testflowkit/pkg/logger"
 )
 
 func main() {

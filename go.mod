@@ -1,4 +1,4 @@
-module etoolse
+module testflowkit
 
 go 1.22.4
 

@@ -1,5 +1,5 @@
 {
-  "name": "Go EToolsE framework",
+  "name": "Test Flow Kit framework",
   "dockerFile": "Dockerfile",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {}

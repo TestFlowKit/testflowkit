@@ -1,12 +1,12 @@
 package form
 
 import (
-	"etoolse/internal/browser"
-	"etoolse/internal/config/testsconfig"
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/internal/utils"
-	"etoolse/shared"
 	"fmt"
+	"testflowkit/internal/browser"
+	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/utils"
+	"testflowkit/shared"
 )
 
 func (s steps) iSelectXXXIntoDropdown() core.TestStep {

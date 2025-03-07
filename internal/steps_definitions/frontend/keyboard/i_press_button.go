@@ -1,10 +1,10 @@
 package keyboard
 
 import (
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/shared"
 	"fmt"
 	"strings"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/shared"
 
 	"github.com/go-rod/rod/lib/input"
 )

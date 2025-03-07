@@ -1,7 +1,7 @@
 package rod
 
 import (
-	"etoolse/internal/browser/common"
+	"testflowkit/internal/browser/common"
 	"time"
 
 	"github.com/go-rod/rod"

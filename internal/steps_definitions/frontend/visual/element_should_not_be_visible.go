@@ -1,11 +1,11 @@
 package visual
 
 import (
-	"etoolse/internal/browser"
-	"etoolse/internal/config/testsconfig"
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/shared"
 	"fmt"
+	"testflowkit/internal/browser"
+	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/shared"
 )
 
 func (s steps) elementShouldNotBeVisible() core.TestStep {

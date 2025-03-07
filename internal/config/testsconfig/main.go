@@ -2,11 +2,11 @@ package testsconfig
 
 import (
 	"errors"
-	"etoolse/pkg/logger"
 	"fmt"
 	"log"
 	"net/url"
 	"strings"
+	"testflowkit/pkg/logger"
 
 	"github.com/goccy/go-yaml"
 )

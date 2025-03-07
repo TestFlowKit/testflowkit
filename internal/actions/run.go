@@ -2,12 +2,12 @@ package actions
 
 import (
 	"context"
-	"etoolse/internal/config"
-	"etoolse/internal/steps_definitions/frontend"
-	"etoolse/pkg/gherkinparser"
-	"etoolse/pkg/logger"
-	"etoolse/pkg/reporters"
 	"os"
+	"testflowkit/internal/config"
+	"testflowkit/internal/steps_definitions/frontend"
+	"testflowkit/pkg/gherkinparser"
+	"testflowkit/pkg/logger"
+	"testflowkit/pkg/reporters"
 	"time"
 
 	"github.com/cucumber/godog"

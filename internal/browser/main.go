@@ -2,12 +2,12 @@ package browser
 
 import (
 	"context"
-	"etoolse/internal/browser/common"
-	"etoolse/internal/browser/rod"
-	"etoolse/internal/config/testsconfig"
-	"etoolse/pkg/logger"
 	"fmt"
 	"sync"
+	"testflowkit/internal/browser/common"
+	"testflowkit/internal/browser/rod"
+	"testflowkit/internal/config/testsconfig"
+	"testflowkit/pkg/logger"
 	"time"
 )
 

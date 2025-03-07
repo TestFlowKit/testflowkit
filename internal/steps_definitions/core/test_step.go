@@ -1,6 +1,6 @@
 package core
 
-import "etoolse/shared"
+import "testflowkit/shared"
 
 type TestStep interface {
 	GetDocumentation() shared.StepDocumentation

@@ -1,9 +1,9 @@
 package visual
 
 import (
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/shared"
 	"fmt"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/shared"
 )
 
 func (s steps) iClickOnElementWhichContains() core.TestStep {

@@ -1,9 +1,9 @@
 package core
 
 import (
-	"etoolse/internal/browser"
-	"etoolse/internal/browser/common"
 	"log"
+	"testflowkit/internal/browser"
+	"testflowkit/internal/browser/common"
 	"time"
 )
 

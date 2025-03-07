@@ -2,7 +2,7 @@
     <header class="bg-blue-500 py-4 px-2 md:px-0">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between text-white">
             <div class="w-full flex items-center justify-between md:w-auto md:inline">
-                <nuxt-link tag="h1" to="/" class="text-3xl font-bold">EToolsE</nuxt-link>
+                <nuxt-link tag="h1" to="/" class="text-3xl font-bold">Testflowkit</nuxt-link>
                 <button class="md:hidden" @click="showMenu = !showMenu">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">

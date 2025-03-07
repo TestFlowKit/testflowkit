@@ -1,7 +1,7 @@
 package config
 
 import (
-	"etoolse/pkg/logger"
+	"testflowkit/pkg/logger"
 )
 
 const defaultCliConfigPath = "cliConfig.yml"

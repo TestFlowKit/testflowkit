@@ -1,7 +1,7 @@
 package core
 
 import (
-	"etoolse/shared"
+	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 )

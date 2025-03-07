@@ -1,11 +1,11 @@
 package navigation
 
 import (
-	"etoolse/internal/config/testsconfig"
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/shared"
 	"fmt"
 	"strings"
+	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/shared"
 )
 
 func (n navigation) iShouldBeNavigatedToPage() core.TestStep {

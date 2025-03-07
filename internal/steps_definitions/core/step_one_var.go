@@ -1,6 +1,6 @@
 package core
 
-import "etoolse/shared"
+import "testflowkit/shared"
 
 type stepOneVar[T stepSupportedTypes] struct {
 	sentences  []string

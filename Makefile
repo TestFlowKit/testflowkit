@@ -1,6 +1,6 @@
-RUN_CMD = go run ./cmd/etoolse/main.go run
-APP_NAME := etoolse
-SRC_DIR := ./cmd/etoolse
+RUN_CMD = go run ./cmd/testflowkit/main.go run
+APP_NAME := testflowkit
+SRC_DIR := ./cmd/testflowkit
 BUILD_DIR := ./build
 VERSION := $(shell git describe --tags --always --dirty)
 GOARCHS := amd64 arm64 386 arm
@@ -38,7 +38,7 @@ releases:
 	@for os in $(GOOSES); do \
 		for arch in $(GOARCHS); do \
 			echo "Building for $$os/$$arch..."; \
-			GOOS=$$os GOARCH=$$arch go build cmd/etoolse/main.go -o $(BUILD_DIR)/$(APP_NAME)-$$os-$$arch -ldflags "$(LDFLAGS)" $(SRC_DIR) || echo "Failed to build for $$os/$$arch"; \
+			GOOS=$$os GOARCH=$$arch go build cmd/testflowkit/main.go -o $(BUILD_DIR)/$(APP_NAME)-$$os-$$arch -ldflags "$(LDFLAGS)" $(SRC_DIR) || echo "Failed to build for $$os/$$arch"; \
 		done \
 	done
 	@echo "All builds complete."
@@ -64,7 +64,7 @@ help:
 	@echo
 	@echo "Targets:"
 	@echo "  lint               Default lint codebase"
-	@echo "  run				run etoolse app"
+	@echo "  run				run testflowkit app"
 	@echo "  releases     		Build for all architectures (GOARCH and GOOS combinations)"
 	@echo "  build              Build for a specific OS and architecture (requires GOOS and GOARCH)"
 	@echo "                    Example: make build GOOS=linux GOARCH=amd64"

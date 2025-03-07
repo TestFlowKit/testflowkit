@@ -1,12 +1,12 @@
 package core
 
 import (
-	"etoolse/internal/config/testsconfig"
-	"etoolse/pkg/logger"
 	"fmt"
 	"slices"
 	"strings"
 	"sync"
+	"testflowkit/internal/config/testsconfig"
+	"testflowkit/pkg/logger"
 )
 
 var addLock sync.Mutex

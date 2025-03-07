@@ -3,17 +3,17 @@
         <h2 class="text-2xl font-bold mb-4">Prerequisites</h2>
 
         <p class="mb-4">
-            Before you get started with EToolsE, make sure you have the following:
+            Before you get started with testflowkit, make sure you have the following:
         </p>
 
         <prerequisites-list></prerequisites-list>
     </section>
 
     <section id="download" class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Download EToolsE</h2>
+        <h2 class="text-2xl font-bold mb-4">Download testflowkit</h2>
 
         <p class="mb-4">
-            EToolsE is available for Windows, macOS, and Linux. Choose the download link that matches your operating
+            testflowkit is available for Windows, macOS, and Linux. Choose the download link that matches your operating
             system:
         </p>
 

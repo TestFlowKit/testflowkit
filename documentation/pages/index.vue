@@ -1,7 +1,7 @@
 <template>
     <section class="text-center">
         <p class="text-xl mb-8">
-            EToolsE is an open source tool developed in Go that allows you to generate automated tests from Gherkin
+            testflowkit is an open source tool developed in Go that allows you to generate automated tests from Gherkin
             files. Simple, fast and extensible, it is aimed at developers and QA testers.
         </p>
 
@@ -16,7 +16,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded shadow">
                 <h3 class="text-lg font-bold mb-2">Ease of Use</h3>
-                <p>Write your tests in natural language, EToolsE takes care of the rest.</p>
+                <p>Write your tests in natural language, testflowkit takes care of the rest.</p>
             </div>
             <div class="bg-white p-4 rounded shadow">
                 <h3 class="text-lg font-bold mb-2">Fast Execution</h3>
@@ -24,7 +24,7 @@
             </div>
             <div class="bg-white p-4 rounded shadow">
                 <h3 class="text-lg font-bold mb-2">Continuous Integration</h3>
-                <p>Easily integrate EToolsE into your CI/CD pipelines.</p>
+                <p>Easily integrate testflowkit into your CI/CD pipelines.</p>
             </div>
             <div class="bg-white p-4 rounded shadow">
                 <h3 class="text-lg font-bold mb-2">Open Source and Extensible</h3>

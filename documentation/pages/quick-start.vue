@@ -1,9 +1,9 @@
 <template>
 
     <div class="space-y-6">
-        <h1 class="text-3xl font-bold">Quick Start with etoolse</h1>
+        <h1 class="text-3xl font-bold">Quick Start with testflowkit</h1>
 
-        <p>This guide is for developers or QA testers who want to learn how to use etoolse to launch e2e tests on
+        <p>This guide is for developers or QA testers who want to learn how to use testflowkit to launch e2e tests on
             their
             web applications. It assumes that you are comfortable with the command line, yaml and gherkin.</p>
 
@@ -22,16 +22,16 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Installation and configuration</h2>
             <ol class="list-decimal list-inside mb-4">
-                <li>Download etoolse for your operating system: <a href="[download link]" target="_blank"
+                <li>Download testflowkit for your operating system: <a href="[download link]" target="_blank"
                         class="underline">Download link</a>. Place the executable in the folder of your choice.</li>
                 <li>Open your terminal and type the following command:
-                    <code>etoolse init</code>
+                    <code>testflowkit init</code>
                     <br />
                     <em>This command creates the configuration files `frontend.yml` and `cli.yml` at the
                         root of your project.</em><br />
                     <em>The `frontend.yml` file contains the settings specific to your web application, while the
                         `cli.yml`
-                        file contains the general settings for etoolse.</em>
+                        file contains the general settings for testflowkit.</em>
 
                 </li>
                 <li>
@@ -184,7 +184,7 @@
                 <li>Make sure your antivirus is not blocking the installation of Chromium.</li>
                 <li>Verify that you have correctly defined the variables in your <code>frontend.yml</code> file,
                     especially the base URL of your documentation and the CSS selectors for the UI elements.</li>
-                <li>Consult the etoolse documentation for more detailed information on troubleshooting and resolving
+                <li>Consult the testflowkit documentation for more detailed information on troubleshooting and resolving
                     errors.</li>
             </ul>
         </div>
@@ -192,20 +192,20 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Useful Resources</h2>
             <ul class="list-disc list-inside ml-2">
-                <li><router-link :to="{ name: 'configuration' }" target="_blank" class="underline">etoolse
+                <li><router-link :to="{ name: 'configuration' }" target="_blank" class="underline">testflowkit
                         Configuration</router-link></li>
-                <li><router-link :to="{ name: 'sentences' }" target="_blank" class="underline">etoolse
+                <li><router-link :to="{ name: 'sentences' }" target="_blank" class="underline">testflowkit
                         Sentence Repository</router-link></li>
             </ul>
         </div>
 
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Next Steps</h2>
-            <p>Now that you've learned the basics of etoolse, here are some suggestions to go further:</p>
+            <p>Now that you've learned the basics of testflowkit, here are some suggestions to go further:</p>
             <ul class="list-disc list-inside ml-2">
                 <li>Write more complex Gherkin scenarios to test different parts of your web application.</li>
-                <li>Explore the possibilities of integrating etoolse with other testing and automation tools.</li>
-                <li>Contribute to the etoolse project by reporting bugs, suggesting improvements, or developing new
+                <li>Explore the possibilities of integrating testflowkit with other testing and automation tools.</li>
+                <li>Contribute to the testflowkit project by reporting bugs, suggesting improvements, or developing new
                     features.</li>
             </ul>
         </div>
@@ -240,7 +240,7 @@ global:
 
 
 
-const launchCommand = "./etoolse run";
+const launchCommand = "./testflowkit run";
 
 </script>
 

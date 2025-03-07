@@ -1,6 +1,6 @@
 package core
 
-import "etoolse/shared"
+import "testflowkit/shared"
 
 type stepTwoVars[T stepSupportedTypes, U stepSupportedTypes] struct {
 	sentences  []string

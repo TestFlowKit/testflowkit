@@ -1,14 +1,14 @@
 package frontend
 
 import (
-	"etoolse/internal/config"
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/internal/steps_definitions/frontend/form"
-	"etoolse/internal/steps_definitions/frontend/keyboard"
-	"etoolse/internal/steps_definitions/frontend/navigation"
-	"etoolse/internal/steps_definitions/frontend/visual"
-	"etoolse/shared"
 	"slices"
+	"testflowkit/internal/config"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/frontend/form"
+	"testflowkit/internal/steps_definitions/frontend/keyboard"
+	"testflowkit/internal/steps_definitions/frontend/navigation"
+	"testflowkit/internal/steps_definitions/frontend/visual"
+	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 )

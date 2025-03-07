@@ -2,14 +2,14 @@ package actions
 
 import (
 	"context"
-	"etoolse/internal/config"
-	"etoolse/internal/steps_definitions/core"
-	"etoolse/internal/steps_definitions/frontend"
-	"etoolse/pkg/gherkinparser"
-	"etoolse/pkg/logger"
 	"fmt"
 	"os"
 	"strings"
+	"testflowkit/internal/config"
+	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/frontend"
+	"testflowkit/pkg/gherkinparser"
+	"testflowkit/pkg/logger"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"

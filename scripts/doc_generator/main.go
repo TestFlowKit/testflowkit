@@ -2,15 +2,15 @@ package main
 
 import (
 	"encoding/json"
-	"etoolse/internal/steps_definitions/frontend"
-	"etoolse/pkg/logger"
-	"etoolse/shared"
 	"fmt"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"testflowkit/internal/steps_definitions/frontend"
+	"testflowkit/pkg/logger"
+	"testflowkit/shared"
 )
 
 func main() {
