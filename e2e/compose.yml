@@ -23,7 +23,6 @@ services:
       server:
         condition: service_healthy
 
-         
 networks:
   default:
     driver: bridge

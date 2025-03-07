@@ -1,11 +1,6 @@
 name: Releases Building CI
 
-on:
-  push:
-    branches:
-      - "releases/*"
-  workflow_dispatch:
-
+on: workflow_dispatch
 
 permissions:
   contents: write
@@ -13,12 +8,24 @@ permissions:
   issues: write
   checks: write
 
-
-
 jobs:
+  validate_release_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch name
+        run: |
+          branch_name="${{ github.ref_name }}"
+          if [[ "$branch_name" == 'main' ]]; then
+            echo "'$branch_name' is valid."
+          else
+            echo "Error: '$branch_name' is not valid."
+            exit 1
+          fi
+
   quality_check:
     name: Code Quality
     runs-on: ubuntu-latest
+    needs: validate_release_branch
 
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +62,7 @@ jobs:
   e2e_tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
-
+    needs: validate_release_branch
     steps:
       - uses: actions/checkout@v4
 
@@ -76,8 +83,9 @@ jobs:
       - name: Down Server Container
         if: always()
         run: docker compose -f e2e/compose.yml down
+
   release:
-    needs: 
+    needs:
       - quality_check
       - e2e_tests
     name: Semantic Release
