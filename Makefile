@@ -38,7 +38,7 @@ releases:
 	@for os in $(GOOSES); do \
 		for arch in $(GOARCHS); do \
 			echo "Building for $$os/$$arch..."; \
-			GOOS=$$os GOARCH=$$arch go build -o $(BUILD_DIR)/$(APP_NAME)-$$os-$$arch -ldflags "$(LDFLAGS)" $(SRC_DIR) || echo "Failed to build for $$os/$$arch"; \
+			GOOS=$$os GOARCH=$$arch go build cmd/etoolse/main.go -o $(BUILD_DIR)/$(APP_NAME)-$$os-$$arch -ldflags "$(LDFLAGS)" $(SRC_DIR) || echo "Failed to build for $$os/$$arch"; \
 		done \
 	done
 	@echo "All builds complete."
