@@ -49,26 +49,4 @@ jobs:
         run: go test ./...
 
   e2e_tests:
-    name: e2e tests running
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: launch e2e tests
-        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e
-
-      - name: Get test results
-        if: failure()
-        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
-
-      - name: upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: report.html
-
-      - name: down server container
-        if: always()
-        run: docker compose -f e2e/compose.yml down
+    uses: "./.github/workflows/e2e.yml"

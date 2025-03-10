@@ -60,29 +60,8 @@ jobs:
         run: go test ./...
 
   e2e_tests:
-    name: End-to-End Tests
-    runs-on: ubuntu-latest
     needs: validate_release_branch
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Launch E2E Tests
-        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e
-
-      - name: Get Test Results
-        if: failure()
-        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
-
-      - name: Upload Test Results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: report.html
-
-      - name: Down Server Container
-        if: always()
-        run: docker compose -f e2e/compose.yml down
+    uses: ./.github/workflows/e2e.yml
 
   release:
     needs:
