@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  documentation:
+    image: ghcr.io/marckent04/test_framework/documentation:latest
+    deploy:
+      replicas: 1
+
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.documentation.rule=Host(`testflowkit.dreamsfollowers.me`)'
+        - 'traefik.http.services.documentation.loadbalancer.server.port=3000'
+        - 'traefik.http.routers.documentation.entrypoints=websecure'
+        - 'traefik.http.routers.documentation.tls=true'
+        - 'traefik.http.routers.documentation.tls.certresolver=leresolver'
+    networks:
+      - documentation_net
+      - traefik-public
+
+networks:
+  documentation_net:
+    driver: overlay
+    attachable: true 
+  default:
+    driver: overlay
+  traefik-public:
+    external: true
