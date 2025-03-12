@@ -24,19 +24,15 @@
             <ol class="list-decimal list-inside mb-4">
                 <li>Download testflowkit for your operating system: <a href="[download link]" target="_blank"
                         class="underline">Download link</a>. Place the executable in the folder of your choice.</li>
+                        <li>Extract tkit for the downloaded zip in the folder of your choice. its contains a binary named tkit</li>
                 <li>Open your terminal and type the following command:
-                    <code>testflowkit init</code>
+                    <code>tkit init --appname=test_app</code>
                     <br />
                     <em>This command creates the configuration files `frontend.yml` and `cli.yml` at the
-                        root of your project.</em><br />
+                        root of the folder.</em><br />
                     <em>The `frontend.yml` file contains the settings specific to your web application, while the
                         `cli.yml`
-                        file contains the general settings for testflowkit.</em>
-
-                </li>
-                <li>
-                    Create a `features` folder at the root of your project. This folder will contain your Gherkin
-                    scenarios.
+                        file contains the general settings for testflowkit. and a folder containing an gherkin example</em>
                 </li>
             </ol>
         </div>
@@ -132,6 +128,8 @@
             <p>You can define variables in the <code>frontend.yml</code> file to make your scenarios work smoothly.
                 These variables represent elements on your web page and make your Gherkin code more readable and
                 maintainable.</p>
+
+            <sm><em><strong>Tip</strong>: you can run the tkit validate command in order to validate your work: <code>./tkit validate</code></em></sm>
 
             <p>Here's how it works:</p>
             <ul class="list-disc list-inside ml-2">
@@ -235,12 +233,14 @@ global:
       - .menu-link 
         
    pages:
-    sentences_referencing: "http://<doc-base-url>/sentences" `
+    sentences_referencing: "/sentences" 
+   
+   base_url: "doc-base-url"
+    ` 
 
 
 
-
-const launchCommand = "./testflowkit run";
+const launchCommand = "./tkit run";
 
 </script>
 

@@ -15,7 +15,8 @@
         "ms-azuretools.vscode-docker",
         "github.vscode-github-actions",
         "alexkrechik.cucumberautocomplete",
-        "vue.volar"
+        "vue.volar",
+        "ms-vscode.makefile-tools"
       ]
     }
   },

@@ -33,6 +33,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const githubUrl = "https://github.com/marckent04/test_framework";
+const githubUrl = "https://github.com/TestFlowKit/testflowkit";
 const showMenu = ref(false);
 </script>
