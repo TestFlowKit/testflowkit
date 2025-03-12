@@ -15,7 +15,7 @@ jobs:
       - name: Validate branch name
         run: |
           branch_name="${{ github.ref_name }}"
-          if [[ "$branch_name" == 'main' ]]; then
+          if [[ "$branch_name" == 'release' ]]; then
             echo "'$branch_name' is valid."
           else
             echo "Error: '$branch_name' is not valid."
@@ -115,3 +115,21 @@ jobs:
             build/*
           allow_override: true
           gzip: false
+
+
+
+  delete_release_branch:
+    needs:
+      - release
+    name: Delete Release branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Delete branch
+        run: |
+            git push origin --delete ${{ github.ref_name }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
