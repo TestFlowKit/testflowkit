@@ -1,5 +1,5 @@
 RUN_CMD = go run ./cmd/testflowkit/main.go run
-APP_NAME := testflowkit
+APP_NAME := tkit
 SRC_DIR := ./cmd/testflowkit
 BUILD_DIR := ./build
 VERSION := $(shell git describe --tags --always --dirty)
@@ -38,7 +38,7 @@ releases:
 	@for os in $(GOOSES); do \
 		for arch in $(GOARCHS); do \
 			echo "Building for $$os/$$arch..."; \
-			GOOS=$$os GOARCH=$$arch go build cmd/testflowkit/main.go -o $(BUILD_DIR)/$(APP_NAME)-$$os-$$arch -ldflags "$(LDFLAGS)" $(SRC_DIR) || echo "Failed to build for $$os/$$arch"; \
+			GOOS=$$os GOARCH=$$arch go build -o ./$(BUILD_DIR)/$(APP_NAME)-$$os-$$arch -ldflags "$(LDFLAGS)" $(SRC_DIR) || echo "Failed to build for $$os/$$arch"; \
 		done \
 	done
 	@echo "All builds complete."
