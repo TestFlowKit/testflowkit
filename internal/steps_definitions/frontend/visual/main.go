@@ -16,12 +16,14 @@ func GetSteps() []core.TestStep {
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.iClickOn(),
+		handlers.iDoubleClickOn(),
 		handlers.iClickOnElementWhichContains(),
 		handlers.iShouldSeeOnPage(),
 		handlers.iShouldNotSeeOnPage(),
 		handlers.iShouldSeeElementWhichContains(),
 		handlers.iShouldSeeOnPageXElements(),
 		handlers.iShouldSeeDetailsOnPage(),
+		handlers.iShouldSeeAndHandleAlert(),
 	}
 	return slices.Concat(table.GetSteps(), otherSteps)
 }

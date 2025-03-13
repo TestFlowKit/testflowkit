@@ -24,6 +24,10 @@ func (e *rodElement) Click() error {
 	return e.element.Click(proto.InputMouseButtonLeft, 1)
 }
 
+func (e *rodElement) DoubleClick() error {
+	return e.element.Click(proto.InputMouseButtonLeft, 2)
+}
+
 func (e *rodElement) TextContent() string {
 	return e.element.MustText()
 }

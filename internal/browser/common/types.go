@@ -19,7 +19,16 @@ type Page interface {
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool
 	ExecuteJS(js string, args ...any) string
+	HandleAlert(action AlertAction) error
+	IsAlertVisible() bool
 }
+
+type AlertAction string
+
+const (
+	AlertAccept  AlertAction = "accept"
+	AlertDismiss AlertAction = "dismiss"
+)
 
 type PageInfo struct {
 	URL string
@@ -27,6 +36,7 @@ type PageInfo struct {
 
 type Element interface {
 	Click() error
+	DoubleClick() error
 	Input(text string) error
 	Select([]string) error
 	IsVisible() bool

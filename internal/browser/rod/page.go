@@ -2,6 +2,7 @@ package rod
 
 import (
 	"errors"
+	"fmt"
 	"testflowkit/internal/browser/common"
 
 	"github.com/go-rod/rod"
@@ -75,6 +76,29 @@ func (p *rodPage) WaitLoading() {
 
 func (p *rodPage) ExecuteJS(js string, args ...any) string {
 	return p.page.MustEval(js, args...).String()
+}
+
+func (p *rodPage) HandleAlert(action common.AlertAction) error {
+	wait, handle := p.page.MustHandleDialog()
+	dialog := wait()
+	if dialog == nil {
+		return fmt.Errorf("no dialog present")
+	}
+
+	switch action {
+	case common.AlertAccept:
+		return handle(&rod.HandleDialogOptions{Accept: true})
+	case common.AlertDismiss:
+		return handle(&rod.HandleDialogOptions{Accept: false})
+	default:
+		return fmt.Errorf("unsupported alert action: %s", action)
+	}
+}
+
+func (p *rodPage) IsAlertVisible() bool {
+	wait, _ := p.page.MustHandleDialog()
+	dialog := wait()
+	return dialog != nil
 }
 
 func newRodPage(page *rod.Page) common.Page {

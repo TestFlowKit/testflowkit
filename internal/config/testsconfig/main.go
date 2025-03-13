@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"testflowkit/pkg/logger"
 
@@ -103,4 +105,18 @@ func getBaseURL() string {
 
 func GetLabelKey(label string) string {
 	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
+}
+
+func GetTestFiles() ([]string, error) {
+	var files []string
+	err := filepath.Walk("e2e/features", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && filepath.Ext(path) == ".feature" {
+			files = append(files, path)
+		}
+		return nil
+	})
+	return files, err
 }
