@@ -118,7 +118,8 @@ jobs:
           allow_override: true
           gzip: false
 
-
+  deploy_doc:
+    uses: "./.github/workflows/deploy-docs.yml"
 
   delete_release_branch:
     needs:
@@ -131,7 +132,6 @@ jobs:
 
       - name: Delete branch
         run: |
-            git push origin --delete ${{ github.ref_name }}
+          git push origin --delete ${{ github.ref_name }}
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
