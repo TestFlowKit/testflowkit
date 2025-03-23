@@ -1,42 +1,41 @@
 <template>
-    <section class="text-center">
+    <section class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">testflowkit: Automated Front-End Testing Made Easy</h1>
         <p class="text-xl mb-8">
-            testflowkit is an open source tool developed in Go that allows you to generate automated tests from Gherkin
-            files. Simple, fast and extensible, it is aimed at developers and QA testers.
+            testflowkit is an open-source tool built with Go that simplifies automated testing for your web
+            applications. Generate tests from Gherkin files quickly and easily, perfect for developers and QA testers
+            alike.
         </p>
 
         <nuxt-link :to="{ name: 'get-started' }"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded text-xl">
-            Get started now
+            class="primary-button-bg text-white font-bold py-3 px-6 rounded text-xl">
+            Get Started Now
         </nuxt-link>
     </section>
 
-    <section class="mt-12">
-        <h2 class="text-2xl font-bold mb-4">Advantages</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded shadow">
-                <h3 class="text-lg font-bold mb-2">Ease of Use</h3>
-                <p>Write your tests in natural language, testflowkit takes care of the rest.</p>
-            </div>
-            <div class="bg-white p-4 rounded shadow">
-                <h3 class="text-lg font-bold mb-2">Fast Execution</h3>
-                <p>Go, a compiled language, ensures optimal performance for your tests.</p>
-            </div>
-            <div class="bg-white p-4 rounded shadow">
-                <h3 class="text-lg font-bold mb-2">Continuous Integration</h3>
-                <p>Easily integrate testflowkit into your CI/CD pipelines.</p>
-            </div>
-            <div class="bg-white p-4 rounded shadow">
-                <h3 class="text-lg font-bold mb-2">Open Source and Extensible</h3>
-                <p>Contribute to the project and adapt it to your specific needs.</p>
-            </div>
-        </div>
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <FeatureCard title="Effortless Setup" icon="cog">
+            <p>Quick and easy installation and configuration. Get started testing in minutes.</p>
+        </FeatureCard>
+        <FeatureCard title="Blazing Fast Execution" icon="bolt">
+            <p>Leverage the power of Go for incredibly fast test execution, saving you valuable time.</p>
+        </FeatureCard>
+        <FeatureCard title="Seamless CI/CD Integration" icon="pipeline">
+            <p>Integrate testflowkit into your existing CI/CD pipelines for continuous testing and automated feedback.
+            </p>
+        </FeatureCard>
+        <FeatureCard title="Open Source & Extensible" icon="code">
+            <p>Contribute to the project, extend its functionality, and tailor it to your specific needs.</p>
+        </FeatureCard>
+        <FeatureCard title="Human-Readable Tests" icon="chat">
+            <p>Write your tests in Gherkin, a natural language format, making them easy to understand and maintain.</p>
+        </FeatureCard>
+        <FeatureCard title="Comprehensive Reporting" icon="chart-bar">
+            <p>Receive detailed reports on your test results, making it easy to identify and fix issues.</p>
+        </FeatureCard>
     </section>
 </template>
 
 <script setup lang="ts">
-
-
+import FeatureCard from '../components/FeatureCard.vue';
 </script>
-
-<style scoped></style>
