@@ -6,6 +6,7 @@ name: Deploy Documentation
 
 on:
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   build_and_push:
