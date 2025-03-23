@@ -1,57 +1,39 @@
 <template>
-    <section id="prerequisites" class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Prerequisites</h2>
+  <section id="prerequisites" class="mb-12">
+    <h2 class="heading-2">Prerequisites</h2>
+    <p class="mb-4">Before you begin, ensure you have the following:</p>
+    <PrerequisitesList />
+  </section>
 
-        <p class="mb-4">
-            Before you get started with testflowkit, make sure you have the following:
-        </p>
+  <section id="download" class="mb-12">
+    <h2 class="heading-2">Download testflowkit</h2>
+    <p class="mb-6">Select the binary matching your operating system and architecture:</p>
 
-        <prerequisites-list></prerequisites-list>
-    </section>
+    <DownloadSection />
 
-    <section id="download" class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Download testflowkit</h2>
+  </section>
 
-        <p class="mb-4">
-            testflowkit is available for Windows, macOS, and Linux. Choose the download link that matches your operating
-            system:
-        </p>
+  <section class="mb-12">
+    <h2 class="heading-2">Next Steps</h2>
+    <p>After downloading, follow these steps:</p>
+    <ol class="list-decimal list-inside ml-6">
+      <li><strong>Unzip the downloaded archive.</strong></li>
+      <li><strong>Navigate to the extracted directory in your terminal.</strong></li>
+      <li><strong>Run the executable:</strong> <code>./tkit --help</code> (or `tkit.exe --help` on Windows) to see
+        available commands.</li>
+      <li><strong>Refer to the <router-link to="/configuration">Configuration Guide</router-link> for detailed setup
+          instructions.</strong></li>
+      <li><strong>Check out the <router-link to="/quick-start">Quick Start Guide</router-link> for a hands-on
+          tutorial.</strong></li>
+      <li><strong>Explore the <router-link to="/sentences">Gherkin Sentences Dictionary</router-link> to understand
+          available keywords.</strong></li>
+    </ol>
+  </section>
 
-        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
-            <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg"
-                    alt="Windows logo" class="h-6 mr-2"> Download for Windows
-            </a>
-            <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" alt="macOS logo"
-                    class="h-6 mr-2"> Download for macOS
-            </a>
-            <a href="#" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux logo"
-                    class="h-6 mr-2"> Download for Linux
-            </a>
-        </div>
 
-        <p class="mt-4 text-sm text-gray-600">
-            For configuration instructions, please refer to the
-            <router-link :to="{ name: 'configuration' }"
-                class="text-blue-500 hover:underline">Configuration</router-link> guide.
-        </p>
-
-        <p class="mt-4 text-sm text-gray-600">
-            For quick start tutorial, please refer to the
-            <router-link :to="{ name: 'quick-start' }" class="text-blue-500 hover:underline">Quick
-                start</router-link>.
-        </p>
-        <p class="mt-4 text-sm text-gray-600">
-            For available gherkin phrases, please refer to the
-            <router-link :to="{ name: 'sentences' }" class="text-blue-500 hover:underline">Sentences</router-link>
-            dictionary.
-        </p>
-    </section>
 </template>
 
 <script setup lang="ts">
 import PrerequisitesList from '../components/PrerequisitesList.vue';
-
+import DownloadSection from '../components/DownloadSection.vue';
 </script>

@@ -15,3 +15,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
 }
+
+.heading-2 {
+  @apply text-2xl font-bold mb-4;
+}
+
+.primary-button-bg {
+  @apply bg-blue-500 hover:bg-blue-700;
+}
