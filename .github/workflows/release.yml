@@ -119,11 +119,13 @@ jobs:
           gzip: false
 
   deploy_doc:
+    needs:
+      - release
     uses: "./.github/workflows/deploy-docs.yml"
 
   delete_release_branch:
     needs:
-      - release
+      - deploy_doc
     name: Delete Release branch
     runs-on: ubuntu-latest
 
