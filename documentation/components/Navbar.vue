@@ -14,14 +14,19 @@
             </div>
             <nav class="md:block md:ml-4 mt-4 md:mt-0" :class="{ hidden: !showMenu }">
                 <ul class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                    <li><nuxt-link to="/" class="hover:underline">Home</nuxt-link></li>
-                    <li><nuxt-link :to="{ name: 'get-started' }" class="hover:underline">Get
-                            started</nuxt-link></li>
-                    <li><nuxt-link :to="{ name: 'quick-start' }" class="hover:underline">Quick
-                            Start</nuxt-link></li>
-                    <li><nuxt-link :to="{ name: 'configuration' }" class="hover:underline">Configuration</nuxt-link>
+                    <li><nuxt-link to="/" class="hover:underline" active-class="font-bold underline">Home</nuxt-link>
                     </li>
-                    <li><nuxt-link :to="{ name: 'sentences' }" class="hover:underline">Sentences</nuxt-link>
+                    <li><nuxt-link :to="{ name: 'get-started' }" class="hover:underline"
+                            active-class="font-bold underline">Get
+                            started</nuxt-link></li>
+                    <li><nuxt-link :to="{ name: 'quick-start' }" class="hover:underline"
+                            active-class="font-bold underline">Quick
+                            Start</nuxt-link></li>
+                    <li><nuxt-link :to="{ name: 'configuration' }" class="hover:underline"
+                            active-class="font-bold underline">Configuration</nuxt-link>
+                    </li>
+                    <li><nuxt-link :to="{ name: 'sentences' }" class="hover:underline"
+                            active-class="font-bold underline">Sentences</nuxt-link>
                     </li>
                     <li><a target="_blank" :href="githubUrl" class="hover:underline">Github</a></li>
                 </ul>
@@ -33,6 +38,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+const router = useRouter();
+
 const githubUrl = "https://github.com/TestFlowKit/testflowkit";
 const showMenu = ref(false);
+
+watch(
+    () => router.currentRoute.value.path,
+    () => {
+        showMenu.value = false;
+    },
+    { immediate: true }
+);
 </script>
