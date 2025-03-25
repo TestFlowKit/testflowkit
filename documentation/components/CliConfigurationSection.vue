@@ -5,42 +5,46 @@
             information, and reporting options.</p>
 
         <AccordionItem title="Global Settings">
-            <table class="table-auto w-full">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2">Option</th>
-                        <th class="px-4 py-2">Description</th>
-                        <th class="px-4 py-2">Default Value</th>
-                        <th class="px-4 py-2">Example</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="border px-4 py-2"><code>timeout</code></td>
-                        <td class="border px-4 py-2">Maximum test execution time (in seconds).</td>
-                        <td class="border px-4 py-2"><code>15s</code></td>
-                        <td class="border px-4 py-2"><code>timeout: 30s</code></td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2"><code>parallel</code></td>
-                        <td class="border px-4 py-2">Number of tests to run in parallel.</td>
-                        <td class="border px-4 py-2"><code>5</code></td>
-                        <td class="border px-4 py-2"><code>parallel: 10</code></td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2"><code>slowMotion</code></td>
-                        <td class="border px-4 py-2">Slow down test execution (in seconds) - useful for debugging.</td>
-                        <td class="border px-4 py-2"><code>0s</code></td>
-                        <td class="border px-4 py-2"><code>slowMotion: 1s</code></td>
-                    </tr>
-                    <tr>
-                        <td class="border px-4 py-2"><code>gherkin_location</code></td>
-                        <td class="border px-4 py-2">Path to the directory containing the Gherkin feature files.</td>
-                        <td class="border px-4 py-2"><code>e2e/features</code></td>
-                        <td class="border px-4 py-2"><code>gherkin_location: "tests/features"</code></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Option</th>
+                            <th class="px-4 py-2">Description</th>
+                            <th class="px-4 py-2">Default Value</th>
+                            <th class="px-4 py-2">Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border px-4 py-2"><code>timeout</code></td>
+                            <td class="border px-4 py-2">Maximum test execution time (in seconds).</td>
+                            <td class="border px-4 py-2"><code>15s</code></td>
+                            <td class="border px-4 py-2"><code>timeout: 30s</code></td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2"><code>parallel</code></td>
+                            <td class="border px-4 py-2">Number of tests to run in parallel.</td>
+                            <td class="border px-4 py-2"><code>5</code></td>
+                            <td class="border px-4 py-2"><code>parallel: 10</code></td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2"><code>slowMotion</code></td>
+                            <td class="border px-4 py-2">Slow down test execution (in seconds) - useful for debugging.
+                            </td>
+                            <td class="border px-4 py-2"><code>0s</code></td>
+                            <td class="border px-4 py-2"><code>slowMotion: 1s</code></td>
+                        </tr>
+                        <tr>
+                            <td class="border px-4 py-2"><code>gherkin_location</code></td>
+                            <td class="border px-4 py-2">Path to the directory containing the Gherkin feature files.
+                            </td>
+                            <td class="border px-4 py-2"><code>e2e/features</code></td>
+                            <td class="border px-4 py-2"><code>gherkin_location: "tests/features"</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </AccordionItem>
 
         <AccordionItem title="Application Information">
