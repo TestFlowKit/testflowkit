@@ -1,5 +1,5 @@
 <template>
-    <div class="relative inline-block text-left">
+    <div class="relative inline-block text-left w-full md:w-auto">
         <button type="button"
             class="inline-flex w-full justify-center gap-x-1.5 rounded-md primary-button-bg px-3 py-2 text-sm font-semibold text-white shadow-sm"
             id="download-menu-button" @click="isOpen = !isOpen" aria-expanded="true" aria-haspopup="true">
@@ -12,7 +12,7 @@
         </button>
 
         <div v-show="isOpen"
-            class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            class="absolute left-0 right-0 sm:right-0 z-10 mt-2 w-full sm:w-56 max-w-[90vw] mx-auto origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-y-auto"
             role="menu" aria-orientation="vertical" aria-labelledby="download-menu-button" tabindex="-1"
             @mouseleave="isOpen = false">
             <DownloadItem os="windows" arch="amd64" />
