@@ -25,14 +25,15 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 	}
 
 	getColor := func(status godog.StepResultStatus) string {
-		switch status {
-		case godog.StepPassed:
-			return "green"
-		case godog.StepFailed:
-			return "red"
-		default:
-			return "gray"
+		stepStatusColors := map[godog.StepResultStatus]string{
+			godog.StepPassed: "green",
+			godog.StepFailed: "red",
 		}
+
+		if color, ok := stepStatusColors[status]; ok {
+			return color
+		}
+		return "gray"
 	}
 
 	s.Steps = append(s.Steps, Step{

@@ -19,3 +19,14 @@ Feature: visual e2e tests
     And I should see "L'élément a été caché." on the page
 
 
+  @doubleClick
+  Scenario: double click on element which contains
+    Given I should not see "Vous avez double cliqué sur le bouton." on the page
+    When I double click on the button which contains "double click"
+    Then I should see "Vous avez double cliqué sur le bouton." on the page
+
+  @doubleClick
+  Scenario: double click on element
+    Given I should not see "Vous avez double cliqué sur le bouton." on the page
+    When I double click on double click button
+    Then I should see "Vous avez double cliqué sur le bouton." on the page
