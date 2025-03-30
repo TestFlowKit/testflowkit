@@ -17,6 +17,8 @@ func GetSteps() []core.TestStep {
 		handlers.elementShouldNotBeVisible(),
 		handlers.iClickOn(),
 		handlers.iClickOnElementWhichContains(),
+		handlers.iDoubleClickOn(),
+		handlers.iDoubleClickOnElementWhichContains(),
 		handlers.iShouldSeeOnPage(),
 		handlers.iShouldNotSeeOnPage(),
 		handlers.iShouldSeeElementWhichContains(),
