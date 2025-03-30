@@ -27,6 +27,7 @@ type PageInfo struct {
 
 type Element interface {
 	Click() error
+	DoubleClick() error
 	Input(text string) error
 	Select([]string) error
 	IsVisible() bool
