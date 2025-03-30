@@ -14,6 +14,8 @@ global:
       - "#text"
     textarea_field:
       - "#textarea"
+    double_click_button:
+      - "#dbclick-btn"
 
   pages:
     form_e2e: "form"
