@@ -22,6 +22,7 @@ const (
 	Visual     TestCategory = "visual"
 	Keyboard   TestCategory = "keyboard"
 	Navigation TestCategory = "navigation"
+	Mouse      TestCategory = "mouse"
 )
 
 type DocVarType string

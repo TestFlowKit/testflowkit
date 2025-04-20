@@ -1,4 +1,4 @@
-package visual
+package mouse
 
 import (
 	"testflowkit/internal/browser"
@@ -7,18 +7,16 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iDoubleClickOn() core.TestStep {
-	const docDescription = "The label of the button or element to double click on."
-
+func (s steps) iClickOn() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{`^I double click on {string}$`},
+		[]string{`^I click on {string}$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(label string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}
-				return element.DoubleClick()
+				return element.Click()
 			}
 		},
 		func(label string) core.ValidationErrors {
@@ -29,12 +27,12 @@ func (s steps) iDoubleClickOn() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "double clicks on a button or element.",
+			Description: "clicks on a button or element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: docDescription, Type: shared.DocVarTypeString},
+				{Name: "label", Description: "The label of the button or element to click on.", Type: shared.DocVarTypeString},
 			},
-			Example:  "When I double click on \"File item\"",
-			Category: shared.Visual,
+			Example:  "When I click on \"Submit button\"",
+			Category: shared.Mouse,
 		},
 	)
 }

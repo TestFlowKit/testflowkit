@@ -6,6 +6,7 @@ import (
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/internal/steps_definitions/frontend/form"
 	"testflowkit/internal/steps_definitions/frontend/keyboard"
+	"testflowkit/internal/steps_definitions/frontend/mouse"
 	"testflowkit/internal/steps_definitions/frontend/navigation"
 	"testflowkit/internal/steps_definitions/frontend/visual"
 	"testflowkit/shared"
@@ -33,7 +34,13 @@ func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *core.ValidatorCon
 }
 
 func getAllSteps() []core.TestStep {
-	return slices.Concat(form.GetSteps(), keyboard.GetSteps(), navigation.GetSteps(), visual.GetSteps())
+	return slices.Concat(
+		form.GetSteps(),
+		keyboard.GetSteps(),
+		navigation.GetSteps(),
+		visual.GetSteps(),
+		mouse.GetSteps(),
+	)
 }
 
 func GetDocs() []shared.StepDocumentation {
