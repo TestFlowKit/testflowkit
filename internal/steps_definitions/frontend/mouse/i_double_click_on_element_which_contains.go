@@ -1,4 +1,4 @@
-package visual
+package mouse
 
 import (
 	"fmt"
@@ -6,9 +6,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iClickOnElementWhichContains() core.TestStep {
+func (s steps) iDoubleClickOnElementWhichContains() core.TestStep {
 	return core.NewStepWithTwoVariables(
-		[]string{`^I click on {string} which contains "{string}"$`},
+		[]string{`^I double click on {string} which contains "{string}"$`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(_ string, text string) error {
 				xPath := fmt.Sprintf(`//*[contains(text(),"%s")]`, text)
@@ -16,18 +16,18 @@ func (s steps) iClickOnElementWhichContains() core.TestStep {
 				if err != nil {
 					return fmt.Errorf("no element with text containing %s found", text)
 				}
-				return element.Click()
+				return element.DoubleClick()
 			}
 		},
 		nil,
 		core.StepDefDocParams{
-			Description: "clicks on an element which contains a specific text.",
+			Description: "Double clicks on an element which contains a specific text.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of the element to click on.", Type: shared.DocVarTypeString},
+				{Name: "label", Description: "The label of the element to double click on.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
 			},
-			Example:  "When I click on \"Submit button\" which contains \"Submit\"",
-			Category: shared.Visual,
+			Example:  "When I double click on \"Submit button\" which contains \"Submit\"",
+			Category: shared.Mouse,
 		},
 	)
 }
