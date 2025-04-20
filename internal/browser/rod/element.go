@@ -29,6 +29,10 @@ func (e *rodElement) DoubleClick() error {
 	return e.element.Click(proto.InputMouseButtonLeft, numberOfClicks)
 }
 
+func (e *rodElement) RightClick() error {
+	return e.element.Click(proto.InputMouseButtonRight, 1)
+}
+
 func (e *rodElement) TextContent() string {
 	return e.element.MustText()
 }
@@ -57,6 +61,10 @@ func (e *rodElement) GetPropertyValue(property string, kind reflect.Kind) any {
 	}
 
 	return nil
+}
+
+func (e *rodElement) Hover() error {
+	return e.element.Hover()
 }
 
 func newRodElement(element *rod.Element) common.Element {
