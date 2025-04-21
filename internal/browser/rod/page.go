@@ -77,6 +77,14 @@ func (p *rodPage) ExecuteJS(js string, args ...any) string {
 	return p.page.MustEval(js, args...).String()
 }
 
+func (p *rodPage) Back() {
+	p.page = p.page.MustNavigateBack()
+}
+
+func (p *rodPage) Refresh() {
+	p.page = p.page.MustReload()
+}
+
 func newRodPage(page *rod.Page) common.Page {
 	return &rodPage{
 		page: page,

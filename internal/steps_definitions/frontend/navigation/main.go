@@ -13,6 +13,9 @@ func GetSteps() []core.TestStep {
 	return []core.TestStep{
 		handlers.iShouldBeNavigatedToPage(),
 		handlers.iNavigateToPage(),
+		handlers.iWait(),
+		handlers.iRefreshPage(),
+		handlers.iNavigateBack(),
 		handlers.iOpenNewBrowserTab(),
 		handlers.iOpenNewPrivateBrowserTab(),
 	}
