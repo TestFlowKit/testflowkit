@@ -15,7 +15,9 @@ type Page interface {
 	GetAllBySelector(selector string) ([]Element, error)
 	GetOneByXPath(xpath string) (Element, error)
 	WaitLoading()
+	Refresh()
 	GetInfo() PageInfo
+	Back()
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool
 	ExecuteJS(js string, args ...any) string
