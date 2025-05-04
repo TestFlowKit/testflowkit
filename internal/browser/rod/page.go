@@ -66,6 +66,10 @@ func (p *rodPage) GetOneByXPath(xpath string) (common.Element, error) {
 	return newRodElement(element), nil
 }
 
+func (p *rodPage) Focus() {
+	p.page = p.page.MustActivate()
+}
+
 // TODO: be sure its work on SPA
 func (p *rodPage) WaitLoading() {
 	p.page.MustWaitNavigation()
