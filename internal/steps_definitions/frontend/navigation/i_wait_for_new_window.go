@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"errors"
 	"fmt"
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/pkg/logger"
@@ -8,62 +9,45 @@ import (
 	"time"
 )
 
-func (n navigation) iWaitForNewWindow() core.TestStep {
-	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
-
-	return core.NewStepWithOneVariable(
-		[]string{"^I wait for a new window to open within {string}$"},
-		func(ctx *core.TestSuiteContext) func(string) error {
-			return func(waitTime string) error {
-				duration, err := time.ParseDuration(waitTime)
-				if err != nil {
-					logger.Error(fmt.Sprintf("Invalid duration format: %s", waitTime), []string{
-						"Duration should be in the format of 1s, 500ms, etc.",
-					}, nil)
-					return err
-				}
-
+func (n navigation) iSwitchToNewOpenedWindow() core.TestStep {
+	return core.NewStepWithNoVariables(
+		[]string{"^I switch to the newly opened window$"},
+		func(ctx *core.TestSuiteContext) func() error {
+			return func() error {
 				initialPageCount := len(ctx.GetPages())
 				logger.Info(fmt.Sprintf("Waiting for new window. Current window count: %d", initialPageCount))
 
-				// Wait and check periodically for new windows
 				// TODO: refactor in order to use the Wait function
 				startTime := time.Now()
+				const duration = 6 * time.Minute
 				for {
-					// Check if we've exceeded the wait time
 					if time.Since(startTime) > duration {
-						return fmt.Errorf("no new window detected within %s", waitTime)
+						return errors.New("no new window detected")
 					}
 
-					// Check if the number of pages has increased
 					currentPageCount := len(ctx.GetPages())
 					if currentPageCount > initialPageCount {
 						logger.Info(fmt.Sprintf("New window detected! Page count increased from %d to %d",
 							initialPageCount, currentPageCount))
+
+						pages := ctx.GetPages()
+						// In Rod, the most recently opened page is typically the first in the pages list
+						newPage := pages[0]
+						ctx.SetCurrentPage(newPage)
+
 						return nil
 					}
 
-					// Wait a short time before checking again
 					const milliseconds = 100
 					time.Sleep(milliseconds * time.Millisecond)
 				}
 			}
 		},
-		func(duration string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
-			_, err := time.ParseDuration(duration)
-			if err != nil {
-				vc.AddError(fmt.Sprintf("Invalid duration format: %s", duration))
-			}
-			return vc
-		},
+		nil,
 		core.StepDefDocParams{
-			Description: "waits for a new browser window to open within the specified timeout.",
-			Variables: []shared.StepVariable{
-				{Name: "waitTime", Description: docDescription, Type: shared.DocVarTypeString},
-			},
-			Example:  "When I wait for a new window to open within \"5s\"",
-			Category: shared.Navigation,
+			Description: "switches to the newly opened browser window.",
+			Example:     "When I switch to the newly opened window",
+			Category:    shared.Navigation,
 		},
 	)
 }

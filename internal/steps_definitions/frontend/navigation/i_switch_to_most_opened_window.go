@@ -7,9 +7,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (n navigation) iSwitchToNewWindow() core.TestStep {
-	return core.NewStepWithoutVariables(
-		[]string{"^I switch to the new window$"},
+func (n navigation) iSwitchToMostRecentlyOpenedWindow() core.TestStep {
+	return core.NewStepWithNoVariables(
+		[]string{"^I switch to the most recently window opened$"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
 				pages := ctx.GetPages()
@@ -21,11 +21,6 @@ func (n navigation) iSwitchToNewWindow() core.TestStep {
 
 				// In Rod, the most recently opened page is typically the first in the pages list
 				newPage := pages[0]
-
-				newPage.Focus()
-
-				newPage.WaitLoading()
-
 				ctx.SetCurrentPage(newPage)
 
 				logger.Info(fmt.Sprintf("Switched to new window with URL: %s", newPage.GetInfo().URL))
@@ -39,7 +34,7 @@ func (n navigation) iSwitchToNewWindow() core.TestStep {
 		core.StepDefDocParams{
 			Description: "switches to the most recently opened browser window.",
 			Variables:   []shared.StepVariable{},
-			Example:     "When I switch to the new window",
+			Example:     "When I switch to the most recently window opened",
 			Category:    shared.Navigation,
 		},
 	)
