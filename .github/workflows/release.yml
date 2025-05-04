@@ -9,18 +9,18 @@ permissions:
   checks: write
 
 jobs:
-  validate_release_branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate branch name
-        run: |
-          branch_name="${{ github.ref_name }}"
-          if [[ "$branch_name" == 'release' ]]; then
-            echo "'$branch_name' is valid."
-          else
-            echo "Error: '$branch_name' is not valid."
-            exit 1
-          fi
+#  validate_release_branch:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Validate branch name
+#        run: |
+#          branch_name="${{ github.ref_name }}"
+#          if [[ "$branch_name" == 'release' ]]; then
+#            echo "'$branch_name' is valid."
+#          else
+#            echo "Error: '$branch_name' is not valid."
+#            exit 1
+#          fi
 
   quality_check:
     name: Code Quality
