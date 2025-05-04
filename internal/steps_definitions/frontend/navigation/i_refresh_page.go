@@ -6,7 +6,7 @@ import (
 )
 
 func (n navigation) iRefreshPage() core.TestStep {
-	return core.NewStepWithoutVariables(
+	return core.NewStepWithNoVariables(
 		[]string{"I refresh the page"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {

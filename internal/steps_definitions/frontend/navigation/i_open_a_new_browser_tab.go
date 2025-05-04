@@ -6,7 +6,7 @@ import (
 )
 
 func (n navigation) iOpenNewBrowserTab() core.TestStep {
-	return core.NewStepWithoutVariables(
+	return core.NewStepWithNoVariables(
 		[]string{"I open a new browser tab"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {

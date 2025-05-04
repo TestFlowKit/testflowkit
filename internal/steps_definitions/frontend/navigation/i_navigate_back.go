@@ -6,7 +6,7 @@ import (
 )
 
 func (n navigation) iNavigateBack() core.TestStep {
-	return core.NewStepWithoutVariables(
+	return core.NewStepWithNoVariables(
 		[]string{"I navigate back"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {

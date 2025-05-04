@@ -6,7 +6,7 @@ import (
 )
 
 func (n navigation) iOpenNewPrivateBrowserTab() core.TestStep {
-	return core.NewStepWithoutVariables(
+	return core.NewStepWithNoVariables(
 		[]string{"I open a new private browser tab"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {

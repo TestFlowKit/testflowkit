@@ -43,7 +43,7 @@ func (s stepWithoutVar) Validate(vc *ValidatorContext) any {
 type noVarDef func(*TestSuiteContext) func() error
 type noVarValidator func() ValidationErrors
 
-func NewStepWithoutVariables(
+func NewStepWithNoVariables(
 	sentences []string,
 	definition noVarDef,
 	validator noVarValidator,
