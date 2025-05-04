@@ -21,7 +21,7 @@ func (e *rodElement) Input(text string) error {
 }
 
 func (e *rodElement) Click() error {
-	return e.element.Click(proto.InputMouseButtonLeft, 1)
+	return e.element.Tap()
 }
 
 func (e *rodElement) DoubleClick() error {
