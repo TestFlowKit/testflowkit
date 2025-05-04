@@ -13,16 +13,26 @@ func (n navigation) iShouldBeNavigatedToPage() core.TestStep {
 		[]string{"^I should be navigated to {string} page$"},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(pageName string) error {
+				const maxRetries = 10
 				page := ctx.GetCurrentPage()
 				page.WaitLoading()
-				url, err := testsconfig.GetPageURL(pageName)
-				if err != nil {
-					return err
-				}
 
-				currentURL := page.GetInfo().URL
-				if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
-					return nil
+				var url string
+				var err error
+				var currentURL string
+
+				for range maxRetries {
+					url, err = testsconfig.GetPageURL(pageName)
+					if err != nil {
+						return err
+					}
+					page = ctx.GetCurrentPage()
+					currentURL = page.GetInfo().URL
+					if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
+						return nil
+					}
+
+					page.WaitLoading()
 				}
 
 				return fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
