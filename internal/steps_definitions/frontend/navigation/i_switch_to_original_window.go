@@ -9,7 +9,7 @@ import (
 )
 
 func (n navigation) iSwitchToOriginalWindow() core.TestStep {
-	return core.NewStepWithoutVariables(
+	return core.NewStepWithNoVariables(
 		[]string{"^I switch back to the original window$"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
