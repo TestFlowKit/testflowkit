@@ -19,5 +19,8 @@ func GetSteps() []core.TestStep {
 		handlers.iOpenNewBrowserTab(),
 		handlers.iOpenNewPrivateBrowserTab(),
 		handlers.iSwitchToTheWindowForPage(),
+		handlers.iWaitForNewWindow(),
+		handlers.iSwitchToNewWindow(),
+		handlers.iSwitchToOriginalWindow(),
 	}
 }

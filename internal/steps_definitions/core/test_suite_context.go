@@ -30,6 +30,11 @@ func (fc *TestSuiteContext) GetCurrentPage() common.Page {
 	return fc.page
 }
 
+// SetCurrentPage updates the current active page in the test context
+func (fc *TestSuiteContext) SetCurrentPage(page common.Page) {
+	fc.page = page
+}
+
 func (fc *TestSuiteContext) GetCurrentPageKeyboard() common.Keyboard {
 	return fc.page.GetKeyboard()
 }

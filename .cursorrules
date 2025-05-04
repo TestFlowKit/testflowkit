@@ -1,0 +1,62 @@
+# TestFlowKit Cursor Rules
+
+## Project Structure
+- Source code is organized into these main directories:
+  - `cmd/`: Entry points for the application
+  - `internal/`: Private application code
+  - `pkg/`: Public packages that can be imported
+  - `e2e/`: End-to-end tests
+  - `scripts/`: Utility scripts
+  - `shared/`: Shared code between packages
+  - `documentation/`: Documentation site
+
+## Code Style
+- Use Go formatting conventions
+- Maximum line length: 100 characters
+- Indentation: tabs (not spaces)
+- Imports should be grouped and ordered:
+  1. Standard library imports
+  2. Third-party imports
+  3. Internal project imports
+
+## Naming Conventions
+- Use camelCase for variable names
+- Use PascalCase for exported functions, types, and constants
+- Use snake_case for file names
+- Test files should be named with _test.go suffix
+- Macro feature files should have .macro.feature extension
+
+## Testing Guidelines
+- All tests should be written using Godog
+- Use assistdog for test assertions when possible
+- Frontend tests should follow the step pattern in `internal/steps_definitions`
+- E2E tests should be placed in `e2e/features`
+
+## Package Organization
+- Step definitions belong in `internal/steps_definitions/`
+  - Frontend steps: `internal/steps_definitions/frontend/`
+  - Core steps: `internal/steps_definitions/core/`
+- Browser automation logic in `internal/browser/`
+- Configuration logic in `internal/config/`
+- Reporting in `pkg/reporters/`
+- Gherkin parsing in `pkg/gherkinparser/`
+
+## Documentation
+- Add descriptive comments to all exported functions
+- Document step definitions with proper examples
+- Update documentation site when adding new steps
+
+## Workflow
+- Features should be developed in branches following the pattern: `type/feature-name`
+  - Types: feat, fix, docs, style, refactor, perf, test, chore
+- Commit messages should follow Conventional Commits format
+- Run `make lint` and `make test` before submitting a PR
+
+## Dependencies
+- Use Go modules for dependency management
+- Prefer standard library solutions when possible
+- External dependencies must be approved and documented
+
+## Configuration
+- Use YAML for configuration files
+- Follow existing patterns in `e2e/frontend.yml` and `e2e/cli.yml` 
