@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"log"
 	"testflowkit/internal/browser/common"
 	"time"
 
@@ -18,6 +19,23 @@ func (rb *rodBrowser) NewPage(url string) common.Page {
 	page.MustWaitNavigation()
 	page = page.MustWaitIdle()
 	return newRodPage(page)
+}
+
+func (rb *rodBrowser) GetPages() []common.Page {
+	rodPages, err := rb.browser.Pages()
+	if err != nil {
+		log.Println("Error getting pages: ", err)
+		return nil
+	}
+
+	log.Println("Number of pages: ", len(rodPages))
+
+	var pages []common.Page
+	for _, rodPage := range rodPages {
+		pages = append(pages, newRodPage(rodPage))
+	}
+
+	return pages
 }
 
 func New(headlessMode bool, timeout, slowMotion time.Duration, incognitoMode bool) common.Browser {

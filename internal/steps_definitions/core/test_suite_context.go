@@ -22,6 +22,10 @@ func (fc *TestSuiteContext) OpenNewPage(url string) {
 	fc.page = fc.browser.NewPage(url)
 }
 
+func (fc *TestSuiteContext) GetPages() []common.Page {
+	return fc.browser.GetPages()
+}
+
 func (fc *TestSuiteContext) GetCurrentPage() common.Page {
 	return fc.page
 }
