@@ -22,8 +22,17 @@ func (fc *TestSuiteContext) OpenNewPage(url string) {
 	fc.page = fc.browser.NewPage(url)
 }
 
+func (fc *TestSuiteContext) GetPages() []common.Page {
+	return fc.browser.GetPages()
+}
+
 func (fc *TestSuiteContext) GetCurrentPage() common.Page {
 	return fc.page
+}
+
+// SetCurrentPage updates the current active page in the test context.
+func (fc *TestSuiteContext) SetCurrentPage(page common.Page) {
+	fc.page = page
 }
 
 func (fc *TestSuiteContext) GetCurrentPageKeyboard() common.Keyboard {
