@@ -8,6 +8,7 @@ import (
 
 type Browser interface {
 	NewPage(url string) Page
+	GetPages() []Page
 }
 
 type Page interface {
@@ -17,6 +18,7 @@ type Page interface {
 	WaitLoading()
 	Refresh()
 	GetInfo() PageInfo
+	Focus()
 	Back()
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool

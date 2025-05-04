@@ -30,3 +30,8 @@ dist/
 **/.idea/*
 
 documentation/content
+# cursor except
+
+.cursorrules/
+
+tkit*
