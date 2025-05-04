@@ -30,8 +30,9 @@ func (fc *TestSuiteContext) GetCurrentPage() common.Page {
 	return fc.page
 }
 
-// SetCurrentPage updates the current active page in the test context.
 func (fc *TestSuiteContext) SetCurrentPage(page common.Page) {
+	page.Focus()
+	page.WaitLoading()
 	fc.page = page
 }
 

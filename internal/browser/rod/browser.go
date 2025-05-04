@@ -1,7 +1,6 @@
 package rod
 
 import (
-	"log"
 	"testflowkit/internal/browser/common"
 	"time"
 
@@ -22,11 +21,7 @@ func (rb *rodBrowser) NewPage(url string) common.Page {
 }
 
 func (rb *rodBrowser) GetPages() []common.Page {
-	rodPages, err := rb.browser.Pages()
-	if err != nil {
-		log.Fatal("Error getting pages: ", err)
-	}
-
+	rodPages := rb.browser.MustPages()
 	var pages []common.Page
 	for _, rodPage := range rodPages {
 		pages = append(pages, newRodPage(rodPage))

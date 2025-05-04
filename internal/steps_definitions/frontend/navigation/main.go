@@ -19,8 +19,9 @@ func GetSteps() []core.TestStep {
 		handlers.iOpenNewBrowserTab(),
 		handlers.iOpenNewPrivateBrowserTab(),
 		// TODO: window handling e2e tests
-		handlers.iWaitForNewWindow(),
-		handlers.iSwitchToNewWindow(),
+		handlers.iWaitAMomentForNewWindow(),
+		handlers.iSwitchToMostRecentlyOpenedWindow(),
 		handlers.iSwitchToOriginalWindow(),
+		handlers.iSwitchToNewOpenedWindow(),
 	}
 }
