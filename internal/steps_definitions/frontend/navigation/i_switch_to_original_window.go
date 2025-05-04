@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"errors"
 	"fmt"
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/pkg/logger"
@@ -8,30 +9,27 @@ import (
 )
 
 func (n navigation) iSwitchToOriginalWindow() core.TestStep {
-	return core.NewStepNoVariable(
+	return core.NewStepWithoutVariables(
 		[]string{"^I switch back to the original window$"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
 				pages := ctx.GetPages()
-				
-				if len(pages) < 2 {
-					return fmt.Errorf("only one window is open, no original window to switch back to")
+
+				const minPages = 2
+				if len(pages) < minPages {
+					return errors.New("only one window is open, no original window to switch back to")
 				}
-				
-				// In most cases, the original window is the first one in the list of pages
-				originalPage := pages[0]
-				
-				// Focus on the original page
+
+				originalPage := pages[len(pages)-1]
+
 				originalPage.Focus()
-				
-				// Wait for the page to load completely
+
 				originalPage.WaitLoading()
-				
-				// CRITICAL: Update the current page in the context
+
 				ctx.SetCurrentPage(originalPage)
-				
+
 				logger.Info(fmt.Sprintf("Switched back to original window with URL: %s", originalPage.GetInfo().URL))
-				
+
 				return nil
 			}
 		},
@@ -45,4 +43,4 @@ func (n navigation) iSwitchToOriginalWindow() core.TestStep {
 			Category:    shared.Navigation,
 		},
 	)
-} 
+}

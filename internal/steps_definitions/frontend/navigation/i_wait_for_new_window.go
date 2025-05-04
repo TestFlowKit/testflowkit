@@ -2,13 +2,15 @@ package navigation
 
 import (
 	"fmt"
-	"time"
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
+	"time"
 )
 
 func (n navigation) iWaitForNewWindow() core.TestStep {
+	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
+
 	return core.NewStepWithOneVariable(
 		[]string{"^I wait for a new window to open within {string}$"},
 		func(ctx *core.TestSuiteContext) func(string) error {
@@ -21,28 +23,29 @@ func (n navigation) iWaitForNewWindow() core.TestStep {
 					return err
 				}
 
-				// Store the current number of pages
 				initialPageCount := len(ctx.GetPages())
 				logger.Info(fmt.Sprintf("Waiting for new window. Current window count: %d", initialPageCount))
-				
+
 				// Wait and check periodically for new windows
+				// TODO: refactor in order to use the Wait function
 				startTime := time.Now()
 				for {
 					// Check if we've exceeded the wait time
 					if time.Since(startTime) > duration {
 						return fmt.Errorf("no new window detected within %s", waitTime)
 					}
-					
+
 					// Check if the number of pages has increased
 					currentPageCount := len(ctx.GetPages())
 					if currentPageCount > initialPageCount {
-						logger.Info(fmt.Sprintf("New window detected! Page count increased from %d to %d", 
+						logger.Info(fmt.Sprintf("New window detected! Page count increased from %d to %d",
 							initialPageCount, currentPageCount))
 						return nil
 					}
-					
+
 					// Wait a short time before checking again
-					time.Sleep(100 * time.Millisecond)
+					const milliseconds = 100
+					time.Sleep(milliseconds * time.Millisecond)
 				}
 			}
 		},
@@ -57,10 +60,10 @@ func (n navigation) iWaitForNewWindow() core.TestStep {
 		core.StepDefDocParams{
 			Description: "waits for a new browser window to open within the specified timeout.",
 			Variables: []shared.StepVariable{
-				{Name: "waitTime", Description: "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\").", Type: shared.DocVarTypeString},
+				{Name: "waitTime", Description: docDescription, Type: shared.DocVarTypeString},
 			},
 			Example:  "When I wait for a new window to open within \"5s\"",
 			Category: shared.Navigation,
 		},
 	)
-} 
+}

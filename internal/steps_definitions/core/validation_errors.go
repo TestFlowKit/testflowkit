@@ -3,7 +3,12 @@ package core
 type ValidationErrors struct {
 	missingPages    []string
 	missingElements []string
+	otherErrors     []string
 	undefinedSteps  []string
+}
+
+func (ve *ValidationErrors) AddError(s string) {
+	ve.otherErrors = append(ve.otherErrors, s)
 }
 
 func (ve *ValidationErrors) AddMissingPage(name string) {

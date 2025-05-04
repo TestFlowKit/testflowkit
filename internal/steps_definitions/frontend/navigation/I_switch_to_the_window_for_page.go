@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -23,7 +24,7 @@ func (n navigation) iSwitchToTheWindowForPage() core.TestStep {
 
 				pages := ctx.GetPages()
 				if len(pages) == 0 {
-					return fmt.Errorf("no open browser windows found")
+					return errors.New("no open browser windows found")
 				}
 
 				// Find the window with a matching URL
@@ -36,7 +37,7 @@ func (n navigation) iSwitchToTheWindowForPage() core.TestStep {
 				if windowIdx == -1 {
 					// If exact match not found, try checking for popup windows
 					logger.Warn(fmt.Sprintf("Window for page %s not found by URL, checking for any popup windows", pageName), nil)
-					
+
 					// If we have more than one page and we're looking for a popup
 					if len(pages) > 1 {
 						// Most recent window is usually the popup (typically last in the list)
@@ -50,13 +51,13 @@ func (n navigation) iSwitchToTheWindowForPage() core.TestStep {
 				// Focus on the window
 				targetPage := pages[windowIdx]
 				targetPage.Focus()
-				
+
 				// Wait for the page to load completely
 				targetPage.WaitLoading()
-				
+
 				// CRITICAL FIX: Update the current page in the test context
 				ctx.SetCurrentPage(targetPage)
-				
+
 				logger.Info(fmt.Sprintf("Switched to window with URL: %s", targetPage.GetInfo().URL))
 
 				return nil
