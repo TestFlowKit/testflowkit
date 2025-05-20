@@ -38,6 +38,7 @@ type Element interface {
 	Input(text string) error
 	Select([]string) error
 	IsVisible() bool
+	IsDisabled() bool
 	TextContent() string
 	GetPropertyValue(property string, kind reflect.Kind) any
 }

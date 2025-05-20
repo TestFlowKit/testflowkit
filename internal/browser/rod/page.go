@@ -74,7 +74,7 @@ func (p *rodPage) Focus() {
 func (p *rodPage) WaitLoading() {
 	p.page.MustWaitNavigation()
 	p.page = p.page.MustWaitDOMStable()
-	p.page = p.page.MustWaitIdle()
+	p.page.MustWaitRequestIdle()
 }
 
 func (p *rodPage) ExecuteJS(js string, args ...any) string {
@@ -91,6 +91,7 @@ func (p *rodPage) Refresh() {
 
 func (p *rodPage) GoTo(url string) {
 	p.page = p.page.MustNavigate(url)
+	p.page.MustWaitRequestIdle()
 }
 
 func newRodPage(page *rod.Page) common.Page {
