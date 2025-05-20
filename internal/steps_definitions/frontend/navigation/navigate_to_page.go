@@ -16,7 +16,11 @@ func (n navigation) userNavigateToPage() core.TestStep {
 				logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
 				return err
 			}
-			ctx.OpenNewPage(url)
+			if ctx.GetCurrentPage() == nil {
+				ctx.OpenNewPage(url)
+			} else {
+				ctx.GetCurrentPage().GoTo(url)
+			}
 			return nil
 		}
 	}

@@ -89,6 +89,10 @@ func (p *rodPage) Refresh() {
 	p.page = p.page.MustReload()
 }
 
+func (p *rodPage) GoTo(url string) {
+	p.page = p.page.MustNavigate(url)
+}
+
 func newRodPage(page *rod.Page) common.Page {
 	return &rodPage{
 		page: page,
