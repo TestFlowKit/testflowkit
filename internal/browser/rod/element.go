@@ -71,6 +71,12 @@ func (e *rodElement) Hover() error {
 	return e.element.Hover()
 }
 
+func (e *rodElement) IsDisabled() bool {
+	return e.element.MustDisabled()
+}
+
+
+
 func newRodElement(element *rod.Element) common.Element {
 	return &rodElement{element: element}
 }

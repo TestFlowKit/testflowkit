@@ -1,7 +1,6 @@
 package mouse
 
 import (
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/shared"
@@ -12,7 +11,7 @@ func (s steps) iClickOn() core.TestStep {
 		[]string{`^I click on {string}$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(label string) error {
-				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
+				element, err := getInteractableElement(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}
