@@ -17,6 +17,7 @@ type Page interface {
 	GetOneByXPath(xpath string) (Element, error)
 	WaitLoading()
 	Refresh()
+	GoTo(url string)
 	GetInfo() PageInfo
 	Focus()
 	Back()

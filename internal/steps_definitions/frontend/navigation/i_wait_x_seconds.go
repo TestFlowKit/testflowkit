@@ -15,7 +15,7 @@ func (n navigation) iWait() core.TestStep {
 	}
 
 	return core.NewStepWithOneVariable[int](
-		[]string{`^I wait for {int} seconds$`},
+		[]string{`^I wait for {number} seconds$`},
 		testDefinition,
 		nil,
 		core.StepDefDocParams{
