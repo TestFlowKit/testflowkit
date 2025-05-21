@@ -1,7 +1,6 @@
 package rod
 
 import (
-	"errors"
 	"testflowkit/internal/browser/common"
 
 	"github.com/go-rod/rod"
@@ -36,7 +35,8 @@ func (p *rodPage) GetAllBySelector(selector string) ([]common.Element, error) {
 
 func (p *rodPage) GetInfo() common.PageInfo {
 	return common.PageInfo{
-		URL: p.page.MustInfo().URL,
+		URL:  p.page.MustInfo().URL,
+		HTML: p.page.MustHTML(),
 	}
 }
 
@@ -52,17 +52,9 @@ func (p *rodPage) HasSelector(selector string) bool {
 	return has
 }
 
+// TODO: y revenir
 func (p *rodPage) GetOneByXPath(xpath string) (common.Element, error) {
-	exists, element, err := p.page.HasX(xpath)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if !exists {
-		return nil, errors.New("element not found")
-	}
-
+	element := p.page.MustElementX(xpath)
 	return newRodElement(element), nil
 }
 
@@ -91,6 +83,7 @@ func (p *rodPage) Refresh() {
 
 func (p *rodPage) GoTo(url string) {
 	p.page = p.page.MustNavigate(url)
+	p.page = p.page.MustWaitDOMStable()
 	p.page.MustWaitRequestIdle()
 }
 
