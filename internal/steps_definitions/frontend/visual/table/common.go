@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strings"
 	"testflowkit/internal/browser/common"
+	"testflowkit/pkg/logger"
 )
 
 func getTableRowByCellsContent(currentPage common.Page, cellsContent []string) (common.Element, error) {
@@ -30,6 +31,8 @@ func getTableRowOrHeaderByCellsContent(page common.Page, selector string, conten
 
 	xPath := fmt.Sprintf("//tr[%s]", strings.Join(xpathParts, " and "))
 
+	logger.Info(xPath)
+
 	element, err := page.GetOneByXPath(xPath)
 	if err != nil {
 		return nil, err
@@ -38,6 +41,8 @@ func getTableRowOrHeaderByCellsContent(page common.Page, selector string, conten
 	if element == nil {
 		return nil, errors.New("row not found")
 	}
+
+	logger.Info("element found")
 
 	if !element.IsVisible() {
 		// TODO: better message
