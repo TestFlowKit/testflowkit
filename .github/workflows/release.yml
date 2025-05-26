@@ -1,10 +1,12 @@
 name: Releases Building CI
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 permissions:
   contents: write
   packages: write
+  pull-requests: write
   issues: write
   checks: write
 
@@ -15,11 +17,10 @@ jobs:
       - name: Validate branch name
         run: |
           branch_name="${{ github.ref_name }}"
-          if [[ "$branch_name" == 'release' ]]; then
+          if [[ "$branch_name" == 'main' ]]; then
             echo "'$branch_name' is valid."
           else
             echo "Error: '$branch_name' is not valid."
-            exit 1
           fi
 
   quality_check:
@@ -67,26 +68,21 @@ jobs:
     needs:
       - quality_check
       - e2e_tests
-    name: Semantic Release
+    name: Release
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set Up Go Environment
         uses: actions/setup-go@v5
         with:
           go-version: ${{ vars.GO_VERSION }}
 
-      - name: Install Dependencies (Optional)
-        run: |
-          go mod tidy
-          go mod download
-
-      - name: Build Go Project
+      - name: Build Go Binaries
         run: |
           make releases
 
@@ -95,45 +91,22 @@ jobs:
         with:
           node-version: ${{ vars.NODE_VERSION }}
 
-      - name: Run Semantic Release
-        id: semantic_release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          branches: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Output Semantic Release Results
+      - name: Install Semantic Release
         run: |
-          echo "Release version: ${{ steps.semantic_release.outputs.new_release_version }}"
-          echo "Release notes: ${{ steps.semantic_release.outputs.new_release_notes }}"
-      - name: upload artifacts
-        if: steps.semantic_release.outputs.new_release_version != ''
-        uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ steps.semantic_release.outputs.new_release_version }}
-          files: >
-            build/*
-          allow_override: true
-          gzip: false
+          npm install -g semantic-release \
+            @semantic-release/commit-analyzer \
+            @semantic-release/release-notes-generator \
+            @semantic-release/changelog \
+            @semantic-release/github \
+            @semantic-release/git \
+            @semantic-release/exec
 
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ vars.GH_TOKEN_SEMANTIC_RELEASE }}
+
+        run: npx semantic-release
   deploy_doc:
     needs:
       - release
     uses: "./.github/workflows/deploy-docs.yml"
-
-  delete_release_branch:
-    needs:
-      - deploy_doc
-    name: Delete Release branch
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Delete branch
-        run: |
-          git push origin --delete ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
