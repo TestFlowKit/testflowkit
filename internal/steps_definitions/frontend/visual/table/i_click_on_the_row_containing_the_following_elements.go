@@ -1,7 +1,12 @@
 package table
 
 import (
+	"errors"
+	"slices"
+	"strings"
+	"testflowkit/internal/browser/common"
 	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
@@ -13,30 +18,38 @@ import (
 func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 	const example = `
 	When I click on the row containing the following elements
-	| Name | Age |
-	| John | 30  |
+	| Name | John |
+	| Age | 30  |
 	`
 	return core.NewStepWithOneVariable(
 		[]string{`^I click on the row containing the following elements$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
-				data, parseErr := assistdog.NewDefault().ParseSlice(table)
+				data, parseErr := assistdog.NewDefault().ParseMap(table)
 				if parseErr != nil {
 					return parseErr
 				}
 
-				for _, rowDetails := range data {
-					element, gerRowErr := getTableRowByCellsContent(ctx.GetCurrentPage(), maps.Values(rowDetails))
-					if gerRowErr != nil {
-						return gerRowErr
-					}
+				values := maps.Values(data)
 
-					clickErr := element.Click()
-					if clickErr != nil {
-						return clickErr
+				logger.Info("try to get table ...")
+				trs, _ := ctx.GetCurrentPage().GetAllBySelector("tr")
+
+				idx := slices.IndexFunc(trs, func(elt common.Element) bool {
+					textContent := elt.TextContent()
+					for _, value := range values {
+						if !strings.Contains(textContent, value) {
+							return false
+						}
 					}
+					return true
+				})
+
+				if idx == -1 {
+					return errors.New("row not found with the following values: " + strings.Join(values, ", "))
 				}
 
+				trs[idx].Click()
 				return nil
 			}
 		},
@@ -44,7 +57,7 @@ func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 		core.StepDefDocParams{
 			Description: "clicks on the row containing the following elements.",
 			Variables: []shared.StepVariable{
-				{Name: "table", Description: "The table containing the elements to click on.", Type: shared.DocVarTypeTable},
+				{Name: "Map", Description: "The map containing the element to click on.", Type: shared.DocVarTypeTable},
 			},
 			Example:  example,
 			Category: shared.Visual,
