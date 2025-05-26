@@ -32,24 +32,15 @@ func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 
 				values := maps.Values(data)
 
-				logger.Info("try to get table ...")
-				trs, _ := ctx.GetCurrentPage().GetAllBySelector("tr")
-
-				idx := slices.IndexFunc(trs, func(elt common.Element) bool {
-					textContent := elt.TextContent()
-					for _, value := range values {
-						if !strings.Contains(textContent, value) {
-							return false
-						}
-					}
-					return true
-				})
-
-				if idx == -1 {
-					return errors.New("row not found with the following values: " + strings.Join(values, ", "))
+				row, err := getTableRowByCellsContent(ctx.GetCurrentPage(), values)
+				if err != nil {
+					return err
 				}
 
-				trs[idx].Click()
+				clickErr := row.Click()
+				if clickErr != nil {
+					return clickErr
+				}
 				return nil
 			}
 		},
@@ -57,7 +48,7 @@ func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 		core.StepDefDocParams{
 			Description: "clicks on the row containing the following elements.",
 			Variables: []shared.StepVariable{
-				{Name: "Map", Description: "The map containing the element to click on.", Type: shared.DocVarTypeTable},
+				{Name: "Map", Description: "The map containing the row content", Type: shared.DocVarTypeTable},
 			},
 			Example:  example,
 			Category: shared.Visual,
