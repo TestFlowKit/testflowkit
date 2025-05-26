@@ -26,7 +26,7 @@ func getTableRowOrHeaderByCellsContent(page common.Page, selector string, conten
 
 	var xpathParts []string
 	for _, value := range content {
-		xpathParts = append(xpathParts, fmt.Sprintf("%s[contains(text(), '%s')]", selector, value))
+		xpathParts = append(xpathParts, fmt.Sprintf("%s[contains(., '%s')]", selector, value))
 	}
 
 	xPath := fmt.Sprintf("//tr[%s]", strings.Join(xpathParts, " and "))

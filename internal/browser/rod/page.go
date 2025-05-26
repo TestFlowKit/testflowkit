@@ -20,10 +20,7 @@ func (p *rodPage) GetOneBySelector(selector string) (common.Element, error) {
 }
 
 func (p *rodPage) GetAllBySelector(selector string) ([]common.Element, error) {
-	rodElts, err := p.page.Elements(selector)
-	if err != nil {
-		return nil, err
-	}
+	rodElts := p.page.MustElements(selector)
 
 	var elts []common.Element
 	for _, elt := range rodElts {
