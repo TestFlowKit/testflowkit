@@ -1,20 +1,33 @@
 {
-  "branches": ["main", "releases/*"],
+  "branches": ["main"],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
     [
-      "@semantic-release/changelog",
+      "@semantic-release/github",
       {
-        "changelogFile": "CHANGELOG.md"
+        "assets": [
+          {
+            "path": "build/tkit-darwin-amd64.zip",
+            "label": "tkit-darwin-amd64"
+          },
+          {
+            "path": "build/tkit-darwin-arm64.zip",
+            "label": "tkit-darwin-arm64"
+          },
+          { "path": "build/tkit-linux-amd64.zip", "label": "tkit-linux-amd64" },
+          { "path": "build/tkit-linux-arm64.zip", "label": "tkit-linux-arm64" },
+          {
+            "path": "build/tkit-windows-amd64.zip",
+            "label": "tkit-windows-amd64"
+          },
+          {
+            "path": "build/tkit-windows-arm64.zip",
+            "label": "tkit-windows-arm64"
+          }
+        ]
       }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["CHANGELOG.md"]
-      }
-    ],
-    "@semantic-release/github"
+    ]
   ]
 }

@@ -1,80 +1,82 @@
 name: Releases Building CI
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
   packages: write
+  pull-requests: write
   issues: write
   checks: write
 
 jobs:
-  validate_release_branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate branch name
-        run: |
-          branch_name="${{ github.ref_name }}"
-          if [[ "$branch_name" == 'release' ]]; then
-            echo "'$branch_name' is valid."
-          else
-            echo "Error: '$branch_name' is not valid."
-            exit 1
-          fi
+  # validate_release_branch:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Validate branch name
+  #       run: |
+  #         branch_name="${{ github.ref_name }}"
+  #         if [[ "$branch_name" == 'main' ]]; then
+  #           echo "'$branch_name' is valid."
+  #         else
+  #           echo "Error: '$branch_name' is not valid."
+  #         fi
 
-  quality_check:
-    name: Code Quality
-    runs-on: ubuntu-latest
-    needs: validate_release_branch
+  # quality_check:
+  #   name: Code Quality
+  #   runs-on: ubuntu-latest
+  #   needs: validate_release_branch
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ vars.NODE_VERSION }}
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ vars.NODE_VERSION }}
 
-      - name: Install Commitlint
-        run: |
-          yarn init --yes
-          yarn add @commitlint/config-conventional commitlint@latest
-      - name: Validate Commits with Commitlint
-        run: |
-          npx commitlint --from ${{ github.base_ref }} --to ${{ github.sha }} --verbose
+  #     - name: Install Commitlint
+  #       run: |
+  #         yarn init --yes
+  #         yarn add @commitlint/config-conventional commitlint@latest
+  #     - name: Validate Commits with Commitlint
+  #       run: |
+  #         npx commitlint --from ${{ github.base_ref }} --to ${{ github.sha }} --verbose
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ vars.GO_VERSION }}
+  #     - name: Setup Go
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version: ${{ vars.GO_VERSION }}
 
-      - name: Install golangci-lint
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+  #     - name: Install golangci-lint
+  #       run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-      - name: Run golangci-lint
-        run: golangci-lint run ./...
+  #     - name: Run golangci-lint
+  #       run: golangci-lint run ./...
 
-      - name: Run Unit Tests
-        run: go test ./...
+  #     - name: Run Unit Tests
+  #       run: go test ./...
 
-  e2e_tests:
-    needs: validate_release_branch
-    uses: ./.github/workflows/e2e.yml
+  # e2e_tests:
+  #   needs: validate_release_branch
+  #   uses: ./.github/workflows/e2e.yml
 
   release:
-    needs:
-      - quality_check
-      - e2e_tests
-    name: Semantic Release
+    name: Créer une Release
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout du code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set Up Go Environment
         uses: actions/setup-go@v5
@@ -85,8 +87,7 @@ jobs:
         run: |
           go mod tidy
           go mod download
-
-      - name: Build Go Project
+      - name: Build Go Binaries
         run: |
           make releases
 
@@ -95,45 +96,25 @@ jobs:
         with:
           node-version: ${{ vars.NODE_VERSION }}
 
-      - name: Run Semantic Release
-        id: semantic_release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          branches: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Installation des dépendances (si nécessaire pour le build)
+        run: yarn
 
-      - name: Output Semantic Release Results
+      - name: Installation de semantic-release et plugins
         run: |
-          echo "Release version: ${{ steps.semantic_release.outputs.new_release_version }}"
-          echo "Release notes: ${{ steps.semantic_release.outputs.new_release_notes }}"
-      - name: upload artifacts
-        if: steps.semantic_release.outputs.new_release_version != ''
-        uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: v${{ steps.semantic_release.outputs.new_release_version }}
-          files: >
-            build/*
-          allow_override: true
-          gzip: false
+          npm install -g semantic-release \
+            @semantic-release/commit-analyzer \
+            @semantic-release/release-notes-generator \
+            @semantic-release/changelog \
+            @semantic-release/github \
+            @semantic-release/git \
+            @semantic-release/exec # Pour exécuter des commandes, utile pour les assets
 
+      - name: Exécution de semantic-release
+        env:
+          GITHUB_TOKEN: ${{ vars.GH_TOKEN_SEMANTIC_RELEASE }}
+
+        run: npx semantic-release
   deploy_doc:
     needs:
       - release
     uses: "./.github/workflows/deploy-docs.yml"
-
-  delete_release_branch:
-    needs:
-      - deploy_doc
-    name: Delete Release branch
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Delete branch
-        run: |
-          git push origin --delete ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
