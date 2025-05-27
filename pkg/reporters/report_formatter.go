@@ -39,7 +39,28 @@ func (ts *testSuiteDetails) getTestSuiteDurationInSeconds() int {
 	return int(total.Seconds())
 }
 
-func (ts *testSuiteDetails) resume() {
+func (ts *testSuiteDetails) getScenarioResults() (int, int) {
+	var succeedSc, failedSc int
+	for _, sc := range ts.Scenarios {
+		if sc.Result == succeeded {
+			succeedSc++
+		} else {
+			failedSc++
+		}
+	}
+	return succeedSc, failedSc
+}
+
+func newTestSuiteDetails(
+	appName, appVersion string, startDate time.Time, scenarios []Scenario,
+) *testSuiteDetails {
+	ts := testSuiteDetails{
+		AppName:    appName,
+		AppVersion: appVersion,
+		StartDate:  startDate,
+		Scenarios:  scenarios,
+	}
+
 	year, month, day := ts.StartDate.Date()
 	dateTime := fmt.Sprintf("%d-%d-%d at %d:%d", month, day, year, ts.StartDate.Hour(), ts.StartDate.Minute())
 
@@ -52,16 +73,6 @@ func (ts *testSuiteDetails) resume() {
 	ts.ExecutionDate = dateTime
 	ts.TotalExecutionTime = fmt.Sprintf("%ds", ts.getTestSuiteDurationInSeconds())
 	ts.SuccessRate = strconv.Itoa(succeedSc * 100 / total)
-}
 
-func (ts *testSuiteDetails) getScenarioResults() (int, int) {
-	var succeedSc, failedSc int
-	for _, sc := range ts.Scenarios {
-		if sc.Result == succeeded {
-			succeedSc++
-		} else {
-			failedSc++
-		}
-	}
-	return succeedSc, failedSc
+	return &ts
 }
