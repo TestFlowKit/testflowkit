@@ -69,6 +69,8 @@ func getFormatter(formatType string) formatter {
 	switch formatType {
 	case "html":
 		return htmlReportFormatter{}
+	case "json":
+		return jsonReportFormatter{}
 	default:
 		log.Printf("'%s' report format not supported\n", formatType)
 		return disabledFormatter{}
