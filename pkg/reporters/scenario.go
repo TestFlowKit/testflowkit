@@ -2,21 +2,18 @@ package reporters
 
 import (
 	"fmt"
-	"math"
 	"time"
 
 	"github.com/cucumber/godog"
 )
 
 type Scenario struct {
-	Title                string
-	Steps                []Step
-	ErrorMsg             string
-	StartDate            time.Time
-	Duration             time.Duration
-	FmtDuration          string
-	HTMLStatusColorClass string
-	Result               scenarioResult
+	Title     string
+	Steps     []Step
+	ErrorMsg  string
+	StartDate time.Time
+	Duration  time.Duration
+	Result    scenarioResult
 }
 
 func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration time.Duration, err error) {
@@ -52,19 +49,14 @@ func (s *Scenario) SetTitle(title string) {
 func (s *Scenario) End() {
 	duration := time.Since(s.StartDate)
 
-	durationInS := duration.Seconds()
-	durationInS = math.Max(math.Ceil(durationInS), durationInS)
-
-	result, color, err := failed, "red", s.ErrorMsg
+	result, err := failed, s.ErrorMsg
 	if len(err) == 0 {
-		result, color, err = succeeded, "green", "-"
+		result, err = succeeded, ""
 	}
 
 	s.ErrorMsg = err
 	s.Duration = duration
-	s.FmtDuration = fmt.Sprintf("%vs", durationInS)
 	s.Result = result
-	s.HTMLStatusColorClass = fmt.Sprintf("bg-%s-500", color)
 }
 
 type Step struct {
