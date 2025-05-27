@@ -2,7 +2,6 @@ package reporters
 
 import (
 	_ "embed"
-	"fmt"
 	"html/template"
 	"log"
 	"os"
@@ -54,32 +53,4 @@ func (r htmlReportFormatter) formatContent(details testSuiteDetails) string {
 		testSuiteDetails: details,
 		Scenarios:        htmlScenarios,
 	})
-}
-
-type htmlScenario struct {
-	Scenario
-	FmtDuration          string
-	HTMLStatusColorClass string
-}
-
-type htmlTestSuiteDetails struct {
-	testSuiteDetails
-	Scenarios []htmlScenario
-}
-
-func newhtmlScenario(sc Scenario) *htmlScenario {
-	color := "red"
-	if sc.Result == succeeded {
-		color = "green"
-	}
-
-	if sc.ErrorMsg == "" {
-		sc.ErrorMsg = "-"
-	}
-
-	return &htmlScenario{
-		Scenario:             sc,
-		FmtDuration:          sc.Duration.String(),
-		HTMLStatusColorClass: fmt.Sprintf("bg-%s-500", color),
-	}
 }
