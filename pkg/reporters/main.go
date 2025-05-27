@@ -41,12 +41,14 @@ func (r *Report) Start() {
 }
 
 func (r *Report) Write() {
-	r.formatter.WriteReport(testSuiteDetails{
-		AppName:    r.appName,
-		AppVersion: r.appVersion,
-		StartDate:  r.startDate,
-		Scenarios:  r.scenarios,
-	})
+	ts := newTestSuiteDetails(
+		r.appName,
+		r.appVersion,
+		r.startDate,
+		r.scenarios,
+	)
+
+	r.formatter.WriteReport(*ts)
 }
 
 func (r *Report) HasScenarios() bool {
