@@ -8,7 +8,7 @@ import (
 	"testflowkit/shared"
 )
 
-func (n navigation) iNavigateToPage() core.TestStep {
+func (n navigation) userNavigateToPage() core.TestStep {
 	testDefinition := func(ctx *core.TestSuiteContext) func(string) error {
 		return func(page string) error {
 			url, err := testsconfig.GetPageURL(page)
@@ -21,8 +21,8 @@ func (n navigation) iNavigateToPage() core.TestStep {
 		}
 	}
 
-	return core.NewStepWithOneVariable[string](
-		[]string{`^I navigate to {string} page$`},
+	return core.NewStepWithOneVariable(
+		[]string{`^the user goes to the {string} page$`},
 		testDefinition,
 		func(page string) core.ValidationErrors {
 			vc := core.ValidationErrors{}
@@ -33,11 +33,11 @@ func (n navigation) iNavigateToPage() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "navigates to a page.",
+			Description: "Navigates to a page identified by a logical name.",
 			Variables: []shared.StepVariable{
 				{Name: "page", Description: "The name of the page to navigate to.", Type: shared.DocVarTypeString},
 			},
-			Example:  "When I navigate to \"Home\" page",
+			Example:  "When the user goes to the “Login” page",
 			Category: shared.Navigation,
 		},
 	)
