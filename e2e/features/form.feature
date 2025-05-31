@@ -3,7 +3,7 @@ Feature: Form e2e tests
 
   Background:
     Given I open a new private browser tab
-    And I navigate to "form e2e" page
+    And the user goes to the "form e2e" page
 
 
 
@@ -36,4 +36,3 @@ Feature: Form e2e tests
       | type     | value             |
       | text     | Hello Test !      |
       | textarea | Hello Test area ! |
-
