@@ -3,7 +3,7 @@ Feature: visual e2e tests
 
   Background:
     Given I open a new browser tab
-    Then I navigate to visual e2e page
+    Then the user goes to the visual e2e page
 
 
   Scenario: User should see certain things on page

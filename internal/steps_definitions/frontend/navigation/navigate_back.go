@@ -1,24 +1,28 @@
 package navigation
 
 import (
+	"errors"
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/shared"
 )
 
-func (n navigation) iRefreshPage() core.TestStep {
+func (n navigation) theUserNavigateBack() core.TestStep {
 	return core.NewStepWithNoVariables(
-		[]string{"I refresh the page"},
+		[]string{"the user navigate back"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
-				ctx.GetCurrentPage().Refresh()
+				if ctx.GetCurrentPage() == nil {
+					return errors.New("no page opened")
+				}
+				ctx.GetCurrentPage().Back()
 				return nil
 			}
 		},
 		nil,
 		core.StepDefDocParams{
-			Description: "refreshes the current page.",
+			Description: "navigates back to the previous page.",
 			Variables:   nil,
-			Example:     "When I refresh the page",
+			Example:     "Given the user navigate back",
 			Category:    shared.Navigation,
 		},
 	)
