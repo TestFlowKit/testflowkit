@@ -3,7 +3,7 @@ Feature: Table e2e tests
 
   Background:
       Given I open a new browser tab
-      When I navigate to table e2e page
+      When the user goes to the table e2e page
 
 
   Scenario: User should see a specific table row
