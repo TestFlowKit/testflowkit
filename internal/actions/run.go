@@ -45,10 +45,20 @@ func Run(appConfig *config.App) {
 
 	logger.Info("Running tests ...")
 	testSuite.Run()
+
+	if !testReport.HasScenarios() {
+		logger.Warn("No scenarios executed!", []string{
+			"Make sure your tags are correct",
+			"Make sure your gherkin files directory is configured",
+		})
+		os.Exit(0)
+	}
+
 	if testReport.AreAllTestsPassed {
 		logger.Success("All tests passed")
 		os.Exit(0)
 	}
+
 	logger.Error("Some tests failed", []string{
 		"some selectors may be missing in the configuration file",
 		"Some selectors may be malformed",
@@ -77,8 +87,6 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 		suiteContext.AfterSuite(func() {
 			if testReport.HasScenarios() {
 				testReport.Write()
-			} else {
-				logger.Info("No scenarios executed")
 			}
 		})
 	}
