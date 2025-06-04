@@ -1,7 +1,12 @@
 package table
 
 import (
+	"errors"
+	"slices"
+	"strings"
+	"testflowkit/internal/browser/common"
 	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
@@ -13,30 +18,29 @@ import (
 func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 	const example = `
 	When I click on the row containing the following elements
-	| Name | Age |
-	| John | 30  |
+	| Name | John |
+	| Age | 30  |
 	`
 	return core.NewStepWithOneVariable(
 		[]string{`^I click on the row containing the following elements$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
-				data, parseErr := assistdog.NewDefault().ParseSlice(table)
+				data, parseErr := assistdog.NewDefault().ParseMap(table)
 				if parseErr != nil {
 					return parseErr
 				}
 
-				for _, rowDetails := range data {
-					element, gerRowErr := getTableRowByCellsContent(ctx.GetCurrentPage(), maps.Values(rowDetails))
-					if gerRowErr != nil {
-						return gerRowErr
-					}
+				values := maps.Values(data)
 
-					clickErr := element.Click()
-					if clickErr != nil {
-						return clickErr
-					}
+				row, err := getTableRowByCellsContent(ctx.GetCurrentPage(), values)
+				if err != nil {
+					return err
 				}
 
+				clickErr := row.Click()
+				if clickErr != nil {
+					return clickErr
+				}
 				return nil
 			}
 		},
@@ -44,7 +48,7 @@ func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
 		core.StepDefDocParams{
 			Description: "clicks on the row containing the following elements.",
 			Variables: []shared.StepVariable{
-				{Name: "table", Description: "The table containing the elements to click on.", Type: shared.DocVarTypeTable},
+				{Name: "Map", Description: "The map containing the row content", Type: shared.DocVarTypeTable},
 			},
 			Example:  example,
 			Category: shared.Visual,

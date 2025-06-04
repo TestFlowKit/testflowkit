@@ -17,6 +17,7 @@ type Page interface {
 	GetOneByXPath(xpath string) (Element, error)
 	WaitLoading()
 	Refresh()
+	GoTo(url string)
 	GetInfo() PageInfo
 	Focus()
 	Back()
@@ -26,7 +27,8 @@ type Page interface {
 }
 
 type PageInfo struct {
-	URL string
+	URL  string
+	HTML string
 }
 
 type Element interface {
@@ -37,6 +39,7 @@ type Element interface {
 	Input(text string) error
 	Select([]string) error
 	IsVisible() bool
+	IsDisabled() bool
 	TextContent() string
 	GetPropertyValue(property string, kind reflect.Kind) any
 }
