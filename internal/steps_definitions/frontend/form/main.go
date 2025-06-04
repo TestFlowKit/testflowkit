@@ -11,7 +11,7 @@ func GetSteps() []core.TestStep {
 	handlers := steps{}
 
 	return []core.TestStep{
-		handlers.iTypeXXXIntoInput(),
+		handlers.userEntersTextIntoField(),
 		handlers.iSelectXXXIntoDropdown(),
 		handlers.checkCheckboxStatus(),
 		handlers.theFieldShouldContains(),
