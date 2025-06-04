@@ -21,7 +21,7 @@ func (n navigation) iShouldBeNavigatedToPage() core.TestStep {
 				var err error
 				var currentURL string
 
-				for i := 0; i < maxRetries; i++ {
+				for range maxRetries {
 					url, err = testsconfig.GetPageURL(pageName)
 					if err != nil {
 						return err

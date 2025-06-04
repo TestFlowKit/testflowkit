@@ -35,6 +35,7 @@ type Element interface {
 	RightClick() error
 	Hover() error
 	Input(text string) error
+	IsChecked() bool
 	Select([]string) error
 	IsVisible() bool
 	TextContent() string
