@@ -28,8 +28,8 @@ Feature: Form e2e tests
 
   @TEXT_FIELD
   Scenario Outline: a user can type into <type> field
-    Then I type "<value>" into the <type> field
-    When the <type> field should be contain "<value>"
+    When the user enters "<value>" into the "<type>" field
+    Then the <type> field should be contain "<value>"
 
     Examples:
       | type     | value             |
