@@ -5,6 +5,10 @@ import (
 )
 
 func Warn(msg string, actionsExpected []string) {
-	const format = "%s\nActions expected: \n%s"
-	log(warn, fmt.Sprintf(format, msg, formatList(actionsExpected)))
+	if len(actionsExpected) == 0 {
+		log(warn, msg)
+	} else {
+		const format = "%s\nActions expected: \n%s"
+		log(warn, fmt.Sprintf(format, msg, formatList(actionsExpected)))
+	}
 }

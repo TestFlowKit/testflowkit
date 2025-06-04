@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core"
-	"testflowkit/internal/utils"
+	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
 )
 
@@ -32,7 +32,7 @@ func (s steps) dropdownHaveValuesSelected() core.TestStep {
 					return err
 				}
 
-				labels := utils.String{}.SplitAndTrim(optionLabels, ",")
+				labels := stringutils.SplitAndTrim(optionLabels, ",")
 
 				result := ctx.GetCurrentPage().ExecuteJS(`(selector, labels) => {
 					const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
