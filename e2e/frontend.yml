@@ -16,6 +16,10 @@ global:
       - "#textarea"
     double_click_button:
       - "#dbclick-btn"
+    test_radio_button:
+      - "#radio1"
+    second_test_radio_button:
+      - "#radio2"
 
   pages:
     form_e2e: "form"

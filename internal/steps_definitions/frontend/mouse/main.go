@@ -11,9 +11,11 @@ func GetSteps() []core.TestStep {
 	handlers := steps{}
 
 	return []core.TestStep{
-		handlers.iClickOn(),
+		handlers.userClicksOnButton(),
 		handlers.iClickOnElementWhichContains(),
 		handlers.iDoubleClickOn(),
+		handlers.userClicksOnLink(),
+		handlers.userClicksOnElement(),
 		handlers.iDoubleClickOnElementWhichContains(),
 		handlers.iRightClickOn(),
 		handlers.iRightClickOnElementWhichContains(),
