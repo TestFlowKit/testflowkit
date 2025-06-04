@@ -15,6 +15,10 @@ func GetSteps() []core.TestStep {
 		handlers.iSelectXXXIntoDropdown(),
 		handlers.checkCheckboxStatus(),
 		handlers.theFieldShouldContains(),
+		handlers.radioButtonShouldBeSelectedOrNot(),
 		handlers.dropdownHaveValuesSelected(),
+		handlers.userChecksCheckbox(),
+		handlers.userUnchecksCheckbox(),
+		handlers.userSelectsRadioButton(),
 	}
 }

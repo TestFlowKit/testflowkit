@@ -70,6 +70,14 @@ func (e *rodElement) Hover() error {
 	return e.element.Hover()
 }
 
+func (e *rodElement) IsChecked() bool {
+	value, err := e.element.Property("checked")
+	if err != nil {
+		return false
+	}
+	return value.Bool()
+}
+
 func newRodElement(element *rod.Element) common.Element {
 	return &rodElement{element: element}
 }

@@ -5,7 +5,7 @@ import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core"
-	"testflowkit/internal/utils"
+	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
 )
 
@@ -22,8 +22,7 @@ func (s steps) iSelectXXXIntoDropdown() core.TestStep {
 				if err != nil {
 					return err
 				}
-				ctx.GetCurrentPage()
-				return input.Select(utils.String{}.SplitAndTrim(options, ","))
+				return input.Select(stringutils.SplitAndTrim(options, ","))
 			}
 		},
 		func(_, dropdownId string) core.ValidationErrors {
