@@ -20,5 +20,6 @@ func GetSteps() []core.TestStep {
 		handlers.userChecksCheckbox(),
 		handlers.userUnchecksCheckbox(),
 		handlers.userSelectsRadioButton(),
+		handlers.userClearsFormField(),
 	}
 }
