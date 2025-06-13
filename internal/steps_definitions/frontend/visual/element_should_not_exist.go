@@ -8,18 +8,14 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) elementShouldBeVisible() core.TestStep {
+func (s steps) elementShouldNotExist() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{`^the {string} should be visible$`},
+		[]string{`^the {string} should not exist$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(name string) error {
-				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
-				if err != nil {
-					return err
-				}
-
-				if !element.IsVisible() {
-					return fmt.Errorf("%s is not visible", name)
+				_, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
+				if err == nil {
+					return fmt.Errorf("%s exists but should not", name)
 				}
 
 				return nil
@@ -34,11 +30,11 @@ func (s steps) elementShouldBeVisible() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "This assertion checks if the element is present in the DOM and displayed on the page.",
+			Description: "This assertion checks if the element is not present in the DOM.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
 			},
-			Example:  "Then the submit button should be visible",
+			Example:  "Then the submit button should not exist",
 			Category: shared.Visual,
 		},
 	)

@@ -2,6 +2,7 @@ package browser
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"testflowkit/internal/browser/common"
@@ -20,7 +21,13 @@ func GetElementByLabel(page common.Page, label string) (common.Element, error) {
 	if err != nil {
 		return nil, err
 	}
-	return getElementBySelectors(page, selectors), nil
+
+	element := getElementBySelectors(page, selectors)
+	if element == nil {
+		return nil, errors.New("element not found")
+	}
+
+	return element, nil
 }
 
 func getElementBySelectors(page common.Page, potentialSelectors []string) common.Element {
@@ -50,6 +57,9 @@ func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p common.Page, sel 
 			"Please fix the selector in the configuration file",
 			"Please verify that page is accessible",
 		})
+		ch <- nil
+		ctx.cancel()
+		return
 	}
 
 	if element != nil {
