@@ -5,15 +5,25 @@ Feature: Form e2e tests
     Given I open a new private browser tab
     And the user goes to the "form e2e" page
 
-  @DROPDOWN
-  Scenario Outline: a user can select dropdown value
-    When I select "<selection>" into the <dropdown> dropdown
-    Then the <dropdown> dropdown should have "<selection>" selected
+  @DROPDOWN @SELECT_BY_TEXT
+  Scenario: a user can select dropdown value by text
+    When the user selects the option with text "Option 2" from the "test" dropdown
 
-    Examples:
-      | dropdown | selection          |
-      | test     | Option 2           |
-      | multiple | Option 2, Option 1 |
+  @DROPDOWN @MULTIPLE @SELECT_BY_TEXT
+  Scenario: a user can select multiple dropdown values by text
+    When the user selects the options with text "Option 2, Option 1" from the "multiple" dropdown
+
+  @DROPDOWN @SELECT_BY_VALUE
+  Scenario: a user can select dropdown value
+    When the user selects the option with value "option2" from the "test" dropdown
+
+  @DROPDOWN @MULTIPLE @SELECT_BY_VALUE
+  Scenario: a user can select multiple dropdown values by values
+    When the user selects the options with values "option2, option1" from the "multiple" dropdown
+
+  @DROPDOWN @MULTIPLE @SELECT_BY_INDEX
+  Scenario: a user can select multiple dropdown values by index
+    When the user selects the option at index 2 from the "test" dropdown
 
   @CHECKBOX @CHECKED
   Scenario: a user can check a checkbox

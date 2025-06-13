@@ -1,7 +1,11 @@
 package rod
 
 import (
+	"errors"
+	"fmt"
 	"reflect"
+	"slices"
+	"strconv"
 	"testflowkit/internal/browser/common"
 
 	"github.com/go-rod/rod"
@@ -48,8 +52,52 @@ func (e *rodElement) IsVisible() bool {
 	return visible
 }
 
-func (e *rodElement) Select(options []string) error {
+func (e *rodElement) SelectByText(options []string) error {
 	return e.element.Select(options, true, rod.SelectorTypeRegex)
+}
+
+func (e *rodElement) SelectByValue(values []string) error {
+	var dropdownsTexts []string
+	optionsElts, getEltserr := e.element.Elements("option")
+	if getEltserr != nil {
+		return getEltserr
+	}
+
+	for _, option := range optionsElts {
+		attrValue, getAttrErr := option.Attribute("value")
+		if getAttrErr != nil {
+			continue
+		}
+
+		isExpected := slices.Contains(values, *attrValue)
+		if !isExpected {
+			continue
+		}
+		dropdownsTexts = append(dropdownsTexts, option.MustText())
+	}
+
+	if len(dropdownsTexts) == 0 {
+		return errors.New("no option found")
+	}
+
+	if len(dropdownsTexts) < len(values) {
+		return fmt.Errorf("only Options with values %v found", dropdownsTexts)
+	}
+
+	return e.SelectByText(dropdownsTexts)
+}
+
+func (e *rodElement) SelectByIndex(optionIndex int) error {
+	optionsElts, err := e.element.Elements("option")
+	if err != nil {
+		return err
+	}
+
+	if optionIndex < 0 || optionIndex >= len(optionsElts) {
+		return errors.New("invalid option index, max index is " + strconv.Itoa(len(optionsElts)-1))
+	}
+
+	return e.SelectByText([]string{optionsElts[optionIndex].MustText()})
 }
 
 func (e *rodElement) GetPropertyValue(property string, kind reflect.Kind) any {
