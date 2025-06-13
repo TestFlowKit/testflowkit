@@ -37,7 +37,9 @@ type Element interface {
 	Input(text string) error
 	Clear() error
 	IsChecked() bool
-	Select([]string) error
+	SelectByText([]string) error
+	SelectByValue([]string) error
+	SelectByIndex(int) error
 	IsVisible() bool
 	TextContent() string
 	GetPropertyValue(property string, kind reflect.Kind) any

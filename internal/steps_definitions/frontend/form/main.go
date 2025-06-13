@@ -12,7 +12,11 @@ func GetSteps() []core.TestStep {
 
 	return []core.TestStep{
 		handlers.userEntersTextIntoField(),
-		handlers.iSelectXXXIntoDropdown(),
+		handlers.userSelectOptionWithTextIntoDropdown(),
+		handlers.userSelectMultipleOptionsWithTextsIntoDropdown(),
+		handlers.userSelectOptionWithValueIntoDropdown(),
+		handlers.userSelectMultipleOptionsByValueIntoDropdown(),
+		handlers.userSelectOptionByIndexIntoDropdown(),
 		handlers.checkCheckboxStatus(),
 		handlers.theFieldShouldContains(),
 		handlers.radioButtonShouldBeSelectedOrNot(),
