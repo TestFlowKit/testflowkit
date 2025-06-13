@@ -20,6 +20,10 @@ global:
       - "#radio1"
     second_test_radio_button:
       - "#radio2"
+    nonexistent_button:
+      - "#inexistent"
+    hidden_button:
+      - "#hidden-btn"
 
   pages:
     form_e2e: "form"
