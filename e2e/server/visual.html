@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>Exemple d'effets avec JavaScript</title>
+        <style>
+            #monElement {
+                background-color: lightblue;
+                padding: 20px;
+            }
 
-<head>
-  <title>Exemple d'effets avec JavaScript</title>
-  <style>
-    #monElement {
-      background-color: lightblue;
-      padding: 20px;
-    }
-  </style>
-</head>
+            #hidden-btn {
+                display: none;
+            }
+        </style>
+    </head>
 
-<body>
+    <body>
+        <h1 class="text">Voici le titre de la page.</h1>
 
-  <h1 class="text">Voici le titre de la page.</h1>
+        <div id="monElement">
+            Cet élément va disparaître quand vous cliquerez sur le bouton.
+        </div>
 
-  <div id="monElement">
-    Cet élément va disparaître quand vous cliquerez sur le bouton.
-  </div>
+        <button onclick="cacherElement()">Cacher l'élément</button>
 
-  <button onclick="cacherElement()">Cacher l'élément</button>
+        <button id="dbclick-btn">double click</button>
 
+        <button id="hidden-btn">hidden button</button>
 
-  <button id="dbclick-btn">double click</button>
+        <script>
+            function cacherElement() {
+                document.getElementById("monElement").style.display = "none";
+                document.body.innerHTML += "<p>L'élément a été caché.</p>";
+            }
 
-  <script>
-    function cacherElement() {
-      document.getElementById("monElement").style.display = "none";
-      document.body.innerHTML += "<p>L'élément a été caché.</p>";
-    }
-
-    document.getElementById("dbclick-btn").addEventListener("dblclick", function () {
-      document.body.innerHTML += "<p>Vous avez double cliqué sur le bouton.</p>";
-    });
-
-  </script>
-
-</body>
-
+            document
+                .getElementById("dbclick-btn")
+                .addEventListener("dblclick", function () {
+                    document.body.innerHTML +=
+                        "<p>Vous avez double cliqué sur le bouton.</p>";
+                });
+        </script>
+    </body>
 </html>

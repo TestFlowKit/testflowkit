@@ -15,6 +15,8 @@ func GetSteps() []core.TestStep {
 	var otherSteps = []core.TestStep{
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotBeVisible(),
+		handlers.elementShouldNotExist(),
+		handlers.elementShouldExist(),
 		handlers.iShouldSeeOnPage(),
 		handlers.iShouldNotSeeOnPage(),
 		handlers.iShouldSeeElementWhichContains(),

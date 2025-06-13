@@ -10,7 +10,7 @@ import (
 
 func (s steps) elementShouldNotBeVisible() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{`^{string} should not be visible$`},
+		[]string{`^the {string} should not be visible$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(name string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
@@ -34,7 +34,7 @@ func (s steps) elementShouldNotBeVisible() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "checks if an element is not visible.",
+			Description: "This assertion checks if the element is present in the DOM but not displayed",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
 			},
