@@ -5,27 +5,26 @@ import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core"
-	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
 )
 
-func (s steps) iSelectXXXIntoDropdown() core.TestStep {
+func (s steps) userSelectOptionByIndexIntoDropdown() core.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
 
 	return core.NewStepWithTwoVariables(
-		[]string{`^I select "{string}" into the {string} dropdown$`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
-			return func(options, dropdownId string) error {
+		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
+		func(ctx *core.TestSuiteContext) func(int, string) error {
+			return func(optionIndex int, dropdownId string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
 				if err != nil {
 					return err
 				}
-				return input.Select(stringutils.SplitAndTrim(options, ","))
+				return input.SelectByIndex(optionIndex)
 			}
 		},
-		func(_, dropdownId string) core.ValidationErrors {
+		func(_ int, dropdownId string) core.ValidationErrors {
 			vc := core.ValidationErrors{}
 			label := formatVar(dropdownId)
 			if !testsconfig.IsElementDefined(label) {
@@ -35,12 +34,12 @@ func (s steps) iSelectXXXIntoDropdown() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "selects the specified options into the dropdown.",
+			Description: "Selects an option from a dropdown list based on its underlying ‘value’ attribute.",
 			Variables: []shared.StepVariable{
-				{Name: "options", Description: "The options to select.", Type: shared.DocVarTypeString},
+				{Name: "option value", Description: "The value of the option to select.", Type: shared.DocVarTypeString},
 				{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
 			},
-			Example:  `When I select "USA,Canada" into the "country" dropdown`,
+			Example:  `When the user selects the option with value “CIV” from the “Country” dropdown.`,
 			Category: shared.Form,
 		},
 	)
