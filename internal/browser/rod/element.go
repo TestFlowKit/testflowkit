@@ -129,6 +129,9 @@ func (e *rodElement) IsChecked() bool {
 func (e *rodElement) Clear() error {
 	return e.element.Input("")
 }
+func (e *rodElement) IsDisabled() bool {
+	return e.element.MustDisabled()
+}
 
 func newRodElement(element *rod.Element) common.Element {
 	return &rodElement{element: element}

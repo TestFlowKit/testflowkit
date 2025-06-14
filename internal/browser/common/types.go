@@ -27,7 +27,8 @@ type Page interface {
 }
 
 type PageInfo struct {
-	URL string
+	URL  string
+	HTML string
 }
 
 type Element interface {
@@ -42,6 +43,7 @@ type Element interface {
 	SelectByValue([]string) error
 	SelectByIndex(int) error
 	IsVisible() bool
+	IsDisabled() bool
 	TextContent() string
 	GetPropertyValue(property string, kind reflect.Kind) any
 }

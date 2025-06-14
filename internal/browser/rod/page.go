@@ -1,7 +1,6 @@
 package rod
 
 import (
-	"errors"
 	"testflowkit/internal/browser/common"
 
 	"github.com/go-rod/rod"
@@ -21,10 +20,7 @@ func (p *rodPage) GetOneBySelector(selector string) (common.Element, error) {
 }
 
 func (p *rodPage) GetAllBySelector(selector string) ([]common.Element, error) {
-	rodElts, err := p.page.Elements(selector)
-	if err != nil {
-		return nil, err
-	}
+	rodElts := p.page.MustElements(selector)
 
 	var elts []common.Element
 	for _, elt := range rodElts {
@@ -36,7 +32,8 @@ func (p *rodPage) GetAllBySelector(selector string) ([]common.Element, error) {
 
 func (p *rodPage) GetInfo() common.PageInfo {
 	return common.PageInfo{
-		URL: p.page.MustInfo().URL,
+		URL:  p.page.MustInfo().URL,
+		HTML: p.page.MustHTML(),
 	}
 }
 
@@ -52,17 +49,9 @@ func (p *rodPage) HasSelector(selector string) bool {
 	return has
 }
 
+// TODO: y revenir
 func (p *rodPage) GetOneByXPath(xpath string) (common.Element, error) {
-	exists, element, err := p.page.HasX(xpath)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if !exists {
-		return nil, errors.New("element not found")
-	}
-
+	element := p.page.MustElementX(xpath)
 	return newRodElement(element), nil
 }
 
@@ -74,7 +63,7 @@ func (p *rodPage) Focus() {
 func (p *rodPage) WaitLoading() {
 	p.page.MustWaitNavigation()
 	p.page = p.page.MustWaitDOMStable()
-	p.page = p.page.MustWaitIdle()
+	p.page.MustWaitRequestIdle()
 }
 
 func (p *rodPage) ExecuteJS(js string, args ...any) string {
@@ -91,6 +80,8 @@ func (p *rodPage) Refresh() {
 
 func (p *rodPage) GoTo(url string) {
 	p.page = p.page.MustNavigate(url)
+	p.page = p.page.MustWaitDOMStable()
+	p.page.MustWaitRequestIdle()
 }
 
 func newRodPage(page *rod.Page) common.Page {
