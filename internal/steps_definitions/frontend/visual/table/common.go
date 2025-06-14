@@ -2,7 +2,6 @@ package table
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"slices"
 	"strings"
@@ -23,25 +22,25 @@ func getTableRowOrHeaderByCellsContent(page common.Page, selector string, conten
 		log.Panicf("only %s allowed", strings.Join(allowedValues, ", "))
 	}
 
-	var xpathParts []string
-	for _, value := range content {
-		xpathParts = append(xpathParts, fmt.Sprintf("%s[contains(text(), '%s')]", selector, value))
+	trs, _ := page.GetAllBySelector("tr")
+
+	idx := slices.IndexFunc(trs, func(elt common.Element) bool {
+		textContent := elt.TextContent()
+		for _, value := range content {
+			if !strings.Contains(textContent, value) {
+				return false
+			}
+		}
+		return true
+	})
+
+	if idx == -1 {
+		return nil, errors.New("row not found with the following values: " + strings.Join(content, ", "))
 	}
 
-	xPath := fmt.Sprintf("//tr[%s]", strings.Join(xpathParts, " and "))
-
-	element, err := page.GetOneByXPath(xPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if element == nil {
-		return nil, errors.New("row not found")
-	}
-
+	element := trs[idx]
 	if !element.IsVisible() {
-		// TODO: better message
-		return nil, errors.New("row is not visible")
+		return nil, errors.New("row exists but it is not visible")
 	}
 
 	return element, nil
