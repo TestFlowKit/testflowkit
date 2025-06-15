@@ -4,6 +4,7 @@ import (
 	"slices"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/frontend/assertions"
 	"testflowkit/internal/steps_definitions/frontend/form"
 	"testflowkit/internal/steps_definitions/frontend/keyboard"
 	"testflowkit/internal/steps_definitions/frontend/mouse"
@@ -40,6 +41,7 @@ func getAllSteps() []core.TestStep {
 		navigation.GetSteps(),
 		visual.GetSteps(),
 		mouse.GetSteps(),
+		assertions.GetSteps(),
 	)
 }
 

@@ -1,4 +1,4 @@
-package form
+package assertions
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 func (s steps) theFieldShouldContains() core.TestStep {
 	return core.NewStepWithTwoVariables(
-		[]string{`^the {string} should be contain "{string}"`},
+		[]string{`^the value of the {string} field should be {string}`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(fieldId, text string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), fieldId)
@@ -34,12 +34,12 @@ func (s steps) theFieldShouldContains() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "checks if the field contains the specified text.",
+			Description: "This assertion checks if the current value of an input field (e.g., text box) matches the specified value.",
 			Variables: []shared.StepVariable{
 				{Name: "fieldId", Description: "The id of the field.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text to check.", Type: shared.DocVarTypeString},
 			},
-			Example:  `Then the "username" should be contain "John"`,
+			Example:  `Then the value of the "Username" field should be "myUsername".`,
 			Category: shared.Form,
 		},
 	)
