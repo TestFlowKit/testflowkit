@@ -21,6 +21,11 @@ func main() {
 	_, filename, _, _ := runtime.Caller(0)
 	currDir := filepath.Dir(filename)
 
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		filePath := path.Join(currDir, "index.html")
+		http.ServeFile(w, r, filePath)
+	})
+
 	for _, file := range files {
 		http.HandleFunc(fmt.Sprintf("/%s", file), func(w http.ResponseWriter, r *http.Request) {
 			log.Println(r.URL.Path, "requested")
@@ -28,11 +33,6 @@ func main() {
 			http.ServeFile(w, r, filePath)
 		})
 	}
-
-	http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-		const code = 200
-		w.WriteHeader(code)
-	})
 
 	const port = 3000
 	const timeout = 3

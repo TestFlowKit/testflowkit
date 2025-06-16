@@ -1,7 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
         <title>Exemple d'effets avec JavaScript</title>
+        <link
+            href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+            rel="stylesheet"
+        />
         <style>
             #monElement {
                 background-color: lightblue;
@@ -14,11 +18,71 @@
         </style>
     </head>
 
-    <body>
-        <h1 class="text">Voici le titre de la page.</h1>
+    <body class="bg-gray-100 min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <nav class="bg-white shadow-lg rounded-lg p-4 mb-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-xl font-semibold text-gray-800">
+                        Effets visuels JavaScript
+                    </h1>
+                    <div class="flex space-x-4">
+                        <a
+                            href="/"
+                            class="text-blue-600 hover:text-blue-800 font-medium"
+                            >Accueil</a
+                        >
+                        <a
+                            href="table"
+                            class="text-blue-600 hover:text-blue-800 font-medium"
+                            >Tableau</a
+                        >
+                        <a
+                            href="form"
+                            class="text-blue-600 hover:text-blue-800 font-medium"
+                            >Formulaire</a
+                        >
+                        <a
+                            href="details"
+                            class="text-blue-600 hover:text-blue-800 font-medium"
+                            >Détails</a
+                        >
+                    </div>
+                </div>
+            </nav>
 
-        <div id="monElement">
-            Cet élément va disparaître quand vous cliquerez sur le bouton.
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6">
+                    Voici le titre de la page.
+                </h1>
+
+                <div id="monElement" class="mb-4 rounded-lg">
+                    Cet élément va disparaître quand vous cliquerez sur le
+                    bouton.
+                </div>
+
+                <div class="space-y-4">
+                    <button
+                        onclick="cacherElement()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                        Cacher l'élément
+                    </button>
+
+                    <button
+                        id="dbclick-btn"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ml-4"
+                    >
+                        double click
+                    </button>
+
+                    <button
+                        id="hidden-btn"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg"
+                    >
+                        hidden button
+                    </button>
+                </div>
+            </div>
         </div>
 
         <button onclick="cacherElement()">Cacher l'élément</button>

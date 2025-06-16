@@ -1,4 +1,4 @@
-package form
+package assertions
 
 import (
 	"fmt"
@@ -9,11 +9,15 @@ import (
 )
 
 func (s steps) theFieldShouldContains() core.TestStep {
+	formatFieldID := func(fieldId string) string {
+		return fmt.Sprintf("%s_field", fieldId)
+	}
+
 	return core.NewStepWithTwoVariables(
-		[]string{`^the {string} should be contain "{string}"`},
+		[]string{`^the value of the {string} field should be {string}`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(fieldId, text string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), fieldId)
+				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatFieldID(fieldId))
 				if err != nil {
 					return err
 				}
@@ -27,19 +31,19 @@ func (s steps) theFieldShouldContains() core.TestStep {
 		},
 		func(fieldId, _ string) core.ValidationErrors {
 			vc := core.ValidationErrors{}
-			if !testsconfig.IsElementDefined(fieldId) {
-				vc.AddMissingElement(fieldId)
+			if !testsconfig.IsElementDefined(formatFieldID(fieldId)) {
+				vc.AddMissingElement(formatFieldID(fieldId))
 			}
 
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "checks if the field contains the specified text.",
+			Description: "This assertion checks if the current value of an input field matches the specified value.",
 			Variables: []shared.StepVariable{
 				{Name: "fieldId", Description: "The id of the field.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text to check.", Type: shared.DocVarTypeString},
 			},
-			Example:  `Then the "username" should be contain "John"`,
+			Example:  `Then the value of the "Username" field should be "myUsername".`,
 			Category: shared.Form,
 		},
 	)

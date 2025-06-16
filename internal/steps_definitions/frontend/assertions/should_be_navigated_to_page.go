@@ -1,4 +1,4 @@
-package navigation
+package assertions
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (n navigation) iShouldBeNavigatedToPage() core.TestStep {
+func (s steps) userShouldBeNavigatedToPage() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{"^I should be navigated to {string} page$"},
+		[]string{"^the user should be navigated to {string} page$"},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(pageName string) error {
 				const maxRetries = 10
