@@ -12,7 +12,7 @@ func GetSteps() []core.TestStep {
 
 	return []core.TestStep{
 		handlers.userNavigateToPage(),
-		handlers.iWait(),
+		handlers.userWait(),
 		handlers.refreshPage(),
 		handlers.theUserNavigateBack(),
 		handlers.userNavigateToURL(),
