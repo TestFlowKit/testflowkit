@@ -21,8 +21,7 @@ func (s steps) iShouldSeeDetailsOnPage() core.TestStep {
 
 			var errMsgs []string
 			for name, value := range data {
-				xPath := fmt.Sprintf("//*[contains(text(),\"%s\")]", value)
-				elt, err := ctx.GetCurrentPage().GetOneByXPath(xPath)
+				elt, err := ctx.GetCurrentPage().GetOneByTextContent(value)
 				if err != nil {
 					errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))
 					continue

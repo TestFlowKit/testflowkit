@@ -2,6 +2,8 @@ package rod
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 	"testflowkit/internal/browser/common"
 
 	"github.com/go-rod/rod"
@@ -64,6 +66,45 @@ func (p *rodPage) GetOneByXPath(xpath string) (common.Element, error) {
 	}
 
 	return newRodElement(element), nil
+}
+
+func (p *rodPage) GetOneByTextContent(text string) (common.Element, error) {
+	const searchTextLimit = 20
+
+	isTextTooLong := len(text) > searchTextLimit
+	limitedSearchText := text
+	if isTextTooLong {
+		limitedSearchText = text[:searchTextLimit]
+	}
+
+	notFoundError := errors.New("element not found")
+
+	elements, err := p.page.ElementsX(fmt.Sprintf(`//*[contains(text(),"%s")]`, limitedSearchText))
+	if err != nil {
+		return nil, err
+	}
+
+	if len(elements) == 0 {
+		return nil, notFoundError
+	}
+
+	if !isTextTooLong {
+		return newRodElement(elements[0]), nil
+	}
+
+	var expectedElement common.Element
+	for _, element := range elements {
+		if strings.Contains(element.MustText(), text) {
+			expectedElement = newRodElement(element)
+			break
+		}
+	}
+
+	if expectedElement == nil {
+		return nil, notFoundError
+	}
+
+	return expectedElement, nil
 }
 
 func (p *rodPage) Focus() {
