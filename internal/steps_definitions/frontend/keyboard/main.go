@@ -11,6 +11,6 @@ func GetSteps() []core.TestStep {
 	steps := keyboardSteps{}
 
 	return []core.TestStep{
-		steps.iPressButton(),
+		steps.userPressButton(),
 	}
 }
