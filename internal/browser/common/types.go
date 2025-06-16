@@ -15,6 +15,7 @@ type Page interface {
 	GetOneBySelector(selector string) (Element, error)
 	GetAllBySelector(selector string) ([]Element, error)
 	GetOneByXPath(xpath string) (Element, error)
+	GetOneByTextContent(text string) (Element, error)
 	WaitLoading()
 	Refresh()
 	GetInfo() PageInfo

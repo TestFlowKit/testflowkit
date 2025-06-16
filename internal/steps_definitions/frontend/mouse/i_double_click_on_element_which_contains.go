@@ -11,8 +11,7 @@ func (s steps) iDoubleClickOnElementWhichContains() core.TestStep {
 		[]string{`^I double click on {string} which contains "{string}"$`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(_ string, text string) error {
-				xPath := fmt.Sprintf(`//*[contains(text(),"%s")]`, text)
-				element, err := ctx.GetCurrentPage().GetOneByXPath(xPath)
+				element, err := ctx.GetCurrentPage().GetOneByTextContent(text)
 				if err != nil {
 					return fmt.Errorf("no element with text containing %s found", text)
 				}
