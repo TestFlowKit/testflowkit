@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (n navigation) iWait() core.TestStep {
+func (n navigation) userWait() core.TestStep {
 	testDefinition := func(_ *core.TestSuiteContext) func(int) error {
 		return func(seconds int) error {
 			time.Sleep(time.Duration(seconds) * time.Second)
@@ -14,16 +14,16 @@ func (n navigation) iWait() core.TestStep {
 		}
 	}
 
-	return core.NewStepWithOneVariable[int](
-		[]string{`^I wait for {number} seconds$`},
+	return core.NewStepWithOneVariable(
+		[]string{`^the user waits for {number} seconds$`},
 		testDefinition,
 		nil,
 		core.StepDefDocParams{
-			Description: "Waits for a specified number of seconds.",
+			Description: "Pauses the test execution for a specified number of seconds.",
 			Variables: []shared.StepVariable{
 				{Name: "seconds", Description: "The number of seconds to wait for.", Type: shared.DocVarTypeInt},
 			},
-			Example:  "When I wait for 5 seconds",
+			Example:  "When the user waits for 3 seconds",
 			Category: shared.Navigation,
 		},
 	)
