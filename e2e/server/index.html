@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tableau de produits avec Tailwind CSS</title>
+        <link
+            href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body class="bg-gray-100 min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                    TestFlowKit E2E Demo
+                </h1>
+                <p class="text-lg text-gray-600">
+                    Navigation vers les différentes pages de test
+                </p>
+            </header>
+
+            <nav class="bg-white shadow-lg rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    Pages disponibles
+                </h2>
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                >
+                    <a
+                        href="/table"
+                        class="block p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                    >
+                        <h3 class="font-semibold text-blue-800">
+                            Tableau de produits
+                        </h3>
+                        <p class="text-sm text-blue-600">
+                            Table avec événements de clic
+                        </p>
+                    </a>
+
+                    <a
+                        href="form"
+                        class="block p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+                    >
+                        <h3 class="font-semibold text-green-800">
+                            Formulaire de test
+                        </h3>
+                        <p class="text-sm text-green-600">
+                            Tous types d'inputs HTML
+                        </p>
+                    </a>
+
+                    <a
+                        href="details"
+                        class="block p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
+                    >
+                        <h3 class="font-semibold text-purple-800">
+                            Page détail produit
+                        </h3>
+                        <p class="text-sm text-purple-600">
+                            Ordinateur de rameur
+                        </p>
+                    </a>
+
+                    <a
+                        href="visual"
+                        class="block p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg border border-yellow-200 transition-colors"
+                    >
+                        <h3 class="font-semibold text-yellow-800">
+                            Effets visuels
+                        </h3>
+                        <p class="text-sm text-yellow-600">
+                            Interactions JavaScript
+                        </p>
+                    </a>
+                </div>
+            </nav>
+
+            <div
+                id="clickedElt"
+                class="text-center text-lg font-medium text-gray-700 min-h-[2rem]"
+            ></div>
+        </div>
+    </body>
+
+    <script>
+        window.addEventListener("load", () => {
+            function handler(e) {
+                document.querySelector("#clickedElt").textContent =
+                    `${e.target.textContent} clicked !`;
+            }
+
+            const trs = document.querySelectorAll("tr");
+            trs.forEach((tr) => tr.addEventListener("click", handler));
+        });
+    </script>
+</html>

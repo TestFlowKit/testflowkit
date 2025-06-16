@@ -95,10 +95,8 @@ func validateTestSuiteInitializer(validatorCtx *core.ValidatorContext) func(*god
 			}
 
 			if validatorCtx.HasUndefinedSteps() {
-				indent := 3
-				indents := logger.GetIndents(indent)
-				steps := strings.Join(validatorCtx.GetUndefinedSteps(), indents)
-				msg := fmt.Sprintf("this is the list of undefined steps: \n%s%s", indents, steps)
+				undefinedStepsListFormatted := strings.Join(validatorCtx.GetUndefinedSteps(), "\n")
+				msg := fmt.Sprintf("List of undefined steps: \n%s", undefinedStepsListFormatted)
 				logger.Error("Steps validation failed",
 					[]string{
 						"Steps are malformed in the gherkin files",

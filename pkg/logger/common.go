@@ -24,7 +24,7 @@ func getLevelColor(level logLevel) func(format string, a ...interface{}) string 
 	case erro:
 		return color.RedString
 	case fatal:
-		return color.HiRedString
+		return color.RedString
 	default:
 		return color.WhiteString
 	}
