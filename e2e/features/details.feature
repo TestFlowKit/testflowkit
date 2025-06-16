@@ -7,5 +7,5 @@ Feature: product details e2e tests
     Then I should see "computer" details on the page
       | name        | Ordinateur de Bord pour Rameur                                                |
       | description | Cet ordinateur de rameur vous permet de suivre vos performances en temps réel |
-      | price       | 149,99 €                                                                      |
+      | price       |                                                                      149,99 € |
       | screen type | LCD rétroéclairé                                                              |
