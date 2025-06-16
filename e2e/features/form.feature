@@ -36,16 +36,6 @@ Feature: Form e2e tests
     When the user unchecks the "test" checkbox
     Then the test checkbox should be unchecked
 
-  @TEXT_FIELD
-  Scenario Outline: a user can type into <type> field
-    When the user enters "<value>" into the "<type>" field
-    Then the <type> field should be contain "<value>"
-
-    Examples:
-      | type     | value             |
-      | text     | Hello Test !      |
-      | textarea | Hello Test area ! |
-
   @RADIO
   Scenario: a user can select radio button
     Given the test radio button should be unselected

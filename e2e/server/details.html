@@ -1,87 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ordinateur Rameur</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ordinateur Rameur</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
-
-
-    <header class="bg-blue-600 text-white py-4">
-        <div class="container mx-auto px-4">
-            <h1 class="text-3xl font-bold">Ordinateur de Rameur</h1>
-            <p class="text-lg">Découvrez les caractéristiques et fonctionnalités</p>
-        </div>
-    </header>
-
-
-    <main class="container mx-auto px-4 py-8">
-
-        <section class="bg-white shadow-md rounded-lg p-6">
-            <div class="flex flex-col md:flex-row items-center">
-
-                <div class="w-full md:w-1/2">
-                    <img src="https://via.placeholder.com/400" alt="Ordinateur de rameur"
-                        class="rounded-lg shadow-md" />
-                </div>
-
-                <div class="w-full md:w-1/2 md:pl-6 mt-6 md:mt-0">
-                    <h2 class="text-2xl font-bold text-gray-800">Ordinateur de Bord pour Rameur</h2>
-                    <p class="mt-4 text-gray-600">
-                        Cet ordinateur de rameur vous permet de suivre vos performances en temps réel : distance, temps,
-                        calories brûlées, cadence, et bien plus !
-                    </p>
-                    <ul class="mt-4 space-y-2 text-gray-700">
-                        <li>✔️ **Écran LCD rétroéclairé** pour une visibilité optimale.</li>
-                        <li>✔️ **Mesure précise** du temps, distance et calories.</li>
-                        <li>✔️ **Compatibilité Bluetooth** pour connecter vos appareils.</li>
-                        <li>✔️ **Alimentation par piles ou USB**.</li>
-                    </ul>
-                    <p class="mt-6 text-xl font-semibold text-blue-600">Prix : 149,99 €</p>
-                    <button class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500">
-                        Ajouter au panier
-                    </button>
-                </div>
+    <body class="bg-gray-100 font-sans leading-normal tracking-normal">
+        <header class="bg-blue-600 text-white py-4">
+            <div class="container mx-auto px-4">
+                <h1 class="text-3xl font-bold">Ordinateur de Rameur</h1>
+                <p class="text-lg">
+                    Découvrez les caractéristiques et fonctionnalités
+                </p>
             </div>
-        </section>
+        </header>
 
+        <main class="container mx-auto px-4 py-8">
+            <section class="bg-white shadow-md rounded-lg p-6">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="w-full md:w-1/2">
+                        <img
+                            src="https://via.placeholder.com/400"
+                            alt="Ordinateur de rameur"
+                            class="rounded-lg shadow-md"
+                        />
+                    </div>
 
-        <section class="mt-8">
-            <h3 class="text-xl font-semibold text-gray-800">Spécifications Techniques</h3>
-            <table class="mt-4 w-full bg-white shadow-md rounded-lg overflow-hidden">
-                <tbody class="divide-y divide-gray-200">
-                    <tr>
-                        <td class="px-4 py-2 font-medium text-gray-700">Écran</td>
-                        <td class="px-4 py-2 text-gray-600">LCD rétroéclairé</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 font-medium text-gray-700">Connectivité</td>
-                        <td class="px-4 py-2 text-gray-600">Bluetooth 4.0</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 font-medium text-gray-700">Alimentation</td>
-                        <td class="px-4 py-2 text-gray-600">2 piles AA ou USB</td>
-                    </tr>
-                    <tr>
-                        <td class="px-4 py-2 font-medium text-gray-700">Compatibilité</td>
-                        <td class="px-4 py-2 text-gray-600">iOS et Android</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-    </main>
+                    <div class="w-full md:w-1/2 md:pl-6 mt-6 md:mt-0">
+                        <h2
+                            class="text-2xl font-bold text-gray-800"
+                            id="product-name"
+                        >
+                            Ordinateur de Bord pour Rameur
+                        </h2>
+                        <p class="mt-4 text-gray-600" id="product-description">
+                            Cet ordinateur de rameur vous permet de suivre vos
+                            performances en temps réel : distance, temps,
+                            calories brûlées, cadence, et bien plus !
+                        </p>
+                        <ul class="mt-4 space-y-2 text-gray-700">
+                            <li>
+                                ✔️ **Écran LCD rétroéclairé** pour une
+                                visibilité optimale.
+                            </li>
+                            <li>
+                                ✔️ **Mesure précise** du temps, distance et
+                                calories.
+                            </li>
+                            <li>
+                                ✔️ **Compatibilité Bluetooth** pour connecter
+                                vos appareils.
+                            </li>
+                            <li>✔️ **Alimentation par piles ou USB**.</li>
+                        </ul>
+                        <p class="mt-6 text-xl font-semibold text-blue-600">
+                            Prix : 149,99 €
+                        </p>
+                        <button
+                            class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500"
+                        >
+                            Ajouter au panier
+                        </button>
+                    </div>
+                </div>
+            </section>
 
+            <section class="mt-8">
+                <h3 class="text-xl font-semibold text-gray-800">
+                    Spécifications Techniques
+                </h3>
+                <table
+                    class="mt-4 w-full bg-white shadow-md rounded-lg overflow-hidden"
+                >
+                    <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-4 py-2 font-medium text-gray-700">
+                                Écran
+                            </td>
+                            <td class="px-4 py-2 text-gray-600">
+                                LCD rétroéclairé
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-medium text-gray-700">
+                                Connectivité
+                            </td>
+                            <td class="px-4 py-2 text-gray-600">
+                                Bluetooth 4.0
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-medium text-gray-700">
+                                Alimentation
+                            </td>
+                            <td class="px-4 py-2 text-gray-600">
+                                2 piles AA ou USB
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-medium text-gray-700">
+                                Compatibilité
+                            </td>
+                            <td class="px-4 py-2 text-gray-600">
+                                iOS et Android
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
 
-    <footer class="bg-blue-600 text-white py-4 mt-8">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2024 Ordinateurs de Rameur. Tous droits réservés.</p>
-        </div>
-    </footer>
-
-</body>
-
+        <footer class="bg-blue-600 text-white py-4 mt-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2024 Ordinateurs de Rameur. Tous droits réservés.</p>
+            </div>
+        </footer>
+    </body>
 </html>

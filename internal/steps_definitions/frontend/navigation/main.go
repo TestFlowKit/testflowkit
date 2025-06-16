@@ -11,7 +11,6 @@ func GetSteps() []core.TestStep {
 	handlers := navigation{}
 
 	return []core.TestStep{
-		handlers.iShouldBeNavigatedToPage(),
 		handlers.userNavigateToPage(),
 		handlers.iWait(),
 		handlers.refreshPage(),

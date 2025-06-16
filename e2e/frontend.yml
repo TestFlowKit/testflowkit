@@ -24,6 +24,12 @@ global:
       - "#inexistent"
     hidden_button:
       - "#hidden-btn"
+    product_name_element:
+      - "#product-name"
+    non-existent_button:
+      - "#non-existent"
+    product_description_element:
+      - "#product-description"
 
   pages:
     form_e2e: "form"
