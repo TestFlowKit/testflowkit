@@ -130,6 +130,10 @@ func (e *rodElement) Clear() error {
 	return e.element.Input("")
 }
 
+func (e *rodElement) ScrollIntoView() error {
+	return e.element.ScrollIntoView()
+}
+
 func newRodElement(element *rod.Element) common.Element {
 	return &rodElement{element: element}
 }
