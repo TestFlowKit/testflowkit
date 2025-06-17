@@ -7,28 +7,28 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iShouldNotSeeOnPage() core.TestStep {
+func (s steps) shouldSeeOnPage() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{`^I should not see "{string}" on the page$`},
+		[]string{`^the user should see "{string}" on the page$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(word string) error {
 				elt, err := ctx.GetCurrentPage().GetOneBySelector("body")
 				if err != nil {
 					return err
 				}
-				if strings.Contains(elt.TextContent(), word) {
-					return fmt.Errorf("%s should not be visible", word)
+				if !strings.Contains(elt.TextContent(), word) {
+					return fmt.Errorf("%s should be visible", word)
 				}
 				return nil
 			}
 		},
 		nil,
 		core.StepDefDocParams{
-			Description: "checks if a word is not visible on the page.",
+			Description: "checks if a word is visible on the page.",
 			Variables: []shared.StepVariable{
 				{Name: "word", Description: "The word to check.", Type: shared.DocVarTypeString},
 			},
-			Example:  "Then I should not see \"Submit\" on the page",
+			Example:  "Then the user should see \"Submit\" on the page",
 			Category: shared.Visual,
 		},
 	)

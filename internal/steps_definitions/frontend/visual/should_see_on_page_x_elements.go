@@ -7,9 +7,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iShouldSeeOnPageXElements() core.TestStep {
+func (s steps) shouldSeeOnPageXElements() core.TestStep {
 	return core.NewStepWithTwoVariables(
-		[]string{`^I should see {number} {string} on the page$`},
+		[]string{`^the user should see {number} {string} on the page$`},
 		func(ctx *core.TestSuiteContext) func(int, string) error {
 			return func(expectedCount int, elementName string) error {
 				elementCount := browser.GetElementCount(ctx.GetCurrentPage(), elementName)
@@ -26,7 +26,7 @@ func (s steps) iShouldSeeOnPageXElements() core.TestStep {
 				{Name: "expectedCount", Description: "The expected number of elements.", Type: shared.DocVarTypeInt},
 				{Name: "elementName", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
 			},
-			Example:  "Then I should see 3 buttons on the page",
+			Example:  "Then the user should see 3 buttons on the page",
 			Category: shared.Visual,
 		},
 	)

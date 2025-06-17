@@ -2,7 +2,7 @@
 Feature: Form e2e tests
 
   Background:
-    Given I open a new private browser tab
+    Given the user opens a new private browser tab
     And the user goes to the "form e2e" page
 
   @DROPDOWN @SELECT_BY_TEXT
@@ -32,7 +32,7 @@ Feature: Form e2e tests
 
   @CHECKBOX @UNCHECKED
   Scenario: a user can uncheck a checkbox
-    Given I already checked test checkbox
+    Given the user already checked test checkbox
     When the user unchecks the "test" checkbox
     Then the test checkbox should be unchecked
 

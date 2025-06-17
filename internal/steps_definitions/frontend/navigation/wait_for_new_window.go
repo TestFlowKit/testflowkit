@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-func (n navigation) iSwitchToNewOpenedWindow() core.TestStep {
+func (n navigation) switchToNewOpenedWindow() core.TestStep {
 	return core.NewStepWithNoVariables(
-		[]string{"^I switch to the newly opened window$"},
+		[]string{"^the user switches to the newly opened window$"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
 				initialPageCount := len(ctx.GetPages())
@@ -46,7 +46,7 @@ func (n navigation) iSwitchToNewOpenedWindow() core.TestStep {
 		nil,
 		core.StepDefDocParams{
 			Description: "switches to the newly opened browser window.",
-			Example:     "When I switch to the newly opened window",
+			Example:     "When the user switches to the newly opened window",
 			Category:    shared.Navigation,
 		},
 	)

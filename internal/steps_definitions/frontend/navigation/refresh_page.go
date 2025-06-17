@@ -22,7 +22,7 @@ func (n navigation) refreshPage() core.TestStep {
 		core.StepDefDocParams{
 			Description: "refreshes the current page.",
 			Variables:   nil,
-			Example:     "When I refresh the page",
+			Example:     "When the user refreshes the page",
 			Category:    shared.Navigation,
 		},
 	)

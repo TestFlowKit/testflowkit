@@ -7,9 +7,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (n navigation) iSwitchToMostRecentlyOpenedWindow() core.TestStep {
+func (n navigation) switchToMostRecentlyOpenedWindow() core.TestStep {
 	return core.NewStepWithNoVariables(
-		[]string{"^I switch to the most recently window opened$"},
+		[]string{"^the user switches to the most recently window opened$"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
 				pages := ctx.GetPages()
@@ -34,7 +34,7 @@ func (n navigation) iSwitchToMostRecentlyOpenedWindow() core.TestStep {
 		core.StepDefDocParams{
 			Description: "switches to the most recently opened browser window.",
 			Variables:   []shared.StepVariable{},
-			Example:     "When I switch to the most recently window opened",
+			Example:     "When the user switches to the most recently window opened",
 			Category:    shared.Navigation,
 		},
 	)

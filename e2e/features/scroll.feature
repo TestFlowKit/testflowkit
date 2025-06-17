@@ -1,7 +1,7 @@
 Feature: scroll e2e tests
 
   Background:
-    Given I open a new browser tab
+    Given the user opens a new browser tab
     Then the user goes to the scroll e2e page
 
   @scroll

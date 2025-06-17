@@ -7,18 +7,16 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iDoubleClickOn() core.TestStep {
-	const docDescription = "The label of the button or element to double click on."
-
+func (s steps) rightClickOn() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{`^I double click on {string}$`},
+		[]string{`^the user right clicks on {string}$`},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(label string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}
-				return element.DoubleClick()
+				return element.RightClick()
 			}
 		},
 		func(label string) core.ValidationErrors {
@@ -29,11 +27,11 @@ func (s steps) iDoubleClickOn() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "double clicks on a button or element.",
+			Description: "Right clicks on a button or element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: docDescription, Type: shared.DocVarTypeString},
+				{Name: "label", Description: "The label of element to right click on.", Type: shared.DocVarTypeString},
 			},
-			Example:  "When I double click on \"File item\"",
+			Example:  "When the user right clicks on \"Submit button\"",
 			Category: shared.Mouse,
 		},
 	)

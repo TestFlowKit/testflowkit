@@ -5,9 +5,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (n navigation) iOpenNewBrowserTab() core.TestStep {
+func (n navigation) openNewBrowserTab() core.TestStep {
 	return core.NewStepWithNoVariables(
-		[]string{"I open a new browser tab"},
+		[]string{"the user opens a new browser tab"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
 				ctx.InitBrowser(false)
@@ -18,7 +18,7 @@ func (n navigation) iOpenNewBrowserTab() core.TestStep {
 		core.StepDefDocParams{
 			Description: "opens a new browser tab.",
 			Variables:   nil,
-			Example:     "Given I open a new browser tab",
+			Example:     "Given the user opens a new browser tab",
 			Category:    shared.Navigation,
 		},
 	)

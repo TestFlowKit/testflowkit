@@ -6,9 +6,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iShouldSeeElementWhichContains() core.TestStep {
+func (s steps) shouldSeeElementWhichContains() core.TestStep {
 	return core.NewStepWithTwoVariables(
-		[]string{`^I should see a (link|button|element) which contains "{string}"$`},
+		[]string{`^the user should see a (link|button|element) which contains "{string}"$`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(elementLabel, text string) error {
 				cases := map[string]string{
@@ -39,7 +39,7 @@ func (s steps) iShouldSeeElementWhichContains() core.TestStep {
 				{Name: "elementLabel", Description: "The label of the element to check.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
 			},
-			Example:  "Then I should see a button which contains \"Submit\"",
+			Example:  "Then the user should see a button which contains \"Submit\"",
 			Category: shared.Visual,
 		},
 	)
