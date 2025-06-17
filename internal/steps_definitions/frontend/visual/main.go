@@ -17,11 +17,11 @@ func GetSteps() []core.TestStep {
 		handlers.elementShouldNotBeVisible(),
 		handlers.elementShouldNotExist(),
 		handlers.elementShouldExist(),
-		handlers.iShouldSeeOnPage(),
-		handlers.iShouldNotSeeOnPage(),
-		handlers.iShouldSeeElementWhichContains(),
-		handlers.iShouldSeeOnPageXElements(),
-		handlers.iShouldSeeDetailsOnPage(),
+		handlers.shouldSeeOnPage(),
+		handlers.shouldNotSeeOnPage(),
+		handlers.shouldSeeElementWhichContains(),
+		handlers.shouldSeeOnPageXElements(),
+		handlers.shouldSeeDetailsOnPage(),
 		handlers.scrollToElement(),
 	}
 	return slices.Concat(table.GetSteps(), otherSteps)

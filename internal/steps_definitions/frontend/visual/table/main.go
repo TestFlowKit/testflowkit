@@ -11,9 +11,9 @@ func GetSteps() []core.TestStep {
 	handlers := steps{}
 
 	return []core.TestStep{
-		handlers.iClickOnTheRowContainingTheFollowingElements(),
-		handlers.iShouldSeeRowContainingTheFollowingElements(),
-		handlers.iShouldNotSeeRowContainingTheFollowingElements(),
+		handlers.clickOnTheRowContainingTheFollowingElements(),
+		handlers.shouldSeeRowContainingTheFollowingElements(),
+		handlers.shouldNotSeeRowContainingTheFollowingElements(),
 		handlers.tableShouldContainsTheFollowingHeaders(),
 	}
 }

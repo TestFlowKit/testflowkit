@@ -12,14 +12,14 @@ func GetSteps() []core.TestStep {
 
 	return []core.TestStep{
 		handlers.userClicksOnButton(),
-		handlers.iClickOnElementWhichContains(),
-		handlers.iDoubleClickOn(),
+		handlers.clickOnElementWhichContains(),
+		handlers.doubleClickOn(),
 		handlers.userClicksOnLink(),
 		handlers.userClicksOnElement(),
-		handlers.iDoubleClickOnElementWhichContains(),
-		handlers.iRightClickOn(),
-		handlers.iRightClickOnElementWhichContains(),
-		handlers.iHoverOnElement(),
-		handlers.iHoverOnElementWhichContains(),
+		handlers.doubleClickOnElementWhichContains(),
+		handlers.rightClickOn(),
+		handlers.rightClickOnElementWhichContains(),
+		handlers.hoverOnElement(),
+		handlers.hoverOnElementWhichContains(),
 	}
 }

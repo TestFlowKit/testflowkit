@@ -10,15 +10,15 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) iShouldNotSeeRowContainingTheFollowingElements() core.TestStep {
+func (s steps) shouldNotSeeRowContainingTheFollowingElements() core.TestStep {
 	example := `
-	When I should not see a row containing the following elements
+	When the user should not see a row containing the following elements
 	| Name | Age |
 	| John | 30  |
 	`
 
 	return core.NewStepWithOneVariable[*godog.Table](
-		[]string{`^I should not see a row containing the following elements$`},
+		[]string{`^the user should not see a row containing the following elements$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, err := assistdog.NewDefault().ParseSlice(table)

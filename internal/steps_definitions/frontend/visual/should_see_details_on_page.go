@@ -11,7 +11,7 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-func (s steps) iShouldSeeDetailsOnPage() core.TestStep {
+func (s steps) shouldSeeDetailsOnPage() core.TestStep {
 	definition := func(ctx *core.TestSuiteContext) func(string, *godog.Table) error {
 		return func(elementName string, table *godog.Table) error {
 			data, parseErr := assistdog.NewDefault().ParseMap(table)
@@ -41,7 +41,7 @@ func (s steps) iShouldSeeDetailsOnPage() core.TestStep {
 	}
 
 	return core.NewStepWithTwoVariables(
-		[]string{`^I should see "{string}" details on the page$`},
+		[]string{`^the user should see "{string}" details on the page$`},
 		definition,
 		nil,
 		core.StepDefDocParams{
@@ -50,7 +50,7 @@ func (s steps) iShouldSeeDetailsOnPage() core.TestStep {
 				{Name: "elementName", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
 				{Name: "table", Description: "The table containing the details to check.", Type: shared.DocVarTypeTable},
 			},
-			Example:  "When I should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
+			Example:  "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
 			Category: shared.Visual,
 		},
 	)

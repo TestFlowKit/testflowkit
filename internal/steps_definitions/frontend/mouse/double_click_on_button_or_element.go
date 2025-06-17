@@ -7,16 +7,18 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iHoverOnElement() core.TestStep {
+func (s steps) doubleClickOn() core.TestStep {
+	const docDescription = "The label of the button or element to double click on."
+
 	return core.NewStepWithOneVariable(
-		[]string{`^I hover on {string}$`},
-		func(ctx *core.TestSuiteContext) func(label string) error {
+		[]string{`^the user double clicks on {string}$`},
+		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(label string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}
-				return element.Hover()
+				return element.DoubleClick()
 			}
 		},
 		func(label string) core.ValidationErrors {
@@ -27,11 +29,11 @@ func (s steps) iHoverOnElement() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "Hover on a element.",
+			Description: "double clicks on a button or element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of the element to hover on.", Type: shared.DocVarTypeString},
+				{Name: "label", Description: docDescription, Type: shared.DocVarTypeString},
 			},
-			Example:  "When I hover on \"Submit button\"",
+			Example:  "When the user double clicks on \"File item\"",
 			Category: shared.Mouse,
 		},
 	)

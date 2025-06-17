@@ -10,14 +10,14 @@ import (
 )
 
 // TODO: click on cell instead of row
-func (s steps) iClickOnTheRowContainingTheFollowingElements() core.TestStep {
+func (s steps) clickOnTheRowContainingTheFollowingElements() core.TestStep {
 	const example = `
-	When I click on the row containing the following elements
+	When the user clicks on the row containing the following elements
 	| Name | Age |
 	| John | 30  |
 	`
 	return core.NewStepWithOneVariable(
-		[]string{`^I click on the row containing the following elements$`},
+		[]string{`^the user clicks on the row containing the following elements$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, parseErr := assistdog.NewDefault().ParseSlice(table)
