@@ -38,7 +38,7 @@ func (s steps) userSelectMultipleOptionsWithTextsIntoDropdown() core.TestStep {
 			Description: "Selects multiple options from a dropdown list based on their visible text.",
 			Variables: []shared.StepVariable{
 				{Name: "options", Description: "The options to select.", Type: shared.DocVarTypeString},
-				{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
 			},
 			Example:  `When the user selects the options with text "Konoha,Hidden Leaf Village" from the "Country" dropdown`,
 			Category: shared.Form,

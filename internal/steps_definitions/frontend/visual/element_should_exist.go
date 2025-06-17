@@ -31,7 +31,7 @@ func (s steps) elementShouldExist() core.TestStep {
 		core.StepDefDocParams{
 			Description: "This assertion checks if the element is present in the DOM, regardless of its visibility.",
 			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
 			},
 			Example:  "Then the submit button should exist",
 			Category: shared.Visual,

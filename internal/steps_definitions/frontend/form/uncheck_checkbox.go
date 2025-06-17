@@ -18,7 +18,7 @@ func (s steps) userUnchecksCheckbox() core.TestStep {
 	doc := core.StepDefDocParams{
 		Description: "Deselects or unticks a checkbox element identified by its logical name",
 		Variables: []shared.StepVariable{
-			{Name: "checkbox logical name", Description: "checkbox name", Type: shared.DocVarTypeString},
+			{Name: "name", Description: "the logical name of the checkbox", Type: shared.DocVarTypeString},
 		},
 		Example:  `When the user unchecks the "Subscribe to newsletter" checkbox`,
 		Category: shared.Form,

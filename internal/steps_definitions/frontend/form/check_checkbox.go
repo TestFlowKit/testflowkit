@@ -18,7 +18,7 @@ func (s steps) userChecksCheckbox() core.TestStep {
 	doc := core.StepDefDocParams{
 		Description: "Selects or ticks a checkbox element identified by its logical name",
 		Variables: []shared.StepVariable{
-			{Name: "checkbox logical name", Description: "checkbox name", Type: shared.DocVarTypeString},
+			{Name: "name", Description: "checkbox logical name", Type: shared.DocVarTypeString},
 		},
 		Example:  `When the user checks the "Agree to terms" checkbox`,
 		Category: shared.Form,
