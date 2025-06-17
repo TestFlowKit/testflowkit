@@ -37,7 +37,7 @@ func (s steps) userEntersTextIntoField() core.TestStep {
 			Description: "Types the specified text into an input field identified by its logical name.",
 			Variables: []shared.StepVariable{
 				{Name: "text", Description: "The text to type.", Type: shared.DocVarTypeString},
-				{Name: "inputLabel", Description: "The label of the input.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the input field.", Type: shared.DocVarTypeString},
 			},
 			Example:  `When the user enters "myUsername" into the "Username" field`,
 			Category: shared.Form,

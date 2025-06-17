@@ -8,7 +8,7 @@ import (
 )
 
 func (s steps) doubleClickOn() core.TestStep {
-	const docDescription = "The label of the button or element to double click on."
+	const docDescription = "The logical name of the button or element to double click on."
 
 	return core.NewStepWithOneVariable(
 		[]string{`^the user double clicks on {string}$`},
@@ -31,7 +31,7 @@ func (s steps) doubleClickOn() core.TestStep {
 		core.StepDefDocParams{
 			Description: "double clicks on a button or element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: docDescription, Type: shared.DocVarTypeString},
+				{Name: "name", Description: docDescription, Type: shared.DocVarTypeString},
 			},
 			Example:  "When the user double clicks on \"File item\"",
 			Category: shared.Mouse,

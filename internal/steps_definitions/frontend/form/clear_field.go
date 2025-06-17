@@ -36,7 +36,7 @@ func (s steps) userClearsFormField() core.TestStep {
 		core.StepDefDocParams{
 			Description: "Removes any existing text or value from an input field identified by its logical name.",
 			Variables: []shared.StepVariable{
-				{Name: "inputLabel", Description: "The label of the input.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the input field.", Type: shared.DocVarTypeString},
 			},
 			Example:  `When the user clears the "Search" field.`,
 			Category: shared.Form,

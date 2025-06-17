@@ -37,7 +37,7 @@ func (s steps) userSelectOptionByIndexIntoDropdown() core.TestStep {
 			Description: "Selects an option from a dropdown list based on its underlying ‘value’ attribute.",
 			Variables: []shared.StepVariable{
 				{Name: "option value", Description: "The value of the option to select.", Type: shared.DocVarTypeString},
-				{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
 			},
 			Example:  `When the user selects the option with value “CIV” from the “Country” dropdown.`,
 			Category: shared.Form,

@@ -29,7 +29,7 @@ func (s steps) rightClickOn() core.TestStep {
 		core.StepDefDocParams{
 			Description: "Right clicks on a button or element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of element to right click on.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to right click on.", Type: shared.DocVarTypeString},
 			},
 			Example:  "When the user right clicks on \"Submit button\"",
 			Category: shared.Mouse,

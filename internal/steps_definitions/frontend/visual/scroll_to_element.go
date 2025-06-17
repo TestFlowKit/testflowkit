@@ -38,7 +38,7 @@ func (s steps) scrollToElement() core.TestStep {
 		core.StepDefDocParams{
 			Description: "Scrolls the page until the specified element is visible in the viewport.",
 			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
 			},
 			Example:  `When the user scrolls to the "Submit Button at the bottom" element`,
 			Category: shared.Visual,
