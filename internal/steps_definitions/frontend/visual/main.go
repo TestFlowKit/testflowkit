@@ -22,6 +22,7 @@ func GetSteps() []core.TestStep {
 		handlers.iShouldSeeElementWhichContains(),
 		handlers.iShouldSeeOnPageXElements(),
 		handlers.iShouldSeeDetailsOnPage(),
+		handlers.scrollToElement(),
 	}
 	return slices.Concat(table.GetSteps(), otherSteps)
 }

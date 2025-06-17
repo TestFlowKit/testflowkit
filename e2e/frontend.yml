@@ -30,6 +30,8 @@ global:
       - "#non-existent"
     product_description_element:
       - "#product-description"
+    scroll_target_element:
+      - "#target-element"
 
   pages:
     form_e2e: "form"
@@ -37,5 +39,6 @@ global:
     visual_e2e: "visual"
     table_e2e: "/table"
     details_e2e: "/details"
+    scroll_e2e: "/scroll"
 
   base_url: "http://server:3000"

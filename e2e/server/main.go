@@ -16,6 +16,7 @@ func main() {
 		"table",
 		"visual",
 		"details",
+		"scroll",
 	}
 
 	_, filename, _, _ := runtime.Caller(0)

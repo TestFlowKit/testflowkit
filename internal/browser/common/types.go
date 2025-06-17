@@ -37,6 +37,7 @@ type Element interface {
 	Hover() error
 	Input(text string) error
 	Clear() error
+	ScrollIntoView() error
 	IsChecked() bool
 	SelectByText([]string) error
 	SelectByValue([]string) error
