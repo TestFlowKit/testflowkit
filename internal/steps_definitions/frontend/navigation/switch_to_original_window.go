@@ -8,9 +8,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (n navigation) iSwitchToOriginalWindow() core.TestStep {
+func (n navigation) switchToOriginalWindow() core.TestStep {
 	return core.NewStepWithNoVariables(
-		[]string{"^I switch back to the original window$"},
+		[]string{"^the user switches back to the original window$"},
 		func(ctx *core.TestSuiteContext) func() error {
 			return func() error {
 				pages := ctx.GetPages()
@@ -39,7 +39,7 @@ func (n navigation) iSwitchToOriginalWindow() core.TestStep {
 		core.StepDefDocParams{
 			Description: "switches back to the original browser window (usually the first window).",
 			Variables:   []shared.StepVariable{},
-			Example:     "When I switch back to the original window",
+			Example:     "When the user switches back to the original window",
 			Category:    shared.Navigation,
 		},
 	)

@@ -7,16 +7,16 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iRightClickOn() core.TestStep {
+func (s steps) hoverOnElement() core.TestStep {
 	return core.NewStepWithOneVariable(
-		[]string{`^I right click on {string}$`},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		[]string{`^the user hovers on {string}$`},
+		func(ctx *core.TestSuiteContext) func(label string) error {
 			return func(label string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
 				if err != nil {
 					return err
 				}
-				return element.RightClick()
+				return element.Hover()
 			}
 		},
 		func(label string) core.ValidationErrors {
@@ -27,11 +27,11 @@ func (s steps) iRightClickOn() core.TestStep {
 			return vc
 		},
 		core.StepDefDocParams{
-			Description: "Right clicks on a button or element.",
+			Description: "Hover on a element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of element to right click on.", Type: shared.DocVarTypeString},
+				{Name: "label", Description: "The label of the element to hover on.", Type: shared.DocVarTypeString},
 			},
-			Example:  "When I right click on \"Submit button\"",
+			Example:  "When the user hovers on \"Submit button\"",
 			Category: shared.Mouse,
 		},
 	)

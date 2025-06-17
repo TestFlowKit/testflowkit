@@ -8,11 +8,11 @@ import (
 	"time"
 )
 
-func (n navigation) iWaitAMomentForNewWindow() core.TestStep {
+func (n navigation) waitAMomentForNewWindow() core.TestStep {
 	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
 
 	return core.NewStepWithOneVariable(
-		[]string{"^I wait for a new window to open within {string}$"},
+		[]string{"^the user waits for a new window to open within {string}$"},
 		func(ctx *core.TestSuiteContext) func(string) error {
 			return func(waitTime string) error {
 				duration, err := time.ParseDuration(waitTime)
@@ -59,7 +59,7 @@ func (n navigation) iWaitAMomentForNewWindow() core.TestStep {
 			Variables: []shared.StepVariable{
 				{Name: "waitTime", Description: docDescription, Type: shared.DocVarTypeString},
 			},
-			Example:  "When I wait for a new window to open within \"5s\"",
+			Example:  "When the user waits for a new window to open within \"5s\"",
 			Category: shared.Navigation,
 		},
 	)

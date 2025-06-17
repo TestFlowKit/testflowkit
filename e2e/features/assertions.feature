@@ -2,7 +2,7 @@
 Feature: Text Assertions
 
   Background:
-    Given I open a new browser tab
+    Given the user opens a new browser tab
 
   Scenario: Verify that product name is displayed and matches exactly the expected value
     Given the user goes to the details e2e page

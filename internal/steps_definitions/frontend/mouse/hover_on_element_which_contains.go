@@ -6,9 +6,9 @@ import (
 	"testflowkit/shared"
 )
 
-func (s steps) iHoverOnElementWhichContains() core.TestStep {
+func (s steps) hoverOnElementWhichContains() core.TestStep {
 	return core.NewStepWithTwoVariables(
-		[]string{`^I hover on {string} which contains {string}$`},
+		[]string{`^the user hovers on {string} which contains {string}$`},
 		func(ctx *core.TestSuiteContext) func(string, string) error {
 			return func(_ string, text string) error {
 				element, err := ctx.GetCurrentPage().GetOneByTextContent(text)
@@ -25,7 +25,7 @@ func (s steps) iHoverOnElementWhichContains() core.TestStep {
 				{Name: "label", Description: "The name of the element to hover on.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
 			},
-			Example:  "When I hover on \"Submit button\" which contains \"Submit\"",
+			Example:  "When the user hovers on \"Submit button\" which contains \"Submit\"",
 			Category: shared.Mouse,
 		},
 	)

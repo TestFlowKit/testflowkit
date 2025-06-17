@@ -11,12 +11,12 @@ import (
 
 func (s steps) tableShouldContainsTheFollowingHeaders() core.TestStep {
 	example := `
-	When I should see a table with the following headers
+	When the user should see a table with the following headers
 	| Name | Age |
 	`
 
 	return core.NewStepWithOneVariable(
-		[]string{`^I should see a table with the following headers$`},
+		[]string{`^the user should see a table with the following headers$`},
 		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, err := assistdog.NewDefault().ParseMap(table)
