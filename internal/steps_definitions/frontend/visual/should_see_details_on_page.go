@@ -47,7 +47,7 @@ func (s steps) shouldSeeDetailsOnPage() core.TestStep {
 		core.StepDefDocParams{
 			Description: "checks if the details are visible on the page.",
 			Variables: []shared.StepVariable{
-				{Name: "elementName", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
 				{Name: "table", Description: "The table containing the details to check.", Type: shared.DocVarTypeTable},
 			},
 			Example:  "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",

@@ -17,7 +17,7 @@ func (s steps) userSelectsRadioButton() core.TestStep {
 	doc := core.StepDefDocParams{
 		Description: "Selects a radio button option identified by its logical name from a radio button group.",
 		Variables: []shared.StepVariable{
-			{Name: "radio button", Description: "radio button logical name", Type: shared.DocVarTypeString},
+			{Name: "name", Description: "the logical name of the radio button", Type: shared.DocVarTypeString},
 		},
 		Example:  `When the user selects the "Standard Delivery" radio button`,
 		Category: shared.Form,

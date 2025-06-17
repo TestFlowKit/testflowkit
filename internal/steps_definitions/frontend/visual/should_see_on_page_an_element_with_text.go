@@ -36,7 +36,7 @@ func (s steps) shouldSeeElementWhichContains() core.TestStep {
 		core.StepDefDocParams{
 			Description: "checks if a link, button or element is visible and contains a specific text.",
 			Variables: []shared.StepVariable{
-				{Name: "elementLabel", Description: "The label of the element to check.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
 			},
 			Example:  "Then the user should see a button which contains \"Submit\"",

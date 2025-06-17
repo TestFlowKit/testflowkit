@@ -22,7 +22,7 @@ func (s steps) clickOnElementWhichContains() core.TestStep {
 		core.StepDefDocParams{
 			Description: "clicks on an element which contains a specific text.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of the element to click on.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to click on.", Type: shared.DocVarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
 			},
 			Example:  "When the user clicks on \"Submit button\" which contains \"Submit\"",

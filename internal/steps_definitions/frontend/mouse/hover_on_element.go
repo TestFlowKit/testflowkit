@@ -29,7 +29,7 @@ func (s steps) hoverOnElement() core.TestStep {
 		core.StepDefDocParams{
 			Description: "Hover on a element.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of the element to hover on.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the element to hover on.", Type: shared.DocVarTypeString},
 			},
 			Example:  "When the user hovers on \"Submit button\"",
 			Category: shared.Mouse,

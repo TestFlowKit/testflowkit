@@ -19,7 +19,7 @@ func (s steps) userClicksOnButton() core.TestStep {
 		core.StepDefDocParams{
 			Description: "performs a click action specifically on a button element identified by its logical name.",
 			Variables: []shared.StepVariable{
-				{Name: "label", Description: "The label of the button to click on.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the button to click on.", Type: shared.DocVarTypeString},
 			},
 			Example:  "When the user clicks the \"Submit Order\" button",
 			Category: shared.Mouse,

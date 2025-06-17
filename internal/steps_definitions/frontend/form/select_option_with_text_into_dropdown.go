@@ -37,7 +37,7 @@ func (s steps) userSelectOptionWithTextIntoDropdown() core.TestStep {
 			Description: "Selects an option from a dropdown list based on its visible text.",
 			Variables: []shared.StepVariable{
 				{Name: "option text", Description: "The option to select.", Type: shared.DocVarTypeString},
-				{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
 			},
 			Example:  `When the user selects the option with text "Poudlar" from the "Country" dropdown`,
 			Category: shared.Form,
