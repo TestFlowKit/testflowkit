@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Scroll Test</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                line-height: 1.6;
+                padding: 20px;
+            }
+            .spacer {
+                height: 200vh;
+                background-color: #f0f0f0;
+                border: 2px dashed #ccc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: #555;
+            }
+            #target-element {
+                background-color: #ffc107;
+                padding: 50px;
+                border: 2px solid #e6a700;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Scroll to an Element Test Page</h1>
+
+        <div class="spacer">
+            <p>
+                This is a large empty space to create a scrollable distance.<br />Scroll
+                down manually.
+            </p>
+        </div>
+
+        <div id="target-element">
+            <h2>🎯 Here I am! The Target Element!</h2>
+            <p>You have successfully scrolled to the destination.</p>
+        </div>
+    </body>
+</html>
