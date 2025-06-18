@@ -5,17 +5,17 @@ import (
 	"reflect"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
 )
 
-func (s steps) radioButtonShouldBeSelectedOrNot() core.TestStep {
+func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.TestStep {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
-	definition := func(ctx *core.TestSuiteContext) func(string, string) error {
+	definition := func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 		return func(radioId, status string) error {
 			input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(radioId))
 			if err != nil {
@@ -34,8 +34,8 @@ func (s steps) radioButtonShouldBeSelectedOrNot() core.TestStep {
 		}
 	}
 
-	validator := func(radioBtnName, _ string) core.ValidationErrors {
-		vc := core.ValidationErrors{}
+	validator := func(radioBtnName, _ string) stepbuilder.ValidationErrors {
+		vc := stepbuilder.ValidationErrors{}
 		radioLabel := formatLabel(radioBtnName)
 
 		if !testsconfig.IsElementDefined(radioLabel) {
@@ -47,11 +47,11 @@ func (s steps) radioButtonShouldBeSelectedOrNot() core.TestStep {
 
 	statusType := shared.DocVarTypeEnum("selected", "unselected")
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`the {string} radio button should be (selected|unselected)`},
 		definition,
 		validator,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if the radio button is selected or unselected.",
 			Variables: []shared.StepVariable{
 				{Name: "radio button", Description: "The name of the radio button.", Type: shared.DocVarTypeString},

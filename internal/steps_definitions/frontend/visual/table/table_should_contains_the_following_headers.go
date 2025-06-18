@@ -1,7 +1,7 @@
 package table
 
 import (
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
@@ -9,15 +9,15 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) tableShouldContainsTheFollowingHeaders() core.TestStep {
+func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.TestStep {
 	example := `
 	When the user should see a table with the following headers
 	| Name | Age |
 	`
 
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user should see a table with the following headers$`},
-		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, err := assistdog.NewDefault().ParseMap(table)
 				if err != nil {
@@ -29,7 +29,7 @@ func (s steps) tableShouldContainsTheFollowingHeaders() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if a table contains the following headers.",
 			Variables: []shared.StepVariable{
 				{Name: "table", Description: "The table containing the headers to check.", Type: shared.DocVarTypeTable},

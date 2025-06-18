@@ -3,14 +3,14 @@ package visual
 import (
 	"fmt"
 	"strings"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) shouldSeeOnPage() core.TestStep {
-	return core.NewStepWithOneVariable(
+func (s steps) shouldSeeOnPage() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user should see "{string}" on the page$`},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(word string) error {
 				elt, err := ctx.GetCurrentPage().GetOneBySelector("body")
 				if err != nil {
@@ -23,7 +23,7 @@ func (s steps) shouldSeeOnPage() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if a word is visible on the page.",
 			Variables: []shared.StepVariable{
 				{Name: "word", Description: "The word to check.", Type: shared.DocVarTypeString},

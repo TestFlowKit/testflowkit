@@ -2,17 +2,17 @@ package visual
 
 import (
 	"slices"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend/visual/table"
 )
 
 type steps struct {
 }
 
-func GetSteps() []core.TestStep {
+func GetSteps() []stepbuilder.TestStep {
 	handlers := steps{}
 
-	var otherSteps = []core.TestStep{
+	var otherSteps = []stepbuilder.TestStep{
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.elementShouldNotExist(),

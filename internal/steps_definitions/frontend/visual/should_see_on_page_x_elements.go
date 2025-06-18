@@ -3,14 +3,14 @@ package visual
 import (
 	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) shouldSeeOnPageXElements() core.TestStep {
-	return core.NewStepWithTwoVariables(
+func (s steps) shouldSeeOnPageXElements() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user should see {number} {string} on the page$`},
-		func(ctx *core.TestSuiteContext) func(int, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(int, string) error {
 			return func(expectedCount int, elementName string) error {
 				elementCount := browser.GetElementCount(ctx.GetCurrentPage(), elementName)
 				if elementCount != expectedCount {
@@ -20,7 +20,7 @@ func (s steps) shouldSeeOnPageXElements() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if a specific number of elements are visible on the page.",
 			Variables: []shared.StepVariable{
 				{Name: "expectedCount", Description: "The expected number of elements.", Type: shared.DocVarTypeInt},

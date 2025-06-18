@@ -1,7 +1,7 @@
 package table
 
 import (
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
@@ -10,15 +10,15 @@ import (
 )
 
 // TODO: click on cell instead of row
-func (s steps) clickOnTheRowContainingTheFollowingElements() core.TestStep {
+func (s steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.TestStep {
 	const example = `
 	When the user clicks on the row containing the following elements
 	| Name | Age |
 	| John | 30  |
 	`
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user clicks on the row containing the following elements$`},
-		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, parseErr := assistdog.NewDefault().ParseSlice(table)
 				if parseErr != nil {
@@ -41,7 +41,7 @@ func (s steps) clickOnTheRowContainingTheFollowingElements() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "clicks on the row containing the following elements.",
 			Variables: []shared.StepVariable{
 				{Name: "table", Description: "The table containing the elements to click on.", Type: shared.DocVarTypeTable},

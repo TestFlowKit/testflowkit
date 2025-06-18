@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 	"testflowkit/internal/config"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
@@ -37,7 +37,7 @@ func Validate(appConfig *config.App) {
 		FeatureContents:     features,
 	}
 
-	ctx := core.ValidatorContext{}
+	ctx := stepbuilder.ValidatorContext{}
 	testSuite := godog.TestSuite{
 		Name:                 "validate",
 		Options:              &opts,
@@ -48,7 +48,7 @@ func Validate(appConfig *config.App) {
 	testSuite.Run()
 }
 
-func validateScenarioInitializer(ctx *core.ValidatorContext) func(*godog.ScenarioContext) {
+func validateScenarioInitializer(ctx *stepbuilder.ValidatorContext) func(*godog.ScenarioContext) {
 	logger.Info("Initializing scenarios for validation ...")
 
 	return func(sc *godog.ScenarioContext) {
@@ -57,7 +57,7 @@ func validateScenarioInitializer(ctx *core.ValidatorContext) func(*godog.Scenari
 	}
 }
 
-func validateAfterStepHookInitializer(vCtx *core.ValidatorContext) godog.AfterStepHook {
+func validateAfterStepHookInitializer(vCtx *stepbuilder.ValidatorContext) godog.AfterStepHook {
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
 		if status == godog.StepUndefined {
 			vCtx.AddUndefinedStep(st.Text)
@@ -66,7 +66,7 @@ func validateAfterStepHookInitializer(vCtx *core.ValidatorContext) godog.AfterSt
 	}
 }
 
-func validateTestSuiteInitializer(validatorCtx *core.ValidatorContext) func(*godog.TestSuiteContext) {
+func validateTestSuiteInitializer(validatorCtx *stepbuilder.ValidatorContext) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.AfterSuite(func() {
 			if !validatorCtx.HasErrors() {

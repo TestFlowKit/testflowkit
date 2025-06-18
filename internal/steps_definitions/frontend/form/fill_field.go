@@ -3,19 +3,19 @@ package form
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
 )
 
-func (s steps) userEntersTextIntoField() core.TestStep {
+func (s steps) userEntersTextIntoField() stepbuilder.TestStep {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "field")
 	}
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user enters {string} into the {string} field`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(text, inputLabel string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(inputLabel))
 				if err != nil {
@@ -24,8 +24,8 @@ func (s steps) userEntersTextIntoField() core.TestStep {
 				return input.Input(text)
 			}
 		},
-		func(_, inputLabel string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(_, inputLabel string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			label := formatLabel(inputLabel)
 			if !testsconfig.IsElementDefined(label) {
 				vc.AddMissingElement(label)
@@ -33,7 +33,7 @@ func (s steps) userEntersTextIntoField() core.TestStep {
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "Types the specified text into an input field identified by its logical name.",
 			Variables: []shared.StepVariable{
 				{Name: "text", Description: "The text to type.", Type: shared.DocVarTypeString},

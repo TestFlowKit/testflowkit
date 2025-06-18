@@ -3,14 +3,14 @@ package visual
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) elementShouldExist() core.TestStep {
-	return core.NewStepWithOneVariable(
+func (s steps) elementShouldExist() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the {string} should exist$`},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(name string) error {
 				_, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
 				if err != nil {
@@ -20,15 +20,15 @@ func (s steps) elementShouldExist() core.TestStep {
 				return nil
 			}
 		},
-		func(name string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(name string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			if !testsconfig.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "This assertion checks if the element is present in the DOM, regardless of its visibility.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},

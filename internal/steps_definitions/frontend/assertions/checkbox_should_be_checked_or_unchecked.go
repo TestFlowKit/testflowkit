@@ -5,15 +5,15 @@ import (
 	"reflect"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) checkCheckboxStatus() core.TestStep {
+func (s steps) checkCheckboxStatus() stepbuilder.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_checkbox", label)
 	}
-	definition := func(ctx *core.TestSuiteContext) func(string, string) error {
+	definition := func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 		return func(checkboxId, status string) error {
 			input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(checkboxId))
 			if err != nil {
@@ -29,8 +29,8 @@ func (s steps) checkCheckboxStatus() core.TestStep {
 		}
 	}
 
-	validator := func(checkboxId, _ string) core.ValidationErrors {
-		vc := core.ValidationErrors{}
+	validator := func(checkboxId, _ string) stepbuilder.ValidationErrors {
+		vc := stepbuilder.ValidationErrors{}
 		checkboxLabel := formatVar(checkboxId)
 
 		if !testsconfig.IsElementDefined(checkboxLabel) {
@@ -40,11 +40,11 @@ func (s steps) checkCheckboxStatus() core.TestStep {
 		return vc
 	}
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`the {string} checkbox should be (checked|unchecked)`},
 		definition,
 		validator,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if the checkbox is checked or unchecked.",
 			Variables: []shared.StepVariable{
 				{Name: "checkboxId", Description: "The id of the checkbox.", Type: shared.DocVarTypeString},

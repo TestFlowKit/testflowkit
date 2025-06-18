@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) scrollToElement() core.TestStep {
-	return core.NewStepWithOneVariable(
+func (s steps) scrollToElement() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user scrolls to the {string} element$`},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(name string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), fmt.Sprintf("%s_element", name))
 				if err != nil {
@@ -26,8 +26,8 @@ func (s steps) scrollToElement() core.TestStep {
 				return nil
 			}
 		},
-		func(name string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(name string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			variable := fmt.Sprintf("%s_element", name)
 			if !testsconfig.IsElementDefined(variable) {
 				vc.AddMissingElement(variable)
@@ -35,7 +35,7 @@ func (s steps) scrollToElement() core.TestStep {
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "Scrolls the page until the specified element is visible in the viewport.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},

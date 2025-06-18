@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) theFieldShouldContains() core.TestStep {
+func (s steps) theFieldShouldContains() stepbuilder.TestStep {
 	formatFieldID := func(fieldId string) string {
 		return fmt.Sprintf("%s_field", fieldId)
 	}
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the value of the {string} field should be {string}`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(fieldId, text string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatFieldID(fieldId))
 				if err != nil {
@@ -29,15 +29,15 @@ func (s steps) theFieldShouldContains() core.TestStep {
 				return fmt.Errorf("field should be contains %s but contains %s", text, input.TextContent())
 			}
 		},
-		func(fieldId, _ string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(fieldId, _ string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			if !testsconfig.IsElementDefined(formatFieldID(fieldId)) {
 				vc.AddMissingElement(formatFieldID(fieldId))
 			}
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "This assertion checks if the current value of an input field matches the specified value.",
 			Variables: []shared.StepVariable{
 				{Name: "fieldId", Description: "The id of the field.", Type: shared.DocVarTypeString},

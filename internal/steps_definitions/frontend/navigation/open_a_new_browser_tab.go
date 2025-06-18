@@ -1,21 +1,21 @@
 package navigation
 
 import (
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (n navigation) openNewBrowserTab() core.TestStep {
-	return core.NewStepWithNoVariables(
+func (n navigation) openANewBrowserTab() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithNoVariables(
 		[]string{"the user opens a new browser tab"},
-		func(ctx *core.TestSuiteContext) func() error {
+		func(ctx *stepbuilder.TestSuiteContext) func() error {
 			return func() error {
 				ctx.InitBrowser(false)
 				return nil
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "opens a new browser tab.",
 			Variables:   nil,
 			Example:     "Given the user opens a new browser tab",
