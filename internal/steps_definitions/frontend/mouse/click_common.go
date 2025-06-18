@@ -3,15 +3,15 @@ package mouse
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
 type clickCommon struct {
 	labelFormatter func(string) string
 }
 
-func (c clickCommon) handler() func(*core.TestSuiteContext) func(string) error {
-	return func(ctx *core.TestSuiteContext) func(string) error {
+func (c clickCommon) handler() func(*stepbuilder.TestSuiteContext) func(string) error {
+	return func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 		return func(label string) error {
 			element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), c.labelFormatter(label))
 			if err != nil {
@@ -22,9 +22,9 @@ func (c clickCommon) handler() func(*core.TestSuiteContext) func(string) error {
 	}
 }
 
-func (c clickCommon) validation() func(string) core.ValidationErrors {
-	return func(label string) core.ValidationErrors {
-		vc := core.ValidationErrors{}
+func (c clickCommon) validation() func(string) stepbuilder.ValidationErrors {
+	return func(label string) stepbuilder.ValidationErrors {
+		vc := stepbuilder.ValidationErrors{}
 		formattedLabel := c.labelFormatter(label)
 		if !testsconfig.IsElementDefined(formattedLabel) {
 			vc.AddMissingElement(formattedLabel)

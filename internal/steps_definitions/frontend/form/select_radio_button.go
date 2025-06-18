@@ -3,29 +3,20 @@ package form
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 )
 
-func (s steps) userSelectsRadioButton() core.TestStep {
+func (s steps) userSelectsRadioButton() stepbuilder.TestStep {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
-	doc := core.StepDefDocParams{
-		Description: "Selects a radio button option identified by its logical name from a radio button group.",
-		Variables: []shared.StepVariable{
-			{Name: "name", Description: "the logical name of the radio button", Type: shared.DocVarTypeString},
-		},
-		Example:  `When the user selects the "Standard Delivery" radio button`,
-		Category: shared.Form,
-	}
-
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user selects the {string} radio button$`},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(radioBtnName string) error {
 				radioButton, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(radioBtnName))
 				if err != nil {
@@ -40,15 +31,21 @@ func (s steps) userSelectsRadioButton() core.TestStep {
 				return radioButton.Click()
 			}
 		},
-		func(radioBtnName string) core.ValidationErrors {
-			vErr := core.ValidationErrors{}
+		func(radioBtnName string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			label := formatLabel(radioBtnName)
 			if !testsconfig.IsElementDefined(label) {
-				vErr.AddMissingElement(label)
+				vc.AddMissingElement(label)
 			}
-
-			return vErr
+			return vc
 		},
-		doc,
+		stepbuilder.StepDefDocParams{
+			Description: "Selects a radio button by its logical name.",
+			Variables: []shared.StepVariable{
+				{Name: "name", Description: "The logical name of the radio button.", Type: shared.DocVarTypeString},
+			},
+			Example:  `When the user selects the "Gender Male" radio button`,
+			Category: shared.Form,
+		},
 	)
 }

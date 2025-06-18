@@ -2,12 +2,12 @@ package navigation
 
 import (
 	"errors"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (n navigation) userNavigateToURL() core.TestStep {
-	testDefinition := func(ctx *core.TestSuiteContext) func(string) error {
+func (n navigation) userNavigateToURL() stepbuilder.TestStep {
+	testDefinition := func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 		return func(URL string) error {
 			if ctx.GetCurrentPage() == nil {
 				return errors.New("no browser opened")
@@ -17,11 +17,11 @@ func (n navigation) userNavigateToURL() core.TestStep {
 		}
 	}
 
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user navigate to the URL {string}$`},
 		testDefinition,
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "directs the browser to open the specified absolute URL",
 			Variables: []shared.StepVariable{
 				{Name: "URL", Description: "the absolute URL", Type: shared.DocVarTypeString},

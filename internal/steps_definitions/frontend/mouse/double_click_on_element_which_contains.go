@@ -2,14 +2,14 @@ package mouse
 
 import (
 	"fmt"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) doubleClickOnElementWhichContains() core.TestStep {
-	return core.NewStepWithTwoVariables(
+func (s steps) doubleClickOnElementWhichContains() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user double clicks on {string} which contains "{string}"$`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(_ string, text string) error {
 				element, err := ctx.GetCurrentPage().GetOneByTextContent(text)
 				if err != nil {
@@ -19,7 +19,7 @@ func (s steps) doubleClickOnElementWhichContains() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "Double clicks on an element which contains a specific text.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The logical name of the element to double click on.", Type: shared.DocVarTypeString},

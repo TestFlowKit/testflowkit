@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) userSelectOptionWithTextIntoDropdown() core.TestStep {
+func (s steps) userSelectOptionWithTextIntoDropdown() stepbuilder.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user selects the option with text {string} from the {string} dropdown$`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(option, dropdownId string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
 				if err != nil {
@@ -24,8 +24,8 @@ func (s steps) userSelectOptionWithTextIntoDropdown() core.TestStep {
 				return input.SelectByText([]string{option})
 			}
 		},
-		func(_, dropdownId string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(_, dropdownId string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			label := formatVar(dropdownId)
 			if !testsconfig.IsElementDefined(label) {
 				vc.AddMissingElement(label)
@@ -33,7 +33,7 @@ func (s steps) userSelectOptionWithTextIntoDropdown() core.TestStep {
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "Selects an option from a dropdown list based on its visible text.",
 			Variables: []shared.StepVariable{
 				{Name: "option text", Description: "The option to select.", Type: shared.DocVarTypeString},

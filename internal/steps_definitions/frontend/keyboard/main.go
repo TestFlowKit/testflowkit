@@ -1,16 +1,16 @@
 package keyboard
 
 import (
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
 type keyboardSteps struct {
 }
 
-func GetSteps() []core.TestStep {
+func GetSteps() []stepbuilder.TestStep {
 	steps := keyboardSteps{}
 
-	return []core.TestStep{
+	return []stepbuilder.TestStep{
 		steps.userPressButton(),
 	}
 }

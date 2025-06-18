@@ -4,6 +4,7 @@ import (
 	"slices"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend/assertions"
 	"testflowkit/internal/steps_definitions/frontend/form"
 	"testflowkit/internal/steps_definitions/frontend/keyboard"
@@ -16,7 +17,7 @@ import (
 )
 
 func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.App) {
-	frontendCtx := core.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
+	frontendCtx := stepbuilder.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
 	for _, step := range getAllSteps() {
 		handler := step.GetDefinition(frontendCtx)
 		for _, sentence := range step.GetSentences() {
@@ -25,7 +26,7 @@ func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.App) {
 	}
 }
 
-func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *core.ValidatorContext) {
+func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *stepbuilder.ValidatorContext) {
 	for _, step := range getAllSteps() {
 		handler := step.Validate(vCtx)
 		for _, sentence := range step.GetSentences() {
@@ -34,7 +35,7 @@ func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *core.ValidatorCon
 	}
 }
 
-func getAllSteps() []core.TestStep {
+func getAllSteps() []stepbuilder.TestStep {
 	return slices.Concat(
 		form.GetSteps(),
 		keyboard.GetSteps(),

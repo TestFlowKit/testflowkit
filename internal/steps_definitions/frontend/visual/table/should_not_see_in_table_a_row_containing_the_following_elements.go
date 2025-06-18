@@ -2,7 +2,7 @@ package table
 
 import (
 	"errors"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
@@ -10,16 +10,16 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) shouldNotSeeRowContainingTheFollowingElements() core.TestStep {
+func (s steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.TestStep {
 	example := `
 	When the user should not see a row containing the following elements
 	| Name | Age |
 	| John | 30  |
 	`
 
-	return core.NewStepWithOneVariable[*godog.Table](
+	return stepbuilder.NewStepWithOneVariable[*godog.Table](
 		[]string{`^the user should not see a row containing the following elements$`},
-		func(ctx *core.TestSuiteContext) func(*godog.Table) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, err := assistdog.NewDefault().ParseSlice(table)
 				if err != nil {
@@ -37,7 +37,7 @@ func (s steps) shouldNotSeeRowContainingTheFollowingElements() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if a row containing the following elements is not visible in the table.",
 			Variables: []shared.StepVariable{
 				{Name: "table", Description: "The table containing the elements to check.", Type: shared.DocVarTypeTable},

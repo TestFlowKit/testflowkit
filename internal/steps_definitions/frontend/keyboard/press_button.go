@@ -3,13 +3,13 @@ package keyboard
 import (
 	"fmt"
 	"strings"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
 	"github.com/go-rod/rod/lib/input"
 )
 
-func (k keyboardSteps) userPressButton() core.TestStep {
+func (k keyboardSteps) userPressButton() stepbuilder.TestStep {
 	dic := map[string]input.Key{
 		"Enter":       input.Enter,
 		"Tab":         input.Tab,
@@ -27,9 +27,9 @@ func (k keyboardSteps) userPressButton() core.TestStep {
 		supportedKeys = append(supportedKeys, key)
 	}
 
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{fmt.Sprintf(`^the user presses the "(%s)" key$`, strings.Join(supportedKeys, "|"))},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(key string) error {
 				inputKey := dic[key]
 				if inputKey == '0' {
@@ -40,7 +40,7 @@ func (k keyboardSteps) userPressButton() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "Simulates pressing a specific keyboard key (e.g., “Enter”, “Tab”, “Escape”).",
 			Variables: []shared.StepVariable{
 				{Name: "key", Description: "The button to press.", Type: shared.DocVarTypeEnum(supportedKeys...)},

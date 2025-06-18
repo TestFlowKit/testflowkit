@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
 )
 
-func (s steps) shouldSeeDetailsOnPage() core.TestStep {
-	definition := func(ctx *core.TestSuiteContext) func(string, *godog.Table) error {
+func (s steps) shouldSeeDetailsOnPage() stepbuilder.TestStep {
+	definition := func(ctx *stepbuilder.TestSuiteContext) func(string, *godog.Table) error {
 		return func(elementName string, table *godog.Table) error {
 			data, parseErr := assistdog.NewDefault().ParseMap(table)
 			if parseErr != nil {
@@ -40,11 +40,11 @@ func (s steps) shouldSeeDetailsOnPage() core.TestStep {
 		}
 	}
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user should see "{string}" details on the page$`},
 		definition,
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if the details are visible on the page.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},

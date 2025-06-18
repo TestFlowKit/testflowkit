@@ -3,15 +3,15 @@ package navigation
 import (
 	"errors"
 	"fmt"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 )
 
-func (n navigation) switchToOriginalWindow() core.TestStep {
-	return core.NewStepWithNoVariables(
+func (n navigation) switchToOriginalWindow() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithNoVariables(
 		[]string{"^the user switches back to the original window$"},
-		func(ctx *core.TestSuiteContext) func() error {
+		func(ctx *stepbuilder.TestSuiteContext) func() error {
 			return func() error {
 				pages := ctx.GetPages()
 
@@ -33,10 +33,10 @@ func (n navigation) switchToOriginalWindow() core.TestStep {
 				return nil
 			}
 		},
-		func() core.ValidationErrors {
-			return core.ValidationErrors{}
+		func() stepbuilder.ValidationErrors {
+			return stepbuilder.ValidationErrors{}
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "switches back to the original browser window (usually the first window).",
 			Variables:   []shared.StepVariable{},
 			Example:     "When the user switches back to the original window",
