@@ -2,14 +2,14 @@ package navigation
 
 import (
 	"errors"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (n navigation) refreshPage() core.TestStep {
-	return core.NewStepWithNoVariables(
+func (n navigation) refreshPage() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithNoVariables(
 		[]string{"the user refresh the page"},
-		func(ctx *core.TestSuiteContext) func() error {
+		func(ctx *stepbuilder.TestSuiteContext) func() error {
 			return func() error {
 				if ctx.GetCurrentPage() == nil {
 					return errors.New("no page opened")
@@ -19,7 +19,7 @@ func (n navigation) refreshPage() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "refreshes the current page.",
 			Variables:   nil,
 			Example:     "When the user refreshes the page",

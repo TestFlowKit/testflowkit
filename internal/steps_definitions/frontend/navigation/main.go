@@ -1,27 +1,27 @@
 package navigation
 
 import (
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
 type navigation struct {
 }
 
-func GetSteps() []core.TestStep {
+func GetSteps() []stepbuilder.TestStep {
 	handlers := navigation{}
 
-	return []core.TestStep{
+	return []stepbuilder.TestStep{
 		handlers.userNavigateToPage(),
 		handlers.userWait(),
 		handlers.refreshPage(),
 		handlers.theUserNavigateBack(),
 		handlers.userNavigateToURL(),
-		handlers.openNewBrowserTab(),
-		handlers.openNewPrivateBrowserTab(),
+		handlers.openANewBrowserTab(),
+		handlers.openANewPrivateBrowserTab(),
 		handlers.userIsOnHomepage(),
 		// TODO: window handling e2e tests
 		handlers.waitAMomentForNewWindow(),
-		handlers.switchToMostRecentlyOpenedWindow(),
+		handlers.switchToMostOpenedWindow(),
 		handlers.switchToOriginalWindow(),
 		handlers.switchToNewOpenedWindow(),
 	}

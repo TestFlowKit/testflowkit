@@ -3,17 +3,17 @@ package assertions
 import (
 	"fmt"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
 )
 
-func (s steps) dropdownHaveValuesSelected() core.TestStep {
+func (s steps) dropdownHaveValuesSelected() stepbuilder.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
 
-	doc := core.StepDefDocParams{
+	doc := stepbuilder.StepDefDocParams{
 		Description: "checks if the dropdown has the specified values selected.",
 		Variables: []shared.StepVariable{
 			{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
@@ -23,9 +23,9 @@ func (s steps) dropdownHaveValuesSelected() core.TestStep {
 		Category: shared.Form,
 	}
 
-	return core.NewStepWithTwoVariables(
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(dropdownId, optionLabels string) error {
 				selector, err := testsconfig.GetHTMLElementSelectors(formatVar(dropdownId))
 				if err != nil {
@@ -45,8 +45,8 @@ func (s steps) dropdownHaveValuesSelected() core.TestStep {
 				return fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
 			}
 		},
-		func(dropdownId, _ string) core.ValidationErrors {
-			vErr := core.ValidationErrors{}
+		func(dropdownId, _ string) stepbuilder.ValidationErrors {
+			vErr := stepbuilder.ValidationErrors{}
 			label := formatVar(dropdownId)
 			if !testsconfig.IsElementDefined(label) {
 				vErr.AddMissingElement(label)

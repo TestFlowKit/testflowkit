@@ -2,18 +2,18 @@ package navigation
 
 import (
 	"fmt"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 	"time"
 )
 
-func (n navigation) waitAMomentForNewWindow() core.TestStep {
+func (n navigation) waitAMomentForNewWindow() stepbuilder.TestStep {
 	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
 
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{"^the user waits for a new window to open within {string}$"},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(waitTime string) error {
 				duration, err := time.ParseDuration(waitTime)
 				if err != nil {
@@ -46,15 +46,15 @@ func (n navigation) waitAMomentForNewWindow() core.TestStep {
 				}
 			}
 		},
-		func(duration string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(duration string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			_, err := time.ParseDuration(duration)
 			if err != nil {
 				vc.AddError(fmt.Sprintf("Invalid duration format: %s", duration))
 			}
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "waits for a new browser window to open within the specified timeout.",
 			Variables: []shared.StepVariable{
 				{Name: "waitTime", Description: docDescription, Type: shared.DocVarTypeString},

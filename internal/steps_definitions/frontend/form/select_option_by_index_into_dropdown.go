@@ -1,45 +1,39 @@
 package form
 
 import (
-	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) userSelectOptionByIndexIntoDropdown() core.TestStep {
-	formatVar := func(label string) string {
-		return fmt.Sprintf("%s_dropdown", label)
-	}
-
-	return core.NewStepWithTwoVariables(
+func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
-		func(ctx *core.TestSuiteContext) func(int, string) error {
-			return func(optionIndex int, dropdownId string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
+		func(ctx *stepbuilder.TestSuiteContext) func(int, string) error {
+			return func(index int, dropdownId string) error {
+				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), dropdownId+"_dropdown")
 				if err != nil {
 					return err
 				}
-				return input.SelectByIndex(optionIndex)
+				return input.SelectByIndex(index)
 			}
 		},
-		func(_ int, dropdownId string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
-			label := formatVar(dropdownId)
+		func(_ int, dropdownId string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
+			label := dropdownId + "_dropdown"
 			if !testsconfig.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
-
 			return vc
 		},
-		core.StepDefDocParams{
-			Description: "Selects an option from a dropdown list based on its underlying ‘value’ attribute.",
+		stepbuilder.StepDefDocParams{
+			Description: "Selects an option from a dropdown list based on its index.",
 			Variables: []shared.StepVariable{
-				{Name: "option value", Description: "The value of the option to select.", Type: shared.DocVarTypeString},
+				{Name: "index", Description: "The index of the option to select.", Type: shared.DocVarTypeInt},
 				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
 			},
-			Example:  `When the user selects the option with value “CIV” from the “Country” dropdown.`,
+			Example:  `When the user selects the option at index 2 from the "Country" dropdown`,
 			Category: shared.Form,
 		},
 	)

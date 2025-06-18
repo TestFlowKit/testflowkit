@@ -1,16 +1,16 @@
 package mouse
 
 import (
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
 type steps struct {
 }
 
-func GetSteps() []core.TestStep {
+func GetSteps() []stepbuilder.TestStep {
 	handlers := steps{}
 
-	return []core.TestStep{
+	return []stepbuilder.TestStep{
 		handlers.userClicksOnButton(),
 		handlers.clickOnElementWhichContains(),
 		handlers.doubleClickOn(),

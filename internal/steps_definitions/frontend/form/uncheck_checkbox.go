@@ -4,31 +4,22 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 )
 
-func (s steps) userUnchecksCheckbox() core.TestStep {
+func (s steps) userUnchecksCheckbox() stepbuilder.TestStep {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
 
-	doc := core.StepDefDocParams{
-		Description: "Deselects or unticks a checkbox element identified by its logical name",
-		Variables: []shared.StepVariable{
-			{Name: "name", Description: "the logical name of the checkbox", Type: shared.DocVarTypeString},
-		},
-		Example:  `When the user unchecks the "Subscribe to newsletter" checkbox`,
-		Category: shared.Form,
-	}
-
-	return core.NewStepWithOneVariable(
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user unchecks the {string} checkbox$`},
-		func(ctx *core.TestSuiteContext) func(string) error {
-			return func(checkboxName string) error {
-				checkBox, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(checkboxName))
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+			return func(checkBoxName string) error {
+				checkBox, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(checkBoxName))
 				if err != nil {
 					return err
 				}
@@ -36,19 +27,26 @@ func (s steps) userUnchecksCheckbox() core.TestStep {
 				if checkBox.IsChecked() {
 					return checkBox.Click()
 				}
-				logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkboxName), []string{})
+
+				logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
 				return nil
 			}
 		},
-		func(checkboxName string) core.ValidationErrors {
-			vErr := core.ValidationErrors{}
-			label := formatLabel(checkboxName)
+		func(checkboxId string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
+			label := formatLabel(checkboxId)
 			if !testsconfig.IsElementDefined(label) {
-				vErr.AddMissingElement(label)
+				vc.AddMissingElement(label)
 			}
-
-			return vErr
+			return vc
 		},
-		doc,
+		stepbuilder.StepDefDocParams{
+			Description: "Deselects or unticks a checkbox element identified by its logical name",
+			Variables: []shared.StepVariable{
+				{Name: "name", Description: "the logical name of the checkbox", Type: shared.DocVarTypeString},
+			},
+			Example:  `When the user unchecks the "Subscribe to newsletter" checkbox`,
+			Category: shared.Form,
+		},
 	)
 }

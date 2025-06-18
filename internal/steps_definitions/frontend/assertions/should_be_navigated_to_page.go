@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strings"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) userShouldBeNavigatedToPage() core.TestStep {
-	return core.NewStepWithOneVariable(
+func (s steps) userShouldBeNavigatedToPage() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
-		func(ctx *core.TestSuiteContext) func(string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
 			return func(pageName string) error {
 				const maxRetries = 10
 				page := ctx.GetCurrentPage()
@@ -38,15 +38,15 @@ func (s steps) userShouldBeNavigatedToPage() core.TestStep {
 				return fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
 			}
 		},
-		func(pageName string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(pageName string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			if !testsconfig.IsPageDefined(pageName) {
 				vc.AddMissingPage(pageName)
 			}
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if the user is navigated to a page.",
 			Variables: []shared.StepVariable{
 				{Name: "pageName", Description: "The name of the page to navigate to.", Type: shared.DocVarTypeString},

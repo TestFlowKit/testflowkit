@@ -2,14 +2,14 @@ package visual
 
 import (
 	"fmt"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) shouldSeeElementWhichContains() core.TestStep {
-	return core.NewStepWithTwoVariables(
+func (s steps) shouldSeeElementWhichContains() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user should see a (link|button|element) which contains "{string}"$`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(elementLabel, text string) error {
 				cases := map[string]string{
 					"link":    "a",
@@ -33,7 +33,7 @@ func (s steps) shouldSeeElementWhichContains() core.TestStep {
 			}
 		},
 		nil,
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "checks if a link, button or element is visible and contains a specific text.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},

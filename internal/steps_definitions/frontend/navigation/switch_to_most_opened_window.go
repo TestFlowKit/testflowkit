@@ -2,15 +2,15 @@ package navigation
 
 import (
 	"fmt"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 )
 
-func (n navigation) switchToMostRecentlyOpenedWindow() core.TestStep {
-	return core.NewStepWithNoVariables(
+func (n navigation) switchToMostOpenedWindow() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithNoVariables(
 		[]string{"^the user switches to the most recently window opened$"},
-		func(ctx *core.TestSuiteContext) func() error {
+		func(ctx *stepbuilder.TestSuiteContext) func() error {
 			return func() error {
 				pages := ctx.GetPages()
 
@@ -28,10 +28,10 @@ func (n navigation) switchToMostRecentlyOpenedWindow() core.TestStep {
 				return nil
 			}
 		},
-		func() core.ValidationErrors {
-			return core.ValidationErrors{}
+		func() stepbuilder.ValidationErrors {
+			return stepbuilder.ValidationErrors{}
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "switches to the most recently opened browser window.",
 			Variables:   []shared.StepVariable{},
 			Example:     "When the user switches to the most recently window opened",

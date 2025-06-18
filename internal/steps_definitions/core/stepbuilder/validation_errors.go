@@ -1,4 +1,4 @@
-package core
+package stepbuilder
 
 type ValidationErrors struct {
 	missingPages    []string

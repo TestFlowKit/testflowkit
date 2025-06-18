@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
-	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
-func (s steps) elementShouldContainExactText() core.TestStep {
-	return core.NewStepWithTwoVariables(
+func (s steps) elementShouldContainExactText() stepbuilder.TestStep {
+	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the text of the {string} element should be exactly {string}$`},
-		func(ctx *core.TestSuiteContext) func(string, string) error {
+		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
 			return func(name, text string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
 				if err != nil {
@@ -29,15 +29,15 @@ func (s steps) elementShouldContainExactText() core.TestStep {
 				return nil
 			}
 		},
-		func(name, _ string) core.ValidationErrors {
-			vc := core.ValidationErrors{}
+		func(name, _ string) stepbuilder.ValidationErrors {
+			vc := stepbuilder.ValidationErrors{}
 			if !testsconfig.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
 
 			return vc
 		},
-		core.StepDefDocParams{
+		stepbuilder.StepDefDocParams{
 			Description: "This assertion checks if the element’s visible text is an exact match to the specified string.",
 			Variables: []shared.StepVariable{
 				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
