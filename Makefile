@@ -68,17 +68,17 @@ releases:
 	done; \
 	for job in $$jobs; do \
 		if wait $$job; then \
-			((success_count++)); \
+			success_count=$$(expr $$success_count + 1); \
 		else \
-			((fail_count++)); \
+			fail_count=$$(expr $$fail_count + 1); \
 		fi \
 	done; \
 	end_time=$$(date +%s); \
-	duration=$$((end_time - start_time)); \
+	duration=$$(expr $$end_time - $$start_time); \
 	echo "Build Summary:"; \
-	echo "  Successful builds: $$success_count"; \
-	echo "  Failed builds: $$fail_count"; \
-	echo "  Total time: $$duration seconds"; \
+	echo " 	Successful builds: $$success_count"; \
+	echo " 	Failed builds: $$fail_count"; \
+	echo " 	Total time: $$duration seconds"; \
 	test $$fail_count -eq 0
 
 # Build for a specific OS/Arch
