@@ -9,6 +9,7 @@ permissions:
   pull-requests: write
   issues: write
   checks: write
+  id-token: write
 
 jobs:
   validate_release_branch:
@@ -99,7 +100,8 @@ jobs:
             @semantic-release/changelog \
             @semantic-release/github \
             @semantic-release/git \
-            @semantic-release/exec
+            @semantic-release/exec \
+            conventional-changelog-conventionalcommits
 
       - name: Run Semantic Release
         env:
