@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -11,7 +12,7 @@ import (
 func (s steps) scrollToElement() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user scrolls to the {string} element$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), fmt.Sprintf("%s_element", name))
 				if err != nil {

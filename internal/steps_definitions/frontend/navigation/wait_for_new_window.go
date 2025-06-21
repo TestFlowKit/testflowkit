@@ -3,6 +3,7 @@ package navigation
 import (
 	"errors"
 	"fmt"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
@@ -12,7 +13,7 @@ import (
 func (n navigation) switchToNewOpenedWindow() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithNoVariables(
 		[]string{"^the user switches to the newly opened window$"},
-		func(ctx *stepbuilder.TestSuiteContext) func() error {
+		func(ctx *scenario.Context) func() error {
 			return func() error {
 				initialPageCount := len(ctx.GetPages())
 				logger.Info(fmt.Sprintf("Waiting for new window. Current window count: %d", initialPageCount))

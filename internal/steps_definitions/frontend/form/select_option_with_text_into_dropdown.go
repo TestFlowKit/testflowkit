@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -15,7 +16,7 @@ func (s steps) userSelectOptionWithTextIntoDropdown() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user selects the option with text {string} from the {string} dropdown$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(option, dropdownId string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
 				if err != nil {

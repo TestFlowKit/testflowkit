@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"fmt"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
@@ -10,7 +11,7 @@ import (
 func (n navigation) switchToMostOpenedWindow() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithNoVariables(
 		[]string{"^the user switches to the most recently window opened$"},
-		func(ctx *stepbuilder.TestSuiteContext) func() error {
+		func(ctx *scenario.Context) func() error {
 			return func() error {
 				pages := ctx.GetPages()
 

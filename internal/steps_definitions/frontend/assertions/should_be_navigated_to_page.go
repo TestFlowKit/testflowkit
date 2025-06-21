@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -11,7 +12,7 @@ import (
 func (s steps) userShouldBeNavigatedToPage() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(pageName string) error {
 				const maxRetries = 10
 				page := ctx.GetCurrentPage()

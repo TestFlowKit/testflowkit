@@ -3,6 +3,7 @@ package navigation
 import (
 	"errors"
 	"fmt"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
@@ -11,7 +12,7 @@ import (
 func (n navigation) switchToOriginalWindow() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithNoVariables(
 		[]string{"^the user switches back to the original window$"},
-		func(ctx *stepbuilder.TestSuiteContext) func() error {
+		func(ctx *scenario.Context) func() error {
 			return func() error {
 				pages := ctx.GetPages()
 

@@ -1,13 +1,14 @@
 package navigation
 
 import (
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 	"time"
 )
 
 func (n navigation) userWait() stepbuilder.TestStep {
-	testDefinition := func(_ *stepbuilder.TestSuiteContext) func(int) error {
+	testDefinition := func(_ *scenario.Context) func(int) error {
 		return func(seconds int) error {
 			time.Sleep(time.Duration(seconds) * time.Second)
 			return nil

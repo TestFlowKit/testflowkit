@@ -3,6 +3,7 @@ package form
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -10,7 +11,7 @@ import (
 func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(int, string) error {
+		func(ctx *scenario.Context) func(int, string) error {
 			return func(index int, dropdownId string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), dropdownId+"_dropdown")
 				if err != nil {

@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"fmt"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
@@ -13,7 +14,7 @@ func (n navigation) waitAMomentForNewWindow() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{"^the user waits for a new window to open within {string}$"},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(waitTime string) error {
 				duration, err := time.ParseDuration(waitTime)
 				if err != nil {
