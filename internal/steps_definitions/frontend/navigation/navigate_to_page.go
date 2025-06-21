@@ -3,13 +3,14 @@ package navigation
 import (
 	"fmt"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
 )
 
 func (n navigation) userNavigateToPage() stepbuilder.TestStep {
-	testDefinition := func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+	testDefinition := func(ctx *scenario.Context) func(string) error {
 		return func(page string) error {
 			url, err := testsconfig.GetPageURL(page)
 			if err != nil {

@@ -2,12 +2,13 @@ package navigation
 
 import (
 	"errors"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
 
 func (n navigation) userNavigateToURL() stepbuilder.TestStep {
-	testDefinition := func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+	testDefinition := func(ctx *scenario.Context) func(string) error {
 		return func(URL string) error {
 			if ctx.GetCurrentPage() == nil {
 				return errors.New("no browser opened")

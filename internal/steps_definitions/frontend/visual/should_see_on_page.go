@@ -3,6 +3,7 @@ package visual
 import (
 	"fmt"
 	"strings"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -10,7 +11,7 @@ import (
 func (s steps) shouldSeeOnPage() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user should see "{string}" on the page$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(word string) error {
 				elt, err := ctx.GetCurrentPage().GetOneBySelector("body")
 				if err != nil {

@@ -3,6 +3,7 @@ package navigation
 import (
 	"fmt"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 	"testflowkit/shared"
@@ -13,7 +14,7 @@ func (n navigation) userIsOnHomepage() stepbuilder.TestStep {
 	const moreDetails = "It assumes a predefined base URL for the \"homepage.\""
 	return stepbuilder.NewStepWithNoVariables(
 		[]string{"the user is on the homepage"},
-		func(ctx *stepbuilder.TestSuiteContext) func() error {
+		func(ctx *scenario.Context) func() error {
 			return func() error {
 				const settingsVariable = "homepage"
 				url, err := testsconfig.GetPageURL(settingsVariable)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -15,7 +16,7 @@ func (s steps) theFieldShouldContains() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the value of the {string} field should be {string}`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(fieldId, text string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatFieldID(fieldId))
 				if err != nil {

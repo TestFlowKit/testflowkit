@@ -4,6 +4,7 @@ import (
 	"slices"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend/assertions"
 	"testflowkit/internal/steps_definitions/frontend/form"
@@ -17,7 +18,7 @@ import (
 )
 
 func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.App) {
-	frontendCtx := stepbuilder.NewFrontendContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
+	frontendCtx := scenario.NewContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
 	for _, step := range getAllSteps() {
 		handler := step.GetDefinition(frontendCtx)
 		for _, sentence := range step.GetSentences() {

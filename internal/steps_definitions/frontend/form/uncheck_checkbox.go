@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
@@ -17,7 +18,7 @@ func (s steps) userUnchecksCheckbox() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user unchecks the {string} checkbox$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(checkBoxName string) error {
 				checkBox, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(checkBoxName))
 				if err != nil {

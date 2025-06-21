@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"errors"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -9,7 +10,7 @@ import (
 func (n navigation) theUserNavigateBack() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithNoVariables(
 		[]string{"the user navigate back"},
-		func(ctx *stepbuilder.TestSuiteContext) func() error {
+		func(ctx *scenario.Context) func() error {
 			return func() error {
 				if ctx.GetCurrentPage() == nil {
 					return errors.New("no page opened")

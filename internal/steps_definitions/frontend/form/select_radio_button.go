@@ -3,6 +3,7 @@ package form
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
@@ -16,7 +17,7 @@ func (s steps) userSelectsRadioButton() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user selects the {string} radio button$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(radioBtnName string) error {
 				radioButton, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(radioBtnName))
 				if err != nil {

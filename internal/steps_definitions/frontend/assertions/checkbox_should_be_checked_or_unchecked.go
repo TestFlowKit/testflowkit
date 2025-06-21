@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -13,7 +14,7 @@ func (s steps) checkCheckboxStatus() stepbuilder.TestStep {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_checkbox", label)
 	}
-	definition := func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+	definition := func(ctx *scenario.Context) func(string, string) error {
 		return func(checkboxId, status string) error {
 			input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(checkboxId))
 			if err != nil {

@@ -2,6 +2,7 @@ package mouse
 
 import (
 	"fmt"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -9,7 +10,7 @@ import (
 func (s steps) doubleClickOnElementWhichContains() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user double clicks on {string} which contains "{string}"$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(_ string, text string) error {
 				element, err := ctx.GetCurrentPage().GetOneByTextContent(text)
 				if err != nil {

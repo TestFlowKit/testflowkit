@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -11,7 +12,7 @@ import (
 func (s steps) elementShouldBeVisible() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the {string} should be visible$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
 				if err != nil {

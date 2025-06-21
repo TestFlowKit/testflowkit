@@ -1,10 +1,13 @@
 package stepbuilder
 
-import "testflowkit/shared"
+import (
+	"testflowkit/internal/steps_definitions/core/scenario"
+	"testflowkit/shared"
+)
 
 type TestStep interface {
 	GetDocumentation() shared.StepDocumentation
 	GetSentences() []string
-	GetDefinition(*TestSuiteContext) any
+	GetDefinition(*scenario.Context) any
 	Validate(*ValidatorContext) any
 }

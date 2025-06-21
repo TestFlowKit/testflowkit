@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
@@ -12,7 +13,7 @@ import (
 )
 
 func (s steps) shouldSeeDetailsOnPage() stepbuilder.TestStep {
-	definition := func(ctx *stepbuilder.TestSuiteContext) func(string, *godog.Table) error {
+	definition := func(ctx *scenario.Context) func(string, *godog.Table) error {
 		return func(elementName string, table *godog.Table) error {
 			data, parseErr := assistdog.NewDefault().ParseMap(table)
 			if parseErr != nil {

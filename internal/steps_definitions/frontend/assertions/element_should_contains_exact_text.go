@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -11,7 +12,7 @@ import (
 func (s steps) elementShouldContainExactText() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the text of the {string} element should be exactly {string}$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(name, text string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
 				if err != nil {
