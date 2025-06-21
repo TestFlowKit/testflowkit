@@ -3,6 +3,7 @@ package visual
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -10,7 +11,7 @@ import (
 func (s steps) elementShouldExist() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the {string} should exist$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
 				_, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
 				if err != nil {

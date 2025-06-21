@@ -3,6 +3,7 @@ package form
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
@@ -15,7 +16,7 @@ func (s steps) userEntersTextIntoField() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user enters {string} into the {string} field`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(text, inputLabel string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(inputLabel))
 				if err != nil {

@@ -1,6 +1,7 @@
 package table
 
 import (
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
@@ -17,7 +18,7 @@ func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user should see a table with the following headers$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(*godog.Table) error {
+		func(ctx *scenario.Context) func(*godog.Table) error {
 			return func(table *godog.Table) error {
 				data, err := assistdog.NewDefault().ParseMap(table)
 				if err != nil {

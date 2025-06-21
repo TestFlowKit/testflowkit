@@ -3,6 +3,7 @@ package mouse
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -10,7 +11,7 @@ import (
 func (s steps) rightClickOn() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user right clicks on {string}$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(label string) error {
 				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
 				if err != nil {

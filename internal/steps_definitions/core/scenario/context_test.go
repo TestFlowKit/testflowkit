@@ -1,4 +1,4 @@
-package stepbuilder
+package scenario
 
 import (
 	"testing"
@@ -12,7 +12,7 @@ func TestShouldInstanciateCorrectlyNewFrontendContext(t *testing.T) {
 	headlessMode := true
 	slowMotion := 10 * time.Millisecond
 
-	frontendCtx := NewFrontendContext(timeout, headlessMode, slowMotion)
+	frontendCtx := NewContext(timeout, headlessMode, slowMotion)
 
 	assert.Equal(t, timeout, frontendCtx.timeout.String())
 	assert.True(t, frontendCtx.headlessMode)

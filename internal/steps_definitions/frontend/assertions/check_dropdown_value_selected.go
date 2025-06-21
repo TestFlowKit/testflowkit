@@ -3,6 +3,7 @@ package assertions
 import (
 	"fmt"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
@@ -25,7 +26,7 @@ func (s steps) dropdownHaveValuesSelected() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(dropdownId, optionLabels string) error {
 				selector, err := testsconfig.GetHTMLElementSelectors(formatVar(dropdownId))
 				if err != nil {

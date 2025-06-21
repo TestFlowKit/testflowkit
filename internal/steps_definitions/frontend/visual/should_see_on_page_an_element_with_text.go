@@ -2,6 +2,7 @@ package visual
 
 import (
 	"fmt"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 )
@@ -9,7 +10,7 @@ import (
 func (s steps) shouldSeeElementWhichContains() stepbuilder.TestStep {
 	return stepbuilder.NewStepWithTwoVariables(
 		[]string{`^the user should see a (link|button|element) which contains "{string}"$`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+		func(ctx *scenario.Context) func(string, string) error {
 			return func(elementLabel, text string) error {
 				cases := map[string]string{
 					"link":    "a",

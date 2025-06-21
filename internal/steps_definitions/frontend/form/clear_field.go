@@ -3,6 +3,7 @@ package form
 import (
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
@@ -15,7 +16,7 @@ func (s steps) userClearsFormField() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{`^the user clears the {string} field.`},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(inputLabel string) error {
 				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(inputLabel))
 				if err != nil {

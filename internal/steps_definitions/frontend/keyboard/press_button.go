@@ -3,6 +3,7 @@ package keyboard
 import (
 	"fmt"
 	"strings"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/shared"
 
@@ -29,7 +30,7 @@ func (k keyboardSteps) userPressButton() stepbuilder.TestStep {
 
 	return stepbuilder.NewStepWithOneVariable(
 		[]string{fmt.Sprintf(`^the user presses the "(%s)" key$`, strings.Join(supportedKeys, "|"))},
-		func(ctx *stepbuilder.TestSuiteContext) func(string) error {
+		func(ctx *scenario.Context) func(string) error {
 			return func(key string) error {
 				inputKey := dic[key]
 				if inputKey == '0' {

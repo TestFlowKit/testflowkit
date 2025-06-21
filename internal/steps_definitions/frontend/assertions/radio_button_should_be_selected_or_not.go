@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/shared"
@@ -15,7 +16,7 @@ func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.TestStep {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
-	definition := func(ctx *stepbuilder.TestSuiteContext) func(string, string) error {
+	definition := func(ctx *scenario.Context) func(string, string) error {
 		return func(radioId, status string) error {
 			input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(radioId))
 			if err != nil {
