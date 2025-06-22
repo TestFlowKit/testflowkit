@@ -29,7 +29,6 @@ func (f jsonReportFormatter) WriteReport(details testSuiteDetails) {
 	}
 
 	report := jsonReport{
-		AppName:   details.AppName,
 		Scenarios: scenariosReports,
 		StartDate: details.ExecutionDate,
 		Duration:  details.TotalExecutionTime,

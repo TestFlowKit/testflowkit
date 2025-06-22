@@ -1,7 +1,6 @@
 package reporters
 
 type jsonReport struct {
-	AppName   string               `json:"app_name"`
 	StartDate string               `json:"start_date"`
 	Duration  string               `json:"totalDuration"`
 	Scenarios []jsonScenarioReport `json:"scenarios"`

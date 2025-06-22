@@ -8,12 +8,6 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-type appDetailsConfig struct {
-	AppName        string `yaml:"app_name"`
-	AppDescription string `yaml:"app_description,omitempty"`
-	AppVersion     string `yaml:"app_version"`
-}
-
 type reportingConfig struct {
 	ReportFormat string `yaml:"report_format"`
 }
@@ -45,7 +39,7 @@ func (c *testingConfig) GetSlowMotion() time.Duration {
 }
 
 type configType interface {
-	testingConfig | reportingConfig | appDetailsConfig
+	testingConfig | reportingConfig
 }
 
 // TODO: rename in order to specify the type of the config

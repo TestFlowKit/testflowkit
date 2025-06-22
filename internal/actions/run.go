@@ -26,7 +26,7 @@ func Run(appConfig *config.App) {
 		}
 	}
 
-	testReport := reporters.New(appConfig.AppName, appConfig.AppDescription, appConfig.ReportFormat)
+	testReport := reporters.New(appConfig.ReportFormat)
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         appConfig.GetConcurrency(),
@@ -37,7 +37,7 @@ func Run(appConfig *config.App) {
 	}
 
 	testSuite := godog.TestSuite{
-		Name:                 appConfig.AppName,
+		Name:                 "Test Suite",
 		Options:              &opts,
 		TestSuiteInitializer: testSuiteInitializer(&testReport),
 		ScenarioInitializer:  scenarioInitializer(appConfig, &testReport),

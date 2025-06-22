@@ -59,7 +59,7 @@
             <div>
                 <a class="suggestion-toggle" @click="toggleSuggestion">{{
                     suggestionShowed ? "Hide" : "Show"
-                }}
+                    }}
                     suggestion</a>
                 <div v-show="suggestionShowed">
                     <p class="italic">
@@ -311,7 +311,7 @@ function toggleSuggestion() {
 }
 
 // Code blocks content
-const initCommand = "tkit init --appname=test_app";
+const initCommand = "tkit init";
 const expectedSentence = "I open a new browser tab";
 const featureDefinition = "Feature: Search Functionality";
 const scenarioName = "Scenario: Search for a sentence";

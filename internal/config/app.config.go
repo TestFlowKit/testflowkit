@@ -2,7 +2,6 @@ package config
 
 type App struct {
 	Mode Mode
-	appDetailsConfig
 	reportingConfig
 	testingConfig
 }
@@ -17,10 +16,6 @@ func (c *App) GetConcurrency() int {
 func initAppConfig(args argsConfig, cliConfig cliConfig, mode Mode) *App {
 	c := App{
 		Mode: mode,
-		appDetailsConfig: appDetailsConfig{
-			AppName:        cliConfig.AppName,
-			AppDescription: cliConfig.AppDescription,
-		},
 		testingConfig: testingConfig{
 			GherkinLocation: cliConfig.GherkinLocation,
 			Timeout:         cliConfig.Timeout,
@@ -57,7 +52,6 @@ func fillConfigForRunCmd(c *App, runArgs runCmd) {
 	c.Mode = RunMode
 	c.Tags = runArgs.Tags
 	c.Parallel = runArgs.Parallel
-	c.AppVersion = runArgs.AppVersion
 	c.Headless = runArgs.Headless
 
 	if runArgs.GherkinLocation != "" {
