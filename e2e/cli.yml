@@ -3,10 +3,5 @@ configuration:
   slowMotion: 0s
   gherkin_location: "e2e/features"
 
-application:
-  app_name: "MonApplication"
-  app_description: "ma chic app"
-  app_version: "1.0.0"
-
 reporting:
   report_format: "html"

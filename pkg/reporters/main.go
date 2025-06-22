@@ -15,11 +15,10 @@ const (
 )
 
 type Report struct {
-	appName, appVersion string
-	scenarios           []Scenario
-	startDate           time.Time
-	formatter           formatter
-	AreAllTestsPassed   bool
+	scenarios         []Scenario
+	startDate         time.Time
+	formatter         formatter
+	AreAllTestsPassed bool
 }
 
 func (r *Report) AddScenario(sc Scenario) {
@@ -42,8 +41,6 @@ func (r *Report) Start() {
 
 func (r *Report) Write() {
 	ts := newTestSuiteDetails(
-		r.appName,
-		r.appVersion,
 		r.startDate,
 		r.scenarios,
 	)
@@ -55,12 +52,10 @@ func (r *Report) HasScenarios() bool {
 	return len(r.scenarios) > 0
 }
 
-func New(appName, appVersion string, formatType string) Report {
+func New(formatType string) Report {
 	reportFormatter := getFormatter(formatType)
 	return Report{
 		formatter:         reportFormatter,
-		appName:           appName,
-		appVersion:        appVersion,
 		AreAllTestsPassed: true,
 	}
 }

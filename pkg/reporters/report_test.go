@@ -7,7 +7,7 @@ import (
 )
 
 func newReport(formatType string) Report {
-	return New("app", "1.0.0", formatType)
+	return New(formatType)
 }
 func TestReportShouldBeDisabledBecauseReportFormatNotRecognized(t *testing.T) {
 	report := newReport("")

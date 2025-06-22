@@ -18,13 +18,9 @@ type runCmd struct {
 	Parallel           int           `arg:"-p,--parallel" help:"number of tests launch in parallel"`
 	Timeout            time.Duration `arg:"--timeout" help:"test suite timeout"`
 	Headless           bool          `arg:"--headless" help:"display browser" default:"true"`
-	AppVersion         string        `arg:"-v,--version" help:"app version" default:"1.0"`
 }
 
 type initCmd struct {
-	AppName        string `arg:"required" help:"app name"`
-	AppDescription string `arg:"-d,--app-description" help:"app description" default:"Cool app"`
-	AppVersion     string `arg:"-v,--version" help:"app version" default:"1.0"`
 }
 
 type validateCmd struct {

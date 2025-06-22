@@ -31,11 +31,6 @@ func Init() *App {
 	if appArgsConfig.Init != nil {
 		return &App{
 			Mode: InitMode,
-			appDetailsConfig: appDetailsConfig{
-				AppName:        appArgsConfig.Init.AppName,
-				AppDescription: appArgsConfig.Init.AppDescription,
-				AppVersion:     appArgsConfig.Init.AppVersion,
-			},
 		}
 	}
 
