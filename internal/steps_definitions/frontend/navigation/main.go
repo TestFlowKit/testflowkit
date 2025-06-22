@@ -7,10 +7,10 @@ import (
 type navigation struct {
 }
 
-func GetSteps() []stepbuilder.TestStep {
+func GetSteps() []stepbuilder.Step {
 	handlers := navigation{}
 
-	return []stepbuilder.TestStep{
+	return []stepbuilder.Step{
 		handlers.userNavigateToPage(),
 		handlers.userWait(),
 		handlers.refreshPage(),

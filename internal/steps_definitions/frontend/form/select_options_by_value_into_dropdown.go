@@ -7,44 +7,43 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
-	"testflowkit/shared"
 )
 
-func (s steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.TestStep {
+func (s steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
 		[]string{`^the user selects the options with values {string} from the {string} dropdown$`},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Selects multiple options by values from a dropdown.",
-			Variables: []shared.StepVariable{
-				{Name: "options values", Description: "The options values to select.", Type: shared.DocVarTypeString},
-				{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "options values", Description: "The options values to select.", Type: stepbuilder.VarTypeString},
+				{Name: "dropdownId", Description: "The id of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user selects the options with values "UK,US" from the "Country" dropdown.`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }
 
-func (s steps) userSelectOptionWithValueIntoDropdown() stepbuilder.TestStep {
+func (s steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
 		[]string{`^the user selects the option with value {string} from the {string} dropdown$`},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Selects an option from a dropdown list based on its underlying ‘value’ attribute.",
-			Variables: []shared.StepVariable{
-				{Name: "option value", Description: "The value of the option to select.", Type: shared.DocVarTypeString},
-				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "option value", Description: "The value of the option to select.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user selects the option with value "CIV" from the "Country" dropdown.`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		})
 }
 
-func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.StepDefDocParams) stepbuilder.TestStep {
+func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.DocParams) stepbuilder.Step {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
 
-	return stepbuilder.NewStepWithTwoVariables(
+	return stepbuilder.NewWithTwoVariables(
 		phrases,
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(optionValues, dropdownId string) error {

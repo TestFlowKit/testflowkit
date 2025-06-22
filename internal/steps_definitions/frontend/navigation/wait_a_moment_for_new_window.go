@@ -5,14 +5,13 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 	"time"
 )
 
-func (n navigation) waitAMomentForNewWindow() stepbuilder.TestStep {
+func (n navigation) waitAMomentForNewWindow() stepbuilder.Step {
 	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user waits for a new window to open within {string}$"},
 		func(ctx *scenario.Context) func(string) error {
 			return func(waitTime string) error {
@@ -55,13 +54,13 @@ func (n navigation) waitAMomentForNewWindow() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "waits for a new browser window to open within the specified timeout.",
-			Variables: []shared.StepVariable{
-				{Name: "waitTime", Description: docDescription, Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "waitTime", Description: docDescription, Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user waits for a new window to open within \"5s\"",
-			Category: shared.Navigation,
+			Category: stepbuilder.Navigation,
 		},
 	)
 }

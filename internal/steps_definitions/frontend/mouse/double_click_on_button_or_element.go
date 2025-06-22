@@ -5,13 +5,12 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) doubleClickOn() stepbuilder.TestStep {
+func (s steps) doubleClickOn() stepbuilder.Step {
 	const docDescription = "The logical name of the button or element to double click on."
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user double clicks on {string}$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(label string) error {
@@ -29,13 +28,13 @@ func (s steps) doubleClickOn() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "double clicks on a button or element.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: docDescription, Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: docDescription, Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user double clicks on \"File item\"",
-			Category: shared.Mouse,
+			Category: stepbuilder.Mouse,
 		},
 	)
 }

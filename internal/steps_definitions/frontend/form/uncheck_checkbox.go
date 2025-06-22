@@ -8,15 +8,14 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (s steps) userUnchecksCheckbox() stepbuilder.TestStep {
+func (s steps) userUnchecksCheckbox() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user unchecks the {string} checkbox$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(checkBoxName string) error {
@@ -41,13 +40,13 @@ func (s steps) userUnchecksCheckbox() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Deselects or unticks a checkbox element identified by its logical name",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "the logical name of the checkbox", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "the logical name of the checkbox", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user unchecks the "Subscribe to newsletter" checkbox`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }

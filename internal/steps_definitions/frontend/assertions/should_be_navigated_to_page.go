@@ -6,11 +6,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) userShouldBeNavigatedToPage() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithOneVariable(
+func (s steps) userShouldBeNavigatedToPage() stepbuilder.Step {
+	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
 		func(ctx *scenario.Context) func(string) error {
 			return func(pageName string) error {
@@ -47,13 +46,13 @@ func (s steps) userShouldBeNavigatedToPage() stepbuilder.TestStep {
 
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "checks if the user is navigated to a page.",
-			Variables: []shared.StepVariable{
-				{Name: "pageName", Description: "The name of the page to navigate to.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "pageName", Description: "The name of the page to navigate to.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "Then I should be navigated to \"Home\" page",
-			Category: shared.Navigation,
+			Category: stepbuilder.Navigation,
 		},
 	)
 }

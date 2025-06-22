@@ -6,25 +6,24 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
-	"testflowkit/shared"
 )
 
-func (s steps) dropdownHaveValuesSelected() stepbuilder.TestStep {
+func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
 
-	doc := stepbuilder.StepDefDocParams{
+	doc := stepbuilder.DocParams{
 		Description: "checks if the dropdown has the specified values selected.",
-		Variables: []shared.StepVariable{
-			{Name: "dropdownId", Description: "The id of the dropdown.", Type: shared.DocVarTypeString},
-			{Name: "optionLabels", Description: "The labels of the options to check.", Type: shared.DocVarTypeString},
+		Variables: []stepbuilder.DocVariable{
+			{Name: "dropdownId", Description: "The id of the dropdown.", Type: stepbuilder.VarTypeString},
+			{Name: "optionLabels", Description: "The labels of the options to check.", Type: stepbuilder.VarTypeString},
 		},
 		Example:  `Then the "country" dropdown should have "USA,Canada" selected`,
-		Category: shared.Form,
+		Category: stepbuilder.Form,
 	}
 
-	return stepbuilder.NewStepWithTwoVariables(
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(dropdownId, optionLabels string) error {

@@ -7,15 +7,14 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
-	"testflowkit/shared"
 )
 
-func (s steps) userSelectMultipleOptionsWithTextsIntoDropdown() stepbuilder.TestStep {
+func (s steps) userSelectMultipleOptionsWithTextsIntoDropdown() stepbuilder.Step {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
 
-	return stepbuilder.NewStepWithTwoVariables(
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the options with text {string} from the {string} dropdown$`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(options, dropdownId string) error {
@@ -34,14 +33,14 @@ func (s steps) userSelectMultipleOptionsWithTextsIntoDropdown() stepbuilder.Test
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Selects multiple options from a dropdown list based on their visible text.",
-			Variables: []shared.StepVariable{
-				{Name: "options", Description: "The options to select.", Type: shared.DocVarTypeString},
-				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "options", Description: "The options to select.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user selects the options with text "Konoha,Hidden Leaf Village" from the "Country" dropdown`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }
