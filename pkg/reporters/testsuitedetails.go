@@ -7,15 +7,14 @@ import (
 )
 
 type testSuiteDetails struct {
-	AppName, AppVersion string
-	ExecutionDate       string
-	TotalExecutionTime  string
-	TotalTests          string
-	SucceededTests      string
-	FailedTests         string
-	SuccessRate         string
-	StartDate           time.Time
-	Scenarios           []Scenario
+	ExecutionDate      string
+	TotalExecutionTime string
+	TotalTests         string
+	SucceededTests     string
+	FailedTests        string
+	SuccessRate        string
+	StartDate          time.Time
+	Scenarios          []Scenario
 }
 
 func (ts *testSuiteDetails) getTestSuiteDurationInSeconds() int {
@@ -38,12 +37,10 @@ func (ts *testSuiteDetails) getScenarioResults() (int, int) {
 	return succeedSc, failedSc
 }
 
-func newTestSuiteDetails(appName, appVersion string, startDate time.Time, scenarios []Scenario) *testSuiteDetails {
+func newTestSuiteDetails(startDate time.Time, scenarios []Scenario) *testSuiteDetails {
 	ts := testSuiteDetails{
-		AppName:    appName,
-		AppVersion: appVersion,
-		StartDate:  startDate,
-		Scenarios:  scenarios,
+		StartDate: startDate,
+		Scenarios: scenarios,
 	}
 
 	dateTime := ts.StartDate.Format("01-02-2006 at 15:04")

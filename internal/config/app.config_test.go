@@ -17,13 +17,10 @@ func TestShouldInitializeAppConfig(t *testing.T) {
 			Parallel:           10,
 			Timeout:            15 * time.Second,
 			Headless:           true,
-			AppVersion:         "1.0",
 		},
 	}
 
 	appConfigFile := cliConfig{
-		AppName:         "appName",
-		AppDescription:  "appDescription",
 		Timeout:         "10s",
 		SlowMotion:      "2s",
 		GherkinLocation: "features",
@@ -34,9 +31,6 @@ func TestShouldInitializeAppConfig(t *testing.T) {
 
 	appConfig := initAppConfig(appArgs, appConfigFile, RunMode)
 
-	assert.Equal(t, "appName", appConfig.AppName)
-	assert.Equal(t, "appDescription", appConfig.AppDescription)
-	assert.Equal(t, "1.0", appConfig.AppVersion)
 	assert.Equal(t, "html", appConfig.ReportFormat)
 	assert.Equal(t, "15s", appConfig.Timeout)
 	assert.Equal(t, "features", appConfig.GherkinLocation)

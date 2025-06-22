@@ -29,9 +29,6 @@ func main() {
 func runMode(appConfig *config.App) {
 	logger.Info("--- configuration resume ---")
 
-	logger.InfoFf("app name: %s", appConfig.AppName)
-	logger.InfoFf("app description: %s", appConfig.AppDescription)
-	logger.InfoFf("app version: %s", appConfig.AppVersion)
 	logger.InfoFf("app tags: %s", appConfig.Tags)
 	logger.InfoFf("app gherkin location: %s", appConfig.GherkinLocation)
 	logger.InfoFf("app reporters format: %s", appConfig.ReportFormat)
