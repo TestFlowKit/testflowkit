@@ -6,10 +6,9 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (n navigation) userNavigateToPage() stepbuilder.TestStep {
+func (n navigation) userNavigateToPage() stepbuilder.Step {
 	testDefinition := func(ctx *scenario.Context) func(string) error {
 		return func(page string) error {
 			url, err := testsconfig.GetPageURL(page)
@@ -22,7 +21,7 @@ func (n navigation) userNavigateToPage() stepbuilder.TestStep {
 		}
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user goes to the {string} page$`},
 		testDefinition,
 		func(page string) stepbuilder.ValidationErrors {
@@ -33,13 +32,13 @@ func (n navigation) userNavigateToPage() stepbuilder.TestStep {
 
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Navigates to a page identified by a logical name.",
-			Variables: []shared.StepVariable{
-				{Name: "page", Description: "The name of the page to navigate to.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "page", Description: "The name of the page to navigate to.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user goes to the “Login” page",
-			Category: shared.Navigation,
+			Category: stepbuilder.Navigation,
 		},
 	)
 }

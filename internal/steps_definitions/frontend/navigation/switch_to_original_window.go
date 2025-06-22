@@ -6,11 +6,10 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (n navigation) switchToOriginalWindow() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithNoVariables(
+func (n navigation) switchToOriginalWindow() stepbuilder.Step {
+	return stepbuilder.NewWithNoVariables(
 		[]string{"^the user switches back to the original window$"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -37,11 +36,11 @@ func (n navigation) switchToOriginalWindow() stepbuilder.TestStep {
 		func() stepbuilder.ValidationErrors {
 			return stepbuilder.ValidationErrors{}
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "switches back to the original browser window (usually the first window).",
-			Variables:   []shared.StepVariable{},
+			Variables:   []stepbuilder.DocVariable{},
 			Example:     "When the user switches back to the original window",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

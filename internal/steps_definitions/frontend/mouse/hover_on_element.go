@@ -5,11 +5,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) hoverOnElement() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithOneVariable(
+func (s steps) hoverOnElement() stepbuilder.Step {
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user hovers on {string}$`},
 		func(ctx *scenario.Context) func(label string) error {
 			return func(label string) error {
@@ -27,13 +26,13 @@ func (s steps) hoverOnElement() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Hover on a element.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the element to hover on.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the element to hover on.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user hovers on \"Submit button\"",
-			Category: shared.Mouse,
+			Category: stepbuilder.Mouse,
 		},
 	)
 }

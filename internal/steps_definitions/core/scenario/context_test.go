@@ -12,11 +12,11 @@ func TestShouldInstanciateCorrectlyNewFrontendContext(t *testing.T) {
 	headlessMode := true
 	slowMotion := 10 * time.Millisecond
 
-	frontendCtx := NewContext(timeout, headlessMode, slowMotion)
+	ctx := NewContext(timeout, headlessMode, slowMotion)
 
-	assert.Equal(t, timeout, frontendCtx.timeout.String())
-	assert.True(t, frontendCtx.headlessMode)
-	assert.Equal(t, slowMotion, frontendCtx.slowMotion)
-	assert.Nil(t, frontendCtx.browser)
-	assert.Nil(t, frontendCtx.page)
+	assert.Equal(t, timeout, ctx.timeout.String())
+	assert.True(t, ctx.headlessMode)
+	assert.Equal(t, slowMotion, ctx.slowMotion)
+	assert.Nil(t, ctx.browser)
+	assert.Nil(t, ctx.page)
 }

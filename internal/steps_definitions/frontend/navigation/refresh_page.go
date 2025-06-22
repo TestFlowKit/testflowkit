@@ -4,11 +4,10 @@ import (
 	"errors"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (n navigation) refreshPage() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithNoVariables(
+func (n navigation) refreshPage() stepbuilder.Step {
+	return stepbuilder.NewWithNoVariables(
 		[]string{"the user refresh the page"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -20,11 +19,11 @@ func (n navigation) refreshPage() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "refreshes the current page.",
 			Variables:   nil,
 			Example:     "When the user refreshes the page",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

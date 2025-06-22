@@ -3,11 +3,10 @@ package navigation
 import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 	"time"
 )
 
-func (n navigation) userWait() stepbuilder.TestStep {
+func (n navigation) userWait() stepbuilder.Step {
 	testDefinition := func(_ *scenario.Context) func(int) error {
 		return func(seconds int) error {
 			time.Sleep(time.Duration(seconds) * time.Second)
@@ -15,17 +14,17 @@ func (n navigation) userWait() stepbuilder.TestStep {
 		}
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user waits for {number} seconds$`},
 		testDefinition,
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Pauses the test execution for a specified number of seconds.",
-			Variables: []shared.StepVariable{
-				{Name: "seconds", Description: "The number of seconds to wait for.", Type: shared.DocVarTypeInt},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "seconds", Description: "The number of seconds to wait for.", Type: stepbuilder.VarTypeInt},
 			},
 			Example:  "When the user waits for 3 seconds",
-			Category: shared.Navigation,
+			Category: stepbuilder.Navigation,
 		},
 	)
 }

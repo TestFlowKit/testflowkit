@@ -6,11 +6,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) scrollToElement() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithOneVariable(
+func (s steps) scrollToElement() stepbuilder.Step {
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user scrolls to the {string} element$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
@@ -36,13 +35,13 @@ func (s steps) scrollToElement() stepbuilder.TestStep {
 
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Scrolls the page until the specified element is visible in the viewport.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user scrolls to the "Submit Button at the bottom" element`,
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }

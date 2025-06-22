@@ -1,19 +1,17 @@
 package stepbuilder
 
 import (
-	"testflowkit/shared"
-
 	"github.com/cucumber/godog"
 )
 
-type stepSupportedTypes interface {
+type supportedTypes interface {
 	// Add supported types here
 	string | int | float64 | bool | *godog.Table
 }
 
-type StepDefDocParams struct {
+type DocParams struct {
 	Description string
-	Variables   []shared.StepVariable
+	Variables   []DocVariable
 	Example     string
-	Category    shared.TestCategory
+	Category    StepCategory
 }

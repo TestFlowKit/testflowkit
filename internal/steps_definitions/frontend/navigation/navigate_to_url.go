@@ -4,10 +4,9 @@ import (
 	"errors"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (n navigation) userNavigateToURL() stepbuilder.TestStep {
+func (n navigation) userNavigateToURL() stepbuilder.Step {
 	testDefinition := func(ctx *scenario.Context) func(string) error {
 		return func(URL string) error {
 			if ctx.GetCurrentPage() == nil {
@@ -18,17 +17,17 @@ func (n navigation) userNavigateToURL() stepbuilder.TestStep {
 		}
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user navigate to the URL {string}$`},
 		testDefinition,
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "directs the browser to open the specified absolute URL",
-			Variables: []shared.StepVariable{
-				{Name: "URL", Description: "the absolute URL", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "URL", Description: "the absolute URL", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user navigates to the URL “https://myapp.com/login",
-			Category: shared.Navigation,
+			Category: stepbuilder.Navigation,
 		},
 	)
 }

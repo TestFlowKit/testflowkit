@@ -6,13 +6,12 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (n navigation) userIsOnHomepage() stepbuilder.TestStep {
+func (n navigation) userIsOnHomepage() stepbuilder.Step {
 	const descriptionContext = "indicating that the user begins on the application's primary or default page"
 	const moreDetails = "It assumes a predefined base URL for the \"homepage.\""
-	return stepbuilder.NewStepWithNoVariables(
+	return stepbuilder.NewWithNoVariables(
 		[]string{"the user is on the homepage"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -32,11 +31,11 @@ func (n navigation) userIsOnHomepage() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: fmt.Sprintf("establishes the initial context, %s %s", descriptionContext, moreDetails),
 			Variables:   nil,
 			Example:     "Given the user is on the homepage",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

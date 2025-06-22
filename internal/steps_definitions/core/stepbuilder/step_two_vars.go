@@ -2,18 +2,17 @@ package stepbuilder
 
 import (
 	"testflowkit/internal/steps_definitions/core/scenario"
-	"testflowkit/shared"
 )
 
-type stepTwoVars[T stepSupportedTypes, U stepSupportedTypes] struct {
+type stepTwoVars[T supportedTypes, U supportedTypes] struct {
 	sentences  []string
 	definition func(*scenario.Context) func(T, U) error
 	validator  func(T, U) ValidationErrors
-	doc        StepDefDocParams
+	doc        DocParams
 }
 
-func (s stepTwoVars[T, U]) GetDocumentation() shared.StepDocumentation {
-	return shared.StepDocumentation{
+func (s stepTwoVars[T, U]) GetDocumentation() Documentation {
+	return Documentation{
 		Sentence:    s.sentences[0],
 		Description: s.doc.Description,
 		Example:     s.doc.Example,
@@ -43,11 +42,11 @@ func (s stepTwoVars[T, U]) Validate(vc *ValidatorContext) any {
 	}
 }
 
-func NewStepWithTwoVariables[T stepSupportedTypes, U stepSupportedTypes](sentences []string,
+func NewWithTwoVariables[T supportedTypes, U supportedTypes](sentences []string,
 	definition func(*scenario.Context) func(T, U) error,
 	validator func(T, U) ValidationErrors,
-	documentation StepDefDocParams,
-) TestStep {
+	documentation DocParams,
+) Step {
 	return stepTwoVars[T, U]{
 		sentences,
 		definition,

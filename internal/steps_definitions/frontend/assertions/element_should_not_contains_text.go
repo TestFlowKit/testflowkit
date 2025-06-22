@@ -7,11 +7,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) elementShouldNotContainText() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithTwoVariables(
+func (s steps) elementShouldNotContainText() stepbuilder.Step {
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the {string} should not contain the text {string}$`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(name, text string) error {
@@ -39,14 +38,14 @@ func (s steps) elementShouldNotContainText() stepbuilder.TestStep {
 
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "This assertion checks if the element’s visible text does not include the specified substring.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The name of the element to check.", Type: shared.DocVarTypeString},
-				{Name: "text", Description: "The text to check.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the "Welcome Message" element should not contain the text "Hello John"`,
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }

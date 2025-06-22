@@ -5,11 +5,10 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (n navigation) switchToMostOpenedWindow() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithNoVariables(
+func (n navigation) switchToMostOpenedWindow() stepbuilder.Step {
+	return stepbuilder.NewWithNoVariables(
 		[]string{"^the user switches to the most recently window opened$"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -32,11 +31,11 @@ func (n navigation) switchToMostOpenedWindow() stepbuilder.TestStep {
 		func() stepbuilder.ValidationErrors {
 			return stepbuilder.ValidationErrors{}
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "switches to the most recently opened browser window.",
-			Variables:   []shared.StepVariable{},
+			Variables:   []stepbuilder.DocVariable{},
 			Example:     "When the user switches to the most recently window opened",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 	generateDocs(frontend.GetDocs(), outputDir)
 }
 
-func generateDocs(stepDocumentations []shared.StepDocumentation, outputDir string) {
+func generateDocs(stepDocumentations []stepbuilder.Documentation, outputDir string) {
 	err := os.RemoveAll(outputDir)
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("Error removing directory %s", outputDir), err)
@@ -46,7 +46,7 @@ func generateDocs(stepDocumentations []shared.StepDocumentation, outputDir strin
 	}
 }
 
-func formatSentencesDocs(sentences []shared.StepDocumentation) (docs []doc) {
+func formatSentencesDocs(sentences []stepbuilder.Documentation) (docs []doc) {
 	re := regexp.MustCompile(`[$^]`)
 
 	for _, step := range sentences {

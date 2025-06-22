@@ -9,10 +9,10 @@ import (
 type steps struct {
 }
 
-func GetSteps() []stepbuilder.TestStep {
+func GetSteps() []stepbuilder.Step {
 	handlers := steps{}
 
-	var otherSteps = []stepbuilder.TestStep{
+	var otherSteps = []stepbuilder.Step{
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.elementShouldNotExist(),

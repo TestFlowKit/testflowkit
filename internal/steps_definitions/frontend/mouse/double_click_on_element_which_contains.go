@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) doubleClickOnElementWhichContains() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithTwoVariables(
+func (s steps) doubleClickOnElementWhichContains() stepbuilder.Step {
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user double clicks on {string} which contains "{string}"$`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(_ string, text string) error {
@@ -20,14 +19,14 @@ func (s steps) doubleClickOnElementWhichContains() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Double clicks on an element which contains a specific text.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the element to double click on.", Type: shared.DocVarTypeString},
-				{Name: "text", Description: "The text that the element should contain.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the element to double click on.", Type: stepbuilder.VarTypeString},
+				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user double clicks on \"Submit button\" which contains \"Submit\"",
-			Category: shared.Mouse,
+			Category: stepbuilder.Mouse,
 		},
 	)
 }
