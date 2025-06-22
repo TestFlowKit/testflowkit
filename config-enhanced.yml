@@ -1,0 +1,385 @@
+# ========= TESTFLOWKIT ENHANCED CONFIGURATION =========
+# This file demonstrates the enhanced configuration system for TestFlowKit
+# with multi-environment support, comprehensive selectors, and API testing capabilities.
+
+# ========= GENERAL SETTINGS =========
+# Active environment - can be overridden by TEST_ENV environment variable
+active_environment: "local"
+
+# Global framework settings
+settings:
+  # Timeouts in milliseconds
+  default_timeout: 10000      # Default timeout for element waits
+  page_load_timeout: 30000    # Maximum time to wait for page loads
+  
+  # Test execution settings
+  screenshot_on_failure: true  # Automatically take screenshots on test failures
+  video_recording: false       # Enable video recording of test execution
+  concurrency: 1              # Number of parallel test executions
+  headless: false             # Run browser in headless mode
+  slow_motion: "100ms"        # Add delay between actions for debugging
+  
+  # Report configuration
+  report_format: "html"       # Output format: html, json, junit
+  gherkin_location: "./e2e/features"  # Directory containing feature files
+  tags: ""                    # Filter scenarios by tags (e.g., "@smoke,@regression")
+
+# ========= ENVIRONMENTS =========
+# Define different environments with their specific URLs
+environments:
+  local:
+    frontend_base_url: "http://localhost:3000"
+    backend_base_url: "http://localhost:8080/api"
+    
+  staging:
+    frontend_base_url: "https://staging.example.com"
+    backend_base_url: "https://api.staging.example.com"
+    
+  production:
+    frontend_base_url: "https://www.example.com"
+    backend_base_url: "https://api.example.com"
+
+# ========= FRONTEND CONFIGURATION =========
+frontend:
+  # Element selectors organized by page/component with fallback strategies
+  elements:
+    # Common elements available across all pages
+    common:
+      loading_spinner:
+        - "[data-testid='loading-spinner']"
+        - ".spinner"
+        - ".loading"
+      error_message:
+        - "[data-testid='error-message']"
+        - ".error-msg"
+        - ".alert-danger"
+      success_message:
+        - "[data-testid='success-message']"
+        - ".success-msg"
+        - ".alert-success"
+      navigation_menu:
+        - "[data-testid='nav-menu']"
+        - "nav.main-navigation"
+        - "#main-nav"
+      logout_button:
+        - "[data-testid='logout-btn']"
+        - "button[aria-label='Logout']"
+        - ".logout-button"
+      
+    # Login page elements
+    login_page:
+      email_field:
+        - "[data-testid='email-input']"
+        - "input[name='email']"
+        - "#email"
+        - "input[type='email']"
+      password_field:
+        - "[data-testid='password-input']"
+        - "input[name='password']"
+        - "#password"
+        - "input[type='password']"
+      login_button:
+        - "[data-testid='login-btn']"
+        - "button[type='submit']"
+        - "input[value='Login']"
+        - ".login-button"
+      forgot_password_link:
+        - "[data-testid='forgot-password-link']"
+        - "a[href*='forgot-password']"
+        - ".forgot-password"
+      remember_me_checkbox:
+        - "[data-testid='remember-me']"
+        - "input[name='remember']"
+        - "#remember-me"
+        
+    # Dashboard page elements
+    dashboard_page:
+      welcome_message:
+        - "[data-testid='welcome-message']"
+        - ".welcome-text"
+        - "h1.dashboard-title"
+      user_profile_dropdown:
+        - "[data-testid='user-profile-dropdown']"
+        - ".user-profile-menu"
+        - "#user-menu"
+      stats_cards:
+        - "[data-testid='stats-card']"
+        - ".stats-card"
+        - ".dashboard-card"
+      recent_activities:
+        - "[data-testid='recent-activities']"
+        - ".activity-list"
+        - "#recent-activities"
+        
+    # Form page elements (for testing various form controls)
+    form_page:
+      test_checkbox:
+        - "[data-testid='test-checkbox']"
+        - "#checkbox"
+        - "#rtt"
+        - "input[type='checkbox']"
+      test_dropdown:
+        - "[data-testid='test-dropdown']"
+        - "#select"
+        - "select[name='test']"
+      multiple_dropdown:
+        - "[data-testid='multiple-dropdown']"
+        - "#select-multiple"
+        - "select[multiple]"
+      text_field:
+        - "[data-testid='text-field']"
+        - "#text"
+        - "input[type='text']"
+      textarea_field:
+        - "[data-testid='textarea-field']"
+        - "#textarea"
+        - "textarea"
+      submit_button:
+        - "[data-testid='submit-btn']"
+        - "button[type='submit']"
+        - "input[type='submit']"
+      reset_button:
+        - "[data-testid='reset-btn']"
+        - "button[type='reset']"
+        - "input[type='reset']"
+      double_click_button:
+        - "[data-testid='double-click-btn']"
+        - "#dbclick-btn"
+      test_radio_button_1:
+        - "[data-testid='radio-1']"
+        - "#radio1"
+        - "input[value='option1']"
+      test_radio_button_2:
+        - "[data-testid='radio-2']"
+        - "#radio2"
+        - "input[value='option2']"
+        
+    # Table page elements
+    table_page:
+      data_table:
+        - "[data-testid='data-table']"
+        - "table.data-table"
+        - ".table-responsive table"
+      table_headers:
+        - "[data-testid='table-header']"
+        - "th"
+        - ".table-header"
+      table_rows:
+        - "[data-testid='table-row']"
+        - "tbody tr"
+        - ".table-row"
+      pagination_controls:
+        - "[data-testid='pagination']"
+        - ".pagination"
+        - ".page-navigation"
+      search_field:
+        - "[data-testid='table-search']"
+        - "input[placeholder*='Search']"
+        - ".search-input"
+        
+    # Product details page
+    details_page:
+      product_name_element:
+        - "[data-testid='product-name']"
+        - "#product-name"
+        - "h1.product-title"
+      product_description_element:
+        - "[data-testid='product-description']"
+        - "#product-description"
+        - ".product-description"
+      product_price:
+        - "[data-testid='product-price']"
+        - ".price"
+        - ".product-price"
+      add_to_cart_button:
+        - "[data-testid='add-to-cart']"
+        - ".add-to-cart"
+        - "button[aria-label='Add to cart']"
+        
+    # Special test cases for edge case testing
+    special_cases:
+      hidden_button:
+        - "[data-testid='hidden-btn']"
+        - "#hidden-btn"
+      non_existent_button:
+        - "#non-existent-btn"
+      scroll_target_element:
+        - "[data-testid='scroll-target']"
+        - "#target-element"
+      modal_dialog:
+        - "[data-testid='modal']"
+        - ".modal"
+        - "[role='dialog']"
+      modal_close_button:
+        - "[data-testid='modal-close']"
+        - ".modal-close"
+        - "button[aria-label='Close']"
+
+  # Page definitions with routes
+  pages:
+    home: "/"
+    login: "/login"
+    dashboard: "/dashboard"
+    profile: "/profile"
+    form: "/form"
+    visual: "/visual"
+    table: "/table"
+    details: "/details"
+    scroll: "/scroll"
+    products: "/products"
+    cart: "/cart"
+    checkout: "/checkout"
+    
+    # External pages (full URLs)
+    google: "https://www.google.com"
+    github: "https://github.com"
+
+# ========= BACKEND CONFIGURATION =========
+backend:
+  # Default headers applied to all API requests
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+    User-Agent: "TestFlowKit/1.0"
+    X-Requested-With: "TestFlowKit"
+    # Dynamic token injection from environment variable
+    Authorization: "Bearer ${API_TOKEN}"
+    
+  # API endpoints with comprehensive definitions
+  endpoints:
+    # User management endpoints
+    get_user:
+      method: "GET"
+      path: "/users/{id}"
+      description: "Retrieve user information by ID"
+      
+    create_user:
+      method: "POST"
+      path: "/users"
+      description: "Create a new user account"
+      
+    update_user:
+      method: "PUT"
+      path: "/users/{id}"
+      description: "Update user information"
+      
+    delete_user:
+      method: "DELETE"
+      path: "/users/{id}"
+      description: "Delete a user account"
+      
+    list_users:
+      method: "GET"
+      path: "/users"
+      description: "List all users with pagination support"
+      
+    # Authentication endpoints
+    login:
+      method: "POST"
+      path: "/auth/login"
+      description: "User authentication login"
+      
+    logout:
+      method: "POST"
+      path: "/auth/logout"
+      description: "User logout and session termination"
+      
+    refresh_token:
+      method: "POST"
+      path: "/auth/refresh"
+      description: "Refresh authentication token"
+      
+    # Product endpoints
+    get_products:
+      method: "GET"
+      path: "/products"
+      description: "List all products with filtering options"
+      
+    get_product:
+      method: "GET"
+      path: "/products/{id}"
+      description: "Get detailed product information"
+      
+    create_product:
+      method: "POST"
+      path: "/products"
+      description: "Create a new product"
+      
+    update_product:
+      method: "PUT"
+      path: "/products/{id}"
+      description: "Update product information"
+      
+    delete_product:
+      method: "DELETE"
+      path: "/products/{id}"
+      description: "Delete a product"
+      
+    # Order management endpoints
+    get_orders:
+      method: "GET"
+      path: "/orders"
+      description: "List user orders with status filtering"
+      
+    create_order:
+      method: "POST"
+      path: "/orders"
+      description: "Create a new order"
+      
+    get_order:
+      method: "GET"
+      path: "/orders/{id}"
+      description: "Get order details by ID"
+      
+    cancel_order:
+      method: "DELETE"
+      path: "/orders/{id}"
+      description: "Cancel an existing order"
+      
+    # Test data management endpoints (for test setup/cleanup)
+    setup_test_data:
+      method: "POST"
+      path: "/test/setup"
+      description: "Set up test data for scenario execution"
+      
+    cleanup_test_data:
+      method: "DELETE"
+      path: "/test/cleanup"
+      description: "Clean up test data after scenario completion"
+      
+    reset_test_database:
+      method: "POST"
+      path: "/test/reset"
+      description: "Reset test database to initial state"
+      
+    # Mock server endpoints (for testing with mocked dependencies)
+    create_mock:
+      method: "POST"
+      path: "/mocks"
+      description: "Create a mock response for external service"
+      
+    delete_mock:
+      method: "DELETE"
+      path: "/mocks/{id}"
+      description: "Remove a mock response"
+      
+    list_mocks:
+      method: "GET"
+      path: "/mocks"
+      description: "List all active mock responses"
+      
+    # Health and monitoring endpoints
+    health_check:
+      method: "GET"
+      path: "/health"
+      description: "API health check endpoint"
+      
+    readiness_check:
+      method: "GET"
+      path: "/ready"
+      description: "API readiness check for load balancers"
+      
+    metrics:
+      method: "GET"
+      path: "/metrics"
+      description: "Application metrics endpoint" 

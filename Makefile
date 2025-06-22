@@ -25,6 +25,22 @@ lint:
 run:
 	${RUN_CMD}
 
+.PHONY: run-enhanced
+run-enhanced:
+	go run ./cmd/testflowkit/main.go -enhanced
+
+.PHONY: run-enhanced-verbose
+run-enhanced-verbose:
+	go run ./cmd/testflowkit/main.go -enhanced -verbose
+
+.PHONY: show-config
+show-config:
+	go run ./cmd/testflowkit/main.go -enhanced -show-config
+
+.PHONY: version
+version:
+	go run ./cmd/testflowkit/main.go -version
+
 .PHONY: test
 test:
 	@echo "Running tests..."
@@ -112,7 +128,11 @@ help:
 	@echo "Targets:"
 	@echo "  all               Run lint, test, and build"
 	@echo "  lint             Run golangci-lint"
-	@echo "  run              Run testflowkit app"
+	@echo "  run              Run testflowkit app (legacy mode)"
+	@echo "  run-enhanced     Run testflowkit with enhanced configuration"
+	@echo "  run-enhanced-verbose  Run enhanced mode with verbose logging"
+	@echo "  show-config      Display enhanced configuration summary"
+	@echo "  version          Show version information"
 	@echo "  test             Run tests with coverage"
 	@echo "  releases         Build for all architectures in parallel"
 	@echo "  build            Build for a specific OS and architecture"
