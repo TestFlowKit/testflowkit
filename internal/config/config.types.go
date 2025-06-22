@@ -44,8 +44,14 @@ func (c *testingConfig) GetSlowMotion() time.Duration {
 	return duration
 }
 
+type APIConfig struct {
+	BaseURL        string            `yaml:"base_url"`
+	DefaultHeaders map[string]string `yaml:"default_headers"`
+	Endpoints      map[string]string `yaml:"endpoints"`
+}
+
 type configType interface {
-	testingConfig | reportingConfig | appDetailsConfig
+	testingConfig | reportingConfig | appDetailsConfig | APIConfig
 }
 
 // TODO: rename in order to specify the type of the config

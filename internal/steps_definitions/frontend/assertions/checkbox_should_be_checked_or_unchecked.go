@@ -48,7 +48,7 @@ func (s steps) checkCheckboxStatus() sb.Step {
 			Description: "checks if the checkbox is checked or unchecked.",
 			Variables: []sb.DocVariable{
 				{Name: "checkboxId", Description: "The id of the checkbox.", Type: sb.VarTypeString},
-				{Name: "status", Description: "The status of the checkbox.", Type: sb.DocVarTypeEnum("checked", "unchecked")},
+				{Name: "status", Description: "The status of the checkbox.", Type: sb.VarTypeEnum("checked", "unchecked")},
 			},
 			Example:  `Then the "terms" checkbox should be checked`,
 			Category: sb.Form,

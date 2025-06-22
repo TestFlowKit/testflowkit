@@ -1,4 +1,4 @@
-global:
+frontend:
   elements:
     visual_test_button:
       - "button"
@@ -42,3 +42,12 @@ global:
     scroll_e2e: "/scroll"
 
   base_url: "http://server:3000"
+
+backend:
+  base_url: "https://api.example.com"
+  default_headers:
+    Authorization: "Bearer token"
+    Content-Type: "application/json"
+  endpoints:
+    get_user: "/users/{id}"
+    create_user: "/users"

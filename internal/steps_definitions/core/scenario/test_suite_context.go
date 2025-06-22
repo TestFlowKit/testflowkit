@@ -2,6 +2,7 @@ package scenario
 
 import (
 	"log"
+	"net/http"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/browser/common"
 	"time"
@@ -12,6 +13,26 @@ type Context struct {
 	page                common.Page
 	timeout, slowMotion time.Duration
 	headlessMode        bool
+	HttpContext         HTTPStepsContext
+}
+
+// HttpResponse is a framework-agnostic representation of an HTTP response.
+type HttpResponse struct {
+	StatusCode int
+	Headers    http.Header
+	Body       []byte
+}
+
+// HTTPStepsContext holds the state for building and executing an HTTP request.
+type HTTPStepsContext struct {
+	Client          *http.Client
+	EndpointConfigs map[string]string
+	Method          string
+	EndpointName    string
+	Headers         map[string]string
+	QueryParams     map[string]string
+	RequestBody     []byte
+	Response        HttpResponse
 }
 
 func (fc *Context) InitBrowser(incognitoMode bool) {

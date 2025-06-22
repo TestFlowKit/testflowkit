@@ -45,7 +45,7 @@ func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 		return vc
 	}
 
-	statusType := stepbuilder.DocVarTypeEnum("selected", "unselected")
+	statusType := stepbuilder.VarTypeEnum("selected", "unselected")
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`the {string} radio button should be (selected|unselected)`},

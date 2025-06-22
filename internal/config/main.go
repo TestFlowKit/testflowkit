@@ -14,14 +14,14 @@ func Init() *App {
 	if appArgsConfig.Run != nil {
 		cliFileConfig := getCLIFileConfig(appArgsConfig.Run.ClIConfigPath)
 		initFrontTestsConfig(appArgsConfig.Run.FrontendConfigPath)
-
+		initAPIConfig("internal/config/testsconfig/http_api.yml")
 		return initAppConfig(appArgsConfig, cliFileConfig, RunMode)
 	}
 
 	if appArgsConfig.Validate != nil {
 		fileConfig := getCLIFileConfig(appArgsConfig.Validate.ClIConfigPath)
 		initFrontTestsConfig(appArgsConfig.Validate.FrontendConfigPath)
-
+		initAPIConfig("internal/config/testsconfig/http_api.yml")
 		curr := initAppConfig(appArgsConfig, fileConfig, ValidationMode)
 		curr.Tags = appArgsConfig.Validate.Tags
 
@@ -67,4 +67,12 @@ func initFrontTestsConfig(filePath string) {
 	}
 
 	testsconfig.Init(string(configFile))
+}
+
+func initAPIConfig(filePath string) {
+	configFile, err := os.ReadFile(filePath)
+	if err != nil {
+		logger.Fatal("API config file not found", err)
+	}
+	InitAPIConfig(string(configFile))
 }
