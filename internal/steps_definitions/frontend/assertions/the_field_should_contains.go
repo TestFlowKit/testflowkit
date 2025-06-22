@@ -6,15 +6,14 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) theFieldShouldContains() stepbuilder.TestStep {
+func (s steps) theFieldShouldContain() stepbuilder.Step {
 	formatFieldID := func(fieldId string) string {
 		return fmt.Sprintf("%s_field", fieldId)
 	}
 
-	return stepbuilder.NewStepWithTwoVariables(
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the value of the {string} field should be {string}`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(fieldId, text string) error {
@@ -38,14 +37,14 @@ func (s steps) theFieldShouldContains() stepbuilder.TestStep {
 
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "This assertion checks if the current value of an input field matches the specified value.",
-			Variables: []shared.StepVariable{
-				{Name: "fieldId", Description: "The id of the field.", Type: shared.DocVarTypeString},
-				{Name: "text", Description: "The text to check.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "fieldId", Description: "The id of the field.", Type: stepbuilder.VarTypeString},
+				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the value of the "Username" field should be "myUsername".`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }

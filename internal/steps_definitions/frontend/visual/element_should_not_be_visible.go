@@ -6,11 +6,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) elementShouldNotBeVisible() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithOneVariable(
+func (s steps) elementShouldNotBeVisible() stepbuilder.Step {
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should not be visible$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
@@ -34,13 +33,13 @@ func (s steps) elementShouldNotBeVisible() stepbuilder.TestStep {
 
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "This assertion checks if the element is present in the DOM but not displayed",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "Then \"Submit button\" should not be visible",
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }

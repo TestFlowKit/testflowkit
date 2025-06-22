@@ -6,13 +6,12 @@ import (
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
 )
 
-func (s steps) shouldSeeDetailsOnPage() stepbuilder.TestStep {
+func (s steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 	definition := func(ctx *scenario.Context) func(string, *godog.Table) error {
 		return func(elementName string, table *godog.Table) error {
 			data, parseErr := assistdog.NewDefault().ParseMap(table)
@@ -41,18 +40,18 @@ func (s steps) shouldSeeDetailsOnPage() stepbuilder.TestStep {
 		}
 	}
 
-	return stepbuilder.NewStepWithTwoVariables(
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user should see "{string}" details on the page$`},
 		definition,
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "checks if the details are visible on the page.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: shared.DocVarTypeString},
-				{Name: "table", Description: "The table containing the details to check.", Type: shared.DocVarTypeTable},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "table", Description: "The table containing the details to check.", Type: stepbuilder.VarTypeTable},
 			},
 			Example:  "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }

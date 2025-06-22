@@ -7,10 +7,10 @@ import (
 type steps struct {
 }
 
-func GetSteps() []stepbuilder.TestStep {
+func GetSteps() []stepbuilder.Step {
 	handlers := steps{}
 
-	return []stepbuilder.TestStep{
+	return []stepbuilder.Step{
 		handlers.userEntersTextIntoField(),
 		handlers.userSelectOptionWithTextIntoDropdown(),
 		handlers.userSelectMultipleOptionsWithTextsIntoDropdown(),

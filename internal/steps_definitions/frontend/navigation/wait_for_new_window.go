@@ -6,12 +6,11 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 	"time"
 )
 
-func (n navigation) switchToNewOpenedWindow() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithNoVariables(
+func (n navigation) switchToNewOpenedWindow() stepbuilder.Step {
+	return stepbuilder.NewWithNoVariables(
 		[]string{"^the user switches to the newly opened window$"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -45,10 +44,10 @@ func (n navigation) switchToNewOpenedWindow() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "switches to the newly opened browser window.",
 			Example:     "When the user switches to the newly opened window",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

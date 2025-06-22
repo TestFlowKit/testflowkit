@@ -12,7 +12,6 @@ import (
 	"testflowkit/internal/steps_definitions/frontend/mouse"
 	"testflowkit/internal/steps_definitions/frontend/navigation"
 	"testflowkit/internal/steps_definitions/frontend/visual"
-	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 )
@@ -36,7 +35,7 @@ func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *stepbuilder.Valid
 	}
 }
 
-func getAllSteps() []stepbuilder.TestStep {
+func getAllSteps() []stepbuilder.Step {
 	return slices.Concat(
 		form.GetSteps(),
 		keyboard.GetSteps(),
@@ -47,8 +46,8 @@ func getAllSteps() []stepbuilder.TestStep {
 	)
 }
 
-func GetDocs() []shared.StepDocumentation {
-	var docs []shared.StepDocumentation
+func GetDocs() []stepbuilder.Documentation {
+	var docs []stepbuilder.Documentation
 	for _, step := range getAllSteps() {
 		docs = append(docs, step.GetDocumentation())
 	}

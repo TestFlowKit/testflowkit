@@ -7,10 +7,10 @@ import (
 type keyboardSteps struct {
 }
 
-func GetSteps() []stepbuilder.TestStep {
+func GetSteps() []stepbuilder.Step {
 	steps := keyboardSteps{}
 
-	return []stepbuilder.TestStep{
+	return []stepbuilder.Step{
 		steps.userPressButton(),
 	}
 }

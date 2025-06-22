@@ -4,11 +4,10 @@ import (
 	"errors"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (n navigation) theUserNavigateBack() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithNoVariables(
+func (n navigation) theUserNavigateBack() stepbuilder.Step {
+	return stepbuilder.NewWithNoVariables(
 		[]string{"the user navigate back"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -20,11 +19,11 @@ func (n navigation) theUserNavigateBack() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "navigates back to the previous page.",
 			Variables:   nil,
 			Example:     "Given the user navigate back",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

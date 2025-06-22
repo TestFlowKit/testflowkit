@@ -5,11 +5,10 @@ import (
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) shouldNotSeeOnPage() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithOneVariable(
+func (s steps) shouldNotSeeOnPage() stepbuilder.Step {
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user should not see "{string}" on the page$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(word string) error {
@@ -24,13 +23,13 @@ func (s steps) shouldNotSeeOnPage() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "checks if a word is not visible on the page.",
-			Variables: []shared.StepVariable{
-				{Name: "word", Description: "The word to check.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "word", Description: "The word to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "Then the user should not see \"Submit\" on the page",
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }

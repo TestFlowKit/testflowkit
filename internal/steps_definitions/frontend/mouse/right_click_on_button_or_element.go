@@ -5,11 +5,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) rightClickOn() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithOneVariable(
+func (s steps) rightClickOn() stepbuilder.Step {
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user right clicks on {string}$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(label string) error {
@@ -27,13 +26,13 @@ func (s steps) rightClickOn() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Right clicks on a button or element.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the element to right click on.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the element to right click on.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user right clicks on \"Submit button\"",
-			Category: shared.Mouse,
+			Category: stepbuilder.Mouse,
 		},
 	)
 }

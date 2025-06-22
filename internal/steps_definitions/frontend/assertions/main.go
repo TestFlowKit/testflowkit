@@ -7,14 +7,14 @@ import (
 type steps struct {
 }
 
-func GetSteps() []stepbuilder.TestStep {
+func GetSteps() []stepbuilder.Step {
 	handlers := steps{}
 
-	return []stepbuilder.TestStep{
+	return []stepbuilder.Step{
 		handlers.checkCheckboxStatus(),
-		handlers.theFieldShouldContains(),
+		handlers.theFieldShouldContain(),
 		handlers.radioButtonShouldBeSelectedOrNot(),
-		handlers.dropdownHaveValuesSelected(),
+		handlers.dropdownHasValuesSelected(),
 		handlers.userShouldBeNavigatedToPage(),
 		handlers.elementShouldContainText(),
 		handlers.elementShouldNotContainText(),

@@ -2,14 +2,13 @@ package stepbuilder
 
 import (
 	"testflowkit/internal/steps_definitions/core/scenario"
-	"testflowkit/shared"
 )
 
 type stepWithoutVar struct {
 	sentences  []string
 	definition func(*scenario.Context) func() error
 	validator  func() ValidationErrors
-	doc        StepDefDocParams
+	doc        DocParams
 }
 
 func (s stepWithoutVar) GetSentences() []string {
@@ -20,8 +19,8 @@ func (s stepWithoutVar) GetDefinition(ctx *scenario.Context) any {
 	return s.definition(ctx)
 }
 
-func (s stepWithoutVar) GetDocumentation() shared.StepDocumentation {
-	return shared.StepDocumentation{
+func (s stepWithoutVar) GetDocumentation() Documentation {
+	return Documentation{
 		Sentence:    s.sentences[0],
 		Description: s.doc.Description,
 		Example:     s.doc.Example,
@@ -46,12 +45,12 @@ func (s stepWithoutVar) Validate(vc *ValidatorContext) any {
 type noVarDef func(*scenario.Context) func() error
 type noVarValidator func() ValidationErrors
 
-func NewStepWithNoVariables(
+func NewWithNoVariables(
 	sentences []string,
 	definition noVarDef,
 	validator noVarValidator,
-	documentation StepDefDocParams,
-) TestStep {
+	documentation DocParams,
+) Step {
 	return stepWithoutVar{
 		sentences,
 		definition,

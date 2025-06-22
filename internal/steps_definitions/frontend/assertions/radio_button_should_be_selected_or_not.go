@@ -8,10 +8,9 @@ import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
-	"testflowkit/shared"
 )
 
-func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.TestStep {
+func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
@@ -46,20 +45,20 @@ func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.TestStep {
 		return vc
 	}
 
-	statusType := shared.DocVarTypeEnum("selected", "unselected")
+	statusType := stepbuilder.DocVarTypeEnum("selected", "unselected")
 
-	return stepbuilder.NewStepWithTwoVariables(
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`the {string} radio button should be (selected|unselected)`},
 		definition,
 		validator,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "checks if the radio button is selected or unselected.",
-			Variables: []shared.StepVariable{
-				{Name: "radio button", Description: "The name of the radio button.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "radio button", Description: "The name of the radio button.", Type: stepbuilder.VarTypeString},
 				{Name: "status", Description: "The status of the radio button.", Type: statusType},
 			},
 			Example:  `Then the "terms" radio button should be selected`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }

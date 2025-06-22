@@ -8,15 +8,14 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (s steps) userChecksCheckbox() stepbuilder.TestStep {
+func (s steps) userChecksCheckbox() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user checks the {string} checkbox$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(checkBoxName string) error {
@@ -41,13 +40,13 @@ func (s steps) userChecksCheckbox() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Selects or ticks a checkbox element identified by its logical name",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "checkbox logical name", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "checkbox logical name", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user checks the "Agree to terms" checkbox`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }

@@ -7,15 +7,14 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
-	"testflowkit/shared"
 )
 
-func (s steps) userSelectsRadioButton() stepbuilder.TestStep {
+func (s steps) userSelectsRadioButton() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user selects the {string} radio button$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(radioBtnName string) error {
@@ -40,13 +39,13 @@ func (s steps) userSelectsRadioButton() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Selects a radio button by its logical name.",
-			Variables: []shared.StepVariable{
-				{Name: "name", Description: "The logical name of the radio button.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The logical name of the radio button.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user selects the "Gender Male" radio button`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }

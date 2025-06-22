@@ -3,20 +3,19 @@ package table
 import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.TestStep {
+func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 	example := `
 	When the user should see a table with the following headers
 	| Name | Age |
 	`
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user should see a table with the following headers$`},
 		func(ctx *scenario.Context) func(*godog.Table) error {
 			return func(table *godog.Table) error {
@@ -30,13 +29,13 @@ func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "checks if a table contains the following headers.",
-			Variables: []shared.StepVariable{
-				{Name: "table", Description: "The table containing the headers to check.", Type: shared.DocVarTypeTable},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "table", Description: "The table containing the headers to check.", Type: stepbuilder.VarTypeTable},
 			},
 			Example:  example,
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }

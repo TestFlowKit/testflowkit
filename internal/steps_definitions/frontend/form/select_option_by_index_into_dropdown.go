@@ -5,11 +5,10 @@ import (
 	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithTwoVariables(
+func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
+	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
 		func(ctx *scenario.Context) func(int, string) error {
 			return func(index int, dropdownId string) error {
@@ -28,14 +27,14 @@ func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.TestStep {
 			}
 			return vc
 		},
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "Selects an option from a dropdown list based on its index.",
-			Variables: []shared.StepVariable{
-				{Name: "index", Description: "The index of the option to select.", Type: shared.DocVarTypeInt},
-				{Name: "name", Description: "The logical name of the dropdown.", Type: shared.DocVarTypeString},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "index", Description: "The index of the option to select.", Type: stepbuilder.VarTypeInt},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user selects the option at index 2 from the "Country" dropdown`,
-			Category: shared.Form,
+			Category: stepbuilder.Form,
 		},
 	)
 }

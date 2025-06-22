@@ -5,12 +5,11 @@ import (
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 
 	"github.com/go-rod/rod/lib/input"
 )
 
-func (k keyboardSteps) userPressButton() stepbuilder.TestStep {
+func (k keyboardSteps) userPressButton() stepbuilder.Step {
 	dic := map[string]input.Key{
 		"Enter":       input.Enter,
 		"Tab":         input.Tab,
@@ -28,7 +27,7 @@ func (k keyboardSteps) userPressButton() stepbuilder.TestStep {
 		supportedKeys = append(supportedKeys, key)
 	}
 
-	return stepbuilder.NewStepWithOneVariable(
+	return stepbuilder.NewWithOneVariable(
 		[]string{fmt.Sprintf(`^the user presses the "(%s)" key$`, strings.Join(supportedKeys, "|"))},
 		func(ctx *scenario.Context) func(string) error {
 			return func(key string) error {
@@ -41,13 +40,13 @@ func (k keyboardSteps) userPressButton() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
-			Description: "Simulates pressing a specific keyboard key (e.g., “Enter”, “Tab”, “Escape”).",
-			Variables: []shared.StepVariable{
-				{Name: "key", Description: "The button to press.", Type: shared.DocVarTypeEnum(supportedKeys...)},
+		stepbuilder.DocParams{
+			Description: "Simulates pressing a specific keyboard key (e.g., \"Enter\", \"Tab\", \"Escape\").",
+			Variables: []stepbuilder.DocVariable{
+				{Name: "key", Description: "The button to press.", Type: stepbuilder.DocVarTypeEnum(supportedKeys...)},
 			},
-			Example:  "When the user presses the “Enter” key",
-			Category: shared.Keyboard,
+			Example:  "When the user presses the \"Enter\" key",
+			Category: stepbuilder.Keyboard,
 		},
 	)
 }

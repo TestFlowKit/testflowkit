@@ -3,11 +3,10 @@ package navigation
 import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 )
 
-func (n navigation) openANewBrowserTab() stepbuilder.TestStep {
-	return stepbuilder.NewStepWithNoVariables(
+func (n navigation) openANewBrowserTab() stepbuilder.Step {
+	return stepbuilder.NewWithNoVariables(
 		[]string{"the user opens a new browser tab"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
@@ -16,11 +15,11 @@ func (n navigation) openANewBrowserTab() stepbuilder.TestStep {
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "opens a new browser tab.",
 			Variables:   nil,
 			Example:     "Given the user opens a new browser tab",
-			Category:    shared.Navigation,
+			Category:    stepbuilder.Navigation,
 		},
 	)
 }

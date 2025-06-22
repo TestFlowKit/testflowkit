@@ -3,20 +3,19 @@ package table
 import (
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/shared"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.TestStep {
+func (s steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	example := `
 	When the user should see a row containing the following elements
 	| Name | Age |
 	| John | 30  |
 	`
-	return stepbuilder.NewStepWithOneVariable[*godog.Table](
+	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user should see a row containing the following elements$`},
 		func(ctx *scenario.Context) func(*godog.Table) error {
 			return func(table *godog.Table) error {
@@ -36,13 +35,13 @@ func (s steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.TestStep
 			}
 		},
 		nil,
-		stepbuilder.StepDefDocParams{
+		stepbuilder.DocParams{
 			Description: "checks if a row containing the following elements is visible in the table.",
-			Variables: []shared.StepVariable{
-				{Name: "table", Description: "The table containing the elements to check.", Type: shared.DocVarTypeTable},
+			Variables: []stepbuilder.DocVariable{
+				{Name: "table", Description: "The table containing the elements to check.", Type: stepbuilder.VarTypeTable},
 			},
 			Example:  example,
-			Category: shared.Visual,
+			Category: stepbuilder.Visual,
 		},
 	)
 }
