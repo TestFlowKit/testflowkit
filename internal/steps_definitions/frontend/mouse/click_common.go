@@ -2,7 +2,7 @@ package mouse
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -14,7 +14,8 @@ type clickCommon struct {
 func (c clickCommon) handler() func(*scenario.Context) func(string) error {
 	return func(ctx *scenario.Context) func(string) error {
 		return func(label string) error {
-			element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), c.labelFormatter(label))
+			page, pageName := ctx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(page, pageName, c.labelFormatter(label))
 			if err != nil {
 				return err
 			}
@@ -27,7 +28,7 @@ func (c clickCommon) validation() func(string) stepbuilder.ValidationErrors {
 	return func(label string) stepbuilder.ValidationErrors {
 		vc := stepbuilder.ValidationErrors{}
 		formattedLabel := c.labelFormatter(label)
-		if !testsconfig.IsElementDefined(formattedLabel) {
+		if !config.IsElementDefined(formattedLabel) {
 			vc.AddMissingElement(formattedLabel)
 		}
 		return vc

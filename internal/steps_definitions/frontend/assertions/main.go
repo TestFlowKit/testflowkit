@@ -16,8 +16,12 @@ func GetSteps() []stepbuilder.Step {
 		handlers.radioButtonShouldBeSelectedOrNot(),
 		handlers.dropdownHasValuesSelected(),
 		handlers.userShouldBeNavigatedToPage(),
-		handlers.elementShouldContainText(),
-		handlers.elementShouldNotContainText(),
-		handlers.elementShouldContainExactText(),
+		handlers.elementShouldContainsText(),
+		handlers.elementShouldNotContainsText(),
+		handlers.elementShouldContainsExactText(),
+		handlers.elementShouldBeVisible(),
+		handlers.elementShouldNotExist(),
+		handlers.elementShouldNotBeVisible(),
+		handlers.elementShouldExist(),
 	}
 }

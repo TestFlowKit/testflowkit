@@ -12,7 +12,8 @@ func (s steps) shouldSeeOnPageXElements() stepbuilder.Step {
 		[]string{`^the user should see {number} {string} on the page$`},
 		func(ctx *scenario.Context) func(int, string) error {
 			return func(expectedCount int, elementName string) error {
-				elementCount := browser.GetElementCount(ctx.GetCurrentPage(), elementName)
+				currentPage, pageName := ctx.GetCurrentPage()
+				elementCount := browser.GetElementCount(currentPage, pageName, elementName)
 				if elementCount != expectedCount {
 					return fmt.Errorf("%d %s expected but %d %s found", expectedCount, elementName, elementCount, elementName)
 				}

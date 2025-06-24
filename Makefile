@@ -1,6 +1,6 @@
-RUN_CMD = go run ./cmd/testflowkit/main.go run
+RUN_CMD = go run ./cmd/testflowkit/*.go run
 APP_NAME := tkit
-SRC_DIR := ./cmd/testflowkit
+SRC_DIR := ./cmd/testflowkit/*.go
 BUILD_DIR := ./build
 VERSION := $(shell git describe --tags --always --dirty)
 # Only include supported architecture combinations

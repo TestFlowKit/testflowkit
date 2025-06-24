@@ -1,16 +1,14 @@
 package form
 
 import (
-	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
-	"testflowkit/pkg/logger"
 )
 
-func (s steps) userChecksCheckbox() stepbuilder.Step {
+func (s steps) checkCheckbox() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
@@ -19,33 +17,34 @@ func (s steps) userChecksCheckbox() stepbuilder.Step {
 		[]string{`^the user checks the {string} checkbox$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(checkBoxName string) error {
-				checkBox, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(checkBoxName))
+				page, pageName := ctx.GetCurrentPage()
+				checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
 				if err != nil {
 					return err
 				}
 
-				if checkBox.IsChecked() {
-					logger.Warn(fmt.Sprintf("%s checkbox is already checked", checkBoxName), []string{})
-					return nil
+				if !checkBox.IsChecked() {
+					return checkBox.Click()
 				}
 
-				return checkBox.Click()
+				return nil
 			}
 		},
-		func(checkboxName string) stepbuilder.ValidationErrors {
+		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatLabel(checkboxName)
-			if !testsconfig.IsElementDefined(label) {
+			label := formatLabel(checkBoxName)
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
+
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Selects or ticks a checkbox element identified by its logical name",
+			Description: "checks a checkbox if it is not already checked.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "checkbox logical name", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `When the user checks the "Agree to terms" checkbox`,
+			Example:  "When the user checks the \"Terms\" checkbox",
 			Category: stepbuilder.Form,
 		},
 	)

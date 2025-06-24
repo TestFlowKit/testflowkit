@@ -16,19 +16,19 @@ func (s steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 	| Name | Age |
 	| John | 30  |
 	`
-	return stepbuilder.NewWithOneVariable(
+	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user clicks on the row containing the following elements$`},
 		func(ctx *scenario.Context) func(*godog.Table) error {
 			return func(table *godog.Table) error {
-				data, parseErr := assistdog.NewDefault().ParseSlice(table)
-				if parseErr != nil {
-					return parseErr
+				data, err := assistdog.NewDefault().ParseSlice(table)
+				if err != nil {
+					return err
 				}
 
 				for _, rowDetails := range data {
-					element, gerRowErr := getTableRowByCellsContent(ctx.GetCurrentPage(), maps.Values(rowDetails))
-					if gerRowErr != nil {
-						return gerRowErr
+					element, getRowErr := getTableRowByCellsContent(ctx.GetCurrentPageOnly(), maps.Values(rowDetails))
+					if getRowErr != nil {
+						return getRowErr
 					}
 
 					clickErr := element.Click()

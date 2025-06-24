@@ -23,8 +23,12 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 
 	getColor := func(status godog.StepResultStatus) string {
 		stepStatusColors := map[godog.StepResultStatus]string{
-			godog.StepPassed: "green",
-			godog.StepFailed: "red",
+			godog.StepPassed:    "green",
+			godog.StepFailed:    "red",
+			godog.StepSkipped:   "yellow",
+			godog.StepPending:   "gray",
+			godog.StepUndefined: "gray",
+			godog.StepAmbiguous: "gray",
 		}
 
 		if color, ok := stepStatusColors[status]; ok {

@@ -12,7 +12,7 @@ func (s steps) shouldNotSeeOnPage() stepbuilder.Step {
 		[]string{`^the user should not see "{string}" on the page$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(word string) error {
-				elt, err := ctx.GetCurrentPage().GetOneBySelector("body")
+				elt, err := ctx.GetCurrentPageOnly().GetOneBySelector("body")
 				if err != nil {
 					return err
 				}

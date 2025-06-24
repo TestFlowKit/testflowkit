@@ -15,10 +15,10 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
-func Validate(appConfig *config.App) {
+func validate(appConfig *config.Config) {
 	logger.Info("Validate gherkin files ...")
 
-	parsedFeatures := gherkinparser.Parse(appConfig.GherkinLocation)
+	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
 	features := make([]godog.Feature, len(parsedFeatures))
 	for i, f := range parsedFeatures {
 		features[i] = godog.Feature{
@@ -33,7 +33,7 @@ func Validate(appConfig *config.App) {
 		Concurrency:         concurrency,
 		ShowStepDefinitions: false,
 		Format:              "pretty",
-		Tags:                appConfig.Tags,
+		Tags:                appConfig.Settings.Tags,
 		FeatureContents:     features,
 	}
 

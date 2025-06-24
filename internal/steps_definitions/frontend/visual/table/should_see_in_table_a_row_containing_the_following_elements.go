@@ -24,8 +24,9 @@ func (s steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 					return err
 				}
 
+				currentPage := ctx.GetCurrentPageOnly()
 				for _, rowDetails := range data {
-					_, getRowErr := getTableRowByCellsContent(ctx.GetCurrentPage(), maps.Values(rowDetails))
+					_, getRowErr := getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
 					if getRowErr != nil {
 						return getRowErr
 					}

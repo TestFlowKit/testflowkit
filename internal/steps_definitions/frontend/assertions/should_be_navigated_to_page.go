@@ -3,7 +3,7 @@ package assertions
 import (
 	"fmt"
 	"strings"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -14,19 +14,20 @@ func (s steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 		func(ctx *scenario.Context) func(string) error {
 			return func(pageName string) error {
 				const maxRetries = 10
-				page := ctx.GetCurrentPage()
+				page := ctx.GetCurrentPageOnly()
 				page.WaitLoading()
 
 				var url string
 				var err error
 				var currentURL string
 
+				appConfig := ctx.GetConfig()
 				for range maxRetries {
-					url, err = testsconfig.GetPageURL(pageName)
+					url, err = appConfig.GetFrontendURL(pageName)
 					if err != nil {
 						return err
 					}
-					page = ctx.GetCurrentPage()
+					page = ctx.GetCurrentPageOnly()
 					currentURL = page.GetInfo().URL
 					if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
 						return nil
@@ -40,7 +41,7 @@ func (s steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 		},
 		func(pageName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsPageDefined(pageName) {
+			if !config.IsPageDefined(pageName) {
 				vc.AddMissingPage(pageName)
 			}
 

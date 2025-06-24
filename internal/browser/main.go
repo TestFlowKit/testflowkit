@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testflowkit/internal/browser/common"
 	"testflowkit/internal/browser/rod"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/pkg/logger"
 	"time"
 )
@@ -16,10 +16,16 @@ func CreateInstance(headlessMode bool, timeout, slowMotion time.Duration, incogn
 	return rod.New(headlessMode, timeout, slowMotion, incognitoMode)
 }
 
-func GetElementByLabel(page common.Page, label string) (common.Element, error) {
-	selectors, err := testsconfig.GetHTMLElementSelectors(label)
+func GetElementByLabel(page common.Page, pageName, label string) (common.Element, error) {
+	cfg, err := config.Get()
+
 	if err != nil {
 		return nil, err
+	}
+
+	selectors := cfg.GetElementSelectors(pageName, config.GetLabelKey(label))
+	if len(selectors) == 0 {
+		return nil, errors.New("no selectors found for element " + label)
 	}
 
 	element := getElementBySelectors(page, selectors)
@@ -92,8 +98,13 @@ func getActiveSelector(page common.Page, potentialSelectors []string) string {
 	return <-ch
 }
 
-func GetElementCount(page common.Page, label string) int {
-	potentialSelectors, _ := testsconfig.GetHTMLElementSelectors(label)
+func GetElementCount(page common.Page, pageName, label string) int {
+	cfg, err := config.Get()
+	if err != nil {
+		return 0
+	}
+
+	potentialSelectors := cfg.GetElementSelectors(pageName, label)
 	selector := getActiveSelector(page, potentialSelectors)
 	elements, err := page.GetAllBySelector(selector)
 	if err != nil {

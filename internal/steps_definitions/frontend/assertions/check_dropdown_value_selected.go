@@ -2,7 +2,7 @@ package assertions
 
 import (
 	"fmt"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
@@ -27,14 +27,15 @@ func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(dropdownId, optionLabels string) error {
-				selector, err := testsconfig.GetHTMLElementSelectors(formatVar(dropdownId))
+				currentPage := ctx.GetCurrentPageOnly()
+				selector, err := currentPage.GetAllBySelector(formatVar(dropdownId))
 				if err != nil {
 					return err
 				}
 
 				labels := stringutils.SplitAndTrim(optionLabels, ",")
 
-				result := ctx.GetCurrentPage().ExecuteJS(`(selector, labels) => {
+				result := currentPage.ExecuteJS(`(selector, labels) => {
 					const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
 					return labels.every(label => selectedOpts.includes(label))
 				}`, selector, labels)
@@ -48,7 +49,7 @@ func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
 		func(dropdownId, _ string) stepbuilder.ValidationErrors {
 			vErr := stepbuilder.ValidationErrors{}
 			label := formatVar(dropdownId)
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vErr.AddMissingElement(label)
 			}
 

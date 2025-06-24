@@ -9,7 +9,7 @@ import (
 func (n navigation) userNavigateToURL() stepbuilder.Step {
 	testDefinition := func(ctx *scenario.Context) func(string) error {
 		return func(URL string) error {
-			if ctx.GetCurrentPage() == nil {
+			if ctx.GetCurrentPageOnly() == nil {
 				return errors.New("no browser opened")
 			}
 			ctx.OpenNewPage(URL)

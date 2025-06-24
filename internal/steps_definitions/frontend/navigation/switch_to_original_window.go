@@ -26,7 +26,9 @@ func (n navigation) switchToOriginalWindow() stepbuilder.Step {
 
 				originalPage.WaitLoading()
 
-				ctx.SetCurrentPage(originalPage)
+				if err := ctx.SetCurrentPage(originalPage, "original_window"); err != nil {
+					return fmt.Errorf("failed to set current page: %w", err)
+				}
 
 				logger.Info(fmt.Sprintf("Switched back to original window with URL: %s", originalPage.GetInfo().URL))
 

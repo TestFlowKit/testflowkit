@@ -43,7 +43,7 @@ func (k keyboardSteps) userPressButton() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Simulates pressing a specific keyboard key (e.g., \"Enter\", \"Tab\", \"Escape\").",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "key", Description: "The button to press.", Type: stepbuilder.DocVarTypeEnum(supportedKeys...)},
+				{Name: "key", Description: "The button to press.", Type: stepbuilder.VarTypeEnum(supportedKeys...)},
 			},
 			Example:  "When the user presses the \"Enter\" key",
 			Category: stepbuilder.Keyboard,

@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/pkg/logger"
 )
 
@@ -22,7 +22,7 @@ type ValidatorContext struct {
 }
 
 func (vc *ValidatorContext) addMissingPage(label string) {
-	key := testsconfig.GetLabelKey(label)
+	key := config.GetLabelKey(label)
 
 	if slices.Contains(vc.missingPages, key) {
 		return
@@ -31,7 +31,7 @@ func (vc *ValidatorContext) addMissingPage(label string) {
 }
 
 func (vc *ValidatorContext) addMissingElement(label string) {
-	key := testsconfig.GetLabelKey(label)
+	key := config.GetLabelKey(label)
 	if slices.Contains(vc.missingElements, key) {
 		return
 	}
@@ -61,8 +61,8 @@ func (vc *ValidatorContext) GetUndefinedSteps() []string {
 func (vc *ValidatorContext) GetElementsErrorsFormatted() string {
 	lines := []string{
 		"Add the following elements to the configuration file:",
-		fmt.Sprintf("%sglobal:", logger.GetIndents(1)),
-		fmt.Sprintf("%selements:", logger.GetIndents(categoryTypeIdent)),
+		fmt.Sprintf("%selements:", logger.GetIndents(1)),
+		fmt.Sprintf("%scommon:", logger.GetIndents(categoryTypeIdent)),
 		fmt.Sprintf("%s...", logger.GetIndents(variableIdent)),
 	}
 

@@ -2,14 +2,14 @@ package form
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
 )
 
-func (s steps) userSelectsRadioButton() stepbuilder.Step {
+func (s steps) selectRadioButton() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
@@ -18,7 +18,8 @@ func (s steps) userSelectsRadioButton() stepbuilder.Step {
 		[]string{`^the user selects the {string} radio button$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(radioBtnName string) error {
-				radioButton, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(radioBtnName))
+				currentPage, pageName := ctx.GetCurrentPage()
+				radioButton, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioBtnName))
 				if err != nil {
 					return err
 				}
@@ -34,7 +35,7 @@ func (s steps) userSelectsRadioButton() stepbuilder.Step {
 		func(radioBtnName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			label := formatLabel(radioBtnName)
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc

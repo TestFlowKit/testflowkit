@@ -2,7 +2,7 @@ package mouse
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -12,16 +12,18 @@ func (s steps) hoverOnElement() stepbuilder.Step {
 		[]string{`^the user hovers on {string}$`},
 		func(ctx *scenario.Context) func(label string) error {
 			return func(label string) error {
-				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
+				currentPage, pageName := ctx.GetCurrentPage()
+				element, err := browser.GetElementByLabel(currentPage, pageName, label)
 				if err != nil {
 					return err
 				}
+
 				return element.Hover()
 			}
 		},
 		func(label string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc

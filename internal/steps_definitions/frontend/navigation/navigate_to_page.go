@@ -2,7 +2,7 @@ package navigation
 
 import (
 	"fmt"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
@@ -11,7 +11,7 @@ import (
 func (n navigation) userNavigateToPage() stepbuilder.Step {
 	testDefinition := func(ctx *scenario.Context) func(string) error {
 		return func(page string) error {
-			url, err := testsconfig.GetPageURL(page)
+			url, err := ctx.GetConfig().GetFrontendURL(page)
 			if err != nil {
 				logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
 				return err
@@ -26,7 +26,7 @@ func (n navigation) userNavigateToPage() stepbuilder.Step {
 		testDefinition,
 		func(page string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsPageDefined(page) {
+			if !config.IsPageDefined(page) {
 				vc.AddMissingPage(page)
 			}
 

@@ -24,7 +24,8 @@ func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 					return err
 				}
 
-				_, err = getTableHeaderByCellsContent(ctx.GetCurrentPage(), maps.Values(data))
+				currentPage := ctx.GetCurrentPageOnly()
+				_, err = getTableHeaderByCellsContent(currentPage, maps.Values(data))
 				return err
 			}
 		},

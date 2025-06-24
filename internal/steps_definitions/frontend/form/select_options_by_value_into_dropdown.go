@@ -3,7 +3,7 @@ package form
 import (
 	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
@@ -28,7 +28,7 @@ func (s steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
 		[]string{`^the user selects the option with value {string} from the {string} dropdown$`},
 		stepbuilder.DocParams{
-			Description: "Selects an option from a dropdown list based on its underlying ‘value’ attribute.",
+			Description: "Selects an option from a dropdown list based on its underlying 'value' attribute.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "option value", Description: "The value of the option to select.", Type: stepbuilder.VarTypeString},
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
@@ -47,7 +47,8 @@ func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.D
 		phrases,
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(optionValues, dropdownId string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
+				currentPage, pageName := ctx.GetCurrentPage()
+				input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
 				if err != nil {
 					return err
 				}
@@ -57,7 +58,7 @@ func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.D
 		func(_, dropdownId string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			label := formatVar(dropdownId)
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 

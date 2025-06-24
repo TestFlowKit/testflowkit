@@ -1,43 +1,57 @@
 package main
 
 import (
-	"fmt"
 	"testflowkit/internal/actions"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/logger"
 )
 
 func main() {
-	cliConfig := config.Init()
-	if cliConfig == nil {
-		logger.Fatal("no mode specified", nil)
+	args := getAppArgs()
+
+	cfgPath, getcfigPathErr := args.getConfigPath()
+	if getcfigPathErr != nil {
+		logger.Fatal("Failed to get config path", getcfigPathErr)
 	}
 
-	modes := map[config.Mode]actions.Type{
-		config.RunMode:        runMode,
-		config.InitMode:       actions.Init,
-		config.ValidationMode: actions.Validate,
+	err := config.Load(cfgPath, args.getAppConfigOverrides())
+	if err != nil {
+		logger.Fatal("Failed to load config", err)
 	}
 
-	if mode, ok := modes[cliConfig.Mode]; ok {
-		mode(cliConfig)
-	} else {
-		logger.Fatal(fmt.Sprintf("unknown mode: %s", cliConfig.Mode), nil)
+	cfg, err := config.Get()
+	if err != nil {
+		logger.Fatal("Failed to get config", err)
 	}
+
+	displayConfigSummary(cfg)
+
+	mode, err := args.getMode()
+	if err != nil {
+		logger.Fatal("Failed to get mode", err)
+	}
+
+	actions.Execute(cfg, mode)
 }
 
-func runMode(appConfig *config.App) {
-	logger.Info("--- configuration resume ---")
+func displayConfigSummary(cfg *config.Config) {
+	logger.Info("--- Configuration Summary ---")
 
-	logger.InfoFf("app tags: %s", appConfig.Tags)
-	logger.InfoFf("app gherkin location: %s", appConfig.GherkinLocation)
-	logger.InfoFf("app reporters format: %s", appConfig.ReportFormat)
-	logger.InfoFf("app concurrency: %d", appConfig.GetConcurrency())
-	logger.InfoFf("app slow motion: %s", appConfig.GetSlowMotion())
-	logger.InfoFf("app test suite timeout: %s", appConfig.Timeout)
-	logger.InfoFf("app headless mode: %t", appConfig.IsHeadlessModeEnabled())
+	env, _ := cfg.GetCurrentEnvironment()
 
-	logger.Info("--- configuration resume end ---\n\n")
+	logger.InfoFf("Active Environment: %s", cfg.ActiveEnvironment)
+	logger.InfoFf("Frontend Base URL: %s", env.FrontendBaseURL)
+	logger.InfoFf("Headless Mode: %t", cfg.Settings.Headless)
+	logger.InfoFf("Concurrency: %d", cfg.Settings.Concurrency)
+	logger.InfoFf("Report Format: %s", cfg.Settings.ReportFormat)
+	logger.InfoFf("Gherkin Location: %s", cfg.Settings.GherkinLocation)
+	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
+	logger.InfoFf("Default Timeout: %dms", cfg.Settings.DefaultTimeout)
+	// logger.InfoFf("Page Load Timeout: %dms", cfg.Settings.PageLoadTimeout)
+	// logger.InfoFf("Screenshot on Failure: %t", cfg.Settings.ScreenshotOnFailure)
+	// logger.InfoFf("Video Recording: %t", cfg.Settings.VideoRecording)
+	logger.InfoFf("Slow Motion: %dms", cfg.Settings.SlowMotion)
+	logger.InfoFf("Elements Configured: %d page groups", len(cfg.Frontend.Elements))
 
-	actions.Run(appConfig)
+	logger.Info("--- Configuration Summary End ---\n")
 }

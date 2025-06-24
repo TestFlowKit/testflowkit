@@ -3,7 +3,7 @@ package visual
 import (
 	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -13,7 +13,8 @@ func (s steps) scrollToElement() stepbuilder.Step {
 		[]string{`^the user scrolls to the {string} element$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
-				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), fmt.Sprintf("%s_element", name))
+				page, pageName := ctx.GetCurrentPage()
+				element, err := browser.GetElementByLabel(page, pageName, fmt.Sprintf("%s_element", name))
 				if err != nil {
 					return err
 				}
@@ -29,7 +30,7 @@ func (s steps) scrollToElement() stepbuilder.Step {
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			variable := fmt.Sprintf("%s_element", name)
-			if !testsconfig.IsElementDefined(variable) {
+			if !config.IsElementDefined(variable) {
 				vc.AddMissingElement(variable)
 			}
 

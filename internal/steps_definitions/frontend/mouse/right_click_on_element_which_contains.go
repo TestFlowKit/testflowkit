@@ -11,7 +11,7 @@ func (s steps) rightClickOnElementWhichContains() stepbuilder.Step {
 		[]string{`^the user right clicks on {string} which contains "{string}"$`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(_ string, text string) error {
-				element, err := ctx.GetCurrentPage().GetOneByTextContent(text)
+				element, err := ctx.GetCurrentPageOnly().GetOneByTextContent(text)
 				if err != nil {
 					return fmt.Errorf("no element with text containing %s found", text)
 				}

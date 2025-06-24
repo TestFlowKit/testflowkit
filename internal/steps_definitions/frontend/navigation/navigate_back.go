@@ -11,10 +11,11 @@ func (n navigation) theUserNavigateBack() stepbuilder.Step {
 		[]string{"the user navigate back"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
-				if ctx.GetCurrentPage() == nil {
+				currentPage := ctx.GetCurrentPageOnly()
+				if currentPage == nil {
 					return errors.New("no page opened")
 				}
-				ctx.GetCurrentPage().Back()
+				currentPage.Back()
 				return nil
 			}
 		},

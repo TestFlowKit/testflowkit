@@ -16,8 +16,8 @@ import (
 	"github.com/cucumber/godog"
 )
 
-func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.App) {
-	frontendCtx := scenario.NewContext(config.Timeout, config.IsHeadlessModeEnabled(), config.GetSlowMotion())
+func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.Config) {
+	frontendCtx := scenario.NewContext(config)
 	for _, step := range getAllSteps() {
 		handler := step.GetDefinition(frontendCtx)
 		for _, sentence := range step.GetSentences() {

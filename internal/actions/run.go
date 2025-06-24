@@ -14,10 +14,10 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
-func Run(appConfig *config.App) {
+func run(appConfig *config.Config) {
 	logger.Info("Starting tests execution ...")
 
-	parsedFeatures := gherkinparser.Parse(appConfig.GherkinLocation)
+	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
 	features := make([]godog.Feature, len(parsedFeatures))
 	for i, f := range parsedFeatures {
 		features[i] = godog.Feature{
@@ -26,13 +26,13 @@ func Run(appConfig *config.App) {
 		}
 	}
 
-	testReport := reporters.New(appConfig.ReportFormat)
+	testReport := reporters.New(appConfig.Settings.ReportFormat)
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         appConfig.GetConcurrency(),
 		Format:              "pretty",
 		ShowStepDefinitions: false,
-		Tags:                appConfig.Tags,
+		Tags:                appConfig.Settings.Tags,
 		FeatureContents:     features,
 	}
 
@@ -91,11 +91,14 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 		})
 	}
 }
-func scenarioInitializer(config *config.App, testReport *reporters.Report) func(*godog.ScenarioContext) {
-	logger.Info("Initializing scenario for test running ...")
+func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		frontend.InitTestRunnerScenarios(sc, config)
 		myCtx := newScenarioCtx()
+		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
+			logger.InfoFf("Running scenario: %s", sc.Name)
+			return ctx, nil
+		})
 		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
 		sc.StepContext().After(afterStepHookInitializer(&myCtx))
 		sc.After(afterScenarioHookInitializer(testReport, &myCtx))

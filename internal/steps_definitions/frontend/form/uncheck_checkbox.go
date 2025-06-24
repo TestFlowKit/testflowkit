@@ -3,14 +3,14 @@ package form
 import (
 	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
 )
 
-func (s steps) userUnchecksCheckbox() stepbuilder.Step {
+func (s steps) uncheckCheckbox() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
@@ -19,7 +19,8 @@ func (s steps) userUnchecksCheckbox() stepbuilder.Step {
 		[]string{`^the user unchecks the {string} checkbox$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(checkBoxName string) error {
-				checkBox, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(checkBoxName))
+				currentPage, pageName := ctx.GetCurrentPage()
+				checkBox, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(checkBoxName))
 				if err != nil {
 					return err
 				}
@@ -32,20 +33,20 @@ func (s steps) userUnchecksCheckbox() stepbuilder.Step {
 				return nil
 			}
 		},
-		func(checkboxId string) stepbuilder.ValidationErrors {
+		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatLabel(checkboxId)
-			if !testsconfig.IsElementDefined(label) {
+			label := formatLabel(checkBoxName)
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Deselects or unticks a checkbox element identified by its logical name",
+			Description: "unchecks a checkbox if it is currently checked.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "the logical name of the checkbox", Type: stepbuilder.VarTypeString},
+				{Name: "checkBoxName", Description: "The name of the checkbox to uncheck.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `When the user unchecks the "Subscribe to newsletter" checkbox`,
+			Example:  "When the user unchecks the \"Newsletter\" checkbox",
 			Category: stepbuilder.Form,
 		},
 	)
