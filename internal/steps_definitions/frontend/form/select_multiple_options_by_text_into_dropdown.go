@@ -1,34 +1,34 @@
 package form
 
 import (
-	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) userSelectMultipleOptionsWithTextsIntoDropdown() stepbuilder.Step {
-	formatVar := func(label string) string {
-		return fmt.Sprintf("%s_dropdown", label)
+func (s steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
+	formatVar := func(variable string) string {
+		return variable + "_dropdown"
 	}
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the options with text {string} from the {string} dropdown$`},
 		func(ctx *scenario.Context) func(string, string) error {
-			return func(options, dropdownId string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(dropdownId))
+			return func(optionLabels, dropdownId string) error {
+				currentPage, pageName := ctx.GetCurrentPage()
+				input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
 				if err != nil {
 					return err
 				}
-				return input.SelectByText(stringutils.SplitAndTrim(options, ","))
+				return input.SelectByText(stringutils.SplitAndTrim(optionLabels, ","))
 			}
 		},
 		func(_, dropdownId string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			label := formatVar(dropdownId)
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc

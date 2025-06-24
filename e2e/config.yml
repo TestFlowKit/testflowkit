@@ -1,0 +1,65 @@
+active_environment: "local"
+
+settings:
+  default_timeout: 5000
+  page_load_timeout: 30000
+  slow_motion: 10000
+
+  screenshot_on_failure: true
+  video_recording: false
+  concurrency: 1
+  headless: true
+
+  report_format: "html"
+  gherkin_location: "e2e/features"
+
+environments:
+  local:
+    frontend_base_url: "http://0.0.0.0:3000"
+
+  ci:
+    frontend_base_url: "http://server:3000"
+
+frontend:
+  elements:
+    common:
+      visual_test_button:
+        - "button"
+      test_checkbox:
+        - "#checkbox"
+        - "#rtt"
+        - "input[type='checkbox']"
+      test_dropdown:
+        - "#select"
+      multiple_dropdown:
+        - "#select-multiple"
+      text_field:
+        - "#text"
+      textarea_field:
+        - "#textarea"
+      double_click_button:
+        - "#dbclick-btn"
+      test_radio_button:
+        - "#radio1"
+      second_test_radio_button:
+        - "#radio2"
+      nonexistent_button:
+        - "#inexistent"
+      hidden_button:
+        - "#hidden-btn"
+      product_name_element:
+        - "#product-name"
+      non-existent_button:
+        - "#non-existent"
+      product_description_element:
+        - "#product-description"
+      scroll_target_element:
+        - "#target-element"
+
+  pages:
+    form_e2e: "form"
+    google: "https://www.google.com"
+    visual_e2e: "visual"
+    table_e2e: "/table"
+    details_e2e: "/details"
+    scroll_e2e: "/scroll"

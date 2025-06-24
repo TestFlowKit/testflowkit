@@ -2,7 +2,7 @@ package mouse
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -12,7 +12,8 @@ func (s steps) rightClickOn() stepbuilder.Step {
 		[]string{`^the user right clicks on {string}$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(label string) error {
-				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), label)
+				currentPage, pageName := ctx.GetCurrentPage()
+				element, err := browser.GetElementByLabel(currentPage, pageName, label)
 				if err != nil {
 					return err
 				}
@@ -21,7 +22,7 @@ func (s steps) rightClickOn() stepbuilder.Step {
 		},
 		func(label string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc

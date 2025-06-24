@@ -12,7 +12,7 @@ type Documentation struct {
 
 type DocVariable struct {
 	Name, Description string
-	Type              DocVarType
+	Type              VarType
 }
 
 type StepCategory string
@@ -23,18 +23,19 @@ const (
 	Keyboard   StepCategory = "keyboard"
 	Navigation StepCategory = "navigation"
 	Mouse      StepCategory = "mouse"
+	APITesting StepCategory = "api-testing"
 )
 
-type DocVarType string
+type VarType string
 
 const (
-	VarTypeString DocVarType = "string"
-	VarTypeInt    DocVarType = "int"
-	VarTypeFloat  DocVarType = "float"
-	VarTypeBool   DocVarType = "bool"
-	VarTypeTable  DocVarType = "table"
+	VarTypeString VarType = "string"
+	VarTypeInt    VarType = "int"
+	VarTypeFloat  VarType = "float"
+	VarTypeBool   VarType = "bool"
+	VarTypeTable  VarType = "table"
 )
 
-func DocVarTypeEnum(values ...string) DocVarType {
-	return DocVarType(strings.Join(values, ", "))
+func VarTypeEnum(values ...string) VarType {
+	return VarType(strings.Join(values, ", "))
 }

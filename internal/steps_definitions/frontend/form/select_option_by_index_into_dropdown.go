@@ -2,7 +2,7 @@ package form
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -12,17 +12,19 @@ func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
 		func(ctx *scenario.Context) func(int, string) error {
 			return func(index int, dropdownId string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), dropdownId+"_dropdown")
+				currentPage, pageName := ctx.GetCurrentPage()
+				input, err := browser.GetElementByLabel(currentPage, pageName, dropdownId+"_dropdown")
 				if err != nil {
 					return err
 				}
+
 				return input.SelectByIndex(index)
 			}
 		},
 		func(_ int, dropdownId string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			label := dropdownId + "_dropdown"
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 			return vc

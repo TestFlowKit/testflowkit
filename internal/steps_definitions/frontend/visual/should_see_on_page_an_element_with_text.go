@@ -18,7 +18,7 @@ func (s steps) shouldSeeElementWhichContains() stepbuilder.Step {
 				}
 
 				xPath := fmt.Sprintf("//%s[contains(text(),\"%s\")]", cases[elementLabel], text)
-				element, err := ctx.GetCurrentPage().GetOneByXPath(xPath)
+				element, err := ctx.GetCurrentPageOnly().GetOneByXPath(xPath)
 				cErr := fmt.Errorf("no %s is visible with text \"%s\"", elementLabel, text)
 				if err != nil {
 					return cErr

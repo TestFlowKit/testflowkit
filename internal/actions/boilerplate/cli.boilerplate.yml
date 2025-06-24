@@ -1,7 +1,0 @@
-configuration:
-  timeout: 15s
-  slowMotion: 5s
-  gherkin_location: "features"
-
-reporting:
-  report_format: "html"

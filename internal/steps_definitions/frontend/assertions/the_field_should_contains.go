@@ -3,7 +3,7 @@ package assertions
 import (
 	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -17,7 +17,8 @@ func (s steps) theFieldShouldContain() stepbuilder.Step {
 		[]string{`^the value of the {string} field should be {string}`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(fieldId, text string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatFieldID(fieldId))
+				page, pageName := ctx.GetCurrentPage()
+				input, err := browser.GetElementByLabel(page, pageName, formatFieldID(fieldId))
 				if err != nil {
 					return err
 				}
@@ -31,7 +32,7 @@ func (s steps) theFieldShouldContain() stepbuilder.Step {
 		},
 		func(fieldId, _ string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsElementDefined(formatFieldID(fieldId)) {
+			if !config.IsElementDefined(formatFieldID(fieldId)) {
 				vc.AddMissingElement(formatFieldID(fieldId))
 			}
 

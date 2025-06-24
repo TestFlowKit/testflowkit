@@ -33,7 +33,9 @@ func (n navigation) switchToNewOpenedWindow() stepbuilder.Step {
 						pages := ctx.GetPages()
 						// In Rod, the most recently opened page is typically the first in the pages list
 						newPage := pages[0]
-						ctx.SetCurrentPage(newPage)
+						if err := ctx.SetCurrentPage(newPage, "new_window"); err != nil {
+							return fmt.Errorf("failed to set current page: %w", err)
+						}
 
 						return nil
 					}

@@ -21,16 +21,16 @@ func (n navigation) switchToMostOpenedWindow() stepbuilder.Step {
 
 				// In Rod, the most recently opened page is typically the first in the pages list
 				newPage := pages[0]
-				ctx.SetCurrentPage(newPage)
+				if err := ctx.SetCurrentPage(newPage, "most_recent_window"); err != nil {
+					return fmt.Errorf("failed to set current page: %w", err)
+				}
 
 				logger.Info(fmt.Sprintf("Switched to new window with URL: %s", newPage.GetInfo().URL))
 
 				return nil
 			}
 		},
-		func() stepbuilder.ValidationErrors {
-			return stepbuilder.ValidationErrors{}
-		},
+		nil,
 		stepbuilder.DocParams{
 			Description: "switches to the most recently opened browser window.",
 			Variables:   []stepbuilder.DocVariable{},

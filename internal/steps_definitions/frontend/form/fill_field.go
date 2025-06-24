@@ -2,7 +2,7 @@ package form
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
@@ -17,7 +17,8 @@ func (s steps) userEntersTextIntoField() stepbuilder.Step {
 		[]string{`^the user enters {string} into the {string} field`},
 		func(ctx *scenario.Context) func(string, string) error {
 			return func(text, inputLabel string) error {
-				input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatLabel(inputLabel))
+				currentPage, pageName := ctx.GetCurrentPage()
+				input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
 				if err != nil {
 					return err
 				}
@@ -27,7 +28,7 @@ func (s steps) userEntersTextIntoField() stepbuilder.Step {
 		func(_, inputLabel string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			label := formatLabel(inputLabel)
-			if !testsconfig.IsElementDefined(label) {
+			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
 

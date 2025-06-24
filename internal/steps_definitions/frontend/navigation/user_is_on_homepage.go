@@ -2,7 +2,6 @@ package navigation
 
 import (
 	"fmt"
-	"testflowkit/internal/config/testsconfig"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
@@ -16,12 +15,12 @@ func (n navigation) userIsOnHomepage() stepbuilder.Step {
 		func(ctx *scenario.Context) func() error {
 			return func() error {
 				const settingsVariable = "homepage"
-				url, err := testsconfig.GetPageURL(settingsVariable)
+				url, err := ctx.GetConfig().GetFrontendURL(settingsVariable)
 				if err != nil {
 					logger.Fatal(fmt.Sprintf("Url for page %s not configured", settingsVariable), err)
 					return err
 				}
-				if ctx.GetCurrentPage() == nil {
+				if ctx.GetCurrentPageOnly() == nil {
 					ctx.InitBrowser(false)
 				}
 
