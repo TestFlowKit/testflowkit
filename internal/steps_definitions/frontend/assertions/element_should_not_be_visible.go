@@ -1,21 +1,26 @@
-package visual
+package assertions
 
 import (
 	"fmt"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) elementShouldNotExist() stepbuilder.Step {
+func (s steps) elementShouldNotBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the {string} should not exist$`},
+		[]string{`^the {string} should not be visible$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
-				_, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
-				if err == nil {
-					return fmt.Errorf("%s exists but should not", name)
+				page, pageName := ctx.GetCurrentPage()
+				element, err := browser.GetElementByLabel(page, pageName, name)
+				if err != nil {
+					return err
+				}
+
+				if element.IsVisible() {
+					return fmt.Errorf("%s is visible", name)
 				}
 
 				return nil
@@ -23,18 +28,18 @@ func (s steps) elementShouldNotExist() stepbuilder.Step {
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsElementDefined(name) {
+			if !config.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
 
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "This assertion checks if the element is not present in the DOM.",
+			Description: "This assertion checks if the element is present in the DOM but not displayed",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the submit button should not exist",
+			Example:  "Then \"Submit button\" should not be visible",
 			Category: stepbuilder.Visual,
 		},
 	)

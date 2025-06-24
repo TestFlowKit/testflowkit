@@ -1,9 +1,12 @@
 package scenario
 
 import (
-	"log"
+	"errors"
+	"testflowkit/internal/config"
+
 	"testflowkit/internal/browser"
 	"testflowkit/internal/browser/common"
+
 	"time"
 )
 
@@ -11,46 +14,68 @@ type Context struct {
 	browser             common.Browser
 	page                common.Page
 	timeout, slowMotion time.Duration
+	currentPageName     string
 	headlessMode        bool
+	config              *config.Config
 }
 
-func (fc *Context) InitBrowser(incognitoMode bool) {
-	fc.browser = browser.CreateInstance(fc.headlessMode, fc.timeout, fc.slowMotion, incognitoMode)
+func (c *Context) InitBrowser(incognitoMode bool) {
+	c.browser = browser.CreateInstance(c.headlessMode, c.timeout, c.slowMotion, incognitoMode)
 }
 
-func (fc *Context) OpenNewPage(url string) {
-	fc.page = fc.browser.NewPage(url)
+func (c *Context) OpenNewPage(url string) {
+	c.page = c.browser.NewPage(url)
 }
 
-func (fc *Context) GetPages() []common.Page {
-	return fc.browser.GetPages()
+func (c *Context) GetPages() []common.Page {
+	return c.browser.GetPages()
 }
 
-func (fc *Context) GetCurrentPage() common.Page {
-	return fc.page
+func (c *Context) GetCurrentPage() (common.Page, string) {
+	return c.page, c.currentPageName
 }
 
-func (fc *Context) SetCurrentPage(page common.Page) {
-	page.Focus()
-	page.WaitLoading()
-	fc.page = page
+func (c *Context) GetCurrentPageOnly() common.Page {
+	return c.page
 }
 
-func (fc *Context) GetCurrentPageKeyboard() common.Keyboard {
-	return fc.page.GetKeyboard()
-}
-
-func NewContext(timeout string, headlessMode bool, slowMotion time.Duration) *Context {
-	duration, err := time.ParseDuration(timeout)
-	if err != nil {
-		log.Panicf("timeout is not correct (%s)", timeout)
+func (c *Context) SetCurrentPage(page common.Page, pageName string) error {
+	if page == nil {
+		return errors.New("cannot set current page: page is nil")
 	}
 
+	page.Focus()
+	page.WaitLoading()
+
+	c.page = page
+
+	if pageName == "" {
+		pageName = "unknown"
+	}
+	c.currentPageName = pageName
+
+	return nil
+}
+
+func (c *Context) SetCurrentPageOnly(page common.Page) error {
+	return c.SetCurrentPage(page, "")
+}
+
+func (c *Context) GetCurrentPageKeyboard() common.Keyboard {
+	return c.page.GetKeyboard()
+}
+
+func (c *Context) GetConfig() *config.Config {
+	return c.config
+}
+
+func NewContext(cfg *config.Config) *Context {
 	return &Context{
 		browser:      nil,
 		page:         nil,
-		timeout:      duration,
-		headlessMode: headlessMode,
-		slowMotion:   slowMotion,
+		timeout:      time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
+		headlessMode: cfg.IsHeadlessModeEnabled(),
+		slowMotion:   cfg.GetSlowMotion(),
+		config:       cfg,
 	}
 }

@@ -1,0 +1,29 @@
+active_environment: "local"
+
+settings:
+  default_timeout: 10000
+  concurrency: 1
+  headless: false
+  slow_motion: 1000
+
+  report_format: "html"
+  gherkin_location: "./e2e/features"
+
+environments:
+  local:
+    frontend_base_url: "http://example.com"
+
+  staging:
+    frontend_base_url: "https://staging.example.com"
+
+frontend:
+  elements:
+    common:
+      loading_spinner:
+        - "[data-testid='loading-spinner']"
+        - ".spinner"
+        - ".loading"
+
+  pages:
+    google: "https://www.google.com"
+    github: "https://github.com"

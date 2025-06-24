@@ -12,14 +12,14 @@ func GetSteps() []stepbuilder.Step {
 
 	return []stepbuilder.Step{
 		handlers.userEntersTextIntoField(),
-		handlers.userSelectOptionWithTextIntoDropdown(),
-		handlers.userSelectMultipleOptionsWithTextsIntoDropdown(),
-		handlers.userSelectOptionWithValueIntoDropdown(),
+		handlers.selectOptionWithTextIntoDropdown(),
+		handlers.selectMultipleOptionsByTextIntoDropdown(),
 		handlers.userSelectMultipleOptionsByValueIntoDropdown(),
+		handlers.userSelectOptionWithValueIntoDropdown(),
 		handlers.userSelectOptionByIndexIntoDropdown(),
-		handlers.userChecksCheckbox(),
-		handlers.userUnchecksCheckbox(),
-		handlers.userSelectsRadioButton(),
-		handlers.userClearsFormField(),
+		handlers.checkCheckbox(),
+		handlers.uncheckCheckbox(),
+		handlers.selectRadioButton(),
+		handlers.clearField(),
 	}
 }

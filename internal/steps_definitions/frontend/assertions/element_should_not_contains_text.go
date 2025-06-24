@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"strings"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) elementShouldNotContainText() stepbuilder.Step {
+func (s steps) elementShouldNotContainsText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the {string} should not contain the text {string}$`},
 		func(ctx *scenario.Context) func(string, string) error {
-			return func(name, text string) error {
-				element, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
+			return func(name, unexpectedText string) error {
+				currentPage, pageName := ctx.GetCurrentPage()
+				element, err := browser.GetElementByLabel(currentPage, pageName, name)
 				if err != nil {
 					return err
 				}
@@ -23,8 +24,8 @@ func (s steps) elementShouldNotContainText() stepbuilder.Step {
 					return fmt.Errorf("%s is not visible", name)
 				}
 
-				if strings.Contains(element.TextContent(), text) {
-					return fmt.Errorf("%s unexpectedly contains text '%s'", name, text)
+				if strings.Contains(element.TextContent(), unexpectedText) {
+					return fmt.Errorf("%s unexpectedly contains text '%s'", name, unexpectedText)
 				}
 
 				return nil
@@ -32,7 +33,7 @@ func (s steps) elementShouldNotContainText() stepbuilder.Step {
 		},
 		func(name, _ string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsElementDefined(name) {
+			if !config.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
 
@@ -41,8 +42,8 @@ func (s steps) elementShouldNotContainText() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the element’s visible text does not include the specified substring.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The name of the element to check.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "unexpectedText", Description: "The text that should not be contained.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the "Welcome Message" element should not contain the text "Hello John"`,
 			Category: stepbuilder.Visual,

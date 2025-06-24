@@ -1,8 +1,8 @@
-package visual
+package assertions
 
 import (
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -12,7 +12,8 @@ func (s steps) elementShouldExist() stepbuilder.Step {
 		[]string{`^the {string} should exist$`},
 		func(ctx *scenario.Context) func(string) error {
 			return func(name string) error {
-				_, err := browser.GetElementByLabel(ctx.GetCurrentPage(), name)
+				page, pageName := ctx.GetCurrentPage()
+				_, err := browser.GetElementByLabel(page, pageName, name)
 				if err != nil {
 					return err
 				}
@@ -22,7 +23,7 @@ func (s steps) elementShouldExist() stepbuilder.Step {
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			if !testsconfig.IsElementDefined(name) {
+			if !config.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
 

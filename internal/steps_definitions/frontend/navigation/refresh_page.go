@@ -11,10 +11,11 @@ func (n navigation) refreshPage() stepbuilder.Step {
 		[]string{"the user refresh the page"},
 		func(ctx *scenario.Context) func() error {
 			return func() error {
-				if ctx.GetCurrentPage() == nil {
+				currentPage := ctx.GetCurrentPageOnly()
+				if currentPage == nil {
 					return errors.New("no page opened")
 				}
-				ctx.GetCurrentPage().Refresh()
+				currentPage.Refresh()
 				return nil
 			}
 		},

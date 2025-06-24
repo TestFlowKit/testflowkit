@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"testflowkit/internal/browser"
-	"testflowkit/internal/config/testsconfig"
+	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	sb "testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -15,7 +15,8 @@ func (s steps) checkCheckboxStatus() sb.Step {
 	}
 	definition := func(ctx *scenario.Context) func(string, string) error {
 		return func(checkboxId, status string) error {
-			input, err := browser.GetElementByLabel(ctx.GetCurrentPage(), formatVar(checkboxId))
+			currentPage, pageName := ctx.GetCurrentPage()
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(checkboxId))
 			if err != nil {
 				return err
 			}
@@ -33,7 +34,7 @@ func (s steps) checkCheckboxStatus() sb.Step {
 		vc := sb.ValidationErrors{}
 		checkboxLabel := formatVar(checkboxId)
 
-		if !testsconfig.IsElementDefined(checkboxLabel) {
+		if !config.IsElementDefined(checkboxLabel) {
 			vc.AddMissingElement(checkboxLabel)
 		}
 
@@ -48,7 +49,7 @@ func (s steps) checkCheckboxStatus() sb.Step {
 			Description: "checks if the checkbox is checked or unchecked.",
 			Variables: []sb.DocVariable{
 				{Name: "checkboxId", Description: "The id of the checkbox.", Type: sb.VarTypeString},
-				{Name: "status", Description: "The status of the checkbox.", Type: sb.DocVarTypeEnum("checked", "unchecked")},
+				{Name: "status", Description: "The status of the checkbox.", Type: sb.VarTypeEnum("checked", "unchecked")},
 			},
 			Example:  `Then the "terms" checkbox should be checked`,
 			Category: sb.Form,

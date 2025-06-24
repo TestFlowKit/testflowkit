@@ -19,9 +19,10 @@ func (s steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 				return errors.New("details malformed please go to the doc")
 			}
 
+			currentPage := ctx.GetCurrentPageOnly()
 			var errMsgs []string
 			for name, value := range data {
-				elt, err := ctx.GetCurrentPage().GetOneByTextContent(value)
+				elt, err := currentPage.GetOneByTextContent(value)
 				if err != nil {
 					errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))
 					continue

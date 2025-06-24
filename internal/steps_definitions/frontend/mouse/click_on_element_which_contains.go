@@ -1,7 +1,6 @@
 package mouse
 
 import (
-	"fmt"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -10,10 +9,10 @@ func (s steps) clickOnElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user clicks on {string} which contains "{string}"$`},
 		func(ctx *scenario.Context) func(string, string) error {
-			return func(_ string, text string) error {
-				element, err := ctx.GetCurrentPage().GetOneByTextContent(text)
+			return func(_, text string) error {
+				element, err := ctx.GetCurrentPageOnly().GetOneByTextContent(text)
 				if err != nil {
-					return fmt.Errorf("no element with text containing %s found", text)
+					return err
 				}
 				return element.Click()
 			}

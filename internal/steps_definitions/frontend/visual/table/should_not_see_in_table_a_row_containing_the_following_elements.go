@@ -26,13 +26,14 @@ func (s steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step 
 					return err
 				}
 
+				currentPage := ctx.GetCurrentPageOnly()
 				for _, rowDetails := range data {
-					_, err = getTableRowByCellsContent(ctx.GetCurrentPage(), maps.Values(rowDetails))
+					_, err = getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
 					if err == nil {
-						// TODO: better log
-						return errors.New("row found")
+						return errors.New("row containing the specified elements was found but should not be visible")
 					}
 				}
+
 				return nil
 			}
 		},

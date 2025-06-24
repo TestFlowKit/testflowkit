@@ -13,10 +13,6 @@ func GetSteps() []stepbuilder.Step {
 	handlers := steps{}
 
 	var otherSteps = []stepbuilder.Step{
-		handlers.elementShouldBeVisible(),
-		handlers.elementShouldNotBeVisible(),
-		handlers.elementShouldNotExist(),
-		handlers.elementShouldExist(),
 		handlers.shouldSeeOnPage(),
 		handlers.shouldNotSeeOnPage(),
 		handlers.shouldSeeElementWhichContains(),

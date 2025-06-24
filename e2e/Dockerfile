@@ -1,4 +1,4 @@
-FROM golang:1.23.3-alpine AS build
+FROM golang:1.24.0-alpine AS build
 
 WORKDIR /app
 
@@ -21,4 +21,4 @@ COPY --from=build /app/cmd/testflowkit .
 
 RUN apk add --no-cache chromium
 
-ENTRYPOINT /app/tkit run -l ./features -c ./cli.yml -f ./frontend.yml --timeout 10s
+ENTRYPOINT /app/tkit run --location="./features" --timeout="10s" --env="ci"
