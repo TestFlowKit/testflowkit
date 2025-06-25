@@ -50,7 +50,6 @@ func Load(configFilePath string, overrides Overrides) error {
 }
 
 func applyOverrides(config *Config, overrides Overrides) {
-
 	if overrides.ActiveEnvironment != "" {
 		config.ActiveEnvironment = overrides.ActiveEnvironment
 	}

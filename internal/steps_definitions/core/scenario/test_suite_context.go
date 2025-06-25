@@ -11,32 +11,28 @@ import (
 )
 
 type Context struct {
-	browser             common.Browser
-	page                common.Page
-	timeout, slowMotion time.Duration
-	currentPageName     string
-	headlessMode        bool
-	config              *config.Config
+	frontend *Frontend
+	config   *config.Config
 }
 
 func (c *Context) InitBrowser(incognitoMode bool) {
-	c.browser = browser.CreateInstance(c.headlessMode, c.timeout, c.slowMotion, incognitoMode)
+	c.frontend.browser = browser.CreateInstance(c.frontend.headlessMode, c.frontend.timeout, c.frontend.slowMotion, incognitoMode)
 }
 
 func (c *Context) OpenNewPage(url string) {
-	c.page = c.browser.NewPage(url)
+	c.frontend.page = c.frontend.browser.NewPage(url)
 }
 
 func (c *Context) GetPages() []common.Page {
-	return c.browser.GetPages()
+	return c.frontend.browser.GetPages()
 }
 
 func (c *Context) GetCurrentPage() (common.Page, string) {
-	return c.page, c.currentPageName
+	return c.frontend.page, c.frontend.currentPageName
 }
 
 func (c *Context) GetCurrentPageOnly() common.Page {
-	return c.page
+	return c.frontend.page
 }
 
 func (c *Context) SetCurrentPage(page common.Page, pageName string) error {
@@ -47,12 +43,12 @@ func (c *Context) SetCurrentPage(page common.Page, pageName string) error {
 	page.Focus()
 	page.WaitLoading()
 
-	c.page = page
+	c.frontend.page = page
 
 	if pageName == "" {
 		pageName = "unknown"
 	}
-	c.currentPageName = pageName
+	c.frontend.currentPageName = pageName
 
 	return nil
 }
@@ -62,7 +58,7 @@ func (c *Context) SetCurrentPageOnly(page common.Page) error {
 }
 
 func (c *Context) GetCurrentPageKeyboard() common.Keyboard {
-	return c.page.GetKeyboard()
+	return c.frontend.page.GetKeyboard()
 }
 
 func (c *Context) GetConfig() *config.Config {
@@ -71,11 +67,21 @@ func (c *Context) GetConfig() *config.Config {
 
 func NewContext(cfg *config.Config) *Context {
 	return &Context{
-		browser:      nil,
-		page:         nil,
-		timeout:      time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
-		headlessMode: cfg.IsHeadlessModeEnabled(),
-		slowMotion:   cfg.GetSlowMotion(),
-		config:       cfg,
+		frontend: &Frontend{
+			browser:      nil,
+			page:         nil,
+			timeout:      time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
+			headlessMode: cfg.IsHeadlessModeEnabled(),
+			slowMotion:   cfg.GetSlowMotion(),
+		},
+		config: cfg,
 	}
+}
+
+type Frontend struct {
+	browser             common.Browser
+	page                common.Page
+	timeout, slowMotion time.Duration
+	currentPageName     string
+	headlessMode        bool
 }
