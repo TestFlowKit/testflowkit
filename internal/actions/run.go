@@ -15,6 +15,8 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
+const screenshotDir = "report/screenshots"
+
 func run(appConfig *config.Config) {
 	logger.Info("Starting tests execution ...")
 
@@ -81,7 +83,30 @@ func run(appConfig *config.Config) {
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
+
 		suiteContext.BeforeSuite(func() {
+			err := os.RemoveAll(screenshotDir)
+			if err != nil {
+				logger.Error("Failed to remove screenshot directory", []string{
+					"please check the permissions of the directory",
+					"please check the directory path",
+				}, []string{
+					"please see logs for more details",
+					"please see the test report for more details",
+				})
+				os.Exit(1)
+			}
+			mkdirErr := os.MkdirAll(screenshotDir, 0755)
+			if mkdirErr != nil {
+				logger.Error("Failed to create screenshot directory", []string{
+					"please check the permissions of the directory",
+					"please check the directory path",
+				}, []string{
+					"please see logs for more details",
+					"please see the test report for more details",
+				})
+				os.Exit(1)
+			}
 			testReport.Start()
 		})
 
@@ -109,7 +134,10 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 }
 func afterStepHookInitializer(myCtx *myScenarioCtx) godog.AfterStepHook {
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
-		myCtx.addStep(st.Text, status, err)
+		myCtx.addStep(st.Text, status, stepError{
+			error:          err,
+			screenshotPath: screenshotDir + "/" + st.Text + ".png",
+		})
 		return ctx, err
 	}
 }
@@ -142,6 +170,11 @@ type myScenarioCtx struct {
 	scenarioReport       reporters.Scenario
 }
 
-func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err error) {
+func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err stepError) {
 	c.scenarioReport.AddStep(title, status, time.Since(c.currentStepStartTime), err)
+}
+
+type stepError struct {
+	error
+	screenshotPath string
 }
