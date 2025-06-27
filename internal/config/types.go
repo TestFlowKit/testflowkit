@@ -134,6 +134,10 @@ func (c *Config) GetTimeout() time.Duration {
 	return time.Duration(c.Settings.DefaultTimeout) * time.Millisecond
 }
 
+func (c *Config) GetFrontendBaseURL() string {
+	return c.Environments[c.ActiveEnvironment].FrontendBaseURL
+}
+
 // func (c *Config) GetPageLoadTimeout() time.Duration {
 // 	return time.Duration(c.Settings.PageLoadTimeout) * time.Millisecond
 // }
