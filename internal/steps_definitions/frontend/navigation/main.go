@@ -19,6 +19,7 @@ func GetSteps() []stepbuilder.Step {
 		handlers.openANewBrowserTab(),
 		handlers.openANewPrivateBrowserTab(),
 		handlers.userIsOnHomepage(),
+		handlers.userShouldBeNavigatedToPage(),
 		// TODO: window handling e2e tests
 		handlers.waitAMomentForNewWindow(),
 		handlers.switchToMostOpenedWindow(),

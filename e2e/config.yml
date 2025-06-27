@@ -28,14 +28,6 @@ frontend:
     common:
       visual_test_button:
         - "button"
-      test_checkbox:
-        - "#checkbox"
-        - "#rtt"
-        - "input[type='checkbox']"
-      test_dropdown:
-        - "#select"
-      multiple_dropdown:
-        - "#select-multiple"
       text_field:
         - "#text"
       textarea_field:
@@ -59,6 +51,15 @@ frontend:
       scroll_target_element:
         - "#target-element"
 
+    form_e2e:
+      test_checkbox:
+        - "#checkbox"
+        - "#rtt"
+        - "input[type='checkbox']"
+      test_dropdown:
+        - "#select"
+      multiple_dropdown:
+        - "#select-multiple"
   pages:
     form_e2e: "form"
     google: "https://www.google.com"

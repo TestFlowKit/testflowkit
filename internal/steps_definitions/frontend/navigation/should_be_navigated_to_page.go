@@ -1,4 +1,4 @@
-package assertions
+package navigation
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) userShouldBeNavigatedToPage() stepbuilder.Step {
+func (n navigation) userShouldBeNavigatedToPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
 		func(ctx *scenario.Context) func(string) error {
