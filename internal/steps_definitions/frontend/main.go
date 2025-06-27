@@ -11,6 +11,7 @@ import (
 	"testflowkit/internal/steps_definitions/frontend/keyboard"
 	"testflowkit/internal/steps_definitions/frontend/mouse"
 	"testflowkit/internal/steps_definitions/frontend/navigation"
+	"testflowkit/internal/steps_definitions/frontend/utils"
 	"testflowkit/internal/steps_definitions/frontend/visual"
 
 	"github.com/cucumber/godog"
@@ -36,7 +37,7 @@ func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *stepbuilder.Valid
 }
 
 func getAllSteps() []stepbuilder.Step {
-	return slices.Concat(
+	finalSteps := slices.Concat(
 		form.GetSteps(),
 		keyboard.GetSteps(),
 		navigation.GetSteps(),
@@ -44,6 +45,11 @@ func getAllSteps() []stepbuilder.Step {
 		mouse.GetSteps(),
 		assertions.GetSteps(),
 	)
+
+	for idx, step := range finalSteps {
+		finalSteps[idx] = utils.NewUpdatePageNameDecorator(step)
+	}
+	return finalSteps
 }
 
 func GetDocs() []stepbuilder.Documentation {
