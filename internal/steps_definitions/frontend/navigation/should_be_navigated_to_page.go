@@ -38,7 +38,6 @@ func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 			}
 
 			return ctx, fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
-
 		},
 		func(pageName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

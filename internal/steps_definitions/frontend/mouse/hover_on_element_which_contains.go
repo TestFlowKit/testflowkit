@@ -17,7 +17,6 @@ func (s steps) hoverOnElementWhichContains() stepbuilder.Step {
 			}
 			err = element.Hover()
 			return ctx, err
-
 		},
 		nil,
 		stepbuilder.DocParams{

@@ -22,7 +22,6 @@ func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 				return ctx, fmt.Errorf("%s should not be visible", name)
 			}
 			return ctx, nil
-
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

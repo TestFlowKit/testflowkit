@@ -20,7 +20,6 @@ func (steps) elementShouldNotExist() stepbuilder.Step {
 				return ctx, fmt.Errorf("%s should not exist", name)
 			}
 			return ctx, nil
-
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

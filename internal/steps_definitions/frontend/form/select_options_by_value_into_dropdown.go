@@ -53,7 +53,6 @@ func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.D
 				return ctx, err
 			}
 			return ctx, input.SelectByValue(stringutils.SplitAndTrim(optionValues, ","))
-
 		},
 		func(_, dropdownId string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

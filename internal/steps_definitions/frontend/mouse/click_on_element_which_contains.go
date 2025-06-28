@@ -17,7 +17,6 @@ func (s steps) clickOnElementWhichContains() stepbuilder.Step {
 			}
 			err = element.Click()
 			return ctx, err
-
 		},
 		nil,
 		stepbuilder.DocParams{

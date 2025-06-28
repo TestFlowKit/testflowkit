@@ -30,7 +30,6 @@ func (steps) checkCheckbox() stepbuilder.Step {
 			}
 
 			return ctx, nil
-
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

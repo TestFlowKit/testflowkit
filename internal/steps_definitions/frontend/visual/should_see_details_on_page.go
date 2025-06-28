@@ -12,8 +12,6 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-type shouldSeeDetailsOnPageHandler = func(context.Context, string, *godog.Table) (context.Context, error)
-
 func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 	definition := func(ctx context.Context, elementName string, table *godog.Table) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
@@ -41,7 +39,6 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 		}
 
 		return ctx, nil
-
 	}
 
 	return stepbuilder.NewWithTwoVariables(

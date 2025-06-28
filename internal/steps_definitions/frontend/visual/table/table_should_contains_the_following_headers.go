@@ -28,7 +28,6 @@ func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 			currentPage := scenarioCtx.GetCurrentPageOnly()
 			_, err = getTableHeaderByCellsContent(currentPage, maps.Values(data))
 			return ctx, err
-
 		},
 		nil,
 		stepbuilder.DocParams{

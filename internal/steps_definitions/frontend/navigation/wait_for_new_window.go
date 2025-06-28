@@ -44,7 +44,6 @@ func (steps) switchToNewOpenedWindow() stepbuilder.Step {
 				const milliseconds = 100
 				time.Sleep(milliseconds * time.Millisecond)
 			}
-
 		},
 		nil,
 		stepbuilder.DocParams{

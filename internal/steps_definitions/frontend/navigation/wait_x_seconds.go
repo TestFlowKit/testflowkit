@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-type waitXSecondsHandler = func(context.Context, int) (context.Context, error)
-
 func (steps) userWait() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user waits for {number} seconds$`},

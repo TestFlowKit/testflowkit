@@ -30,7 +30,6 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 			}
 
 			return ctx, nil
-
 		},
 		func(name, _ string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

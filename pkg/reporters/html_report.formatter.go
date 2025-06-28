@@ -31,7 +31,12 @@ func (r htmlReportFormatter) format(ts htmlTestSuiteDetails) string {
 
 func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
 	content := r.formatContent(details)
-	file, err := os.Create("report.html")
+
+	if err := os.MkdirAll("report", 0755); err != nil {
+		log.Panicf("cannot create report directory ( %s )\n", err)
+	}
+
+	file, err := os.Create("report/report.html")
 	if err != nil {
 		log.Panicf("cannot create reporters file in this folder ( %s )\n", err)
 	}
