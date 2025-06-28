@@ -1,18 +1,18 @@
 package navigation
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (n navigation) openANewPrivateBrowserTab() stepbuilder.Step {
+func (steps) openANewPrivateBrowserTab() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{"the user opens a new private browser tab"},
-		func(ctx *scenario.Context) func() error {
-			return func() error {
-				ctx.InitBrowser(true)
-				return nil
-			}
+		func(ctx context.Context) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			scenarioCtx.InitBrowser(true)
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{

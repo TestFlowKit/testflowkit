@@ -1,6 +1,7 @@
 package visual
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -11,34 +12,36 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-func (s steps) shouldSeeDetailsOnPage() stepbuilder.Step {
-	definition := func(ctx *scenario.Context) func(string, *godog.Table) error {
-		return func(elementName string, table *godog.Table) error {
-			data, parseErr := assistdog.NewDefault().ParseMap(table)
-			if parseErr != nil {
-				return errors.New("details malformed please go to the doc")
-			}
+type shouldSeeDetailsOnPageHandler = func(context.Context, string, *godog.Table) (context.Context, error)
 
-			currentPage := ctx.GetCurrentPageOnly()
-			var errMsgs []string
-			for name, value := range data {
-				elt, err := currentPage.GetOneByTextContent(value)
-				if err != nil {
-					errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))
-					continue
-				}
-
-				if !elt.IsVisible() {
-					errMsgs = append(errMsgs, fmt.Sprintf("%s %s is found but is no visible", elementName, name))
-				}
-			}
-
-			if len(errMsgs) > 0 {
-				return errors.New(strings.Join(errMsgs, "\n"))
-			}
-
-			return nil
+func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
+	definition := func(ctx context.Context, elementName string, table *godog.Table) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		data, parseErr := assistdog.NewDefault().ParseMap(table)
+		if parseErr != nil {
+			return ctx, errors.New("details malformed please go to the doc")
 		}
+
+		currentPage := scenarioCtx.GetCurrentPageOnly()
+		var errMsgs []string
+		for name, value := range data {
+			elt, err := currentPage.GetOneByTextContent(value)
+			if err != nil {
+				errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))
+				continue
+			}
+
+			if !elt.IsVisible() {
+				errMsgs = append(errMsgs, fmt.Sprintf("%s %s is found but is no visible", elementName, name))
+			}
+		}
+
+		if len(errMsgs) > 0 {
+			return ctx, errors.New(strings.Join(errMsgs, "\n"))
+		}
+
+		return ctx, nil
+
 	}
 
 	return stepbuilder.NewWithTwoVariables(

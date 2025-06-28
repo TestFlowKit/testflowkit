@@ -1,6 +1,7 @@
 package form
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -10,28 +11,29 @@ import (
 	"testflowkit/pkg/logger"
 )
 
-func (s steps) uncheckCheckbox() stepbuilder.Step {
+func (steps) uncheckCheckbox() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user unchecks the {string} checkbox$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(checkBoxName string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				checkBox, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(checkBoxName))
-				if err != nil {
-					return err
-				}
-
-				if checkBox.IsChecked() {
-					return checkBox.Click()
-				}
-
-				logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
-				return nil
+		func(ctx context.Context, checkBoxName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			page, pageName := scenarioCtx.GetCurrentPage()
+			checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
+			if err != nil {
+				return ctx, err
 			}
+
+			if checkBox.IsChecked() {
+				err = checkBox.Click()
+				return ctx, err
+			}
+
+			logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
+			return ctx, nil
+
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

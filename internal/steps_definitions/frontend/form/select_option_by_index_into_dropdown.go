@@ -1,36 +1,43 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
+	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
+func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
+	formatLabel := func(label string) string {
+		return stringutils.SuffixWithUnderscore(label, "dropdown")
+	}
+
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
-		func(ctx *scenario.Context) func(int, string) error {
-			return func(index int, dropdownId string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, dropdownId+"_dropdown")
-				if err != nil {
-					return err
-				}
-
-				return input.SelectByIndex(index)
+		func(ctx context.Context, index int, dropdownId string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+
+			return ctx, input.SelectByIndex(index)
+
 		},
-		func(_ int, dropdownId string) stepbuilder.ValidationErrors {
+		func(_ int, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := dropdownId + "_dropdown"
+			label := formatLabel(dropdownName)
 			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
+
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Selects an option from a dropdown list based on its index.",
+			Description: "selects an option from a dropdown by its index.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "index", Description: "The index of the option to select.", Type: stepbuilder.VarTypeInt},
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},

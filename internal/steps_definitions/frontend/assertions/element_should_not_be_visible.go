@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -8,36 +9,32 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) elementShouldNotBeVisible() stepbuilder.Step {
+func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should not be visible$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(name string) error {
-				page, pageName := ctx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(page, pageName, name)
-				if err != nil {
-					return err
-				}
-
-				if element.IsVisible() {
-					return fmt.Errorf("%s is visible", name)
-				}
-
-				return nil
+		func(ctx context.Context, name string) (context.Context, error) {
+			currentPage, pageName := scenario.MustFromContext(ctx).GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, name)
+			if err != nil {
+				return ctx, err
 			}
+			if element.IsVisible() {
+				return ctx, fmt.Errorf("%s should not be visible", name)
+			}
+			return ctx, nil
+
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			if !config.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
-
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "This assertion checks if the element is present in the DOM but not displayed",
+			Description: "verifies that an element is not visible on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "Then \"Submit button\" should not be visible",
 			Category: stepbuilder.Visual,

@@ -1,20 +1,16 @@
 package navigation
 
 import (
-	"errors"
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (n navigation) userNavigateToURL() stepbuilder.Step {
-	testDefinition := func(ctx *scenario.Context) func(string) error {
-		return func(URL string) error {
-			if ctx.GetCurrentPageOnly() == nil {
-				return errors.New("no browser opened")
-			}
-			ctx.OpenNewPage(URL)
-			return nil
-		}
+func (steps) userNavigateToURL() stepbuilder.Step {
+	testDefinition := func(ctx context.Context, url string) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		scenarioCtx.OpenNewPage(url)
+		return ctx, nil
 	}
 
 	return stepbuilder.NewWithOneVariable(
@@ -26,7 +22,7 @@ func (n navigation) userNavigateToURL() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "URL", Description: "the absolute URL", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user navigates to the URL “https://myapp.com/login",
+			Example:  "When the user navigates to the URL \"https://myapp.com/login\"",
 			Category: stepbuilder.Navigation,
 		},
 	)

@@ -1,33 +1,36 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
+	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
-	formatVar := func(variable string) string {
-		return variable + "_dropdown"
+func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
+	formatLabel := func(label string) string {
+		return stringutils.SuffixWithUnderscore(label, "dropdown")
 	}
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the option with text {string} from the {string} dropdown$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(optionText, dropdownId string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
-				if err != nil {
-					return err
-				}
-
-				return input.SelectByText([]string{optionText})
+		func(ctx context.Context, optionText, dropdownName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			dropdown, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownName))
+			if err != nil {
+				return ctx, err
 			}
+
+			err = dropdown.SelectByText([]string{optionText})
+			return ctx, err
+
 		},
-		func(_, dropdownId string) stepbuilder.ValidationErrors {
+		func(_, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatVar(dropdownId)
+			label := formatLabel(dropdownName)
 			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
@@ -37,8 +40,8 @@ func (s steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "selects an option from a dropdown by its text.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "optionText", Description: "The text of the option to select.", Type: stepbuilder.VarTypeString},
-				{Name: "dropdownId", Description: "The ID of the dropdown.", Type: stepbuilder.VarTypeString},
+				{Name: "text", Description: "The text of the option to select.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user selects the option with text \"United States\" from the \"Country\" dropdown",
 			Category: stepbuilder.Form,

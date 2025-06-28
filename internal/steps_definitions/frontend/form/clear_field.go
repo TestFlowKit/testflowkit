@@ -1,6 +1,7 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -8,23 +9,22 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) clearField() stepbuilder.Step {
+func (steps) clearField() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "field")
 	}
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user clears the {string} field$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(inputLabel string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
-				if err != nil {
-					return err
-				}
-
-				return input.Clear()
+		func(ctx context.Context, inputLabel string) (context.Context, error) {
+			currentPage, pageName := scenario.GetPage(ctx)
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
+			if err != nil {
+				return ctx, err
 			}
+
+			err = input.Clear()
+			return ctx, err
 		},
 		func(inputLabel string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

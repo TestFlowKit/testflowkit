@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/config"
@@ -8,36 +9,36 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (n navigation) userShouldBeNavigatedToPage() stepbuilder.Step {
+func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
-		func(ctx *scenario.Context) func(string) error {
-			return func(pageName string) error {
-				const maxRetries = 10
-				page := ctx.GetCurrentPageOnly()
-				page.WaitLoading()
+		func(ctx context.Context, pageName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			const maxRetries = 10
+			page := scenarioCtx.GetCurrentPageOnly()
+			page.WaitLoading()
 
-				var url string
-				var err error
-				var currentURL string
+			var url string
+			var err error
+			var currentURL string
 
-				appConfig := ctx.GetConfig()
-				for range maxRetries {
-					url, err = appConfig.GetFrontendURL(pageName)
-					if err != nil {
-						return err
-					}
-					page = ctx.GetCurrentPageOnly()
-					currentURL = page.GetInfo().URL
-					if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
-						return nil
-					}
-
-					page.WaitLoading()
+			appConfig := scenarioCtx.GetConfig()
+			for range maxRetries {
+				url, err = appConfig.GetFrontendURL(pageName)
+				if err != nil {
+					return ctx, err
+				}
+				page = scenarioCtx.GetCurrentPageOnly()
+				currentURL = page.GetInfo().URL
+				if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
+					return ctx, nil
 				}
 
-				return fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
+				page.WaitLoading()
 			}
+
+			return ctx, fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
+
 		},
 		func(pageName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

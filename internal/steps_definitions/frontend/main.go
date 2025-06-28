@@ -4,7 +4,6 @@ import (
 	"slices"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core"
-	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend/assertions"
 	"testflowkit/internal/steps_definitions/frontend/form"
@@ -18,9 +17,8 @@ import (
 )
 
 func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.Config) {
-	frontendCtx := scenario.NewContext(config)
 	for _, step := range getAllSteps() {
-		handler := step.GetDefinition(frontendCtx)
+		handler := step.GetDefinition()
 		for _, sentence := range step.GetSentences() {
 			ctx.Step(core.ConvertWildcards(sentence), handler)
 		}

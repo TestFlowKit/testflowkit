@@ -1,6 +1,7 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -8,22 +9,21 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) userEntersTextIntoField() stepbuilder.Step {
+func (steps) userEntersTextIntoField() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "field")
 	}
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user enters {string} into the {string} field`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(text, inputLabel string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
-				if err != nil {
-					return err
-				}
-				return input.Input(text)
+		func(ctx context.Context, text, inputLabel string) (context.Context, error) {
+			currentPage, pageName := scenario.GetPage(ctx)
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
+			if err != nil {
+				return ctx, err
 			}
+			err = input.Input(text)
+			return ctx, err
 		},
 		func(_, inputLabel string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

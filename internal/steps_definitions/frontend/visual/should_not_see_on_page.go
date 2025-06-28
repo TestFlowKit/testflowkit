@@ -1,26 +1,27 @@
 package visual
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) shouldNotSeeOnPage() stepbuilder.Step {
+func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user should not see "{string}" on the page$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(word string) error {
-				elt, err := ctx.GetCurrentPageOnly().GetOneBySelector("body")
-				if err != nil {
-					return err
-				}
-				if strings.Contains(elt.TextContent(), word) {
-					return fmt.Errorf("%s should not be visible", word)
-				}
-				return nil
+		func(ctx context.Context, word string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			elt, err := scenarioCtx.GetCurrentPageOnly().GetOneBySelector("body")
+			if err != nil {
+				return ctx, err
 			}
+			if strings.Contains(elt.TextContent(), word) {
+				return ctx, fmt.Errorf("%s should not be visible", word)
+			}
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

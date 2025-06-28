@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -8,7 +9,7 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
+func (steps) dropdownHasValuesSelected() stepbuilder.Step {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_dropdown", label)
 	}
@@ -25,26 +26,25 @@ func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(dropdownId, optionLabels string) error {
-				currentPage := ctx.GetCurrentPageOnly()
-				selector, err := currentPage.GetAllBySelector(formatVar(dropdownId))
-				if err != nil {
-					return err
-				}
-
-				labels := stringutils.SplitAndTrim(optionLabels, ",")
-
-				result := currentPage.ExecuteJS(`(selector, labels) => {
-					const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
-					return labels.every(label => selectedOpts.includes(label))
-				}`, selector, labels)
-
-				if result == "true" {
-					return nil
-				}
-				return fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
+		func(ctx context.Context, dropdownId, optionLabels string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			selector, err := currentPage.GetAllBySelector(formatVar(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+
+			labels := stringutils.SplitAndTrim(optionLabels, ",")
+
+			result := currentPage.ExecuteJS(`(selector, labels) => {
+				const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
+				return labels.every(label => selectedOpts.includes(label))
+			}`, selector, labels)
+
+			if result == "true" {
+				return ctx, nil
+			}
+			return ctx, fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
 		},
 		func(dropdownId, _ string) stepbuilder.ValidationErrors {
 			vErr := stepbuilder.ValidationErrors{}
