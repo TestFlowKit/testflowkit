@@ -19,7 +19,6 @@ func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 				return ctx, fmt.Errorf("%d %s expected but %d %s found", expectedCount, elementName, elementCount, elementName)
 			}
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

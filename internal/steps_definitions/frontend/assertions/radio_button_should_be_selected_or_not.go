@@ -31,7 +31,6 @@ func (steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 		}
 
 		return ctx, nil
-
 	}
 
 	validator := func(radioBtnName, _ string) stepbuilder.ValidationErrors {

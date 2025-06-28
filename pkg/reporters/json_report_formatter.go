@@ -21,9 +21,10 @@ func (f jsonReportFormatter) WriteReport(details testSuiteDetails) {
 
 		for j, step := range sc.Steps {
 			scenariosReports[i].Steps[j] = jsonScenarioStepReport{
-				Title:    step.Title,
-				Status:   step.Status,
-				Duration: step.Duration.String(),
+				Title:          step.Title,
+				Status:         step.Status,
+				Duration:       step.Duration.String(),
+				ScreenshotPath: step.ScreenshotPath,
 			}
 		}
 	}
@@ -40,14 +41,18 @@ func (f jsonReportFormatter) WriteReport(details testSuiteDetails) {
 		return
 	}
 
-	file, err := os.Create("report.json")
-	if err != nil {
-		log.Panicf("cannot create reporters file in this folder ( %s )\n", err)
+	if mkdirErr := os.MkdirAll("report", 0755); mkdirErr != nil {
+		log.Panicf("cannot create report directory ( %s )\n", mkdirErr)
+	}
+
+	file, reportCreationErr := os.Create("report/report.json")
+	if reportCreationErr != nil {
+		log.Panicf("cannot create reporters file in this folder ( %s )\n", reportCreationErr)
 	}
 	defer file.Close()
 
-	_, err = file.Write(jsonData)
-	if err != nil {
-		log.Panicf("error when reporters filling ( %s )", err)
+	_, jsonWriteErr := file.Write(jsonData)
+	if jsonWriteErr != nil {
+		log.Panicf("error when reporters filling ( %s )", jsonWriteErr)
 	}
 }

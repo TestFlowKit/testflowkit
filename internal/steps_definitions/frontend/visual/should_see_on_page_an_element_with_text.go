@@ -31,7 +31,6 @@ func (steps) shouldSeeElementWhichContains() stepbuilder.Step {
 			}
 
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

@@ -36,7 +36,6 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 			}
 
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

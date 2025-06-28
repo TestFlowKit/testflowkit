@@ -26,7 +26,6 @@ func (steps) scrollToElement() stepbuilder.Step {
 			}
 
 			return ctx, nil
-
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

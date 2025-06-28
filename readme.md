@@ -27,6 +27,7 @@ TestFlowKit is an open-source command-line tool designed to simplify the creatio
 - **Developed in Go:** Benefit from the performance and speed of Go.
 - **Based on TED:** Organize your tests efficiently using the principles of Test Execution Design.
 - **Macros:** Define reusable scenarios to simplify test writing.
+- **Screenshot on Failure:** Automatically capture screenshots when test steps fail for better debugging.
 
 ## Installation
 

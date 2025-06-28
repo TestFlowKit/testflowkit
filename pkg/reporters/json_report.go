@@ -15,7 +15,8 @@ type jsonScenarioReport struct {
 }
 
 type jsonScenarioStepReport struct {
-	Title    string `json:"title"`
-	Status   string `json:"status"`
-	Duration string `json:"duration"`
+	Title          string `json:"title"`
+	Status         string `json:"status"`
+	Duration       string `json:"duration"`
+	ScreenshotPath string `json:"screenshot_path,omitzero"`
 }

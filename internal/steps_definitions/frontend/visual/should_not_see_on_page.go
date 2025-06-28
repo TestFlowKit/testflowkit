@@ -21,7 +21,6 @@ func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 				return ctx, fmt.Errorf("%s should not be visible", word)
 			}
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

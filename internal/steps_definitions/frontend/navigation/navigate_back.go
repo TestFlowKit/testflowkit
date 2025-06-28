@@ -14,7 +14,6 @@ func (steps) theUserNavigateBack() stepbuilder.Step {
 			currentPage := scenarioCtx.GetCurrentPageOnly()
 			currentPage.Back()
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

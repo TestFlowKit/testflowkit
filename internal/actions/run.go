@@ -3,6 +3,10 @@ package actions
 import (
 	"context"
 	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/frontend"
@@ -14,6 +18,8 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
 )
+
+const screenshotDir = "report/screenshots"
 
 func run(appConfig *config.Config) {
 	logger.Info("Starting tests execution ...")
@@ -82,6 +88,28 @@ func run(appConfig *config.Config) {
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.BeforeSuite(func() {
+			err := os.RemoveAll(screenshotDir)
+			if err != nil {
+				logger.Error("Failed to remove screenshot directory: "+err.Error(), []string{
+					"please check the permissions of the directory",
+					"please check the directory path",
+				}, []string{
+					"please see logs for more details",
+					"please see the test report for more details",
+				})
+				os.Exit(1)
+			}
+			mkdirErr := os.MkdirAll(screenshotDir, 0755)
+			if mkdirErr != nil {
+				logger.Error("Failed to create screenshot directory", []string{
+					"please check the permissions of the directory",
+					"please check the directory path",
+				}, []string{
+					"please see logs for more details",
+					"please see the test report for more details",
+				})
+				os.Exit(1)
+			}
 			testReport.Start()
 		})
 
@@ -95,7 +123,7 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		scenarioCtx := scenario.NewContext(config)
-		frontend.InitTestRunnerScenarios(sc, config)
+		frontend.InitTestRunnerScenarios(sc)
 		myCtx := newScenarioCtx()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 			logger.InfoFf("Running scenario: %s", sc.Name)
@@ -103,15 +131,56 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 			return ctx, nil
 		})
 		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
-		sc.StepContext().After(afterStepHookInitializer(&myCtx))
+		sc.StepContext().After(afterStepHookInitializer(&myCtx, config))
 		sc.After(afterScenarioHookInitializer(testReport, &myCtx))
 	}
 }
-func afterStepHookInitializer(myCtx *myScenarioCtx) godog.AfterStepHook {
+func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog.AfterStepHook {
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
-		myCtx.addStep(st.Text, status, err)
+		if err == nil {
+			myCtx.addStep(st.Text, status, nil)
+			return ctx, nil
+		}
+
+		screenshotPath := ""
+		if config.Settings.ScreenshotOnFailure {
+			currentPage := scenario.MustFromContext(ctx).GetCurrentPageOnly()
+			if currentPage != nil {
+				screenshotPath = takeScreenshot(st, currentPage)
+			}
+		}
+
+		myCtx.addStep(st.Text, status, stepError{
+			error:          err,
+			screenshotPath: screenshotPath,
+		})
 		return ctx, err
 	}
+}
+
+func takeScreenshot(st *godog.Step, currentPage common.Page) string {
+	safeStepName := sanitizeFilename(st.Text)
+	timestamp := time.Now().Format("20060102_150405_000")
+	screenshotPath := filepath.Join(screenshotDir, safeStepName+"_"+timestamp+".png")
+
+	screenshotData, screenshotErr := currentPage.Screenshot()
+	if screenshotErr != nil {
+		logger.Warn("Failed to take screenshot on step failure", []string{
+			"step: " + st.Text,
+			"error: " + screenshotErr.Error(),
+		})
+		screenshotPath = ""
+	} else {
+		if writeErr := os.WriteFile(screenshotPath, screenshotData, 0600); writeErr != nil {
+			logger.Warn("Failed to save screenshot file", []string{
+				"step: " + st.Text,
+				"path: " + screenshotPath,
+				"error: " + writeErr.Error(),
+			})
+			screenshotPath = ""
+		}
+	}
+	return screenshotPath
 }
 
 func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
@@ -144,4 +213,32 @@ type myScenarioCtx struct {
 
 func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err error) {
 	c.scenarioReport.AddStep(title, status, time.Since(c.currentStepStartTime), err)
+}
+
+type stepError struct {
+	error
+	screenshotPath string
+}
+
+func (se stepError) ScreenshotPath() string {
+	return se.screenshotPath
+}
+
+func sanitizeFilename(input string) string {
+	re := regexp.MustCompile(`[^\w\s-]`)
+	cleaned := re.ReplaceAllString(input, "_")
+
+	cleaned = strings.ReplaceAll(cleaned, " ", "_")
+
+	re = regexp.MustCompile(`_+`)
+	cleaned = re.ReplaceAllString(cleaned, "_")
+
+	re = regexp.MustCompile(`^_+|_+$`)
+	cleaned = re.ReplaceAllString(cleaned, "")
+	const maxLength = 100
+	if len(cleaned) > maxLength {
+		cleaned = cleaned[:maxLength]
+	}
+
+	return cleaned
 }

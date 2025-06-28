@@ -24,7 +24,7 @@ type GlobalSettings struct {
 
 	// PageLoadTimeout int `yaml:"page_load_timeout" validate:"min=1000,max=300000"`
 
-	// ScreenshotOnFailure bool `yaml:"screenshot_on_failure"`
+	ScreenshotOnFailure bool `yaml:"screenshot_on_failure"`
 
 	// VideoRecording bool `yaml:"video_recording"`
 
@@ -132,6 +132,10 @@ func (c *Config) GetConcurrency() int {
 
 func (c *Config) GetTimeout() time.Duration {
 	return time.Duration(c.Settings.DefaultTimeout) * time.Millisecond
+}
+
+func (c *Config) IsScreenshotOnFailureEnabled() bool {
+	return c.Settings.ScreenshotOnFailure
 }
 
 func (c *Config) GetFrontendBaseURL() string {

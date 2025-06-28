@@ -32,7 +32,6 @@ func (steps) selectRadioButton() stepbuilder.Step {
 
 			err = radio.Click()
 			return ctx, err
-
 		},
 		func(radioName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

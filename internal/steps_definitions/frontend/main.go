@@ -2,7 +2,6 @@ package frontend
 
 import (
 	"slices"
-	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend/assertions"
@@ -16,7 +15,7 @@ import (
 	"github.com/cucumber/godog"
 )
 
-func InitTestRunnerScenarios(ctx *godog.ScenarioContext, config *config.Config) {
+func InitTestRunnerScenarios(ctx *godog.ScenarioContext) {
 	for _, step := range getAllSteps() {
 		handler := step.GetDefinition()
 		for _, sentence := range step.GetSentences() {

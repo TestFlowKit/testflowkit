@@ -48,7 +48,7 @@ func displayConfigSummary(cfg *config.Config) {
 	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
 	logger.InfoFf("Default Timeout: %dms", cfg.Settings.DefaultTimeout)
 	// logger.InfoFf("Page Load Timeout: %dms", cfg.Settings.PageLoadTimeout)
-	// logger.InfoFf("Screenshot on Failure: %t", cfg.Settings.ScreenshotOnFailure)
+	logger.InfoFf("Screenshot on Failure: %t", cfg.Settings.ScreenshotOnFailure)
 	// logger.InfoFf("Video Recording: %t", cfg.Settings.VideoRecording)
 	logger.InfoFf("Slow Motion: %dms", cfg.Settings.SlowMotion)
 	logger.InfoFf("Elements Configured: %d page groups", len(cfg.Frontend.Elements))

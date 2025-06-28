@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// ContextKey is the key used to store scenario context in context.Context
+// ContextKey is the key used to store scenario context in context.Context.
 type ContextKey struct{}
 
 func WithContext(ctx context.Context, scenarioCtx *Context) context.Context {

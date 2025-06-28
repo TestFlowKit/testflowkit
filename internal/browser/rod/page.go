@@ -130,6 +130,15 @@ func (p *rodPage) Refresh() {
 	p.page = p.page.MustReload()
 }
 
+func (p *rodPage) Screenshot() ([]byte, error) {
+	screenshot, err := p.page.Screenshot(true, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return screenshot, nil
+}
+
 func newRodPage(page *rod.Page) common.Page {
 	return &rodPage{
 		page: page,
