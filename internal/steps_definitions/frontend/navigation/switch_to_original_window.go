@@ -34,7 +34,6 @@ func (steps) switchToOriginalWindow() stepbuilder.Step {
 			logger.Info(fmt.Sprintf("Switched back to original window with URL: %s", originalPage.GetInfo().URL))
 
 			return ctx, nil
-
 		},
 		func() stepbuilder.ValidationErrors {
 			return stepbuilder.ValidationErrors{}

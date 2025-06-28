@@ -39,7 +39,6 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 			}
 
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

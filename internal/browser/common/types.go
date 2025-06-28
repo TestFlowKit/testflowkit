@@ -21,7 +21,7 @@ type Page interface {
 	GetInfo() PageInfo
 	Focus()
 	Back()
-	Screenshot(path string) error
+	Screenshot() ([]byte, error)
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool
 	ExecuteJS(js string, args ...any) string

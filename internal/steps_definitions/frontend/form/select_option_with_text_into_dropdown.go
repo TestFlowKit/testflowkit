@@ -26,7 +26,6 @@ func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
 
 			err = dropdown.SelectByText([]string{optionText})
 			return ctx, err
-
 		},
 		func(_, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

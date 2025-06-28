@@ -33,7 +33,6 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 
 			logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
 			return ctx, nil
-
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

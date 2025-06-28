@@ -35,15 +35,16 @@ func (d *updatePageNameDecorator) GetDefinition() any {
 	}
 
 	wrapperFunc := func(args []reflect.Value) []reflect.Value {
-		// Extract context from the first argument
-		if len(args) > 0 {
-			ctxValue := args[0]
-			if ctxValue.Type() == reflect.TypeOf((*context.Context)(nil)).Elem() {
-				if ctx, ok := ctxValue.Interface().(context.Context); ok {
-					scenarioCtx := scenario.FromContext(ctx)
-					if scenarioCtx != nil {
-						scenarioCtx.UpdatePageNameIfNeeded()
-					}
+		if len(args) == 0 {
+			panic("context is required")
+		}
+
+		ctxValue := args[0]
+		if ctxValue.Type() == reflect.TypeOf((*context.Context)(nil)).Elem() {
+			if ctx, ok := ctxValue.Interface().(context.Context); ok {
+				scenarioCtx := scenario.FromContext(ctx)
+				if scenarioCtx != nil {
+					scenarioCtx.UpdatePageNameIfNeeded()
 				}
 			}
 		}

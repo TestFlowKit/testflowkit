@@ -29,7 +29,6 @@ func (steps) theFieldShouldContain() stepbuilder.Step {
 			}
 
 			return ctx, fmt.Errorf("field should be contains %s but contains %s", text, input.TextContent())
-
 		},
 		func(fieldId, _ string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

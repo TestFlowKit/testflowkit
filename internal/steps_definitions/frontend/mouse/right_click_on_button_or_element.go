@@ -1,27 +1,17 @@
 package mouse
 
 import (
-	"context"
-	"testflowkit/internal/browser"
+	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
-	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
 func (steps) rightClickOn() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user right clicks on {string}$`},
-		func(ctx context.Context, label string) (context.Context, error) {
-			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			element, err := browser.GetElementByLabel(currentPage, pageName, label)
-			if err != nil {
-				return ctx, err
-			}
-			err = element.RightClick()
-			return ctx, err
-
-		},
+		commonSimpleElementInteraction(func(element common.Element) error {
+			return element.RightClick()
+		}),
 		func(label string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			if !config.IsElementDefined(label) {

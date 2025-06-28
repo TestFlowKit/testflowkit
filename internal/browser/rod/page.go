@@ -3,7 +3,6 @@ package rod
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"testflowkit/internal/browser/common"
 
@@ -131,13 +130,13 @@ func (p *rodPage) Refresh() {
 	p.page = p.page.MustReload()
 }
 
-func (p *rodPage) Screenshot(path string) error {
+func (p *rodPage) Screenshot() ([]byte, error) {
 	screenshot, err := p.page.Screenshot(true, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return os.WriteFile(path, screenshot, 0644)
+	return screenshot, nil
 }
 
 func newRodPage(page *rod.Page) common.Page {

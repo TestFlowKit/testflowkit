@@ -24,7 +24,6 @@ func (steps) switchToMostOpenedWindow() stepbuilder.Step {
 			}
 			logger.Info(fmt.Sprintf("Switched to new window with URL: %s", newPage.GetInfo().URL))
 			return ctx, nil
-
 		},
 		nil,
 		stepbuilder.DocParams{

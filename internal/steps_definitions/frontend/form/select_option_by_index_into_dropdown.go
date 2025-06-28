@@ -25,7 +25,6 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 			}
 
 			return ctx, input.SelectByIndex(index)
-
 		},
 		func(_ int, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

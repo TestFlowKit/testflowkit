@@ -45,7 +45,6 @@ func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 				const milliseconds = 100
 				time.Sleep(milliseconds * time.Millisecond)
 			}
-
 		},
 		func(duration string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
