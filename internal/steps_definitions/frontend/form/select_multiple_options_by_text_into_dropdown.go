@@ -1,6 +1,7 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -8,35 +9,36 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
-	formatVar := func(variable string) string {
-		return variable + "_dropdown"
+func (steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
+	formatLabel := func(label string) string {
+		return stringutils.SuffixWithUnderscore(label, "dropdown")
 	}
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the options with text {string} from the {string} dropdown$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(optionLabels, dropdownId string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
-				if err != nil {
-					return err
-				}
-				return input.SelectByText(stringutils.SplitAndTrim(optionLabels, ","))
+		func(ctx context.Context, optionLabels, dropdownId string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+			return ctx, input.SelectByText(stringutils.SplitAndTrim(optionLabels, ","))
+
 		},
-		func(_, dropdownId string) stepbuilder.ValidationErrors {
+		func(_, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatVar(dropdownId)
+			label := formatLabel(dropdownName)
 			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}
+
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Selects multiple options from a dropdown list based on their visible text.",
+			Description: "selects multiple options from a dropdown by their text.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "options", Description: "The options to select.", Type: stepbuilder.VarTypeString},
+				{Name: "options", Description: "Comma-separated list of option texts to select.", Type: stepbuilder.VarTypeString},
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When the user selects the options with text "Konoha,Hidden Leaf Village" from the "Country" dropdown`,

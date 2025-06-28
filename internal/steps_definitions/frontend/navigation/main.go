@@ -4,11 +4,11 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-type navigation struct {
+type steps struct {
 }
 
 func GetSteps() []stepbuilder.Step {
-	handlers := navigation{}
+	handlers := steps{}
 
 	return []stepbuilder.Step{
 		handlers.userNavigateToPage(),

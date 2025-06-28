@@ -10,14 +10,12 @@ func (s steps) userClicksOnElement() stepbuilder.Step {
 		return stringutils.SuffixWithUnderscore(label, "element")
 	}
 
-	handler := clickCommonHandler(formatLabel)
-
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user clicks the {string} element$`},
-		handler.handler(),
-		handler.validation(),
+		clickCommonHandler(formatLabel).handler(),
+		clickCommonHandler(formatLabel).validation(),
 		stepbuilder.DocParams{
-			Description: "performs a click action on the web element identified by its logical name",
+			Description: "performs a click action on the element identified by its logical name",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of element to click on.", Type: stepbuilder.VarTypeString},
 			},

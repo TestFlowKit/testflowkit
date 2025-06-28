@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -8,17 +9,16 @@ import (
 	"testflowkit/pkg/logger"
 )
 
-func (n navigation) userNavigateToPage() stepbuilder.Step {
-	testDefinition := func(ctx *scenario.Context) func(string) error {
-		return func(page string) error {
-			url, err := ctx.GetConfig().GetFrontendURL(page)
-			if err != nil {
-				logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
-				return err
-			}
-			ctx.OpenNewPage(url)
-			return nil
+func (steps) userNavigateToPage() stepbuilder.Step {
+	testDefinition := func(ctx context.Context, page string) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		url, err := scenarioCtx.GetConfig().GetFrontendURL(page)
+		if err != nil {
+			logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
+			return ctx, err
 		}
+		scenarioCtx.OpenNewPage(url)
+		return ctx, nil
 	}
 
 	return stepbuilder.NewWithOneVariable(
@@ -37,7 +37,7 @@ func (n navigation) userNavigateToPage() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "page", Description: "The name of the page to navigate to.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user goes to the “Login” page",
+			Example:  "When the user goes to the \"Login\" page",
 			Category: stepbuilder.Navigation,
 		},
 	)

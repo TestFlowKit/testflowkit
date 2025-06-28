@@ -1,24 +1,26 @@
 package mouse
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) rightClickOn() stepbuilder.Step {
+func (steps) rightClickOn() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user right clicks on {string}$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(label string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(currentPage, pageName, label)
-				if err != nil {
-					return err
-				}
-				return element.RightClick()
+		func(ctx context.Context, label string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, label)
+			if err != nil {
+				return ctx, err
 			}
+			err = element.RightClick()
+			return ctx, err
+
 		},
 		func(label string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
@@ -28,9 +30,9 @@ func (s steps) rightClickOn() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Right clicks on a button or element.",
+			Description: "performs a right click action on the element identified by its logical name",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to right click on.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of element to right click on.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user right clicks on \"Submit button\"",
 			Category: stepbuilder.Mouse,

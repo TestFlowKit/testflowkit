@@ -1,6 +1,7 @@
 package visual
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -8,24 +9,24 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) scrollToElement() stepbuilder.Step {
+func (steps) scrollToElement() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user scrolls to the {string} element$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(name string) error {
-				page, pageName := ctx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(page, pageName, fmt.Sprintf("%s_element", name))
-				if err != nil {
-					return err
-				}
-
-				scrollErr := element.ScrollIntoView()
-				if scrollErr != nil {
-					return scrollErr
-				}
-
-				return nil
+		func(ctx context.Context, name string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			page, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(page, pageName, fmt.Sprintf("%s_element", name))
+			if err != nil {
+				return ctx, err
 			}
+
+			scrollErr := element.ScrollIntoView()
+			if scrollErr != nil {
+				return ctx, scrollErr
+			}
+
+			return ctx, nil
+
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

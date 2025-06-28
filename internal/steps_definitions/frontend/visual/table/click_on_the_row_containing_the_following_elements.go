@@ -1,6 +1,7 @@
 package table
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 
@@ -10,7 +11,7 @@ import (
 )
 
 // TODO: click on cell instead of row
-func (s steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
+func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 	const example = `
 	When the user clicks on the row containing the following elements
 	| Name | Age |
@@ -18,27 +19,27 @@ func (s steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 	`
 	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user clicks on the row containing the following elements$`},
-		func(ctx *scenario.Context) func(*godog.Table) error {
-			return func(table *godog.Table) error {
-				data, err := assistdog.NewDefault().ParseSlice(table)
-				if err != nil {
-					return err
-				}
-
-				for _, rowDetails := range data {
-					element, getRowErr := getTableRowByCellsContent(ctx.GetCurrentPageOnly(), maps.Values(rowDetails))
-					if getRowErr != nil {
-						return getRowErr
-					}
-
-					clickErr := element.Click()
-					if clickErr != nil {
-						return clickErr
-					}
-				}
-
-				return nil
+		func(ctx context.Context, table *godog.Table) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			data, err := assistdog.NewDefault().ParseSlice(table)
+			if err != nil {
+				return ctx, err
 			}
+
+			for _, rowDetails := range data {
+				element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), maps.Values(rowDetails))
+				if getRowErr != nil {
+					return ctx, getRowErr
+				}
+
+				clickErr := element.Click()
+				if clickErr != nil {
+					return ctx, clickErr
+				}
+			}
+
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

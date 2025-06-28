@@ -1,7 +1,7 @@
 package form
 
 import (
-	"fmt"
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -9,7 +9,7 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
+func (steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
 		[]string{`^the user selects the options with values {string} from the {string} dropdown$`},
 		stepbuilder.DocParams{
@@ -24,7 +24,7 @@ func (s steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
 	)
 }
 
-func (s steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
+func (steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
 		[]string{`^the user selects the option with value {string} from the {string} dropdown$`},
 		stepbuilder.DocParams{
@@ -40,20 +40,20 @@ func (s steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 
 func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.DocParams) stepbuilder.Step {
 	formatVar := func(label string) string {
-		return fmt.Sprintf("%s_dropdown", label)
+		return stringutils.SuffixWithUnderscore(label, "dropdown")
 	}
 
 	return stepbuilder.NewWithTwoVariables(
 		phrases,
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(optionValues, dropdownId string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
-				if err != nil {
-					return err
-				}
-				return input.SelectByValue(stringutils.SplitAndTrim(optionValues, ","))
+		func(ctx context.Context, optionValues, dropdownId string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+			return ctx, input.SelectByValue(stringutils.SplitAndTrim(optionValues, ","))
+
 		},
 		func(_, dropdownId string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

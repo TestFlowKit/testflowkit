@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -22,8 +23,9 @@ func (d *updatePageNameDecorator) GetDocumentation() stepbuilder.Documentation {
 func (d *updatePageNameDecorator) GetSentences() []string {
 	return d.step.GetSentences()
 }
-func (d *updatePageNameDecorator) GetDefinition(ctx *scenario.Context) any {
-	originalFunc := d.step.GetDefinition(ctx)
+
+func (d *updatePageNameDecorator) GetDefinition() any {
+	originalFunc := d.step.GetDefinition()
 	originalFuncValue := reflect.ValueOf(originalFunc)
 
 	if originalFuncValue.Kind() != reflect.Func {
@@ -33,7 +35,18 @@ func (d *updatePageNameDecorator) GetDefinition(ctx *scenario.Context) any {
 	}
 
 	wrapperFunc := func(args []reflect.Value) []reflect.Value {
-		ctx.UpdatePageNameIfNeeded()
+		// Extract context from the first argument
+		if len(args) > 0 {
+			ctxValue := args[0]
+			if ctxValue.Type() == reflect.TypeOf((*context.Context)(nil)).Elem() {
+				if ctx, ok := ctxValue.Interface().(context.Context); ok {
+					scenarioCtx := scenario.FromContext(ctx)
+					if scenarioCtx != nil {
+						scenarioCtx.UpdatePageNameIfNeeded()
+					}
+				}
+			}
+		}
 		return originalFuncValue.Call(args)
 	}
 

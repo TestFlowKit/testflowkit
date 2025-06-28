@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/browser"
@@ -9,27 +10,27 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) elementShouldContainsText() stepbuilder.Step {
+func (steps) elementShouldContainsText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the {string} should contain the text {string}$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(name, expectedText string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(currentPage, pageName, name)
-				if err != nil {
-					return err
-				}
-
-				if !element.IsVisible() {
-					return fmt.Errorf("%s is not visible", name)
-				}
-
-				if !strings.Contains(element.TextContent(), expectedText) {
-					return fmt.Errorf("%s does not contain text '%s'", name, expectedText)
-				}
-
-				return nil
+		func(ctx context.Context, name, expectedText string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, name)
+			if err != nil {
+				return ctx, err
 			}
+
+			if !element.IsVisible() {
+				return ctx, fmt.Errorf("%s is not visible", name)
+			}
+
+			if !strings.Contains(element.TextContent(), expectedText) {
+				return ctx, fmt.Errorf("%s does not contain text '%s'", name, expectedText)
+			}
+
+			return ctx, nil
+
 		},
 		func(name, _ string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
