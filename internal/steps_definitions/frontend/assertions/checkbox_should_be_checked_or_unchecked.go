@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"testflowkit/internal/browser"
@@ -9,24 +10,24 @@ import (
 	sb "testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) checkCheckboxStatus() sb.Step {
+func (steps) checkCheckboxStatus() sb.Step {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_checkbox", label)
 	}
-	definition := func(ctx *scenario.Context) func(string, string) error {
-		return func(checkboxId, status string) error {
-			currentPage, pageName := ctx.GetCurrentPage()
+	definition := func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+		return func(ctx context.Context, checkboxId, status string) (context.Context, error) {
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
 			input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(checkboxId))
 			if err != nil {
-				return err
+				return ctx, err
 			}
 			checkValue, isBoolean := input.GetPropertyValue("checked", reflect.Bool).(bool)
 
 			if isBoolean && checkValue && status == "checked" || !checkValue && status == "unchecked" {
-				return nil
+				return ctx, nil
 			}
 
-			return fmt.Errorf("%s checkbox is not %s", checkboxId, status)
+			return ctx, fmt.Errorf("%s checkbox is not %s", checkboxId, status)
 		}
 	}
 

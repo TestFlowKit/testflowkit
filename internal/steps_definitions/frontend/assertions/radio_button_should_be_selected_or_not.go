@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -9,27 +10,27 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
+func (steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
-	definition := func(ctx *scenario.Context) func(string, string) error {
-		return func(radioId, expectedState string) error {
-			currentPage, pageName := ctx.GetCurrentPage()
+	definition := func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+		return func(ctx context.Context, radioId, expectedState string) (context.Context, error) {
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
 			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioId))
 			if err != nil {
-				return err
+				return ctx, err
 			}
 
 			isSelected := input.IsChecked()
 			expectedSelected := expectedState == "selected"
 
 			if isSelected != expectedSelected {
-				return fmt.Errorf("radio button %s is %s but should be %s", radioId, getRadioState(isSelected), expectedState)
+				return ctx, fmt.Errorf("radio button %s is %s but should be %s", radioId, getRadioState(isSelected), expectedState)
 			}
 
-			return nil
+			return ctx, nil
 		}
 	}
 

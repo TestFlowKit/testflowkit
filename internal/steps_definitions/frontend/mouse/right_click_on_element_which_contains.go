@@ -1,7 +1,7 @@
 package mouse
 
 import (
-	"fmt"
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -9,18 +9,19 @@ import (
 func (s steps) rightClickOnElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user right clicks on {string} which contains "{string}"$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(_ string, text string) error {
-				element, err := ctx.GetCurrentPageOnly().GetOneByTextContent(text)
+		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+			return func(ctx context.Context, _, text string) (context.Context, error) {
+				element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)
 				if err != nil {
-					return fmt.Errorf("no element with text containing %s found", text)
+					return ctx, err
 				}
-				return element.RightClick()
+				err = element.RightClick()
+				return ctx, err
 			}
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "Right clicks on an element which contains a specific text.",
+			Description: "right clicks on an element which contains a specific text.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element to right click on.", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},

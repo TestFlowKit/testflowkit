@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/config"
@@ -8,35 +9,35 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (n navigation) userShouldBeNavigatedToPage() stepbuilder.Step {
+func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
-		func(ctx *scenario.Context) func(string) error {
-			return func(pageName string) error {
+		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(ctx context.Context, pageName string) (context.Context, error) {
 				const maxRetries = 10
-				page := ctx.GetCurrentPageOnly()
+				page := scenarioCtx.GetCurrentPageOnly()
 				page.WaitLoading()
 
 				var url string
 				var err error
 				var currentURL string
 
-				appConfig := ctx.GetConfig()
+				appConfig := scenarioCtx.GetConfig()
 				for range maxRetries {
 					url, err = appConfig.GetFrontendURL(pageName)
 					if err != nil {
-						return err
+						return ctx, err
 					}
-					page = ctx.GetCurrentPageOnly()
+					page = scenarioCtx.GetCurrentPageOnly()
 					currentURL = page.GetInfo().URL
 					if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
-						return nil
+						return ctx, nil
 					}
 
 					page.WaitLoading()
 				}
 
-				return fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
+				return ctx, fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
 			}
 		},
 		func(pageName string) stepbuilder.ValidationErrors {

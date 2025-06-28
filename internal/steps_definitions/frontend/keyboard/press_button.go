@@ -1,6 +1,7 @@
 package keyboard
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -29,14 +30,14 @@ func (k keyboardSteps) userPressButton() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{fmt.Sprintf(`^the user presses the "(%s)" key$`, strings.Join(supportedKeys, "|"))},
-		func(ctx *scenario.Context) func(string) error {
-			return func(key string) error {
+		func(ctx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(context context.Context, key string) (context.Context, error) {
 				inputKey := dic[key]
 				if inputKey == '0' {
-					return fmt.Errorf("%s key not recognized", key)
+					return context, fmt.Errorf("%s key not recognized", key)
 				}
 
-				return ctx.GetCurrentPageKeyboard().Press(inputKey)
+				return context, ctx.GetCurrentPageKeyboard().Press(inputKey)
 			}
 		},
 		nil,

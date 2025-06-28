@@ -1,6 +1,7 @@
 package mouse
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
@@ -8,19 +9,19 @@ import (
 func (s steps) doubleClickOnElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user double clicks on {string} which contains "{string}"$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(_, text string) error {
-				element, err := ctx.GetCurrentPageOnly().GetOneByTextContent(text)
+		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+			return func(ctx context.Context, _, text string) (context.Context, error) {
+				element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)
 				if err != nil {
-					return err
+					return ctx, err
 				}
-
-				return element.DoubleClick()
+				err = element.DoubleClick()
+				return ctx, err
 			}
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "Double clicks on an element which contains a specific text.",
+			Description: "double clicks on an element which contains a specific text.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element to double click on.", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},

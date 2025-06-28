@@ -1,12 +1,13 @@
 package stepbuilder
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 )
 
 type stepTwoVars[T supportedTypes, U supportedTypes] struct {
 	sentences  []string
-	definition func(*scenario.Context) func(T, U) error
+	definition func(*scenario.Context) func(context.Context, T, U) (context.Context, error)
 	validator  func(T, U) ValidationErrors
 	doc        DocParams
 }
@@ -43,7 +44,7 @@ func (s stepTwoVars[T, U]) Validate(vc *ValidatorContext) any {
 }
 
 func NewWithTwoVariables[T supportedTypes, U supportedTypes](sentences []string,
-	definition func(*scenario.Context) func(T, U) error,
+	definition func(*scenario.Context) func(context.Context, T, U) (context.Context, error),
 	validator func(T, U) ValidationErrors,
 	documentation DocParams,
 ) Step {

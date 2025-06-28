@@ -1,6 +1,7 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -9,32 +10,33 @@ import (
 	"testflowkit/pkg/logger"
 )
 
-func (s steps) selectRadioButton() stepbuilder.Step {
+func (steps) selectRadioButton() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user selects the {string} radio button$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(radioBtnName string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
-				radioButton, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioBtnName))
+		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(ctx context.Context, radioName string) (context.Context, error) {
+				currentPage, pageName := scenarioCtx.GetCurrentPage()
+				radio, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioName))
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
-				if radioButton.IsChecked() {
+				if radio.IsChecked() {
 					logger.Warn("Radio button already selected", []string{})
-					return nil
+					return ctx, nil
 				}
 
-				return radioButton.Click()
+				err = radio.Click()
+				return ctx, err
 			}
 		},
-		func(radioBtnName string) stepbuilder.ValidationErrors {
+		func(radioName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatLabel(radioBtnName)
+			label := formatLabel(radioName)
 			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
 			}

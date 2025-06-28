@@ -1,6 +1,7 @@
 package table
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 
@@ -9,7 +10,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
+func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 	example := `
 	When the user should see a table with the following headers
 	| Name | Age |
@@ -17,16 +18,16 @@ func (s steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user should see a table with the following headers$`},
-		func(ctx *scenario.Context) func(*godog.Table) error {
-			return func(table *godog.Table) error {
+		func(scenarioCtx *scenario.Context) func(context.Context, *godog.Table) (context.Context, error) {
+			return func(ctx context.Context, table *godog.Table) (context.Context, error) {
 				data, err := assistdog.NewDefault().ParseMap(table)
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
-				currentPage := ctx.GetCurrentPageOnly()
+				currentPage := scenarioCtx.GetCurrentPageOnly()
 				_, err = getTableHeaderByCellsContent(currentPage, maps.Values(data))
-				return err
+				return ctx, err
 			}
 		},
 		nil,

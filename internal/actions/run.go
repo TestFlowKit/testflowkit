@@ -64,7 +64,7 @@ func run(appConfig *config.Config) {
 		"Some selectors may be malformed",
 		"Some selectors may no longer be available",
 		"Some selectors may be incorrect",
-		"Tests steps may be malformed",
+		"Teststeps may be malformed",
 	}, []string{
 		"please check the configuration file",
 		"please check the test steps",

@@ -1,32 +1,31 @@
 package navigation
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 )
 
-func (n navigation) userIsOnHomepage() stepbuilder.Step {
+func (steps) userIsOnHomepage() stepbuilder.Step {
 	const descriptionContext = "indicating that the user begins on the application's primary or default page"
 	const moreDetails = "It assumes a predefined base URL for the \"homepage.\""
 	return stepbuilder.NewWithNoVariables(
 		[]string{"the user is on the homepage"},
-		func(ctx *scenario.Context) func() error {
-			return func() error {
+		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
+			return func(ctx context.Context) (context.Context, error) {
 				const settingsVariable = "homepage"
-				url, err := ctx.GetConfig().GetFrontendURL(settingsVariable)
+				url, err := scenarioCtx.GetConfig().GetFrontendURL(settingsVariable)
 				if err != nil {
 					logger.Fatal(fmt.Sprintf("Url for page %s not configured", settingsVariable), err)
-					return err
+					return ctx, err
 				}
-				if ctx.GetCurrentPageOnly() == nil {
-					ctx.InitBrowser(false)
+				if scenarioCtx.GetCurrentPageOnly() == nil {
+					scenarioCtx.InitBrowser(false)
 				}
-
-				ctx.OpenNewPage(url)
-
-				return nil
+				scenarioCtx.OpenNewPage(url)
+				return ctx, nil
 			}
 		},
 		nil,

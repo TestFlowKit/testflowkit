@@ -1,22 +1,19 @@
 package navigation
 
 import (
-	"errors"
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (n navigation) refreshPage() stepbuilder.Step {
+func (steps) refreshPage() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{"the user refresh the page"},
-		func(ctx *scenario.Context) func() error {
-			return func() error {
-				currentPage := ctx.GetCurrentPageOnly()
-				if currentPage == nil {
-					return errors.New("no page opened")
-				}
+		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
+			return func(ctx context.Context) (context.Context, error) {
+				currentPage := scenarioCtx.GetCurrentPageOnly()
 				currentPage.Refresh()
-				return nil
+				return ctx, nil
 			}
 		},
 		nil,

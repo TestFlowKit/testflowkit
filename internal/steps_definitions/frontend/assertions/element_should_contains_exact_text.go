@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/browser"
@@ -9,23 +10,23 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) elementShouldContainsExactText() stepbuilder.Step {
+func (steps) elementShouldContainsExactText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the text of the {string} element should be exactly {string}$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(name, expectedText string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
+		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+			return func(ctx context.Context, name, expectedText string) (context.Context, error) {
+				currentPage, pageName := scenarioCtx.GetCurrentPage()
 				element, err := browser.GetElementByLabel(currentPage, pageName, name)
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
 				actualText := element.TextContent()
 				if strings.TrimSpace(actualText) != expectedText {
-					return fmt.Errorf("element %s contains '%s' but expected '%s'", name, actualText, expectedText)
+					return ctx, fmt.Errorf("element %s contains '%s' but expected '%s'", name, actualText, expectedText)
 				}
 
-				return nil
+				return ctx, nil
 			}
 		},
 		func(name, _ string) stepbuilder.ValidationErrors {

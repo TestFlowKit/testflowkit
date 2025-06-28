@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -8,18 +9,17 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) elementShouldNotExist() stepbuilder.Step {
+func (steps) elementShouldNotExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should not exist$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(name string) error {
-				page, pageName := ctx.GetCurrentPage()
-				_, err := browser.GetElementByLabel(page, pageName, name)
+		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(ctx context.Context, name string) (context.Context, error) {
+				currentPage, pageName := scenarioCtx.GetCurrentPage()
+				_, err := browser.GetElementByLabel(currentPage, pageName, name)
 				if err == nil {
-					return fmt.Errorf("%s exists but should not", name)
+					return ctx, fmt.Errorf("%s should not exist", name)
 				}
-
-				return nil
+				return ctx, nil
 			}
 		},
 		func(name string) stepbuilder.ValidationErrors {
@@ -31,9 +31,9 @@ func (s steps) elementShouldNotExist() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "This assertion checks if the element is not present in the DOM.",
+			Description: "verifies that an element does not exist on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "Then the submit button should not exist",
 			Category: stepbuilder.Visual,

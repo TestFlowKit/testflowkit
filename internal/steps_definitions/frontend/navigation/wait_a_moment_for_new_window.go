@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -8,22 +9,22 @@ import (
 	"time"
 )
 
-func (n navigation) waitAMomentForNewWindow() stepbuilder.Step {
+func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user waits for a new window to open within {string}$"},
-		func(ctx *scenario.Context) func(string) error {
-			return func(waitTime string) error {
+		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(ctx context.Context, waitTime string) (context.Context, error) {
 				duration, err := time.ParseDuration(waitTime)
 				if err != nil {
 					logger.Error(fmt.Sprintf("Invalid duration format: %s", waitTime), []string{
 						"Duration should be in the format of 1s, 500ms, etc.",
 					}, nil)
-					return err
+					return ctx, err
 				}
 
-				initialPageCount := len(ctx.GetPages())
+				initialPageCount := len(scenarioCtx.GetPages())
 				logger.Info(fmt.Sprintf("Waiting for new window. Current window count: %d", initialPageCount))
 
 				// Wait and check periodically for new windows
@@ -31,14 +32,14 @@ func (n navigation) waitAMomentForNewWindow() stepbuilder.Step {
 				startTime := time.Now()
 				for {
 					if time.Since(startTime) > duration {
-						return fmt.Errorf("no new window detected within %s", waitTime)
+						return ctx, fmt.Errorf("no new window detected within %s", waitTime)
 					}
 
-					currentPageCount := len(ctx.GetPages())
+					currentPageCount := len(scenarioCtx.GetPages())
 					if currentPageCount > initialPageCount {
 						logger.Info(fmt.Sprintf("New window detected! Page count increased from %d to %d",
 							initialPageCount, currentPageCount))
-						return nil
+						return ctx, nil
 					}
 
 					const milliseconds = 100

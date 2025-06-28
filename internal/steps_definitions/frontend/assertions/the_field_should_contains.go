@@ -1,6 +1,7 @@
 package assertions
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -8,26 +9,26 @@ import (
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) theFieldShouldContain() stepbuilder.Step {
+func (steps) theFieldShouldContain() stepbuilder.Step {
 	formatFieldID := func(fieldId string) string {
 		return fmt.Sprintf("%s_field", fieldId)
 	}
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the value of the {string} field should be {string}`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(fieldId, text string) error {
-				page, pageName := ctx.GetCurrentPage()
+		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+			return func(ctx context.Context, fieldId, text string) (context.Context, error) {
+				page, pageName := scenarioCtx.GetCurrentPage()
 				input, err := browser.GetElementByLabel(page, pageName, formatFieldID(fieldId))
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
 				if input.TextContent() == text {
-					return nil
+					return ctx, nil
 				}
 
-				return fmt.Errorf("field should be contains %s but contains %s", text, input.TextContent())
+				return ctx, fmt.Errorf("field should be contains %s but contains %s", text, input.TextContent())
 			}
 		},
 		func(fieldId, _ string) stepbuilder.ValidationErrors {

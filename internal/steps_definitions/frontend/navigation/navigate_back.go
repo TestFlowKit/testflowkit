@@ -1,29 +1,26 @@
 package navigation
 
 import (
-	"errors"
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (n navigation) theUserNavigateBack() stepbuilder.Step {
+func (steps) theUserNavigateBack() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
-		[]string{"the user navigate back"},
-		func(ctx *scenario.Context) func() error {
-			return func() error {
-				currentPage := ctx.GetCurrentPageOnly()
-				if currentPage == nil {
-					return errors.New("no page opened")
-				}
+		[]string{`the user navigates back`},
+		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
+			return func(ctx context.Context) (context.Context, error) {
+				currentPage := scenarioCtx.GetCurrentPageOnly()
 				currentPage.Back()
-				return nil
+				return ctx, nil
 			}
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "navigates back to the previous page.",
+			Description: "navigates back in the browser history.",
 			Variables:   nil,
-			Example:     "Given the user navigate back",
+			Example:     "When the user navigates back",
 			Category:    stepbuilder.Navigation,
 		},
 	)

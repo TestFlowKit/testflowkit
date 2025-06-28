@@ -1,16 +1,17 @@
 package visual
 
 import (
+	"context"
 	"fmt"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) shouldSeeElementWhichContains() stepbuilder.Step {
+func (steps) shouldSeeElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user should see a (link|button|element) which contains "{string}"$`},
-		func(ctx *scenario.Context) func(string, string) error {
-			return func(elementLabel, text string) error {
+		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
+			return func(ctx context.Context, elementLabel, text string) (context.Context, error) {
 				cases := map[string]string{
 					"link":    "a",
 					"button":  "button",
@@ -18,18 +19,18 @@ func (s steps) shouldSeeElementWhichContains() stepbuilder.Step {
 				}
 
 				xPath := fmt.Sprintf("//%s[contains(text(),\"%s\")]", cases[elementLabel], text)
-				element, err := ctx.GetCurrentPageOnly().GetOneByXPath(xPath)
+				element, err := scenarioCtx.GetCurrentPageOnly().GetOneByXPath(xPath)
 				cErr := fmt.Errorf("no %s is visible with text \"%s\"", elementLabel, text)
 				if err != nil {
-					return cErr
+					return ctx, cErr
 				}
 
 				visible := element.IsVisible()
 				if !visible {
-					return cErr
+					return ctx, cErr
 				}
 
-				return nil
+				return ctx, nil
 			}
 		},
 		nil,

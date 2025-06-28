@@ -1,6 +1,7 @@
 package visual
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -11,15 +12,17 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-func (s steps) shouldSeeDetailsOnPage() stepbuilder.Step {
-	definition := func(ctx *scenario.Context) func(string, *godog.Table) error {
-		return func(elementName string, table *godog.Table) error {
+type shouldSeeDetailsOnPageHandler = func(context.Context, string, *godog.Table) (context.Context, error)
+
+func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
+	definition := func(scenarioCtx *scenario.Context) shouldSeeDetailsOnPageHandler {
+		return func(ctx context.Context, elementName string, table *godog.Table) (context.Context, error) {
 			data, parseErr := assistdog.NewDefault().ParseMap(table)
 			if parseErr != nil {
-				return errors.New("details malformed please go to the doc")
+				return ctx, errors.New("details malformed please go to the doc")
 			}
 
-			currentPage := ctx.GetCurrentPageOnly()
+			currentPage := scenarioCtx.GetCurrentPageOnly()
 			var errMsgs []string
 			for name, value := range data {
 				elt, err := currentPage.GetOneByTextContent(value)
@@ -34,10 +37,10 @@ func (s steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 			}
 
 			if len(errMsgs) > 0 {
-				return errors.New(strings.Join(errMsgs, "\n"))
+				return ctx, errors.New(strings.Join(errMsgs, "\n"))
 			}
 
-			return nil
+			return ctx, nil
 		}
 	}
 

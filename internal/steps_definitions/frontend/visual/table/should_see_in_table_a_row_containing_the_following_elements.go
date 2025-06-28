@@ -1,6 +1,7 @@
 package table
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 
@@ -9,7 +10,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func (s steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
+func (steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	example := `
 	When the user should see a row containing the following elements
 	| Name | Age |
@@ -17,22 +18,22 @@ func (s steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	`
 	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user should see a row containing the following elements$`},
-		func(ctx *scenario.Context) func(*godog.Table) error {
-			return func(table *godog.Table) error {
+		func(scenarioCtx *scenario.Context) func(context.Context, *godog.Table) (context.Context, error) {
+			return func(ctx context.Context, table *godog.Table) (context.Context, error) {
 				data, err := assistdog.NewDefault().ParseSlice(table)
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
-				currentPage := ctx.GetCurrentPageOnly()
+				currentPage := scenarioCtx.GetCurrentPageOnly()
 				for _, rowDetails := range data {
 					_, getRowErr := getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
 					if getRowErr != nil {
-						return getRowErr
+						return ctx, getRowErr
 					}
 				}
 
-				return nil
+				return ctx, nil
 			}
 		},
 		nil,

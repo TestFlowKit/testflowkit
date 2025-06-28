@@ -1,25 +1,26 @@
 package visual
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) shouldSeeOnPage() stepbuilder.Step {
+func (steps) shouldSeeOnPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user should see "{string}" on the page$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(word string) error {
-				elt, err := ctx.GetCurrentPageOnly().GetOneBySelector("body")
+		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(ctx context.Context, word string) (context.Context, error) {
+				elt, err := scenarioCtx.GetCurrentPageOnly().GetOneBySelector("body")
 				if err != nil {
-					return err
+					return ctx, err
 				}
 				if !strings.Contains(elt.TextContent(), word) {
-					return fmt.Errorf("%s should be visible", word)
+					return ctx, fmt.Errorf("%s should be visible", word)
 				}
-				return nil
+				return ctx, nil
 			}
 		},
 		nil,

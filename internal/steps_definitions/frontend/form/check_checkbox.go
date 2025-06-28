@@ -1,6 +1,7 @@
 package form
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -8,26 +9,27 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (s steps) checkCheckbox() stepbuilder.Step {
+func (steps) checkCheckbox() stepbuilder.Step {
 	formatLabel := func(label string) string {
 		return stringutils.SuffixWithUnderscore(label, "checkbox")
 	}
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user checks the {string} checkbox$`},
-		func(ctx *scenario.Context) func(string) error {
-			return func(checkBoxName string) error {
-				page, pageName := ctx.GetCurrentPage()
+		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
+			return func(ctx context.Context, checkBoxName string) (context.Context, error) {
+				page, pageName := scenarioCtx.GetCurrentPage()
 				checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
 				if !checkBox.IsChecked() {
-					return checkBox.Click()
+					err = checkBox.Click()
+					return ctx, err
 				}
 
-				return nil
+				return ctx, nil
 			}
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {

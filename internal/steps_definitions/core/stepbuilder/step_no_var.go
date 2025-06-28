@@ -1,12 +1,13 @@
 package stepbuilder
 
 import (
+	"context"
 	"testflowkit/internal/steps_definitions/core/scenario"
 )
 
 type stepWithoutVar struct {
 	sentences  []string
-	definition func(*scenario.Context) func() error
+	definition func(*scenario.Context) func(context.Context) (context.Context, error)
 	validator  func() ValidationErrors
 	doc        DocParams
 }
@@ -42,7 +43,7 @@ func (s stepWithoutVar) Validate(vc *ValidatorContext) any {
 	}
 }
 
-type noVarDef func(*scenario.Context) func() error
+type noVarDef func(*scenario.Context) func(context.Context) (context.Context, error)
 type noVarValidator func() ValidationErrors
 
 func NewWithNoVariables(

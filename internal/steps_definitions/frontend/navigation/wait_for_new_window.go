@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"testflowkit/internal/steps_definitions/core/scenario"
@@ -9,12 +10,12 @@ import (
 	"time"
 )
 
-func (n navigation) switchToNewOpenedWindow() stepbuilder.Step {
+func (steps) switchToNewOpenedWindow() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{"^the user switches to the newly opened window$"},
-		func(ctx *scenario.Context) func() error {
-			return func() error {
-				initialPageCount := len(ctx.GetPages())
+		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
+			return func(ctx context.Context) (context.Context, error) {
+				initialPageCount := len(scenarioCtx.GetPages())
 				logger.Info(fmt.Sprintf("Waiting for new window. Current window count: %d", initialPageCount))
 
 				// TODO: refactor in order to use the Wait function
@@ -22,22 +23,22 @@ func (n navigation) switchToNewOpenedWindow() stepbuilder.Step {
 				const duration = 6 * time.Minute
 				for {
 					if time.Since(startTime) > duration {
-						return errors.New("no new window detected")
+						return ctx, errors.New("no new window detected")
 					}
 
-					currentPageCount := len(ctx.GetPages())
+					currentPageCount := len(scenarioCtx.GetPages())
 					if currentPageCount > initialPageCount {
 						logger.Info(fmt.Sprintf("New window detected! Page count increased from %d to %d",
 							initialPageCount, currentPageCount))
 
-						pages := ctx.GetPages()
+						pages := scenarioCtx.GetPages()
 						// In Rod, the most recently opened page is typically the first in the pages list
 						newPage := pages[0]
-						if err := ctx.SetCurrentPage(newPage); err != nil {
-							return fmt.Errorf("failed to set current page: %w", err)
+						if err := scenarioCtx.SetCurrentPage(newPage); err != nil {
+							return ctx, fmt.Errorf("failed to set current page: %w", err)
 						}
 
-						return nil
+						return ctx, nil
 					}
 
 					const milliseconds = 100

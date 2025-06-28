@@ -1,24 +1,27 @@
 package mouse
 
 import (
+	"context"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 )
 
-func (s steps) hoverOnElement() stepbuilder.Step {
+type hoverOnElementHandler = func(context.Context, string) (context.Context, error)
+
+func (steps) hoverOnElement() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user hovers on {string}$`},
-		func(ctx *scenario.Context) func(label string) error {
-			return func(label string) error {
-				currentPage, pageName := ctx.GetCurrentPage()
+		func(scenarioCtx *scenario.Context) hoverOnElementHandler {
+			return func(ctx context.Context, label string) (context.Context, error) {
+				currentPage, pageName := scenarioCtx.GetCurrentPage()
 				element, err := browser.GetElementByLabel(currentPage, pageName, label)
 				if err != nil {
-					return err
+					return ctx, err
 				}
-
-				return element.Hover()
+				err = element.Hover()
+				return ctx, err
 			}
 		},
 		func(label string) stepbuilder.ValidationErrors {
@@ -29,9 +32,9 @@ func (s steps) hoverOnElement() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Hover on a element.",
+			Description: "performs a hover action on the element identified by its logical name",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to hover on.", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The logical name of element to hover on.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  "When the user hovers on \"Submit button\"",
 			Category: stepbuilder.Mouse,
