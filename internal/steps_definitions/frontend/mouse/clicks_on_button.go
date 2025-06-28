@@ -2,7 +2,6 @@ package mouse
 
 import (
 	"context"
-	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 )
@@ -14,10 +13,8 @@ func (steps) userClicksOnButton() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user clicks the {string} button$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, name string) (context.Context, error) {
-				return clickCommonHandler(formatLabel).handler()(scenarioCtx)(ctx, name)
-			}
+		func(ctx context.Context, name string) (context.Context, error) {
+			return clickCommonHandler(formatLabel).handler()(ctx, name)
 		},
 		clickCommonHandler(formatLabel).validation(),
 		stepbuilder.DocParams{

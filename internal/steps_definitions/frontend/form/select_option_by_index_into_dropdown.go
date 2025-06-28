@@ -16,16 +16,16 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, int, string) (context.Context, error) {
-			return func(ctx context.Context, index int, dropdownId string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownId))
-				if err != nil {
-					return ctx, err
-				}
-
-				return ctx, input.SelectByIndex(index)
+		func(ctx context.Context, index int, dropdownId string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+
+			return ctx, input.SelectByIndex(index)
+
 		},
 		func(_ int, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

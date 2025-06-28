@@ -13,21 +13,20 @@ import (
 func (steps) elementShouldContainsExactText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the text of the {string} element should be exactly {string}$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, name, expectedText string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(currentPage, pageName, name)
-				if err != nil {
-					return ctx, err
-				}
-
-				actualText := element.TextContent()
-				if strings.TrimSpace(actualText) != expectedText {
-					return ctx, fmt.Errorf("element %s contains '%s' but expected '%s'", name, actualText, expectedText)
-				}
-
-				return ctx, nil
+		func(ctx context.Context, name, expectedText string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, name)
+			if err != nil {
+				return ctx, err
 			}
+
+			actualText := element.TextContent()
+			if strings.TrimSpace(actualText) != expectedText {
+				return ctx, fmt.Errorf("element %s contains '%s' but expected '%s'", name, actualText, expectedText)
+			}
+
+			return ctx, nil
 		},
 		func(name, _ string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
@@ -38,7 +37,7 @@ func (steps) elementShouldContainsExactText() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "This assertion checks if the element’s visible text is an exact match to the specified string.",
+			Description: "This assertion checks if the element's visible text is an exact match to the specified string.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "expectedText", Description: "The exact text that should be contained.", Type: stepbuilder.VarTypeString},

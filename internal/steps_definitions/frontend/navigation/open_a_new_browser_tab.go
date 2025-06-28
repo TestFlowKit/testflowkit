@@ -9,11 +9,10 @@ import (
 func (steps) openANewBrowserTab() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{"the user opens a new browser tab"},
-		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
-			return func(ctx context.Context) (context.Context, error) {
-				scenarioCtx.InitBrowser(false)
-				return ctx, nil
-			}
+		func(ctx context.Context) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			scenarioCtx.InitBrowser(false)
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{

@@ -10,16 +10,15 @@ import (
 )
 
 func (steps) userNavigateToPage() stepbuilder.Step {
-	testDefinition := func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-		return func(ctx context.Context, page string) (context.Context, error) {
-			url, err := scenarioCtx.GetConfig().GetFrontendURL(page)
-			if err != nil {
-				logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
-				return ctx, err
-			}
-			scenarioCtx.OpenNewPage(url)
-			return ctx, nil
+	testDefinition := func(ctx context.Context, page string) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		url, err := scenarioCtx.GetConfig().GetFrontendURL(page)
+		if err != nil {
+			logger.Fatal(fmt.Sprintf("Url for page %s not configured", page), err)
+			return ctx, err
 		}
+		scenarioCtx.OpenNewPage(url)
+		return ctx, nil
 	}
 
 	return stepbuilder.NewWithOneVariable(

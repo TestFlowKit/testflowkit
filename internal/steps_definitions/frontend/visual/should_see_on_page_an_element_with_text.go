@@ -10,28 +10,28 @@ import (
 func (steps) shouldSeeElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user should see a (link|button|element) which contains "{string}"$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, elementLabel, text string) (context.Context, error) {
-				cases := map[string]string{
-					"link":    "a",
-					"button":  "button",
-					"element": "*",
-				}
-
-				xPath := fmt.Sprintf("//%s[contains(text(),\"%s\")]", cases[elementLabel], text)
-				element, err := scenarioCtx.GetCurrentPageOnly().GetOneByXPath(xPath)
-				cErr := fmt.Errorf("no %s is visible with text \"%s\"", elementLabel, text)
-				if err != nil {
-					return ctx, cErr
-				}
-
-				visible := element.IsVisible()
-				if !visible {
-					return ctx, cErr
-				}
-
-				return ctx, nil
+		func(ctx context.Context, elementLabel, text string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			cases := map[string]string{
+				"link":    "a",
+				"button":  "button",
+				"element": "*",
 			}
+
+			xPath := fmt.Sprintf("//%s[contains(text(),\"%s\")]", cases[elementLabel], text)
+			element, err := scenarioCtx.GetCurrentPageOnly().GetOneByXPath(xPath)
+			cErr := fmt.Errorf("no %s is visible with text \"%s\"", elementLabel, text)
+			if err != nil {
+				return ctx, cErr
+			}
+
+			visible := element.IsVisible()
+			if !visible {
+				return ctx, cErr
+			}
+
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

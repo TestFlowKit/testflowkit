@@ -11,15 +11,15 @@ import (
 func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user should see {number} {string} on the page$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, int, string) (context.Context, error) {
-			return func(ctx context.Context, expectedCount int, elementName string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				elementCount := browser.GetElementCount(currentPage, pageName, elementName)
-				if elementCount != expectedCount {
-					return ctx, fmt.Errorf("%d %s expected but %d %s found", expectedCount, elementName, elementCount, elementName)
-				}
-				return ctx, nil
+		func(ctx context.Context, expectedCount int, elementName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			elementCount := browser.GetElementCount(currentPage, pageName, elementName)
+			if elementCount != expectedCount {
+				return ctx, fmt.Errorf("%d %s expected but %d %s found", expectedCount, elementName, elementCount, elementName)
 			}
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

@@ -11,20 +11,20 @@ import (
 func (steps) switchToMostOpenedWindow() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{"^the user switches to the most recently window opened$"},
-		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
-			return func(ctx context.Context) (context.Context, error) {
-				pages := scenarioCtx.GetPages()
-				const minPages = 2
-				if len(pages) < minPages {
-					return ctx, fmt.Errorf("no additional windows found to switch to (only %d window open)", len(pages))
-				}
-				newPage := pages[0]
-				if err := scenarioCtx.SetCurrentPage(newPage); err != nil {
-					return ctx, fmt.Errorf("failed to set current page: %w", err)
-				}
-				logger.Info(fmt.Sprintf("Switched to new window with URL: %s", newPage.GetInfo().URL))
-				return ctx, nil
+		func(ctx context.Context) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			pages := scenarioCtx.GetPages()
+			const minPages = 2
+			if len(pages) < minPages {
+				return ctx, fmt.Errorf("no additional windows found to switch to (only %d window open)", len(pages))
 			}
+			newPage := pages[0]
+			if err := scenarioCtx.SetCurrentPage(newPage); err != nil {
+				return ctx, fmt.Errorf("failed to set current page: %w", err)
+			}
+			logger.Info(fmt.Sprintf("Switched to new window with URL: %s", newPage.GetInfo().URL))
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

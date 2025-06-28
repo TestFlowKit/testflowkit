@@ -13,20 +13,19 @@ func (steps) userIsOnHomepage() stepbuilder.Step {
 	const moreDetails = "It assumes a predefined base URL for the \"homepage.\""
 	return stepbuilder.NewWithNoVariables(
 		[]string{"the user is on the homepage"},
-		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
-			return func(ctx context.Context) (context.Context, error) {
-				const settingsVariable = "homepage"
-				url, err := scenarioCtx.GetConfig().GetFrontendURL(settingsVariable)
-				if err != nil {
-					logger.Fatal(fmt.Sprintf("Url for page %s not configured", settingsVariable), err)
-					return ctx, err
-				}
-				if scenarioCtx.GetCurrentPageOnly() == nil {
-					scenarioCtx.InitBrowser(false)
-				}
-				scenarioCtx.OpenNewPage(url)
-				return ctx, nil
+		func(ctx context.Context) (context.Context, error) {
+			const settingsVariable = "homepage"
+			scenarioCtx := scenario.MustFromContext(ctx)
+			url, err := scenarioCtx.GetConfig().GetFrontendURL(settingsVariable)
+			if err != nil {
+				logger.Fatal(fmt.Sprintf("Url for page %s not configured", settingsVariable), err)
+				return ctx, err
 			}
+			if scenarioCtx.GetCurrentPageOnly() == nil {
+				scenarioCtx.InitBrowser(false)
+			}
+			scenarioCtx.OpenNewPage(url)
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{

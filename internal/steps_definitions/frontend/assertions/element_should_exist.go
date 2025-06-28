@@ -11,12 +11,10 @@ import (
 func (steps) elementShouldExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should exist$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, name string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				_, err := browser.GetElementByLabel(currentPage, pageName, name)
-				return ctx, err
-			}
+		func(ctx context.Context, name string) (context.Context, error) {
+			currentPage, pageName := scenario.MustFromContext(ctx).GetCurrentPage()
+			_, err := browser.GetElementByLabel(currentPage, pageName, name)
+			return ctx, err
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

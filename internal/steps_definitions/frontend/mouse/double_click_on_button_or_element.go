@@ -13,16 +13,16 @@ func (steps) doubleClickOn() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user double clicks on {string}$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, label string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(currentPage, pageName, label)
-				if err != nil {
-					return ctx, err
-				}
-				err = element.DoubleClick()
+		func(ctx context.Context, label string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, label)
+			if err != nil {
 				return ctx, err
 			}
+			err = element.DoubleClick()
+			return ctx, err
+
 		},
 		func(label string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

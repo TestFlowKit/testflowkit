@@ -12,15 +12,15 @@ import (
 func (steps) elementShouldNotExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should not exist$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, name string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				_, err := browser.GetElementByLabel(currentPage, pageName, name)
-				if err == nil {
-					return ctx, fmt.Errorf("%s should not exist", name)
-				}
-				return ctx, nil
+		func(ctx context.Context, name string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			_, err := browser.GetElementByLabel(currentPage, pageName, name)
+			if err == nil {
+				return ctx, fmt.Errorf("%s should not exist", name)
 			}
+			return ctx, nil
+
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

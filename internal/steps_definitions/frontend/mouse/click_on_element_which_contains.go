@@ -9,15 +9,15 @@ import (
 func (s steps) clickOnElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user clicks on {string} which contains "{string}"$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, _, text string) (context.Context, error) {
-				element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)
-				if err != nil {
-					return ctx, err
-				}
-				err = element.Click()
+		func(ctx context.Context, _, text string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)
+			if err != nil {
 				return ctx, err
 			}
+			err = element.Click()
+			return ctx, err
+
 		},
 		nil,
 		stepbuilder.DocParams{

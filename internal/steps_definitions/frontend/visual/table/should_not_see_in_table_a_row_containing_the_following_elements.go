@@ -20,23 +20,23 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user should not see a row containing the following elements$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, *godog.Table) (context.Context, error) {
-			return func(ctx context.Context, table *godog.Table) (context.Context, error) {
-				data, err := assistdog.NewDefault().ParseSlice(table)
-				if err != nil {
-					return ctx, err
-				}
-
-				currentPage := scenarioCtx.GetCurrentPageOnly()
-				for _, rowDetails := range data {
-					_, err = getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
-					if err == nil {
-						return ctx, errors.New("row containing the specified elements was found but should not be visible")
-					}
-				}
-
-				return ctx, nil
+		func(ctx context.Context, table *godog.Table) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			data, err := assistdog.NewDefault().ParseSlice(table)
+			if err != nil {
+				return ctx, err
 			}
+
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			for _, rowDetails := range data {
+				_, err = getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
+				if err == nil {
+					return ctx, errors.New("row containing the specified elements was found but should not be visible")
+				}
+			}
+
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

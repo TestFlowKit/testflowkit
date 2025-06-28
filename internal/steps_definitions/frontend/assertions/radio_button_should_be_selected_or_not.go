@@ -15,23 +15,23 @@ func (steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 		return stringutils.SuffixWithUnderscore(label, "radio_button")
 	}
 
-	definition := func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-		return func(ctx context.Context, radioId, expectedState string) (context.Context, error) {
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioId))
-			if err != nil {
-				return ctx, err
-			}
-
-			isSelected := input.IsChecked()
-			expectedSelected := expectedState == "selected"
-
-			if isSelected != expectedSelected {
-				return ctx, fmt.Errorf("radio button %s is %s but should be %s", radioId, getRadioState(isSelected), expectedState)
-			}
-
-			return ctx, nil
+	definition := func(ctx context.Context, radioId, expectedState string) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		currentPage, pageName := scenarioCtx.GetCurrentPage()
+		input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioId))
+		if err != nil {
+			return ctx, err
 		}
+
+		isSelected := input.IsChecked()
+		expectedSelected := expectedState == "selected"
+
+		if isSelected != expectedSelected {
+			return ctx, fmt.Errorf("radio button %s is %s but should be %s", radioId, getRadioState(isSelected), expectedState)
+		}
+
+		return ctx, nil
+
 	}
 
 	validator := func(radioBtnName, _ string) stepbuilder.ValidationErrors {

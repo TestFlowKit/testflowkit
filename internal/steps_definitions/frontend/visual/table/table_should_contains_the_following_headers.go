@@ -18,17 +18,17 @@ func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user should see a table with the following headers$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, *godog.Table) (context.Context, error) {
-			return func(ctx context.Context, table *godog.Table) (context.Context, error) {
-				data, err := assistdog.NewDefault().ParseMap(table)
-				if err != nil {
-					return ctx, err
-				}
-
-				currentPage := scenarioCtx.GetCurrentPageOnly()
-				_, err = getTableHeaderByCellsContent(currentPage, maps.Values(data))
+		func(ctx context.Context, table *godog.Table) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			data, err := assistdog.NewDefault().ParseMap(table)
+			if err != nil {
 				return ctx, err
 			}
+
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			_, err = getTableHeaderByCellsContent(currentPage, maps.Values(data))
+			return ctx, err
+
 		},
 		nil,
 		stepbuilder.DocParams{

@@ -19,27 +19,27 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 	`
 	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user clicks on the row containing the following elements$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, *godog.Table) (context.Context, error) {
-			return func(ctx context.Context, table *godog.Table) (context.Context, error) {
-				data, err := assistdog.NewDefault().ParseSlice(table)
-				if err != nil {
-					return ctx, err
-				}
-
-				for _, rowDetails := range data {
-					element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), maps.Values(rowDetails))
-					if getRowErr != nil {
-						return ctx, getRowErr
-					}
-
-					clickErr := element.Click()
-					if clickErr != nil {
-						return ctx, clickErr
-					}
-				}
-
-				return ctx, nil
+		func(ctx context.Context, table *godog.Table) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			data, err := assistdog.NewDefault().ParseSlice(table)
+			if err != nil {
+				return ctx, err
 			}
+
+			for _, rowDetails := range data {
+				element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), maps.Values(rowDetails))
+				if getRowErr != nil {
+					return ctx, getRowErr
+				}
+
+				clickErr := element.Click()
+				if clickErr != nil {
+					return ctx, clickErr
+				}
+			}
+
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

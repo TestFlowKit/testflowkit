@@ -12,20 +12,19 @@ import (
 func (steps) elementShouldBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should be visible$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, elementName string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(currentPage, pageName, elementName)
-				if err != nil {
-					return ctx, err
-				}
-
-				if !element.IsVisible() {
-					return ctx, fmt.Errorf("%s is not visible", elementName)
-				}
-
-				return ctx, nil
+		func(ctx context.Context, elementName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, elementName)
+			if err != nil {
+				return ctx, err
 			}
+
+			if !element.IsVisible() {
+				return ctx, fmt.Errorf("%s is not visible", elementName)
+			}
+
+			return ctx, nil
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

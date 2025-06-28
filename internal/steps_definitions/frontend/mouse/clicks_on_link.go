@@ -1,8 +1,6 @@
 package mouse
 
 import (
-	"context"
-	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
 )
@@ -12,14 +10,11 @@ func (s steps) userClicksOnLink() stepbuilder.Step {
 		return stringutils.SuffixWithUnderscore(label, "link")
 	}
 
+	common := clickCommonHandler(formatLabel)
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user clicks the {string} link$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, name string) (context.Context, error) {
-				return clickCommonHandler(formatLabel).handler()(scenarioCtx)(ctx, name)
-			}
-		},
-		clickCommonHandler(formatLabel).validation(),
+		common.handler(),
+		common.validation(),
 		stepbuilder.DocParams{
 			Description: "performs a click action on the link identified by its logical name",
 			Variables: []stepbuilder.DocVariable{

@@ -2,7 +2,6 @@ package navigation
 
 import (
 	"context"
-	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"time"
 )
@@ -12,11 +11,9 @@ type waitXSecondsHandler = func(context.Context, int) (context.Context, error)
 func (steps) userWait() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user waits for {number} seconds$`},
-		func(_ *scenario.Context) waitXSecondsHandler {
-			return func(ctx context.Context, seconds int) (context.Context, error) {
-				time.Sleep(time.Duration(seconds) * time.Second)
-				return ctx, nil
-			}
+		func(ctx context.Context, seconds int) (context.Context, error) {
+			time.Sleep(time.Duration(seconds) * time.Second)
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{

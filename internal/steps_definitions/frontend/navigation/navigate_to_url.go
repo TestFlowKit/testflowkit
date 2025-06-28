@@ -7,11 +7,10 @@ import (
 )
 
 func (steps) userNavigateToURL() stepbuilder.Step {
-	testDefinition := func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-		return func(ctx context.Context, url string) (context.Context, error) {
-			scenarioCtx.OpenNewPage(url)
-			return ctx, nil
-		}
+	testDefinition := func(ctx context.Context, url string) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		scenarioCtx.OpenNewPage(url)
+		return ctx, nil
 	}
 
 	return stepbuilder.NewWithOneVariable(

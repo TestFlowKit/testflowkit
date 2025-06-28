@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"testflowkit/internal/config"
+	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/frontend"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
@@ -93,10 +94,12 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 }
 func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
+		scenarioCtx := scenario.NewContext(config)
 		frontend.InitTestRunnerScenarios(sc, config)
 		myCtx := newScenarioCtx()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 			logger.InfoFf("Running scenario: %s", sc.Name)
+			ctx = scenario.WithContext(ctx, scenarioCtx)
 			return ctx, nil
 		})
 		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))

@@ -16,16 +16,14 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user enters {string} into the {string} field`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, text, inputLabel string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
-				if err != nil {
-					return ctx, err
-				}
-				err = input.Input(text)
+		func(ctx context.Context, text, inputLabel string) (context.Context, error) {
+			currentPage, pageName := scenario.GetPage(ctx)
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
+			if err != nil {
 				return ctx, err
 			}
+			err = input.Input(text)
+			return ctx, err
 		},
 		func(_, inputLabel string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

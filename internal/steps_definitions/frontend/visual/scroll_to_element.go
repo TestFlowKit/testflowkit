@@ -12,21 +12,21 @@ import (
 func (steps) scrollToElement() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user scrolls to the {string} element$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, name string) (context.Context, error) {
-				page, pageName := scenarioCtx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(page, pageName, fmt.Sprintf("%s_element", name))
-				if err != nil {
-					return ctx, err
-				}
-
-				scrollErr := element.ScrollIntoView()
-				if scrollErr != nil {
-					return ctx, scrollErr
-				}
-
-				return ctx, nil
+		func(ctx context.Context, name string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			page, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(page, pageName, fmt.Sprintf("%s_element", name))
+			if err != nil {
+				return ctx, err
 			}
+
+			scrollErr := element.ScrollIntoView()
+			if scrollErr != nil {
+				return ctx, scrollErr
+			}
+
+			return ctx, nil
+
 		},
 		func(name string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

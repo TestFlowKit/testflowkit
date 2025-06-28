@@ -26,26 +26,25 @@ func (steps) dropdownHasValuesSelected() stepbuilder.Step {
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the {string} dropdown should have "{string}" selected$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, dropdownId, optionLabels string) (context.Context, error) {
-				currentPage := scenarioCtx.GetCurrentPageOnly()
-				selector, err := currentPage.GetAllBySelector(formatVar(dropdownId))
-				if err != nil {
-					return ctx, err
-				}
-
-				labels := stringutils.SplitAndTrim(optionLabels, ",")
-
-				result := currentPage.ExecuteJS(`(selector, labels) => {
-					const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
-					return labels.every(label => selectedOpts.includes(label))
-				}`, selector, labels)
-
-				if result == "true" {
-					return ctx, nil
-				}
-				return ctx, fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
+		func(ctx context.Context, dropdownId, optionLabels string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			selector, err := currentPage.GetAllBySelector(formatVar(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+
+			labels := stringutils.SplitAndTrim(optionLabels, ",")
+
+			result := currentPage.ExecuteJS(`(selector, labels) => {
+				const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
+				return labels.every(label => selectedOpts.includes(label))
+			}`, selector, labels)
+
+			if result == "true" {
+				return ctx, nil
+			}
+			return ctx, fmt.Errorf("%s value is not selected in %s dropdown", optionLabels, dropdownId)
 		},
 		func(dropdownId, _ string) stepbuilder.ValidationErrors {
 			vErr := stepbuilder.ValidationErrors{}

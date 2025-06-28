@@ -12,33 +12,33 @@ import (
 func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{"^the user should be navigated to {string} page$"},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, pageName string) (context.Context, error) {
-				const maxRetries = 10
-				page := scenarioCtx.GetCurrentPageOnly()
-				page.WaitLoading()
+		func(ctx context.Context, pageName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			const maxRetries = 10
+			page := scenarioCtx.GetCurrentPageOnly()
+			page.WaitLoading()
 
-				var url string
-				var err error
-				var currentURL string
+			var url string
+			var err error
+			var currentURL string
 
-				appConfig := scenarioCtx.GetConfig()
-				for range maxRetries {
-					url, err = appConfig.GetFrontendURL(pageName)
-					if err != nil {
-						return ctx, err
-					}
-					page = scenarioCtx.GetCurrentPageOnly()
-					currentURL = page.GetInfo().URL
-					if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
-						return ctx, nil
-					}
-
-					page.WaitLoading()
+			appConfig := scenarioCtx.GetConfig()
+			for range maxRetries {
+				url, err = appConfig.GetFrontendURL(pageName)
+				if err != nil {
+					return ctx, err
+				}
+				page = scenarioCtx.GetCurrentPageOnly()
+				currentURL = page.GetInfo().URL
+				if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
+					return ctx, nil
 				}
 
-				return ctx, fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
+				page.WaitLoading()
 			}
+
+			return ctx, fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)
+
 		},
 		func(pageName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

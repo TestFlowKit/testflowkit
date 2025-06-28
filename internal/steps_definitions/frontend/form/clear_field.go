@@ -16,17 +16,15 @@ func (steps) clearField() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user clears the {string} field$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, inputLabel string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
-				if err != nil {
-					return ctx, err
-				}
-
-				err = input.Clear()
+		func(ctx context.Context, inputLabel string) (context.Context, error) {
+			currentPage, pageName := scenario.GetPage(ctx)
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
+			if err != nil {
 				return ctx, err
 			}
+
+			err = input.Clear()
+			return ctx, err
 		},
 		func(inputLabel string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

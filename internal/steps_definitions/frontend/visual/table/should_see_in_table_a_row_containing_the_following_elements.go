@@ -18,23 +18,23 @@ func (steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	`
 	return stepbuilder.NewWithOneVariable[*godog.Table](
 		[]string{`^the user should see a row containing the following elements$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, *godog.Table) (context.Context, error) {
-			return func(ctx context.Context, table *godog.Table) (context.Context, error) {
-				data, err := assistdog.NewDefault().ParseSlice(table)
-				if err != nil {
-					return ctx, err
-				}
-
-				currentPage := scenarioCtx.GetCurrentPageOnly()
-				for _, rowDetails := range data {
-					_, getRowErr := getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
-					if getRowErr != nil {
-						return ctx, getRowErr
-					}
-				}
-
-				return ctx, nil
+		func(ctx context.Context, table *godog.Table) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			data, err := assistdog.NewDefault().ParseSlice(table)
+			if err != nil {
+				return ctx, err
 			}
+
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			for _, rowDetails := range data {
+				_, getRowErr := getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
+				if getRowErr != nil {
+					return ctx, getRowErr
+				}
+			}
+
+			return ctx, nil
+
 		},
 		nil,
 		stepbuilder.DocParams{

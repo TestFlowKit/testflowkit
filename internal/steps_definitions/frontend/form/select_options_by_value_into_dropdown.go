@@ -45,15 +45,15 @@ func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.D
 
 	return stepbuilder.NewWithTwoVariables(
 		phrases,
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, optionValues, dropdownId string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
-				if err != nil {
-					return ctx, err
-				}
-				return ctx, input.SelectByValue(stringutils.SplitAndTrim(optionValues, ","))
+		func(ctx context.Context, optionValues, dropdownId string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
+			if err != nil {
+				return ctx, err
 			}
+			return ctx, input.SelectByValue(stringutils.SplitAndTrim(optionValues, ","))
+
 		},
 		func(_, dropdownId string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

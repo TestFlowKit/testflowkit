@@ -9,12 +9,11 @@ import (
 func (steps) refreshPage() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{"the user refresh the page"},
-		func(scenarioCtx *scenario.Context) func(context.Context) (context.Context, error) {
-			return func(ctx context.Context) (context.Context, error) {
-				currentPage := scenarioCtx.GetCurrentPageOnly()
-				currentPage.Refresh()
-				return ctx, nil
-			}
+		func(ctx context.Context) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			currentPage.Refresh()
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{

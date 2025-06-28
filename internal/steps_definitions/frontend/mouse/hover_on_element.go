@@ -13,16 +13,16 @@ type hoverOnElementHandler = func(context.Context, string) (context.Context, err
 func (steps) hoverOnElement() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user hovers on {string}$`},
-		func(scenarioCtx *scenario.Context) hoverOnElementHandler {
-			return func(ctx context.Context, label string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				element, err := browser.GetElementByLabel(currentPage, pageName, label)
-				if err != nil {
-					return ctx, err
-				}
-				err = element.Hover()
+		func(ctx context.Context, label string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			element, err := browser.GetElementByLabel(currentPage, pageName, label)
+			if err != nil {
 				return ctx, err
 			}
+			err = element.Hover()
+			return ctx, err
+
 		},
 		func(label string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

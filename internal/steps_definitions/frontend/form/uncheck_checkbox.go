@@ -18,22 +18,22 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user unchecks the {string} checkbox$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, checkBoxName string) (context.Context, error) {
-				page, pageName := scenarioCtx.GetCurrentPage()
-				checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
-				if err != nil {
-					return ctx, err
-				}
-
-				if checkBox.IsChecked() {
-					err = checkBox.Click()
-					return ctx, err
-				}
-
-				logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
-				return ctx, nil
+		func(ctx context.Context, checkBoxName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			page, pageName := scenarioCtx.GetCurrentPage()
+			checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
+			if err != nil {
+				return ctx, err
 			}
+
+			if checkBox.IsChecked() {
+				err = checkBox.Click()
+				return ctx, err
+			}
+
+			logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
+			return ctx, nil
+
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

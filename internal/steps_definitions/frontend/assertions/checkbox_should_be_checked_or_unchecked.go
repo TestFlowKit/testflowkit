@@ -14,21 +14,20 @@ func (steps) checkCheckboxStatus() sb.Step {
 	formatVar := func(label string) string {
 		return fmt.Sprintf("%s_checkbox", label)
 	}
-	definition := func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-		return func(ctx context.Context, checkboxId, status string) (context.Context, error) {
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(checkboxId))
-			if err != nil {
-				return ctx, err
-			}
-			checkValue, isBoolean := input.GetPropertyValue("checked", reflect.Bool).(bool)
-
-			if isBoolean && checkValue && status == "checked" || !checkValue && status == "unchecked" {
-				return ctx, nil
-			}
-
-			return ctx, fmt.Errorf("%s checkbox is not %s", checkboxId, status)
+	definition := func(ctx context.Context, checkboxId, status string) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+		currentPage, pageName := scenarioCtx.GetCurrentPage()
+		input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(checkboxId))
+		if err != nil {
+			return ctx, err
 		}
+		checkValue, isBoolean := input.GetPropertyValue("checked", reflect.Bool).(bool)
+
+		if isBoolean && checkValue && status == "checked" || !checkValue && status == "unchecked" {
+			return ctx, nil
+		}
+
+		return ctx, fmt.Errorf("%s checkbox is not %s", checkboxId, status)
 	}
 
 	validator := func(checkboxId, _ string) sb.ValidationErrors {

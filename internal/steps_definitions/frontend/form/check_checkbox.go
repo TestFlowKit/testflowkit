@@ -16,21 +16,21 @@ func (steps) checkCheckbox() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user checks the {string} checkbox$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, checkBoxName string) (context.Context, error) {
-				page, pageName := scenarioCtx.GetCurrentPage()
-				checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
-				if err != nil {
-					return ctx, err
-				}
-
-				if !checkBox.IsChecked() {
-					err = checkBox.Click()
-					return ctx, err
-				}
-
-				return ctx, nil
+		func(ctx context.Context, checkBoxName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			page, pageName := scenarioCtx.GetCurrentPage()
+			checkBox, err := browser.GetElementByLabel(page, pageName, formatLabel(checkBoxName))
+			if err != nil {
+				return ctx, err
 			}
+
+			if !checkBox.IsChecked() {
+				err = checkBox.Click()
+				return ctx, err
+			}
+
+			return ctx, nil
+
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

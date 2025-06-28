@@ -17,22 +17,22 @@ func (steps) selectRadioButton() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the user selects the {string} radio button$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(ctx context.Context, radioName string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				radio, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioName))
-				if err != nil {
-					return ctx, err
-				}
-
-				if radio.IsChecked() {
-					logger.Warn("Radio button already selected", []string{})
-					return ctx, nil
-				}
-
-				err = radio.Click()
+		func(ctx context.Context, radioName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			radio, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioName))
+			if err != nil {
 				return ctx, err
 			}
+
+			if radio.IsChecked() {
+				logger.Warn("Radio button already selected", []string{})
+				return ctx, nil
+			}
+
+			err = radio.Click()
+			return ctx, err
+
 		},
 		func(radioName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

@@ -30,15 +30,14 @@ func (k keyboardSteps) userPressButton() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{fmt.Sprintf(`^the user presses the "(%s)" key$`, strings.Join(supportedKeys, "|"))},
-		func(ctx *scenario.Context) func(context.Context, string) (context.Context, error) {
-			return func(context context.Context, key string) (context.Context, error) {
-				inputKey := dic[key]
-				if inputKey == '0' {
-					return context, fmt.Errorf("%s key not recognized", key)
-				}
-
-				return context, ctx.GetCurrentPageKeyboard().Press(inputKey)
+		func(ctx context.Context, key string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			inputKey := dic[key]
+			if inputKey == '0' {
+				return ctx, fmt.Errorf("%s key not recognized", key)
 			}
+
+			return ctx, scenarioCtx.GetCurrentPageKeyboard().Press(inputKey)
 		},
 		nil,
 		stepbuilder.DocParams{

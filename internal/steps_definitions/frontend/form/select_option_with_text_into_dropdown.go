@@ -16,17 +16,17 @@ func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user selects the option with text {string} from the {string} dropdown$`},
-		func(scenarioCtx *scenario.Context) func(context.Context, string, string) (context.Context, error) {
-			return func(ctx context.Context, optionText, dropdownName string) (context.Context, error) {
-				currentPage, pageName := scenarioCtx.GetCurrentPage()
-				dropdown, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownName))
-				if err != nil {
-					return ctx, err
-				}
-
-				err = dropdown.SelectByText([]string{optionText})
+		func(ctx context.Context, optionText, dropdownName string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			currentPage, pageName := scenarioCtx.GetCurrentPage()
+			dropdown, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownName))
+			if err != nil {
 				return ctx, err
 			}
+
+			err = dropdown.SelectByText([]string{optionText})
+			return ctx, err
+
 		},
 		func(_, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
