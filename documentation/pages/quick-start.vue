@@ -168,21 +168,32 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Defining Variables</h2>
             <p>
-                You can define variables in the <code>frontend.yml</code> file to
+                You can define variables in the <code>config.yml</code> file to
                 make your scenarios work smoothly. These variables represent elements
                 on your web page and make your Gherkin code more readable and
                 maintainable.
             </p>
 
-            <sm><em><strong>Tip</strong>: you can run the tkit validate command in
-                    order to validate your work:
-                    <code-block language="bash" :code="validateCommand" /></em></sm>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            <strong>Tip:</strong> You can run the validate command to check your configuration:
+                            <code class="bg-yellow-100 px-2 py-1 rounded">./testflowkit validate</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             <p>Here's how it works:</p>
             <ul class="list-disc list-inside ml-2">
                 <li>
-                    <b>Page URLs:</b> Store the URLs of frequently used pages, like the
-                    sentence referencing page. This way, you can refer to them by name
+                    <b>Page URLs:</b> Store the URLs of frequently used pages. This way, you can refer to them by name
                     in your scenarios. For example:
                     <code-block language="yaml" :code="pageUrlExample" />
                 </li>
@@ -198,7 +209,7 @@
             <p>
                 <b>Important Tip:</b> You can even specify multiple CSS selectors for
                 a single element! This is helpful if the element might be identified
-                differently in various parts of your application. Etools will try
+                differently in various parts of your application. TestFlowKit will try
                 each selector in order until it finds a match.
             </p>
 
@@ -210,14 +221,14 @@
             </p>
 
             <p>
-                Here's an example of how your <code>frontend.yml</code> file might
+                Here's an example of how your <code>config.yml</code> file might
                 look:
             </p>
-            <code-block language="yml" :code="frontendYml" />
+            <code-block language="yaml" :code="configYml" />
 
             <p>
-                <b>Remember:</b> Replace <code>&lt;doc-base-url&gt;</code> with the
-                actual base URL of your documentation.
+                <b>Remember:</b> Replace <code>&lt;your-app-url&gt;</code> with the
+                actual base URL of your application.
             </p>
         </div>
 
@@ -241,6 +252,17 @@
         </div>
 
         <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Advanced Usage</h2>
+            <p>TestFlowKit supports various advanced features:</p>
+            <ul class="list-disc list-inside ml-2 mb-4">
+                <li><strong>Parallel Execution:</strong> <code>./testflowkit run --concurrency 4</code></li>
+                <li><strong>Tag-based Execution:</strong> <code>./testflowkit run --tags "@smoke"</code></li>
+                <li><strong>Custom Configuration:</strong> <code>./testflowkit run --config ./custom-config.yml</code></li>
+                <li><strong>Environment-specific:</strong> <code>TEST_ENV=staging ./testflowkit run</code></li>
+            </ul>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Troubleshooting</h2>
             <p>
                 If you encounter errors while running your tests, here are a few
@@ -253,11 +275,14 @@
                 </li>
                 <li>
                     Verify that you have correctly defined the variables in your
-                    <code>frontend.yml</code> file, especially the base URL of your
-                    documentation and the CSS selectors for the UI elements.
+                    <code>config.yml</code> file, especially the base URL of your
+                    application and the CSS selectors for the UI elements.
                 </li>
                 <li>
-                    Consult the testflowkit documentation for more detailed
+                    Check that all required dependencies are installed (Go 1.23+, Git, Make).
+                </li>
+                <li>
+                    Consult the TestFlowKit documentation for more detailed
                     information on troubleshooting and resolving errors.
                 </li>
             </ul>
@@ -267,12 +292,14 @@
             <h2 class="text-xl font-semibold mb-4">Useful Resources</h2>
             <ul class="list-disc list-inside ml-2">
                 <li>
-                    <router-link :to="{ name: 'configuration' }" target="_blank" class="underline">testflowkit
+                    <router-link :to="{ name: 'configuration' }" class="text-blue-600 hover:underline">TestFlowKit
                         Configuration</router-link>
                 </li>
                 <li>
-                    <router-link :to="{ name: 'sentences' }" target="_blank" class="underline">testflowkit Sentence
-                        Repository</router-link>
+                    <router-link :to="{ name: 'sentences' }" class="text-blue-600 hover:underline">TestFlowKit Step Definitions</router-link>
+                </li>
+                <li>
+                    <a href="https://testflowkit.dreamsfollowers.me/" target="_blank" class="text-blue-600 hover:underline">Official Documentation</a>
                 </li>
             </ul>
         </div>
@@ -280,7 +307,7 @@
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">Next Steps</h2>
             <p>
-                Now that you've learned the basics of testflowkit, here are some
+                Now that you've learned the basics of TestFlowKit, here are some
                 suggestions to go further:
             </p>
             <ul class="list-disc list-inside ml-2">
@@ -289,11 +316,13 @@
                     your web application.
                 </li>
                 <li>
-                    Explore the possibilities of integrating testflowkit with other
-                    testing and automation tools.
+                    Explore API testing capabilities with REST API step definitions.
                 </li>
                 <li>
-                    Contribute to the testflowkit project by reporting bugs,
+                    Set up CI/CD integration for automated testing in your pipeline.
+                </li>
+                <li>
+                    Contribute to the TestFlowKit project by reporting bugs,
                     suggesting improvements, or developing new features.
                 </li>
             </ul>
@@ -322,23 +351,36 @@ const scenarioExpectedOutcome =
     'Then I should see on page "I open a new browser tab."';
 const validateCommand = "./tkit validate";
 const pageUrlExample =
-    'sentences_reference: "http://<doc-base-url>/sentences"';
-const frontendYml = `
-# frontend.yml
-global:
+    'sentences_reference: "http://<your-app-url>/sentences"';
+const configYml = `active_environment: "local"
+
+settings:
+  default_timeout: 10000
+  concurrency: 1
+  headless: false
+  screenshot_on_failure: true
+  report_format: "html"
+  gherkin_location: "./e2e/features"
+
+environments:
+  local:
+    frontend_base_url: "http://<your-app-url>"
+    api_base_url: "http://<your-app-url>/api"
+
+frontend:
   elements:
-    search_field:
-      - input[type='search'] 
-      - .search-input 
-    category_button: 
-      - .menu-link 
+    search_page:
+      search_field:
+        - "input[type='search']"
+        - ".search-input"
+      search_button:
+        - "button[type='submit']"
+        - ".search-btn"
         
-   pages:
-    sentences_referencing: "/sentences" 
-   
-   base_url: "doc-base-url"
-`;
-const launchCommand = "./tkit run";
+  pages:
+    search: "/search"
+    sentences: "/sentences"`;
+const launchCommand = "./testflowkit run";
 </script>
 
 <style scoped>

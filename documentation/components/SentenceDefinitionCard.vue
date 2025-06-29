@@ -1,6 +1,11 @@
 <template>
     <div class="bg-white p-4 rounded-md shadow-md space-y-2">
-        <h2 class="font-bold text-xl text-gray-800" v-text="sentence"></h2>
+        <div class="flex items-start justify-between">
+            <h2 class="font-bold text-xl text-gray-800 flex-1" v-text="sentence"></h2>
+            <span class="ml-2 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full capitalize">
+                {{ category }}
+            </span>
+        </div>
         <div class="description">
             <h3 class="font-bold text-gray-700 inline">Description: </h3>
             <span class="text-gray-600">{{ description }}</span>
