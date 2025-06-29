@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: start server
+        run: docker compose -f e2e/compose.yml up server -d
+
       - name: launch e2e tests
         run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e
 
