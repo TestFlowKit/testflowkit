@@ -17,6 +17,8 @@ type Config struct {
 	Environments map[string]Environment `yaml:"environments" validate:"required,min=1"`
 
 	Frontend FrontendConfig `yaml:"frontend" validate:"required"`
+
+	Backend BackendConfig `yaml:"backend"`
 }
 
 type GlobalSettings struct {
@@ -43,12 +45,19 @@ type GlobalSettings struct {
 
 type Environment struct {
 	FrontendBaseURL string `yaml:"frontend_base_url" validate:"required,url"`
+
+	APIBaseURL string `yaml:"api_base_url" validate:"required,url"`
 }
 
 type FrontendConfig struct {
 	Elements map[string]map[string][]string `yaml:"elements" validate:"required"`
 
 	Pages map[string]string `yaml:"pages" validate:"required"`
+}
+
+type BackendConfig struct {
+	DefaultHeaders map[string]string   `yaml:"default_headers"`
+	Endpoints      map[string]Endpoint `yaml:"endpoints"`
 }
 
 type Endpoint struct {
@@ -65,6 +74,29 @@ func (c *Config) GetCurrentEnvironment() (Environment, error) {
 		return Environment{}, fmt.Errorf("active environment '%s' not found in configuration", c.ActiveEnvironment)
 	}
 	return env, nil
+}
+
+func (c *Config) GetAPIEndpoint(endpointName string) (string, Endpoint, error) {
+	endpoint, exists := c.Backend.Endpoints[endpointName]
+	if !exists {
+		return "", Endpoint{}, fmt.Errorf("endpoint '%s' not found in configuration", endpointName)
+	}
+
+	parsedURL, err := url.Parse(endpoint.Path)
+	if err != nil {
+		return "", Endpoint{}, fmt.Errorf("failed to parse endpoint path: %w", err)
+	}
+
+	if parsedURL.Scheme != "" {
+		return parsedURL.String(), endpoint, nil
+	}
+
+	fullURL, err := url.JoinPath(c.GetBackendBaseURL(), parsedURL.Path)
+	if err != nil {
+		return "", Endpoint{}, fmt.Errorf("failed to join base URL and endpoint path: %w", err)
+	}
+
+	return fullURL, endpoint, nil
 }
 
 func (c *Config) GetFrontendURL(page string) (string, error) {
@@ -140,6 +172,10 @@ func (c *Config) IsScreenshotOnFailureEnabled() bool {
 
 func (c *Config) GetFrontendBaseURL() string {
 	return c.Environments[c.ActiveEnvironment].FrontendBaseURL
+}
+
+func (c *Config) GetBackendBaseURL() string {
+	return c.Environments[c.ActiveEnvironment].APIBaseURL
 }
 
 // func (c *Config) GetPageLoadTimeout() time.Duration {

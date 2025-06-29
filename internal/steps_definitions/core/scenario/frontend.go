@@ -5,18 +5,10 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"testflowkit/internal/config"
 
 	"testflowkit/internal/browser"
 	"testflowkit/internal/browser/common"
-
-	"time"
 )
-
-type Context struct {
-	frontend *frontend
-	config   *config.Config
-}
 
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
@@ -133,29 +125,4 @@ func (c *Context) SetCurrentPage(page common.Page) error {
 
 func (c *Context) GetCurrentPageKeyboard() common.Keyboard {
 	return c.frontend.page.GetKeyboard()
-}
-
-func (c *Context) GetConfig() *config.Config {
-	return c.config
-}
-
-func NewContext(cfg *config.Config) *Context {
-	return &Context{
-		frontend: &frontend{
-			browser:      nil,
-			page:         nil,
-			timeout:      time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
-			headlessMode: cfg.IsHeadlessModeEnabled(),
-			slowMotion:   cfg.GetSlowMotion(),
-		},
-		config: cfg,
-	}
-}
-
-type frontend struct {
-	browser             common.Browser
-	page                common.Page
-	timeout, slowMotion time.Duration
-	currentPageName     string
-	headlessMode        bool
 }

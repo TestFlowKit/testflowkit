@@ -28,3 +28,16 @@ frontend:
   pages:
     google: "https://www.google.com"
     github: "https://github.com"
+
+backend:
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+    User-Agent: "TestFlowKit/1.0"
+    X-Requested-With: "TestFlowKit"
+
+  endpoints:
+    get_user:
+      method: "GET"
+      path: "/users/{id}"
+      description: "Retrieve user information by ID"

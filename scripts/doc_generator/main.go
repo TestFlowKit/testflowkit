@@ -7,9 +7,11 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend"
+	"testflowkit/internal/steps_definitions/restapi"
 	"testflowkit/pkg/logger"
 )
 
@@ -20,7 +22,8 @@ func main() {
 	}
 	outputDir := path.Join(wd, "documentation", "content", "sentences")
 
-	generateDocs(frontend.GetDocs(), outputDir)
+	allDocs := slices.Concat(frontend.GetDocs(), restapi.GetDocs())
+	generateDocs(allDocs, outputDir)
 }
 
 func generateDocs(stepDocumentations []stepbuilder.Documentation, outputDir string) {
