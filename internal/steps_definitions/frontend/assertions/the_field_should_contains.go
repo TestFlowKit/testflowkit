@@ -15,7 +15,7 @@ func (steps) theFieldShouldContain() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the value of the {string} field should be {string}`},
+		[]string{`the value of the {string} field should be {string}`},
 		func(ctx context.Context, fieldId, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			page, pageName := scenarioCtx.GetCurrentPage()

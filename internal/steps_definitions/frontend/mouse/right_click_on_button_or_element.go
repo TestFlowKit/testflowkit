@@ -8,7 +8,7 @@ import (
 
 func (steps) rightClickOn() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user right clicks on {string}$`},
+		[]string{`the user right clicks on {string}`},
 		commonSimpleElementInteraction(func(element common.Element) error {
 			return element.RightClick()
 		}),

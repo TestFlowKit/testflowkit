@@ -29,7 +29,7 @@ func (k keyboardSteps) userPressButton() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{fmt.Sprintf(`^the user presses the "(%s)" key$`, strings.Join(supportedKeys, "|"))},
+		[]string{fmt.Sprintf(`the user presses the "(%s)" key`, strings.Join(supportedKeys, "|"))},
 		func(ctx context.Context, key string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			inputKey := dic[key]

@@ -210,7 +210,11 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 	for _, step := range GetAllSteps() {
 		handler := step.GetDefinition()
 		for _, sentence := range step.GetSentences() {
-			ctx.Step(core.ConvertWildcards(sentence), handler)
+			cleanedSentence := strings.TrimPrefix(sentence, "^")
+			cleanedSentence = strings.TrimSuffix(cleanedSentence, "$")
+
+			pattern := "^" + core.ConvertWildcards(cleanedSentence) + "$"
+			ctx.Step(pattern, handler)
 		}
 	}
 }

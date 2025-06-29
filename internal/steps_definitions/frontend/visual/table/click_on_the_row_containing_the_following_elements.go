@@ -2,39 +2,43 @@ package table
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"strings"
+	"testflowkit/internal/browser/common"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
-	"golang.org/x/exp/maps"
 )
 
 // TODO: click on cell instead of row
 func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
-	const example = `
-	When the user clicks on the row containing the following elements
-	| Name | Age |
-	| John | 30  |
-	`
-	return stepbuilder.NewWithOneVariable[*godog.Table](
-		[]string{`^the user clicks on the row containing the following elements$`},
+	return stepbuilder.NewWithOneVariable(
+		[]string{`the user clicks on the row containing the following elements`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			data, err := assistdog.NewDefault().ParseSlice(table)
-			if err != nil {
-				return ctx, err
+			data, parseErr := assistdog.NewDefault().ParseMap(table)
+			if parseErr != nil {
+				return ctx, errors.New("table malformed please go to the doc")
 			}
 
-			for _, rowDetails := range data {
-				element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), maps.Values(rowDetails))
-				if getRowErr != nil {
-					return ctx, getRowErr
-				}
+			currentPage := scenarioCtx.GetCurrentPageOnly()
+			errMsgs := checkIfElementsAreVisible(data, currentPage)
+			if len(errMsgs) > 0 {
+				return ctx, errors.New(strings.Join(errMsgs, "\n"))
+			}
 
-				clickErr := element.Click()
-				if clickErr != nil {
-					return ctx, clickErr
+			// Click on the first element found
+			for _, value := range data {
+				elt, err := currentPage.GetOneByTextContent(value)
+				if err == nil && elt.IsVisible() {
+					err = elt.Click()
+					if err != nil {
+						return ctx, err
+					}
+					break
 				}
 			}
 
@@ -42,12 +46,28 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "clicks on the row containing the following elements.",
+			Description: "clicks on a table row that contains the specified elements.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "table", Description: "The table containing the elements to click on.", Type: stepbuilder.VarTypeTable},
 			},
-			Example:  example,
+			Example:  "When the user clicks on the row containing the following elements\n| Name | John |\n| Age | 30 |",
 			Category: stepbuilder.Visual,
 		},
 	)
+}
+
+func checkIfElementsAreVisible(data map[string]string, currentPage common.Page) []string {
+	var errMsgs []string
+	for name, value := range data {
+		elt, err := currentPage.GetOneByTextContent(value)
+		if err != nil {
+			errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", name, value))
+			continue
+		}
+
+		if !elt.IsVisible() {
+			errMsgs = append(errMsgs, fmt.Sprintf("%s %s is found but is not visible", name, value))
+		}
+	}
+	return errMsgs
 }

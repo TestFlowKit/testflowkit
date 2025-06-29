@@ -13,7 +13,7 @@ func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 	const docDescription = "Maximum time to wait for a new window (e.g., \"5s\", \"500ms\")."
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{"^the user waits for a new window to open within {string}$"},
+		[]string{"the user waits for a new window to open within {string}"},
 		func(ctx context.Context, waitTime string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			duration, err := time.ParseDuration(waitTime)

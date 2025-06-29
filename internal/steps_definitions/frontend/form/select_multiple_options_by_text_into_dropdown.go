@@ -15,7 +15,7 @@ func (steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user selects the options with text {string} from the {string} dropdown$`},
+		[]string{`the user selects the options with text {string} from the {string} dropdown`},
 		func(ctx context.Context, optionLabels, dropdownId string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageName := scenarioCtx.GetCurrentPage()

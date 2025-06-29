@@ -16,7 +16,7 @@ func (steps) selectRadioButton() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user selects the {string} radio button$`},
+		[]string{`the user selects the {string} radio button`},
 		func(ctx context.Context, radioName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageName := scenarioCtx.GetCurrentPage()

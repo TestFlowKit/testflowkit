@@ -11,7 +11,7 @@ import (
 
 func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the {string} should not be visible$`},
+		[]string{`the {string} should not be visible`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			currentPage, pageName := scenario.MustFromContext(ctx).GetCurrentPage()
 			element, err := browser.GetElementByLabel(currentPage, pageName, name)

@@ -9,7 +9,7 @@ import (
 
 func (steps) hoverOnElement() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user hovers on {string}$`},
+		[]string{`the user hovers on {string}`},
 		commonSimpleElementInteraction(func(element common.Element) error {
 			return element.Hover()
 		}),

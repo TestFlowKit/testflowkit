@@ -11,7 +11,7 @@ import (
 
 func (steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
-		[]string{`^the user selects the options with values {string} from the {string} dropdown$`},
+		[]string{`the user selects the options with values {string} from the {string} dropdown`},
 		stepbuilder.DocParams{
 			Description: "Selects multiple options by values from a dropdown.",
 			Variables: []stepbuilder.DocVariable{
@@ -26,7 +26,7 @@ func (steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
 
 func (steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 	return selectOptionsByValueIntoDropdownBuilder(
-		[]string{`^the user selects the option with value {string} from the {string} dropdown$`},
+		[]string{`the user selects the option with value {string} from the {string} dropdown`},
 		stepbuilder.DocParams{
 			Description: "Selects an option from a dropdown list based on its underlying 'value' attribute.",
 			Variables: []stepbuilder.DocVariable{

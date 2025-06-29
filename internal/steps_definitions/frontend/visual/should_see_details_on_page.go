@@ -2,56 +2,33 @@ package visual
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
-
-	"github.com/cucumber/godog"
-	"github.com/rdumont/assistdog"
 )
 
 func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
-	definition := func(ctx context.Context, elementName string, table *godog.Table) (context.Context, error) {
-		scenarioCtx := scenario.MustFromContext(ctx)
-		data, parseErr := assistdog.NewDefault().ParseMap(table)
-		if parseErr != nil {
-			return ctx, errors.New("details malformed please go to the doc")
-		}
-
-		currentPage := scenarioCtx.GetCurrentPageOnly()
-		var errMsgs []string
-		for name, value := range data {
-			elt, err := currentPage.GetOneByTextContent(value)
+	return stepbuilder.NewWithOneVariable(
+		[]string{`the user should see "{string}" details on the page`},
+		func(ctx context.Context, details string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			elt, err := scenarioCtx.GetCurrentPageOnly().GetOneBySelector("body")
 			if err != nil {
-				errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))
-				continue
+				return ctx, err
 			}
-
-			if !elt.IsVisible() {
-				errMsgs = append(errMsgs, fmt.Sprintf("%s %s is found but is no visible", elementName, name))
+			if !strings.Contains(elt.TextContent(), details) {
+				return ctx, fmt.Errorf("%s details should be visible", details)
 			}
-		}
-
-		if len(errMsgs) > 0 {
-			return ctx, errors.New(strings.Join(errMsgs, "\n"))
-		}
-
-		return ctx, nil
-	}
-
-	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user should see "{string}" details on the page$`},
-		definition,
+			return ctx, nil
+		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "checks if the details are visible on the page.",
+			Description: "checks if details are visible on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
-				{Name: "table", Description: "The table containing the details to check.", Type: stepbuilder.VarTypeTable},
+				{Name: "details", Description: "The details to check.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
+			Example:  "Then the user should see \"User Profile\" details on the page",
 			Category: stepbuilder.Visual,
 		},
 	)

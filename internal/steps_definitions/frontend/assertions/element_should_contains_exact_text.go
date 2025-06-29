@@ -12,7 +12,7 @@ import (
 
 func (steps) elementShouldContainsExactText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the text of the {string} element should be exactly {string}$`},
+		[]string{`the text of the {string} element should be exactly {string}`},
 		func(ctx context.Context, name, expectedText string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageName := scenarioCtx.GetCurrentPage()
