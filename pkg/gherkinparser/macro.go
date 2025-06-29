@@ -5,12 +5,18 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+
+	messages "github.com/cucumber/messages/go/v21"
 )
 
 func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
 	macroTitles := getMacroTitles(macros)
 	for _, f := range featuresContainingMacros {
 		featureContent := strings.Split(string(f.Contents), "\n")
+
+		if f.background != nil {
+			applyMacro(f.background.Steps, macroTitles, macros, featureContent)
+		}
 
 		for _, sc := range f.scenarios {
 			if sc == nil {
@@ -27,15 +33,15 @@ func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
 				continue
 			}
 
-			applyMacro(sc, macroTitles, macros, featureContent)
+			applyMacro(sc.Steps, macroTitles, macros, featureContent)
 		}
 
 		f.Contents = []byte(strings.Join(featureContent, "\n"))
 	}
 }
 
-func applyMacro(sc *scenario, macroTitles []string, macros []*scenario, featureContent []string) {
-	for _, step := range sc.Steps {
+func applyMacro(steps []*messages.Step, macroTitles []string, macros []*scenario, featureContent []string) {
+	for _, step := range steps {
 		isMacroStep := slices.Contains(macroTitles, step.Text)
 		if !isMacroStep {
 			continue

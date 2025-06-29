@@ -10,6 +10,7 @@ import (
 	"testflowkit/pkg/logger"
 
 	gherkin "github.com/cucumber/gherkin/go/v26"
+	messages "github.com/cucumber/messages/go/v21"
 	"github.com/gofrs/uuid/v5"
 )
 
@@ -76,11 +77,14 @@ func parseFeatureFile(featurePath string) *Feature {
 	}
 
 	var scenarios []*scenario
+	var background *messages.Background
 	for _, child := range gherkinDoc.Feature.Children {
-		if child.Scenario == nil {
-			continue
+		if child.Scenario != nil {
+			scenarios = append(scenarios, child.Scenario)
 		}
-		scenarios = append(scenarios, child.Scenario)
+		if child.Background != nil {
+			background = child.Background
+		}
 	}
 
 	return newFeature(
@@ -88,6 +92,7 @@ func parseFeatureFile(featurePath string) *Feature {
 		featurePath,
 		fileContent,
 		scenarios,
+		background,
 	)
 }
 
