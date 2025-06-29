@@ -12,7 +12,7 @@ import (
 
 func (steps) elementShouldNotContainsText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the {string} should not contain the text {string}$`},
+		[]string{`the {string} should not contain the text {string}`},
 		func(ctx context.Context, name, unexpectedText string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageName := scenarioCtx.GetCurrentPage()
@@ -40,7 +40,7 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "This assertion checks if the element’s visible text does not include the specified substring.",
+			Description: "This assertion checks if the element's visible text does not include the specified substring.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "unexpectedText", Description: "The text that should not be contained.", Type: stepbuilder.VarTypeString},

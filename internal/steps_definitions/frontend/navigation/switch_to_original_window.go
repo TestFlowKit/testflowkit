@@ -11,7 +11,7 @@ import (
 
 func (steps) switchToOriginalWindow() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
-		[]string{"^the user switches back to the original window$"},
+		[]string{"the user switches back to the original window"},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			pages := scenarioCtx.GetPages()

@@ -11,7 +11,7 @@ import (
 
 func (steps) checkResponseStatusCode() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the response status code should be {number}$`},
+		[]string{`the response status code should be {number}`},
 		func(ctx context.Context, expectedStatusCode int) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 

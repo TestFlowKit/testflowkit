@@ -8,7 +8,7 @@ import (
 
 func (s steps) clickOnElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user clicks on {string} which contains "{string}"$`},
+		[]string{`the user clicks on {string} which contains "{string}"`},
 		func(ctx context.Context, _, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)

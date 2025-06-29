@@ -14,7 +14,7 @@ func (steps) userNavigateToURL() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user navigate to the URL {string}$`},
+		[]string{`the user navigate to the URL {string}`},
 		testDefinition,
 		nil,
 		stepbuilder.DocParams{

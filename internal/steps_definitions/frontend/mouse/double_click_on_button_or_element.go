@@ -10,7 +10,7 @@ func (steps) doubleClickOn() stepbuilder.Step {
 	const docDescription = "The logical name of element to double click on."
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user double clicks on {string}$`},
+		[]string{`the user double clicks on {string}`},
 		commonSimpleElementInteraction(func(element common.Element) error {
 			return element.DoubleClick()
 		}),

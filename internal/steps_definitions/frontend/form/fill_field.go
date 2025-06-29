@@ -15,7 +15,7 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user enters {string} into the {string} field`},
+		[]string{`the user fills the {string} field with {string}`},
 		func(ctx context.Context, text, inputLabel string) (context.Context, error) {
 			currentPage, pageName := scenario.GetPage(ctx)
 			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))

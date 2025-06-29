@@ -12,7 +12,7 @@ import (
 
 func (steps) responseBodyShouldContain() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the response body should contain {string}$`},
+		[]string{`the response body should contain {string}`},
 		func(ctx context.Context, expectedContent string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 

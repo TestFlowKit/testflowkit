@@ -12,7 +12,7 @@ import (
 
 func (steps) switchToNewOpenedWindow() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
-		[]string{"^the user switches to the newly opened window$"},
+		[]string{"the user switches to the newly opened window"},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			initialPageCount := len(scenarioCtx.GetPages())

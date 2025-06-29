@@ -8,7 +8,7 @@ import (
 
 func (steps) userWait() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user waits for {number} seconds$`},
+		[]string{`the user waits for {number} seconds`},
 		func(ctx context.Context, seconds int) (context.Context, error) {
 			time.Sleep(time.Duration(seconds) * time.Second)
 			return ctx, nil

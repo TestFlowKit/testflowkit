@@ -22,7 +22,7 @@ func (steps) userNavigateToPage() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user goes to the {string} page$`},
+		[]string{`the user goes to the {string} page`},
 		testDefinition,
 		func(page string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}

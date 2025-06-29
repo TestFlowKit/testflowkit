@@ -15,7 +15,7 @@ import (
 
 func (steps) sendRequest() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
-		[]string{`^I send the request$`},
+		[]string{`I send the request`},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			endpoint := scenarioCtx.GetEndpoint()

@@ -10,7 +10,7 @@ import (
 
 func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user should not see "{string}" on the page$`},
+		[]string{`the user should not see "{string}" on the page`},
 		func(ctx context.Context, word string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			elt, err := scenarioCtx.GetCurrentPageOnly().GetOneBySelector("body")
@@ -28,7 +28,7 @@ func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "word", Description: "The word to check.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the user should not see \"Submit\" on the page",
+			Example:  "Then the user should not see \"Error\" on the page",
 			Category: stepbuilder.Visual,
 		},
 	)

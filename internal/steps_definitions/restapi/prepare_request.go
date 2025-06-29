@@ -11,7 +11,7 @@ import (
 
 func (steps) prepareRequest() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^I prepare a request for the {string} endpoint$`},
+		[]string{`I prepare a request for the {string} endpoint`},
 		func(ctx context.Context, endpointName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			cfg := scenarioCtx.GetConfig()

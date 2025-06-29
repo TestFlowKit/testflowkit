@@ -10,7 +10,7 @@ import (
 
 func (steps) elementShouldExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the {string} should exist$`},
+		[]string{`the {string} should exist`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			currentPage, pageName := scenario.MustFromContext(ctx).GetCurrentPage()
 			_, err := browser.GetElementByLabel(currentPage, pageName, name)

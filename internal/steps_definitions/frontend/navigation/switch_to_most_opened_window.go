@@ -10,7 +10,7 @@ import (
 
 func (steps) switchToMostOpenedWindow() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
-		[]string{"^the user switches to the most recently window opened$"},
+		[]string{"the user switches to the most recently window opened"},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			pages := scenarioCtx.GetPages()
