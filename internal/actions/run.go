@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
+	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/internal/steps_definitions/core/scenario"
-	"testflowkit/internal/steps_definitions/frontend"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/reporters"
@@ -123,7 +123,7 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		scenarioCtx := scenario.NewContext(config)
-		frontend.InitTestRunnerScenarios(sc)
+		registerTestRunnerStepDefinitions(sc)
 		myCtx := newScenarioCtx()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 			logger.InfoFf("Running scenario: %s", sc.Name)
@@ -203,6 +203,15 @@ func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenari
 func newScenarioCtx() myScenarioCtx {
 	return myScenarioCtx{
 		scenarioReport: reporters.NewScenario(),
+	}
+}
+
+func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
+	for _, step := range GetAllSteps() {
+		handler := step.GetDefinition()
+		for _, sentence := range step.GetSentences() {
+			ctx.Step(core.ConvertWildcards(sentence), handler)
+		}
 	}
 }
 

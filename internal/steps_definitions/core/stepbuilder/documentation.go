@@ -23,7 +23,7 @@ const (
 	Keyboard   StepCategory = "keyboard"
 	Navigation StepCategory = "navigation"
 	Mouse      StepCategory = "mouse"
-	APITesting StepCategory = "api-testing"
+	RESTAPI    StepCategory = "restapi"
 )
 
 type VarType string
