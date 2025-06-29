@@ -109,4 +109,109 @@ func TestApplyMacros_EmptyMacroTitles(t *testing.T) {
 	assert.Equal(t, expectedContent, string(featuresContainingMacros[0].Contents))
 }
 
+func TestApplyMacros_ReplacesMacroStepsInBackground(t *testing.T) {
+	featuresContainingMacros := []*Feature{
+		{
+			Contents: []byte(`Feature: Test feature
+
+Background:
+Given a background step
+When a macro step
+
+Scenario: Test scenario
+Given a step
+Then a result`),
+			scenarios: []*scenario{
+				{
+					Steps: []*step{
+						{Keyword: "Given", Text: "a step"},
+						{Keyword: "Then", Text: "a result"},
+					},
+				},
+			},
+			background: &messages.Background{
+				Steps: []*step{
+					{Keyword: "Given", Text: "a background step", Location: &messages.Location{Line: 4}},
+					{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 5}},
+				},
+			},
+		},
+	}
+	macros := []*scenario{
+		{
+			Name: "a macro step",
+			Steps: []*step{
+				{Keyword: "Given", Text: "macro step 1"},
+				{Keyword: "And", Text: "macro step 2"},
+			},
+		},
+	}
+
+	applyMacros(macros, featuresContainingMacros)
+
+	expectedContent := `Feature: Test feature
+
+Background:
+Given a background step
+When macro step 1
+And macro step 2
+
+Scenario: Test scenario
+Given a step
+Then a result`
+	assert.Equal(t, expectedContent, string(featuresContainingMacros[0].Contents))
+}
+
+func TestApplyMacros_NoReplacementInBackgroundWhenNoMacroSteps(t *testing.T) {
+	featuresContainingMacros := []*Feature{
+		{
+			Contents: []byte(`Feature: Test feature
+
+Background:
+Given a background step
+When another step
+
+Scenario: Test scenario
+Given a step
+Then a result`),
+			scenarios: []*scenario{
+				{
+					Steps: []*step{
+						{Keyword: "Given", Text: "a step"},
+						{Keyword: "Then", Text: "a result"},
+					},
+				},
+			},
+			background: &messages.Background{
+				Steps: []*step{
+					{Keyword: "Given", Text: "a background step", Location: &messages.Location{Line: 4}},
+					{Keyword: "When", Text: "another step", Location: &messages.Location{Line: 5}},
+				},
+			},
+		},
+	}
+	macros := []*scenario{
+		{
+			Name: "a macro step",
+			Steps: []*step{
+				{Keyword: "Given", Text: "macro step 1"},
+				{Keyword: "And", Text: "macro step 2"},
+			},
+		},
+	}
+
+	applyMacros(macros, featuresContainingMacros)
+
+	expectedContent := `Feature: Test feature
+
+Background:
+Given a background step
+When another step
+
+Scenario: Test scenario
+Given a step
+Then a result`
+	assert.Equal(t, expectedContent, string(featuresContainingMacros[0].Contents))
+}
+
 type step = messages.Step
