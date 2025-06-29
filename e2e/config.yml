@@ -16,12 +16,15 @@ settings:
 environments:
   local:
     frontend_base_url: "http://0.0.0.0:3000"
+    api_base_url: "https://jsonplaceholder.typicode.com"
 
   local_windows:
     frontend_base_url: "http://localhost:3000"
+    api_base_url: "https://jsonplaceholder.typicode.com"
 
   ci:
     frontend_base_url: "http://server:3000"
+    api_base_url: "https://jsonplaceholder.typicode.com"
 
 frontend:
   elements:
@@ -67,3 +70,52 @@ frontend:
     table_e2e: "/table"
     details_e2e: "/details"
     scroll_e2e: "/scroll"
+
+backend:
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+    User-Agent: "TestFlowKit/1.0"
+    X-Requested-With: "TestFlowKit"
+
+  endpoints:
+    get_posts:
+      method: "GET"
+      path: "/posts"
+      description: "Retrieve all posts"
+
+    get_post_by_id:
+      method: "GET"
+      path: "/posts/{id}"
+      description: "Retrieve a specific post by ID"
+
+    create_post:
+      method: "POST"
+      path: "/posts"
+      description: "Create a new post"
+
+    delete_post:
+      method: "DELETE"
+      path: "/posts/{id}"
+      description: "Delete a post"
+
+    get_albums:
+      method: "GET"
+      path: "/albums"
+      description: "Retrieve all albums"
+
+    get_album_by_id:
+      method: "GET"
+      path: "/albums/{id}"
+      description: "Retrieve a specific album by ID"
+
+    # Photos endpoints
+    get_photos:
+      method: "GET"
+      path: "/photos"
+      description: "Retrieve all photos"
+
+    get_photos_by_album:
+      method: "GET"
+      path: "/albums/{id}/photos"
+      description: "Retrieve photos for a specific album"

@@ -2,7 +2,6 @@ package frontend
 
 import (
 	"slices"
-	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/internal/steps_definitions/frontend/assertions"
 	"testflowkit/internal/steps_definitions/frontend/form"
@@ -11,29 +10,9 @@ import (
 	"testflowkit/internal/steps_definitions/frontend/navigation"
 	"testflowkit/internal/steps_definitions/frontend/utils"
 	"testflowkit/internal/steps_definitions/frontend/visual"
-
-	"github.com/cucumber/godog"
 )
 
-func InitTestRunnerScenarios(ctx *godog.ScenarioContext) {
-	for _, step := range getAllSteps() {
-		handler := step.GetDefinition()
-		for _, sentence := range step.GetSentences() {
-			ctx.Step(core.ConvertWildcards(sentence), handler)
-		}
-	}
-}
-
-func InitValidationScenarios(ctx *godog.ScenarioContext, vCtx *stepbuilder.ValidatorContext) {
-	for _, step := range getAllSteps() {
-		handler := step.Validate(vCtx)
-		for _, sentence := range step.GetSentences() {
-			ctx.Step(core.ConvertWildcards(sentence), handler)
-		}
-	}
-}
-
-func getAllSteps() []stepbuilder.Step {
+func GetAllSteps() []stepbuilder.Step {
 	finalSteps := slices.Concat(
 		form.GetSteps(),
 		keyboard.GetSteps(),
@@ -51,7 +30,7 @@ func getAllSteps() []stepbuilder.Step {
 
 func GetDocs() []stepbuilder.Documentation {
 	var docs []stepbuilder.Documentation
-	for _, step := range getAllSteps() {
+	for _, step := range GetAllSteps() {
 		docs = append(docs, step.GetDocumentation())
 	}
 	return docs
