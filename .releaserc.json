@@ -1,7 +1,7 @@
 {
   "branches": ["main"],
   "plugins": [
-   "@semantic-release/commit-analyzer",
+    "@semantic-release/commit-analyzer",
     "@semantic-release/changelog",
     [
       "@semantic-release/release-notes-generator",
@@ -84,5 +84,5 @@
       }
     ]
   ],
-  "tagFormat": "v${version}"
+  "tagFormat": "${version}"
 }

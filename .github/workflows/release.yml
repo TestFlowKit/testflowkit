@@ -39,14 +39,6 @@ jobs:
         with:
           node-version: ${{ vars.NODE_VERSION }}
 
-      - name: Install Commitlint
-        run: |
-          yarn init --yes
-          yarn add @commitlint/config-conventional commitlint@latest
-      - name: Validate Commits with Commitlint
-        run: |
-          npx commitlint --from ${{ github.base_ref }} --to ${{ github.sha }} --verbose
-
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
