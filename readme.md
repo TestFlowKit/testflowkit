@@ -402,10 +402,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+### Contributors
+
 - **Stéphane Salou** - [stephsalou](https://github.com/stephsalou)
-- [godog](https://github.com/cucumber/godog) - Gherkin parsing and execution
-- [go-rod](https://github.com/go-rod/rod) - Browser automation
-- [go-yaml](https://github.com/goccy/go-yaml) - YAML configuration handling
+
+### Dependencies
+
+- **[alexflint/go-arg](https://github.com/alexflint/go-arg)** - Command-line argument parsing
+- **[cucumber/godog](https://github.com/cucumber/godog)** - Gherkin parsing and BDD test execution framework
+- **[fatih/color](https://github.com/fatih/color)** - Colorized terminal output
+- **[go-rod/rod](https://github.com/go-rod/rod)** - Chrome DevTools Protocol automation library
+- **[goccy/go-yaml](https://github.com/goccy/go-yaml)** - High-performance YAML parser and emitter
+- **[gofrs/uuid/v5](https://github.com/gofrs/uuid/v5)** - UUID v5 implementation
+- **[stretchr/testify](https://github.com/stretchr/testify)** - Testing utilities and assertions
+- **[tdewolff/parse](https://github.com/tdewolff/parse)** - HTML/CSS parsing utilities
+- **[tidwall/gjson](https://github.com/tidwall/gjson)** - Fast JSON parser and getter
 
 ## 📊 Project Status
 
