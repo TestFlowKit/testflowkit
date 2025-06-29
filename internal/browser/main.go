@@ -63,9 +63,15 @@ func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p common.Page, sel 
 			"Please fix the selector in the configuration file",
 			"Please verify that page is accessible",
 		})
-		ch <- nil
-		ctx.cancel()
-		return
+
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			ch <- nil
+			ctx.cancel()
+			return
+		}
 	}
 
 	if element != nil {
