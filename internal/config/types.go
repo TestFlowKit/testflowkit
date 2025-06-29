@@ -9,6 +9,50 @@ import (
 	"time"
 )
 
+// SelectorType represents the type of selector.
+type SelectorType string
+
+const (
+	SelectorTypeCSS   SelectorType = "css"
+	SelectorTypeXPath SelectorType = "xpath"
+)
+
+// Selector represents a single selector with its type.
+type Selector struct {
+	Type  SelectorType `yaml:"type" validate:"required,oneof=css xpath"`
+	Value string       `yaml:"value" validate:"required"`
+}
+
+// String returns the selector value as a string.
+func (s *Selector) String() string {
+	return s.Value
+}
+
+// IsXPath returns true if the selector is an XPath selector.
+func (s *Selector) IsXPath() bool {
+	return s.Type == SelectorTypeXPath
+}
+
+// IsCSS returns true if the selector is a CSS selector.
+func (s *Selector) IsCSS() bool {
+	return s.Type == SelectorTypeCSS
+}
+
+// Otherwise, it's treated as a CSS selector.
+func ParseSelectorString(selectorStr string) Selector {
+	selectorStr = strings.TrimSpace(selectorStr)
+	if strings.HasPrefix(selectorStr, "xpath:") {
+		return Selector{
+			Type:  SelectorTypeXPath,
+			Value: strings.TrimPrefix(selectorStr, "xpath:"),
+		}
+	}
+	return Selector{
+		Type:  SelectorTypeCSS,
+		Value: selectorStr,
+	}
+}
+
 type Config struct {
 	ActiveEnvironment string `yaml:"active_environment" validate:"required"`
 
@@ -121,21 +165,38 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 	return env.FrontendBaseURL, nil
 }
 
-func (c *Config) GetElementSelectors(page, elementName string) []string {
+func (c *Config) GetElementSelectors(page, elementName string) []Selector {
 	elementName = GetLabelKey(elementName)
-	if pageElements, isPageElement := c.Frontend.Elements[page]; isPageElement {
-		if selectors, ok := pageElements[elementName]; ok {
+	var selectors []Selector
+
+	chainOfResponsibility := []func(string) []Selector{
+		c.getElementSelectors(page),
+		c.getElementSelectors("common"),
+	}
+
+	for _, chain := range chainOfResponsibility {
+		selectors = append(selectors, chain(elementName)...)
+		if len(selectors) > 0 {
 			return selectors
 		}
 	}
 
-	if commonElements, isCommonElement := c.Frontend.Elements["common"]; isCommonElement {
-		if selectors, ok := commonElements[elementName]; ok {
-			return selectors
-		}
-	}
+	return []Selector{}
+}
 
-	return []string{}
+func (c *Config) getElementSelectors(key string) func(string) []Selector {
+	return func(elementName string) []Selector {
+		var selectors []Selector
+		if pageElements, isFound := c.Frontend.Elements[key]; isFound {
+			if selectorStrs, isSelectorsFound := pageElements[elementName]; isSelectorsFound {
+				for _, selectorStr := range selectorStrs {
+					selectors = append(selectors, ParseSelectorString(selectorStr))
+				}
+				return selectors
+			}
+		}
+		return selectors
+	}
 }
 
 func (c *Config) GetSlowMotion() time.Duration {
