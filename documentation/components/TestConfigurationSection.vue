@@ -4,28 +4,35 @@
         <p>Define variables, page objects, and base URLs for your tests. This YAML file helps organize your tests and
             makes them more maintainable.</p>
 
-        <AccordionItem title="Global Section">
-            <p>The <code>global</code> section allows you to define global variables and settings for your tests. This
-                section is further divided into <code>elements</code> and <code>pages</code>.</p>
+        <AccordionItem title="Frontend Elements">
+            <p>The <code>frontend.elements</code> section allows you to define reusable selectors for UI elements. Elements can be organized by page or as common elements.</p>
+            <ul class="list-disc list-inside mb-4">
+                <li><code>common</code>: Elements that are used across multiple pages.</li>
+                <li><code>page-specific</code>: Elements specific to a particular page.</li>
+            </ul>
         </AccordionItem>
 
         <AccordionItem title="Elements Section">
-            <p>Define reusable selectors for common UI elements.</p>
+            <p>Define reusable selectors for common UI elements with multiple fallback options.</p>
             <CodeBlock :code="elementsSection" language="yaml" />
         </AccordionItem>
 
         <AccordionItem title="Pages Section">
-            <p>Define URLs for different pages used in your tests.</p>
+            <p>Define URLs for different pages used in your tests. These can be relative paths or absolute URLs.</p>
             <CodeBlock :code="pagesSection" language="yaml" />
         </AccordionItem>
 
-        <AccordionItem title="Base URL Section">
-            <p>Define the base URL for your application. Relative paths in the `pages` section will be relative to this
-                base URL.</p>
-            <CodeBlock :code="baseUrlSection" language="yaml" />
+        <AccordionItem title="Environment Configuration">
+            <p>Define different environments with their base URLs. The <code>active_environment</code> determines which environment to use.</p>
+            <CodeBlock :code="environmentSection" language="yaml" />
         </AccordionItem>
 
-        <AccordionItem title="Test Configuration Example">
+        <AccordionItem title="Backend Configuration">
+            <p>Configure API endpoints and default headers for backend testing.</p>
+            <CodeBlock :code="backendSection" language="yaml" />
+        </AccordionItem>
+
+        <AccordionItem title="Complete Test Configuration Example">
             <CodeBlock :code="testConfigExample" language="yaml" />
         </AccordionItem>
     </div>
@@ -33,37 +40,141 @@
 
 <script setup lang="ts">
 import AccordionItem from './AccordionItem.vue';
+import CodeBlock from './global/CodeBlock.vue';
 
 const elementsSection = `
-elements:
-  login_button:
-    - "#login-button"
-    - ".login-button"
-  username_field: "#username"
-  password_field: "#password"
+frontend:
+  elements:
+    common:
+      loading_spinner:
+        - "[data-testid='loading-spinner']"
+        - ".spinner"
+        - ".loading"
+      error_message:
+        - ".error-message"
+        - "[data-testid='error']"
+    login:
+      username_field: "#username"
+      password_field: "#password"
+      login_button: "#login-button"
+      forgot_password_link: ".forgot-password"
 `.trim();
 
 const pagesSection = `
-pages:
-  home: "/home"
-  login: "/login"
+frontend:
+  pages:
+    home: "/"
+    login: "/login"
+    dashboard: "/dashboard"
+    profile: "/profile"
+    settings: "/settings"
 `.trim();
 
-const baseUrlSection = `
-base_url: "http://localhost:3000"
+const environmentSection = `
+active_environment: "local"
+
+environments:
+  local:
+    frontend_base_url: "http://localhost:3000"
+    api_base_url: "http://localhost:8080"
+  
+  staging:
+    frontend_base_url: "https://staging.example.com"
+    api_base_url: "https://api-staging.example.com"
+  
+  production:
+    frontend_base_url: "https://example.com"
+    api_base_url: "https://api.example.com"
+`.trim();
+
+const backendSection = `
+backend:
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+    User-Agent: "TestFlowKit/1.0"
+    Authorization: "Bearer {token}"
+  
+  endpoints:
+    get_user:
+      method: "GET"
+      path: "/users/{id}"
+      description: "Retrieve user information by ID"
+    create_user:
+      method: "POST"
+      path: "/users"
+      description: "Create a new user"
+    update_user:
+      method: "PUT"
+      path: "/users/{id}"
+      description: "Update user information"
+    delete_user:
+      method: "DELETE"
+      path: "/users/{id}"
+      description: "Delete a user"
 `.trim();
 
 const testConfigExample = `
-global:
+active_environment: "local"
+
+settings:
+  default_timeout: 30000
+  concurrency: 5
+  headless: false
+  slow_motion: 1000
+  screenshot_on_failure: true
+  report_format: "html"
+  gherkin_location: "./e2e/features"
+
+environments:
+  local:
+    frontend_base_url: "http://localhost:3000"
+    api_base_url: "http://localhost:8080"
+  
+  staging:
+    frontend_base_url: "https://staging.example.com"
+    api_base_url: "https://api-staging.example.com"
+
+frontend:
   elements:
-    login_button:
-      - "#login-button"
-      - ".login-button"
-    username_field: "#username"
-    password_field: "#password"
+    common:
+      loading_spinner:
+        - "[data-testid='loading-spinner']"
+        - ".spinner"
+        - ".loading"
+      error_message:
+        - ".error-message"
+        - "[data-testid='error']"
+    login:
+      username_field: "#username"
+      password_field: "#password"
+      login_button: "#login-button"
+      forgot_password_link: ".forgot-password"
+    dashboard:
+      welcome_message: ".welcome-message"
+      logout_button: "#logout"
+      profile_link: ".profile-link"
+  
   pages:
-    home: "/home"
+    home: "/"
     login: "/login"
-base_url: "http://localhost:3000"
+    dashboard: "/dashboard"
+    profile: "/profile"
+
+backend:
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+    User-Agent: "TestFlowKit/1.0"
+  
+  endpoints:
+    get_user:
+      method: "GET"
+      path: "/users/{id}"
+      description: "Retrieve user information by ID"
+    create_user:
+      method: "POST"
+      path: "/users"
+      description: "Create a new user"
 `.trim();
 </script>
