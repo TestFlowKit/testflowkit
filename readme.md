@@ -3,6 +3,7 @@
 [![Go Version](https://img.shields.io/badge/Go-1.23+-blue.svg)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/TestFlowKit/testflowkit/actions)
+[![GitHub release](https://img.shields.io/github/v/release/TestFlowKit/testflowkit)](https://github.com/TestFlowKit/testflowkit/releases)
 
 **TestFlowKit** is a powerful, open-source web test automation framework built in Go that simplifies the creation and execution of automated tests for web applications. It uses Gherkin syntax for test specification and provides comprehensive support for both frontend and backend testing.
 
@@ -420,7 +421,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Project Status
 
-- **Version**: 1.0.0
 - **Status**: Active Development
 - **Go Version**: 1.23+
 - **License**: MIT
