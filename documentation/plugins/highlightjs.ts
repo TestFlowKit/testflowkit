@@ -10,12 +10,32 @@ hljs.registerLanguage("gherkin", gherkin);
 hljs.registerLanguage("yaml", yaml);
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const highlightElement = (el: HTMLElement) => {
+    const blocks = el.querySelectorAll("pre code");
+    blocks.forEach((block) => {
+      hljs.highlightElement(block as HTMLElement);
+    });
+  };
+
+  const rehighlight = () => {
+    const blocks = document.querySelectorAll("pre code");
+    blocks.forEach((block) => {
+      hljs.highlightElement(block as HTMLElement);
+    });
+  };
+
   nuxtApp.vueApp.directive("highlight", {
     mounted(el) {
-      const blocks = el.querySelectorAll("pre code");
-      blocks.forEach((block: HTMLElement) => {
-        hljs.highlightElement(block);
-      });
+      highlightElement(el);
+    },
+    updated(el) {
+      highlightElement(el);
     },
   });
+
+  return {
+    provide: {
+      rehighlight,
+    },
+  };
 });
