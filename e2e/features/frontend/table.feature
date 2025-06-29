@@ -2,8 +2,7 @@
 Feature: Table e2e tests
 
   Background:
-    Given the user opens a new browser tab
-    When the user goes to the table e2e page
+    Given the user is on table e2e page
 
   Scenario: User should see a specific table row
     Then the user should see a row containing the following elements

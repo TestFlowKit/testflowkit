@@ -206,7 +206,7 @@ func TestApplyMacro(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			applyMacro(tt.scenario, tt.macroTitles, tt.macros, tt.featureContent)
+			applyMacro(tt.scenario.Steps, tt.macroTitles, tt.macros, tt.featureContent)
 			assert.Equal(t, tt.expected, tt.featureContent)
 		})
 	}
