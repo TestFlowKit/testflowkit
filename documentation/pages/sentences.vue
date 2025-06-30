@@ -1,64 +1,99 @@
 <template>
-    <div class="mb-8">
+    <div>
         <h1 class="text-3xl font-extrabold mb-4">Gherkin Step Definitions</h1>
-        <p class="text-lg mb-6 text-gray-600">
+        <p class="text-lg mb-8 text-gray-600">
             TestFlowKit provides a comprehensive set of pre-built Gherkin step definitions for frontend and backend
-            testing.
-            Search through the available steps to find the right ones for your test scenarios.
+            testing. These steps support both CSS selectors and XPath expressions for flexible element selection.
         </p>
-    </div>
 
-    <div class="max-w-6xl mx-auto p-4">
-        <SentenceFilter :sentences="allSentences || []" v-model:search-query="searchQuery"
-            v-model:selected-category="selectedCategory" @filtered="updateFilteredSentences" />
-    </div>
+        <div class="bg-blue-100 p-6 rounded-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Element Selector Support</h2>
+            <p class="mb-4">TestFlowKit supports multiple selector types for robust element detection:</p>
 
-    <div v-if="status === 'pending'" class="text-center mt-8">
-        <p>Loading step definitions...</p>
-    </div>
+            <AccordionItem title="CSS Selectors (Default)">
+                <p>Standard CSS selectors are the default selector type in TestFlowKit:</p>
+                <ul class="list-disc list-inside mb-4">
+                    <li><strong>Element IDs:</strong> <code>#element-id</code></li>
+                    <li><strong>CSS Classes:</strong> <code>.class-name</code></li>
+                    <li><strong>Attribute Selectors:</strong> <code>[data-testid='value']</code></li>
+                    <li><strong>Complex Selectors:</strong> <code>div.container > button[type='submit']</code></li>
+                </ul>
+                <CodeBlock :code="cssExamples" language="yaml" />
+            </AccordionItem>
 
-    <ClientOnly>
-        <div v-if="status === 'success' && filteredSentences.length > 0" class="max-w-6xl mx-auto p-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <SentenceDefinitionCard v-for="(definition, index) in paginatedSentences" v-bind="definition"
-                    :key="`${currentPage}-${index}-${definition.sentence}`" />
-            </div>
+            <AccordionItem title="XPath Selectors">
+                <p>TestFlowKit provides full XPath 1.0 support with the <code>xpath:</code> prefix for complex element
+                    selection:</p>
+                <ul class="list-disc list-inside mb-4">
+                    <li><strong>Element Selection:</strong> <code>xpath://div[@class='container']</code></li>
+                    <li><strong>Text Matching:</strong> <code>xpath://button[contains(text(), 'Submit')]</code></li>
+                    <li><strong>Attribute Conditions:</strong> <code>xpath://input[@type='email' and @required]</code>
+                    </li>
+                    <li><strong>Complex Expressions:</strong>
+                        <code>xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]</code>
+                    </li>
+                </ul>
+                <CodeBlock :code="xpathExamples" language="yaml" />
+            </AccordionItem>
 
-            <div v-if="totalPages > 1" class="mt-8 flex justify-center">
-                <div class="flex items-center gap-2">
-                    <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
-                        aria-label="Previous page"
-                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Previous
-                    </button>
+            <AccordionItem title="Mixed Selectors with Fallback">
+                <p>Combine CSS and XPath selectors for maximum flexibility and robustness:</p>
+                <CodeBlock :code="mixedExamples" language="yaml" />
+            </AccordionItem>
+        </div>
 
-                    <div class="flex items-center gap-1">
-                        <button v-for="page in visiblePages" :key="page" @click="currentPage = page" :class="[
-                            'px-3 py-2 text-sm font-medium rounded-md',
-                            page === currentPage
-                                ? 'bg-blue-600 text-white'
-                                : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
-                        ]">
-                            {{ page }}
+        <div class="max-w-6xl mx-auto p-4">
+            <SentenceFilter :sentences="allSentences || []" v-model:search-query="searchQuery"
+                v-model:selected-category="selectedCategory" @filtered="updateFilteredSentences" />
+        </div>
+
+        <div v-if="status === 'pending'" class="text-center mt-8">
+            <p>Loading step definitions...</p>
+        </div>
+
+        <ClientOnly>
+            <div v-if="status === 'success' && filteredSentences.length > 0" class="max-w-6xl mx-auto p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <SentenceDefinitionCard v-for="(definition, index) in paginatedSentences" v-bind="definition"
+                        :key="`${currentPage}-${index}-${definition.sentence}`" />
+                </div>
+
+                <div v-if="totalPages > 1" class="mt-8 flex justify-center">
+                    <div class="flex items-center gap-2">
+                        <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
+                            aria-label="Previous page"
+                            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Previous
+                        </button>
+
+                        <div class="flex items-center gap-1">
+                            <button v-for="page in visiblePages" :key="page" @click="currentPage = page" :class="[
+                                'px-3 py-2 text-sm font-medium rounded-md',
+                                page === currentPage
+                                    ? 'bg-blue-600 text-white'
+                                    : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
+                            ]">
+                                {{ page }}
+                            </button>
+                        </div>
+
+                        <button @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                            :disabled="currentPage === totalPages"
+                            class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Next
                         </button>
                     </div>
-
-                    <button @click="currentPage = Math.min(totalPages, currentPage + 1)"
-                        :disabled="currentPage === totalPages"
-                        class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Next
-                    </button>
                 </div>
             </div>
-        </div>
 
-        <div v-else-if="status === 'success' && filteredSentences.length === 0" class="text-center mt-8">
-            <p class="text-gray-600">No step definitions found matching your criteria.</p>
-        </div>
-    </ClientOnly>
+            <div v-else-if="status === 'success' && filteredSentences.length === 0" class="text-center mt-8">
+                <p class="text-gray-600">No step definitions found matching your criteria.</p>
+            </div>
+        </ClientOnly>
 
-    <div v-if="status === 'error'" class="text-center mt-8">
-        <p>Error: {{ error }}</p>
+        <div v-if="status === 'error'" class="text-center mt-8">
+            <p>Error: {{ error }}</p>
+        </div>
     </div>
 </template>
 
@@ -66,6 +101,8 @@
 import SentenceDefinitionCard from '../components/SentenceDefinitionCard.vue';
 import SentenceFilter from '../components/SentenceFilter.vue';
 import type { Sentence } from '~/data/sentence';
+import AccordionItem from '../components/AccordionItem.vue';
+import CodeBlock from '../components/global/CodeBlock.vue';
 
 const { $rehighlight } = useNuxtApp();
 
@@ -126,6 +163,53 @@ watch([currentPage, paginatedSentences], () => {
     });
 });
 
+const cssExamples = `
+frontend:
+  elements:
+    login_page:
+      # CSS Selector Examples
+      email_field:
+        - "[data-testid='email-input']"
+        - "input[name='email']"
+        - "#email"
+      password_field:
+        - "input[type='password']"
+        - "#password"
+      submit_button:
+        - "button[type='submit']"
+        - ".btn-primary"
+`.trim();
+
+const xpathExamples = `
+frontend:
+  elements:
+    login_page:
+      # XPath Selector Examples
+      complex_button:
+        - "xpath://button[contains(@class, 'submit') and text()='Login']"
+        - "xpath://div[@id='login-form']//button[@type='submit']"
+      dynamic_text:
+        - "xpath://div[contains(text(), 'Welcome') and @class='message']"
+        - "xpath://span[text()='Hello, User!']"
+      required_field:
+        - "xpath://input[@type='email' and @required]"
+        - "xpath://input[@name='email' and @data-required='true']"
+`.trim();
+
+const mixedExamples = `
+frontend:
+  elements:
+    login_page:
+      # Mixed CSS and XPath selectors
+      flexible_element:
+        - "xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]"
+        - ".loading-indicator"
+        - "[data-testid='loading']"
+      complex_form:
+        - "xpath://form[@id='login-form']//input[@type='email']"
+        - "input[name='email']"
+        - "#email"
+`.trim();
 </script>
 
 <style scoped>

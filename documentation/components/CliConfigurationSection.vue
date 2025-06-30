@@ -1,7 +1,8 @@
 <template>
     <div class="bg-gray-100 p-6 rounded-lg mb-8">
         <h2 class="text-2xl font-semibold mb-4">CLI Configuration</h2>
-        <p>Configure settings for running the test application. This YAML file controls global settings, environments, frontend elements, and backend endpoints.</p>
+        <p>Configure settings for running the test application. This YAML file controls global settings, environments,
+            frontend elements, and backend endpoints.</p>
 
         <AccordionItem title="Global Settings">
             <div class="overflow-x-auto">
@@ -35,7 +36,8 @@
                         </tr>
                         <tr>
                             <td class="border px-4 py-2"><code>slow_motion</code></td>
-                            <td class="border px-4 py-2">Slow down test execution (in milliseconds) - useful for debugging.</td>
+                            <td class="border px-4 py-2">Slow down test execution (in milliseconds) - useful for
+                                debugging.</td>
                             <td class="border px-4 py-2"><code>1000</code></td>
                             <td class="border px-4 py-2"><code>slow_motion: 2000</code></td>
                         </tr>
@@ -53,7 +55,8 @@
                         </tr>
                         <tr>
                             <td class="border px-4 py-2"><code>gherkin_location</code></td>
-                            <td class="border px-4 py-2">Path to the directory containing the Gherkin feature files.</td>
+                            <td class="border px-4 py-2">Path to the directory containing the Gherkin feature files.
+                            </td>
                             <td class="border px-4 py-2"><code>./e2e/features</code></td>
                             <td class="border px-4 py-2"><code>gherkin_location: "./tests/features"</code></td>
                         </tr>
@@ -78,9 +81,10 @@
         </AccordionItem>
 
         <AccordionItem title="Frontend Configuration">
-            <p>Configure frontend elements and pages for UI testing.</p>
+            <p>Configure frontend elements and pages for UI testing. Supports both CSS selectors and XPath expressions
+                for flexible element selection.</p>
             <ul class="list-disc list-inside mb-4">
-                <li><code>elements</code>: Define reusable selectors for UI elements.</li>
+                <li><code>elements</code>: Define reusable selectors for UI elements (CSS and XPath).</li>
                 <li><code>pages</code>: Define page URLs and paths.</li>
             </ul>
         </AccordionItem>
@@ -132,10 +136,16 @@ frontend:
         - "[data-testid='loading-spinner']"
         - ".spinner"
         - ".loading"
+        - "xpath://div[contains(@class, 'loading')]"
     login:
       username_field: "#username"
       password_field: "#password"
       login_button: "#login-button"
+      # XPath selectors for complex elements
+      submit_button:
+        - "xpath://button[contains(@class, 'submit') and text()='Login']"
+        - "xpath://div[@id='login-form']//button[@type='submit']"
+        - "[data-testid='login-button']"
   
   pages:
     home: "/"

@@ -18,6 +18,7 @@
 - **Macro System**: Reusable test scenarios to reduce code duplication
 - **Parallel Execution**: Run tests concurrently for faster execution
 - **Rich Reporting**: HTML and JSON report formats with detailed test results
+- **XPath Support**: Full XPath 1.0 support alongside CSS selectors for flexible element selection
 
 ### Advanced Features
 
@@ -201,9 +202,10 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 
 ### Frontend Configuration
 
-- **Element Selectors**: CSS selectors, XPath, and data attributes
+- **Element Selectors**: CSS selectors, XPath expressions, and data attributes
 - **Page Definitions**: Logical page names and their URLs
 - **Fallback Strategies**: Multiple selector options for robust element detection
+- **XPath Support**: Full XPath 1.0 support with `xpath:` prefix for complex element selection
 
 ### Backend Configuration
 
@@ -215,7 +217,7 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 
 ### Frontend Testing
 
-TestFlowKit provides comprehensive frontend testing capabilities:
+TestFlowKit provides comprehensive frontend testing capabilities with support for both CSS selectors and XPath expressions:
 
 ```gherkin
 # Navigation
@@ -231,6 +233,46 @@ And the user checks the "remember_me" checkbox
 Then the "welcome_message" should be visible
 And the "email" field should contain "test@example.com"
 ```
+
+### Element Selector Configuration
+
+TestFlowKit supports multiple selector types for robust element detection:
+
+```yaml
+frontend:
+  elements:
+    login_page:
+      # CSS Selectors (default)
+      email_field:
+        - "[data-testid='email-input']"
+        - "input[name='email']"
+        - "#email"
+
+      # XPath Selectors (with xpath: prefix)
+      complex_button:
+        - "xpath://button[contains(@class, 'submit') and text()='Login']"
+        - "xpath://div[@id='login-form']//button[@type='submit']"
+        - "[data-testid='login-button']"
+
+      # Mixed selectors with fallback
+      dynamic_element:
+        - "xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]"
+        - ".loading-indicator"
+        - "[data-testid='loading']"
+```
+
+**Selector Types:**
+
+- **CSS Selectors**: Standard CSS selectors (default)
+  - `#id`, `.class`, `[attribute=value]`, etc.
+- **XPath Selectors**: Full XPath 1.0 support with `xpath:` prefix
+  - `xpath://div[@class='container']`
+  - `xpath://button[contains(text(), 'Submit')]`
+  - `xpath://input[@type='email' and @required]`
+
+**Smart Element Detection:**
+
+TestFlowKit automatically tries multiple selectors in parallel and uses the first one that finds an element, providing robust element detection even when page structures change.
 
 ### API Testing
 

@@ -32,7 +32,7 @@ frontend:
       visual_test_button:
         - "button"
       text_field:
-        - "#text"
+        - "xpath://*[@id='text']"
       textarea_field:
         - "#textarea"
       double_click_button:

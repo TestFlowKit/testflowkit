@@ -188,6 +188,7 @@ frontend:
       element_name:
         - "selector1"
         - "selector2"
+        - "xpath://complex/selector[@attribute='value']"
   pages:
     page_name: "/path"
 
@@ -197,6 +198,31 @@ backend:
       method: "GET"
       path: "/api/endpoint"
       description: "Endpoint description"
+```
+
+**Selector Configuration Examples:**
+
+```yaml
+frontend:
+  elements:
+    login_page:
+      # CSS Selectors (default)
+      email_field:
+        - "[data-testid='email-input']"
+        - "input[name='email']"
+        - "#email"
+
+      # XPath Selectors (with xpath: prefix)
+      complex_button:
+        - "xpath://button[contains(@class, 'submit') and text()='Login']"
+        - "xpath://div[@id='login-form']//button[@type='submit']"
+        - "[data-testid='login-button']" # CSS fallback
+
+      # Mixed selectors for robust detection
+      dynamic_element:
+        - "xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]"
+        - ".loading-indicator"
+        - "[data-testid='loading']"
 ```
 
 ### 3. Browser Automation Layer (`internal/browser/`)
@@ -233,6 +259,45 @@ func getElementBySelectors(page common.Page, selectors []string) common.Element 
     return <-ch
 }
 ```
+
+**XPath Support:**
+
+TestFlowKit provides comprehensive XPath 1.0 support alongside CSS selectors for flexible element selection:
+
+```go
+// XPath selector detection and execution
+func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p page, selector config.Selector, ch chan<- element) {
+    var elt element
+    var err error
+
+    value := selector.String()
+    if selector.IsXPath() {
+        elt, err = p.GetOneByXPath(value)
+    } else {
+        elt, err = p.GetOneBySelector(value)
+    }
+    // ... error handling and result processing
+}
+```
+
+**Selector Types:**
+
+- **CSS Selectors**: Standard CSS selectors (default behavior)
+
+  - Element IDs: `#element-id`
+  - CSS classes: `.class-name`
+  - Attribute selectors: `[data-testid='value']`
+  - Complex selectors: `div.container > button[type='submit']`
+
+- **XPath Selectors**: Full XPath 1.0 support with `xpath:` prefix
+  - Element selection: `xpath://div[@class='container']`
+  - Text matching: `xpath://button[contains(text(), 'Submit')]`
+  - Attribute conditions: `xpath://input[@type='email' and @required]`
+  - Complex expressions: `xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]`
+
+**Parallel Selector Execution:**
+
+The framework executes multiple selectors in parallel, automatically selecting the first successful match, providing robust element detection even when page structures change.
 
 ### 4. Step Definition Framework (`internal/steps_definitions/`)
 
