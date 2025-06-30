@@ -21,9 +21,6 @@ func (steps) userIsOnHomepage() stepbuilder.Step {
 				logger.Fatal(fmt.Sprintf("Url for page %s not configured", settingsVariable), err)
 				return ctx, err
 			}
-			if scenarioCtx.GetCurrentPageOnly() == nil {
-				scenarioCtx.InitBrowser(false)
-			}
 			scenarioCtx.OpenNewPage(url)
 			return ctx, nil
 		},

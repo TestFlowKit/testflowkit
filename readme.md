@@ -224,6 +224,11 @@ TestFlowKit provides comprehensive frontend testing capabilities with support fo
 Given the user is on the homepage
 When the user goes to the "login" page
 
+# Note: Browser auto-initialization
+# TestFlowKit automatically opens a browser if you forget to initialize it
+# before navigating to a page. This makes your tests more robust and
+# reduces the need for explicit browser setup steps.
+
 # Form Interactions
 And the user enters "test@example.com" into the "email" field
 And the user selects "Option 1" from the "dropdown" dropdown

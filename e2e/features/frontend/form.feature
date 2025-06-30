@@ -2,8 +2,7 @@
 Feature: Form e2e tests
 
   Background:
-    Given the user opens a new private browser tab
-    And the user goes to the "form e2e" page
+    Given the user goes to the "form e2e" page
 
   @DROPDOWN @SELECT_BY_TEXT
   Scenario: a user can select dropdown value by text

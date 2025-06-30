@@ -8,6 +8,7 @@ import (
 
 	"testflowkit/internal/browser"
 	"testflowkit/internal/browser/common"
+	"testflowkit/pkg/logger"
 )
 
 func (c *Context) InitBrowser(incognitoMode bool) {
@@ -16,7 +17,15 @@ func (c *Context) InitBrowser(incognitoMode bool) {
 }
 
 func (c *Context) OpenNewPage(url string) {
+	c.EnsureBrowserInitialized()
 	c.frontend.page = c.frontend.browser.NewPage(url)
+}
+
+func (c *Context) EnsureBrowserInitialized() {
+	if c.frontend.browser == nil {
+		logger.Info("Browser not initialized, automatically opening browser")
+		c.InitBrowser(false)
+	}
 }
 
 func (c *Context) GetPages() []common.Page {
