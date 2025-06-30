@@ -9,27 +9,32 @@ import (
 func main() {
 	args := getAppArgs()
 
+	mode, err := args.getMode()
+	if err != nil {
+		logger.Fatal("Failed to get mode", err)
+	}
+
+	if mode == config.InitMode {
+		actions.Execute(nil, mode)
+		return
+	}
+
 	cfgPath, getcfigPathErr := args.getConfigPath()
 	if getcfigPathErr != nil {
 		logger.Fatal("Failed to get config path", getcfigPathErr)
 	}
 
-	err := config.Load(cfgPath, args.getAppConfigOverrides())
-	if err != nil {
+	configLoadErr := config.Load(cfgPath, args.getAppConfigOverrides())
+	if configLoadErr != nil {
 		logger.Fatal("Failed to load config", err)
 	}
 
-	cfg, err := config.Get()
-	if err != nil {
+	cfg, configGetErr := config.Get()
+	if configGetErr != nil {
 		logger.Fatal("Failed to get config", err)
 	}
 
 	displayConfigSummary(cfg)
-
-	mode, err := args.getMode()
-	if err != nil {
-		logger.Fatal("Failed to get mode", err)
-	}
 
 	actions.Execute(cfg, mode)
 }
