@@ -178,7 +178,9 @@
                 <div class="flex">
                     <div class="flex-shrink-0">
                         <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
                     <div class="ml-3">
@@ -207,11 +209,23 @@
             </ul>
 
             <p>
-                <b>Important Tip:</b> You can even specify multiple CSS selectors for
-                a single element! This is helpful if the element might be identified
-                differently in various parts of your application. TestFlowKit will try
-                each selector in order until it finds a match.
+                <b>Important Tip:</b> You can specify multiple selectors for a single element, including both CSS
+                selectors and XPath expressions! This is helpful if the element might be identified differently in
+                various parts of your application. TestFlowKit will try each selector in order until it finds a match.
             </p>
+
+            <p>
+                <b>Selector Types:</b> TestFlowKit supports two types of selectors:
+            </p>
+            <ul class="list-disc list-inside ml-6 mb-4">
+                <li><strong>CSS Selectors:</strong> Standard CSS selectors (default) - <code>#id</code>,
+                    <code>.class</code>, <code>[attribute=value]</code>
+                </li>
+                <li><strong>XPath Selectors:</strong> Full XPath 1.0 support with <code>xpath:</code> prefix -
+                    <code>xpath://div[@class='container']</code>,
+                    <code>xpath://button[contains(text(), 'Submit')]</code>
+                </li>
+            </ul>
 
             <p>
                 <b>Naming Convention:</b> To keep your code organized, use
@@ -257,7 +271,8 @@
             <ul class="list-disc list-inside ml-2 mb-4">
                 <li><strong>Parallel Execution:</strong> <code>./testflowkit run --concurrency 4</code></li>
                 <li><strong>Tag-based Execution:</strong> <code>./testflowkit run --tags "@smoke"</code></li>
-                <li><strong>Custom Configuration:</strong> <code>./testflowkit run --config ./custom-config.yml</code></li>
+                <li><strong>Custom Configuration:</strong> <code>./testflowkit run --config ./custom-config.yml</code>
+                </li>
                 <li><strong>Environment-specific:</strong> <code>TEST_ENV=staging ./testflowkit run</code></li>
             </ul>
         </div>
@@ -296,10 +311,12 @@
                         Configuration</router-link>
                 </li>
                 <li>
-                    <router-link :to="{ name: 'sentences' }" class="text-blue-600 hover:underline">TestFlowKit Step Definitions</router-link>
+                    <router-link :to="{ name: 'sentences' }" class="text-blue-600 hover:underline">TestFlowKit Step
+                        Definitions</router-link>
                 </li>
                 <li>
-                    <a href="https://testflowkit.dreamsfollowers.me/" target="_blank" class="text-blue-600 hover:underline">Official Documentation</a>
+                    <a href="https://testflowkit.dreamsfollowers.me/" target="_blank"
+                        class="text-blue-600 hover:underline">Official Documentation</a>
                 </li>
             </ul>
         </div>
@@ -373,9 +390,15 @@ frontend:
       search_field:
         - "input[type='search']"
         - ".search-input"
+        - "xpath://input[@placeholder='Search...']"
       search_button:
         - "button[type='submit']"
         - ".search-btn"
+        - "xpath://button[contains(text(), 'Search')]"
+      complex_element:
+        - "xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]"
+        - ".loading-indicator"
+        - "[data-testid='loading']"
         
   pages:
     search: "/search"

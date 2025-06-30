@@ -1,41 +1,50 @@
 <template>
-    <div class="bg-blue-100 p-6 rounded-lg mb-8">
-        <h2 class="text-2xl font-semibold mb-4">Test Configuration</h2>
-        <p>Define variables, page objects, and base URLs for your tests. This YAML file helps organize your tests and
-            makes them more maintainable.</p>
+  <div class="bg-blue-100 p-6 rounded-lg mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Test Configuration</h2>
+    <p>Define variables, page objects, and base URLs for your tests. This YAML file helps organize your tests and
+      makes them more maintainable.</p>
 
-        <AccordionItem title="Frontend Elements">
-            <p>The <code>frontend.elements</code> section allows you to define reusable selectors for UI elements. Elements can be organized by page or as common elements.</p>
-            <ul class="list-disc list-inside mb-4">
-                <li><code>common</code>: Elements that are used across multiple pages.</li>
-                <li><code>page-specific</code>: Elements specific to a particular page.</li>
-            </ul>
-        </AccordionItem>
+    <AccordionItem title="Frontend Elements">
+      <p>The <code>frontend.elements</code> section allows you to define reusable selectors for UI elements. Elements
+        can be organized by page or as common elements.</p>
+      <ul class="list-disc list-inside mb-4">
+        <li><code>common</code>: Elements that are used across multiple pages.</li>
+        <li><code>page-specific</code>: Elements specific to a particular page.</li>
+      </ul>
+    </AccordionItem>
 
-        <AccordionItem title="Elements Section">
-            <p>Define reusable selectors for common UI elements with multiple fallback options.</p>
-            <CodeBlock :code="elementsSection" language="yaml" />
-        </AccordionItem>
+    <AccordionItem title="Elements Section">
+      <p>Define reusable selectors for common UI elements with multiple fallback options. TestFlowKit supports both CSS
+        selectors and XPath expressions.</p>
+      <CodeBlock :code="elementsSection" language="yaml" />
+    </AccordionItem>
 
-        <AccordionItem title="Pages Section">
-            <p>Define URLs for different pages used in your tests. These can be relative paths or absolute URLs.</p>
-            <CodeBlock :code="pagesSection" language="yaml" />
-        </AccordionItem>
+    <AccordionItem title="XPath Selector Support">
+      <p>TestFlowKit provides full XPath 1.0 support for complex element selection. Use the <code>xpath:</code> prefix
+        to specify XPath expressions.</p>
+      <CodeBlock :code="xpathSection" language="yaml" />
+    </AccordionItem>
 
-        <AccordionItem title="Environment Configuration">
-            <p>Define different environments with their base URLs. The <code>active_environment</code> determines which environment to use.</p>
-            <CodeBlock :code="environmentSection" language="yaml" />
-        </AccordionItem>
+    <AccordionItem title="Pages Section">
+      <p>Define URLs for different pages used in your tests. These can be relative paths or absolute URLs.</p>
+      <CodeBlock :code="pagesSection" language="yaml" />
+    </AccordionItem>
 
-        <AccordionItem title="Backend Configuration">
-            <p>Configure API endpoints and default headers for backend testing.</p>
-            <CodeBlock :code="backendSection" language="yaml" />
-        </AccordionItem>
+    <AccordionItem title="Environment Configuration">
+      <p>Define different environments with their base URLs. The <code>active_environment</code> determines which
+        environment to use.</p>
+      <CodeBlock :code="environmentSection" language="yaml" />
+    </AccordionItem>
 
-        <AccordionItem title="Complete Test Configuration Example">
-            <CodeBlock :code="testConfigExample" language="yaml" />
-        </AccordionItem>
-    </div>
+    <AccordionItem title="Backend Configuration">
+      <p>Configure API endpoints and default headers for backend testing.</p>
+      <CodeBlock :code="backendSection" language="yaml" />
+    </AccordionItem>
+
+    <AccordionItem title="Complete Test Configuration Example">
+      <CodeBlock :code="testConfigExample" language="yaml" />
+    </AccordionItem>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +67,33 @@ frontend:
       password_field: "#password"
       login_button: "#login-button"
       forgot_password_link: ".forgot-password"
+`.trim();
+
+const xpathSection = `
+frontend:
+  elements:
+    login_page:
+      # XPath selectors for complex element selection
+      complex_button:
+        - "xpath://button[contains(@class, 'submit') and text()='Login']"
+        - "xpath://div[@id='login-form']//button[@type='submit']"
+        - "[data-testid='login-button']"  # CSS fallback
+      
+      # XPath with text content matching
+      dynamic_text:
+        - "xpath://div[contains(text(), 'Welcome') and @class='message']"
+        - "xpath://span[text()='Hello, User!']"
+      
+      # XPath with attribute conditions
+      required_field:
+        - "xpath://input[@type='email' and @required]"
+        - "xpath://input[@name='email' and @data-required='true']"
+      
+      # Mixed selectors with XPath and CSS fallbacks
+      flexible_element:
+        - "xpath://div[contains(@class, 'dynamic') and contains(text(), 'Loading')]"
+        - ".loading-indicator"
+        - "[data-testid='loading']"
 `.trim();
 
 const pagesSection = `
@@ -150,10 +186,19 @@ frontend:
       password_field: "#password"
       login_button: "#login-button"
       forgot_password_link: ".forgot-password"
+      # XPath selectors for complex elements
+      submit_button:
+        - "xpath://button[contains(@class, 'submit') and text()='Login']"
+        - "xpath://div[@id='login-form']//button[@type='submit']"
+        - "[data-testid='login-button']"
     dashboard:
       welcome_message: ".welcome-message"
       logout_button: "#logout"
       profile_link: ".profile-link"
+      # XPath for dynamic content
+      user_greeting:
+        - "xpath://div[contains(text(), 'Welcome') and @class='greeting']"
+        - ".user-greeting"
   
   pages:
     home: "/"

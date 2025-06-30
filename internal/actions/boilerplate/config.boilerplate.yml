@@ -23,7 +23,12 @@ frontend:
       loading_spinner:
         - "[data-testid='loading-spinner']"
         - ".spinner"
-        - ".loading"
+        - "xpath://div[contains(@class, 'loading')]"
+
+      submit_button:
+        - "button[type='submit']"
+        - "xpath://button[@type='submit']"
+        - "xpath://input[@type='submit']"
 
   pages:
     google: "https://www.google.com"
