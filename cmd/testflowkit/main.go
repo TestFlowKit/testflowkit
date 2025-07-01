@@ -26,7 +26,7 @@ func main() {
 
 	configLoadErr := config.Load(cfgPath, args.getAppConfigOverrides())
 	if configLoadErr != nil {
-		logger.Fatal("Failed to load config", err)
+		logger.Fatal("Failed to load config", configLoadErr)
 	}
 
 	cfg, configGetErr := config.Get()

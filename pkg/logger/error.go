@@ -28,7 +28,7 @@ func Fatal(context string, err error) {
 	if err == nil {
 		log(fatal, context)
 	} else {
-		log(fatal, fmt.Sprintf("%s: %s", context, err))
+		log(fatal, fmt.Sprintf("(%s) %s", context, err))
 	}
 	os.Exit(1)
 }
