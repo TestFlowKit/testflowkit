@@ -72,7 +72,7 @@ type GlobalSettings struct {
 
 	Headless bool `yaml:"headless"`
 
-	SlowMotion int `yaml:"slow_motion" validate:"omitempty" `
+	ThinkTime int `yaml:"think_time" validate:"omitempty" `
 
 	ReportFormat string `yaml:"report_format" validate:"oneof=html json junit"`
 
@@ -193,14 +193,14 @@ func (c *Config) getElementSelectors(key string) func(string) []Selector {
 	}
 }
 
-func (c *Config) GetSlowMotion() time.Duration {
-	if c.Settings.SlowMotion == 0 || c.Settings.Headless {
+func (c *Config) GetThinkTime() time.Duration {
+	if c.Settings.ThinkTime == 0 || c.Settings.Headless {
 		return 0
 	}
 
-	duration, err := time.ParseDuration(fmt.Sprintf("%dms", c.Settings.SlowMotion))
+	duration, err := time.ParseDuration(fmt.Sprintf("%dms", c.Settings.ThinkTime))
 	if err != nil {
-		log.Printf("Invalid slow motion duration: %d, using 0", c.Settings.SlowMotion)
+		log.Printf("Invalid think time duration: %d, using 0", c.Settings.ThinkTime)
 		return 0
 	}
 	return duration

@@ -31,7 +31,7 @@ func NewContext(cfg *config.Config) *Context {
 			page:         nil,
 			timeout:      time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
 			headlessMode: cfg.IsHeadlessModeEnabled(),
-			slowMotion:   cfg.GetSlowMotion(),
+			thinkTime:    cfg.GetThinkTime(),
 		},
 		http: &RESTAPIContext{
 			RequestHeaders: make(map[string]string),
@@ -41,11 +41,11 @@ func NewContext(cfg *config.Config) *Context {
 }
 
 type frontend struct {
-	browser             common.Browser
-	page                common.Page
-	timeout, slowMotion time.Duration
-	currentPageName     string
-	headlessMode        bool
+	browser            common.Browser
+	page               common.Page
+	timeout, thinkTime time.Duration
+	currentPageName    string
+	headlessMode       bool
 }
 
 type HTTPResponse struct {

@@ -35,11 +35,11 @@
                             <td class="border px-4 py-2"><code>headless: true</code></td>
                         </tr>
                         <tr>
-                            <td class="border px-4 py-2"><code>slow_motion</code></td>
+                            <td class="border px-4 py-2"><code>think_time</code></td>
                             <td class="border px-4 py-2">Slow down test execution (in milliseconds) - useful for
                                 debugging.</td>
                             <td class="border px-4 py-2"><code>1000</code></td>
-                            <td class="border px-4 py-2"><code>slow_motion: 2000</code></td>
+                            <td class="border px-4 py-2"><code>think_time: 2000</code></td>
                         </tr>
                         <tr>
                             <td class="border px-4 py-2"><code>screenshot_on_failure</code></td>
@@ -114,7 +114,7 @@ settings:
   default_timeout: 30000
   concurrency: 5
   headless: false
-  slow_motion: 1000
+  think_time: 1000
   screenshot_on_failure: true
   report_format: "html"
   gherkin_location: "./e2e/features"

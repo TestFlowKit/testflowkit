@@ -57,7 +57,7 @@ func displayConfigSummary(cfg *config.Config) {
 	// logger.InfoFf("Page Load Timeout: %dms", cfg.Settings.PageLoadTimeout)
 	logger.InfoFf("Screenshot on Failure: %t", cfg.Settings.ScreenshotOnFailure)
 	// logger.InfoFf("Video Recording: %t", cfg.Settings.VideoRecording)
-	logger.InfoFf("Slow Motion: %v", cfg.Settings.SlowMotion)
+	logger.InfoFf("Think Time: %v", cfg.Settings.ThinkTime)
 	logger.InfoFf("Elements Configured: %d page groups", len(cfg.Frontend.Elements))
 	logger.InfoFf("API Endpoints: %d endpoints", len(cfg.Backend.Endpoints))
 

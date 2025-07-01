@@ -157,7 +157,7 @@ settings:
   default_timeout: 30000
   concurrency: 5
   headless: false
-  slow_motion: 1000
+  think_time: 1000
   screenshot_on_failure: true
   report_format: "html"
   gherkin_location: "./e2e/features"
