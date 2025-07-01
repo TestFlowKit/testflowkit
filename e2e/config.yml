@@ -3,7 +3,7 @@ active_environment: "local"
 settings:
   default_timeout: 5000
   page_load_timeout: 30000
-  slow_motion: 10000
+  think_time: 10000
 
   screenshot_on_failure: true
   video_recording: false
