@@ -12,7 +12,7 @@ func (steps) userClicksOnButton() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user clicks the {string} button$`},
+		[]string{`the user clicks the {string} button`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			return clickCommonHandler(formatLabel).handler()(ctx, name)
 		},

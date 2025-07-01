@@ -10,7 +10,7 @@ import (
 
 func (steps) responseBodyPathShouldExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the response body path {string} should exist$`},
+		[]string{`the response body path {string} should exist`},
 		func(ctx context.Context, jsonPath string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 

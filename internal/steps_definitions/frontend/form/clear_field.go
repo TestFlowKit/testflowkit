@@ -14,7 +14,7 @@ func (steps) clearField() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user clears the {string} field$`},
+		[]string{`the user clears the {string} field`},
 		func(ctx context.Context, inputLabel string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(inputLabel))

@@ -14,7 +14,7 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user enters {string} into the {string} field`},
+		[]string{`the user enters {string} into the {string} field`},
 		func(ctx context.Context, text, inputLabel string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(inputLabel))

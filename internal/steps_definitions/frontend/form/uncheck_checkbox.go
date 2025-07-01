@@ -16,7 +16,7 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user unchecks the {string} checkbox$`},
+		[]string{`the user unchecks the {string} checkbox`},
 		func(ctx context.Context, checkBoxName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			checkBox, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(checkBoxName))

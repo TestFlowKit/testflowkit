@@ -10,7 +10,7 @@ import (
 
 func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the {string} should not be visible$`},
+		[]string{`the {string} should not be visible`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			element, err := scenarioCtx.GetHTMLElementByLabel(name)

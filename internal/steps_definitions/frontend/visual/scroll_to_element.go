@@ -10,19 +10,18 @@ import (
 
 func (steps) scrollToElement() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user scrolls to the {string} element$`},
-		func(ctx context.Context, name string) (context.Context, error) {
+		[]string{`the user scrolls to the {string} element`},
+		func(ctx context.Context, elementName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			element, err := scenarioCtx.GetHTMLElementByLabel(fmt.Sprintf("%s_element", name))
+			elt, err := scenarioCtx.GetHTMLElementByLabel(fmt.Sprintf("%s_element", elementName))
 			if err != nil {
 				return ctx, err
 			}
 
-			scrollErr := element.ScrollIntoView()
+			scrollErr := elt.ScrollIntoView()
 			if scrollErr != nil {
 				return ctx, scrollErr
 			}
-
 			return ctx, nil
 		},
 		func(name string) stepbuilder.ValidationErrors {
@@ -35,11 +34,11 @@ func (steps) scrollToElement() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "Scrolls the page until the specified element is visible in the viewport.",
+			Description: "scrolls to the specified element.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "elementName", Description: "The name of the element to scroll to.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `When the user scrolls to the "Submit Button at the bottom" element`,
+			Example:  "When the user scrolls to the submit button element",
 			Category: stepbuilder.Visual,
 		},
 	)

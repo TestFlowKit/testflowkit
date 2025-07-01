@@ -8,7 +8,6 @@ import (
 	"strings"
 	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
-	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
@@ -213,7 +212,7 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 	for _, step := range GetAllSteps() {
 		handler := step.GetDefinition()
 		for _, sentence := range step.GetSentences() {
-			ctx.Step(core.ConvertWildcards(sentence), handler)
+			ctx.Step(formatStep(sentence), handler)
 		}
 	}
 }

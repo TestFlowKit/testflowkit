@@ -17,7 +17,7 @@ func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 	`
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user should see a table with the following headers$`},
+		[]string{`the user should see a table with the following headers`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			data, err := assistdog.NewDefault().ParseMap(table)
