@@ -3,6 +3,7 @@
         <div class="flex flex-wrap gap-4 items-center">
             <div class="flex-1 min-w-0">
                 <input type="text" placeholder="Search step definitions..." :value="searchQuery" @input="handleSearch"
+                    id="search-input"
                     class="w-full px-4 py-2 text-base bg-white border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" />
             </div>
 

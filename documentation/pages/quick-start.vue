@@ -66,12 +66,12 @@
                             </div>
                             <div class="bg-white p-3 rounded">
                                 <div class="font-medium text-gray-800">Mac:</div>
-                                <div class="text-sm text-gray-600">Extract the file and run <code>./testflowkit</code>
+                                <div class="text-sm text-gray-600">Extract the file and run <code>./tkit</code>
                                     in Terminal</div>
                             </div>
                             <div class="bg-white p-3 rounded">
                                 <div class="font-medium text-gray-800">Linux:</div>
-                                <div class="text-sm text-gray-600">Extract the file and run <code>./testflowkit</code>
+                                <div class="text-sm text-gray-600">Extract the file and run <code>./tkit</code>
                                     in Terminal</div>
                             </div>
                         </div>
@@ -270,30 +270,31 @@ settings:
   default_timeout: 15000
   headless: false
   think_time: 1000
+  concurrency: 1
+  gherkin_location: "features"
+  report_format: html
 
 frontend:
   pages:
     sentences: /sentences
-    search: /search
 
   elements:
-    sentences_page:
+    sentences:
       search_field:
-        - '[data-testid=search-input]'
-        - input[type=search]
-        - '#search'`
+        - "#search-input"
+`
 
 const gherkinTest = `Feature: Search Functionality
  As a user
  I want to search for content
  So that I can find relevant information
 
- Scenario: Search for browser content
+ Scenario: Search for browser navigation phrase
    Given the user is on the "sentences" page
    When the user enters "browser" into the "search" field
    Then the user should see a element which contains "the user navigates back"`
 
-const runCommand = './testflowkit run'
+const runCommand = './tkit run'
 
-const runCommandVisible = './testflowkit run --headless=false'
+const runCommandVisible = './tkit run --headless=false'
 </script>
