@@ -1,0 +1,1 @@
+{"sentence":"the user should not see \"{string}\" on the page","description":"checks if a word is not visible on the page.","category":"visual","variables":[{"name":"word","type":"string","description":"The word to check."}],"gherkinExample":"Then the user should not see \"Submit\" on the page"}

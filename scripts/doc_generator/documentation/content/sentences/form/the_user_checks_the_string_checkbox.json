@@ -1,0 +1,1 @@
+{"sentence":"the user checks the {string} checkbox","description":"checks a checkbox if it is not already checked.","category":"form","variables":[{"name":"name","type":"string","description":"checkbox logical name"}],"gherkinExample":"When the user checks the \"Terms\" checkbox"}

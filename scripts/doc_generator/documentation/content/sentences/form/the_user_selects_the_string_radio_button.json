@@ -1,0 +1,1 @@
+{"sentence":"the user selects the {string} radio button","description":"Selects a radio button by its logical name.","category":"form","variables":[{"name":"name","type":"string","description":"The logical name of the radio button."}],"gherkinExample":"When the user selects the \"Gender Male\" radio button"}

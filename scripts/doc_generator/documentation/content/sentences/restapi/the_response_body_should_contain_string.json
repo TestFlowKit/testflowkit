@@ -1,0 +1,1 @@
+{"sentence":"the response body should contain {string}","description":"Verifies that the response body contains the specified content.","category":"restapi","variables":[{"name":"content","type":"string","description":"The text content that should be present in the response body"}],"gherkinExample":"Then the response body should contain \"success\""}

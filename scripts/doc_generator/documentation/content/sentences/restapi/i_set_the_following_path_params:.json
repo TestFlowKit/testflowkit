@@ -1,0 +1,1 @@
+{"sentence":"I set the following path params:","description":"Sets path parameters for the endpoint by replacing placeholders in the endpoint path.","category":"restapi","variables":[{"name":"path params","type":"table","description":"Table with param name and value pairs."}],"gherkinExample":"When I set the following path params:\n  | id | 123 |"}

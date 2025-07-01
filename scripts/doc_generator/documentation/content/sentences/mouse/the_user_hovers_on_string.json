@@ -1,0 +1,1 @@
+{"sentence":"the user hovers on {string}","description":"performs a hover action on the element identified by its logical name","category":"mouse","variables":[{"name":"name","type":"string","description":"The logical name of element to hover on."}],"gherkinExample":"When the user hovers on \"Submit button\""}

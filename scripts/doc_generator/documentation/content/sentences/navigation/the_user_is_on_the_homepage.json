@@ -1,0 +1,1 @@
+{"sentence":"the user is on the homepage","description":"establishes the initial context, indicating that the user begins on the application's primary or default page It assumes a predefined base URL for the \"homepage.\"","category":"navigation","variables":null,"gherkinExample":"Given the user is on the homepage"}

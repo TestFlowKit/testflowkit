@@ -1,0 +1,1 @@
+{"sentence":"the user double clicks on {string}","description":"performs a double click action on the element identified by its logical name","category":"mouse","variables":[{"name":"name","type":"string","description":"The logical name of element to double click on."}],"gherkinExample":"When the user double clicks on \"File item\""}

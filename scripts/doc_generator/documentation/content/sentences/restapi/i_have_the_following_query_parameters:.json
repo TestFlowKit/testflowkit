@@ -1,0 +1,1 @@
+{"sentence":"I have the following query parameters:","description":"Sets query parameters for the request using a table format.","category":"restapi","variables":[{"name":"queryParams","type":"table","description":"Table with parameter name and value pairs."}],"gherkinExample":"When I have the following query parameters:\n  | page | 1 |"}

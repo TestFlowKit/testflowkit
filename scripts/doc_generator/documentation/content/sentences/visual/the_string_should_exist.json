@@ -1,0 +1,1 @@
+{"sentence":"the {string} should exist","description":"verifies that an element exists on the page.","category":"visual","variables":[{"name":"name","type":"string","description":"The logical name of the element."}],"gherkinExample":"Then the submit button should exist"}

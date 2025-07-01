@@ -1,0 +1,1 @@
+{"sentence":"the response status code should be {number}","description":"Verifies that the HTTP response has the expected status code.","category":"restapi","variables":[{"name":"statusCode","type":"int","description":"The expected HTTP status code (e.g., 200, 201, 404, 500)"}],"gherkinExample":"Then the response status code should be 200"}
