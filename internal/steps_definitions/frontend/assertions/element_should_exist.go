@@ -9,7 +9,7 @@ import (
 
 func (steps) elementShouldExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the {string} should exist$`},
+		[]string{`the {string} should exist`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			_, err := scenarioCtx.GetHTMLElementByLabel(name)

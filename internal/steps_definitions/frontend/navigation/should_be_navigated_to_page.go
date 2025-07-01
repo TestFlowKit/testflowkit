@@ -11,7 +11,7 @@ import (
 
 func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{"^the user should be navigated to {string} page$"},
+		[]string{"the user should be navigated to {string} page"},
 		func(ctx context.Context, pageName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			const maxRetries = 10

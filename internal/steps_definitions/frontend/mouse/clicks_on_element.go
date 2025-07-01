@@ -11,7 +11,7 @@ func (s steps) userClicksOnElement() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user clicks the {string} element$`},
+		[]string{`the user clicks the {string} element`},
 		clickCommonHandler(formatLabel).handler(),
 		clickCommonHandler(formatLabel).validation(),
 		stepbuilder.DocParams{

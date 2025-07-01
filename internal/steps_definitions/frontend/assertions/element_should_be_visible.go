@@ -10,7 +10,7 @@ import (
 
 func (steps) elementShouldBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the {string} should be visible$`},
+		[]string{`the {string} should be visible`},
 		func(ctx context.Context, elementName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			element, err := scenarioCtx.GetHTMLElementByLabel(elementName)

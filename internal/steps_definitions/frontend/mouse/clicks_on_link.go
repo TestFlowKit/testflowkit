@@ -12,7 +12,7 @@ func (s steps) userClicksOnLink() stepbuilder.Step {
 
 	common := clickCommonHandler(formatLabel)
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user clicks the {string} link$`},
+		[]string{`the user clicks the {string} link`},
 		common.handler(),
 		common.validation(),
 		stepbuilder.DocParams{

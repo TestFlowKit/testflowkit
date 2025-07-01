@@ -42,7 +42,7 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user should see "{string}" details on the page$`},
+		[]string{`the user should see "{string}" details on the page`},
 		definition,
 		nil,
 		stepbuilder.DocParams{

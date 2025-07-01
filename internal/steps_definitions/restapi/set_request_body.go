@@ -10,7 +10,7 @@ import (
 
 func (steps) setRequestBody() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^I set the request body to:$`},
+		[]string{`I set the request body to:`},
 		func(ctx context.Context, body string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 

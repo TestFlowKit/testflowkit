@@ -19,7 +19,7 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	`
 
 	return stepbuilder.NewWithOneVariable[*godog.Table](
-		[]string{`^the user should not see a row containing the following elements$`},
+		[]string{`the user should not see a row containing the following elements`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			data, err := assistdog.NewDefault().ParseSlice(table)

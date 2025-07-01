@@ -10,7 +10,7 @@ import (
 
 func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user should see {number} {string} on the page$`},
+		[]string{`the user should see {number} {string} on the page`},
 		func(ctx context.Context, expectedCount int, elementName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageName := scenarioCtx.GetCurrentPage()

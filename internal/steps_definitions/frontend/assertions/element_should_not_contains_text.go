@@ -11,7 +11,7 @@ import (
 
 func (steps) elementShouldNotContainsText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the {string} should not contain the text {string}$`},
+		[]string{`the {string} should not contain the text {string}`},
 		func(ctx context.Context, name, unexpectedText string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			element, err := scenarioCtx.GetHTMLElementByLabel(name)

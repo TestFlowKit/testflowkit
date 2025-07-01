@@ -11,7 +11,7 @@ import (
 
 func (steps) elementShouldContainsText() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the {string} should contain the text {string}$`},
+		[]string{`the {string} should contain the text {string}`},
 		func(ctx context.Context, name, expectedText string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			element, err := scenarioCtx.GetHTMLElementByLabel(name)

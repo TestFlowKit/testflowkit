@@ -9,7 +9,7 @@ import (
 
 func (steps) shouldSeeElementWhichContains() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`^the user should see a (link|button|element) which contains "{string}"$`},
+		[]string{`the user should see a (link|button|element) which contains "{string}"`},
 		func(ctx context.Context, elementLabel, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			cases := map[string]string{

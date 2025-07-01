@@ -14,7 +14,7 @@ func (steps) checkCheckbox() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithOneVariable(
-		[]string{`^the user checks the {string} checkbox$`},
+		[]string{`the user checks the {string} checkbox`},
 		func(ctx context.Context, checkBoxName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			checkBox, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(checkBoxName))

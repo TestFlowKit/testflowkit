@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 	"testflowkit/internal/config"
-	"testflowkit/internal/steps_definitions/core"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
@@ -61,7 +60,7 @@ func registerValidationStepDefinitions(ctx *godog.ScenarioContext, vCtx *stepbui
 	for _, step := range GetAllSteps() {
 		handler := step.Validate(vCtx)
 		for _, sentence := range step.GetSentences() {
-			ctx.Step(core.ConvertWildcards(sentence), handler)
+			ctx.Step(formatStep(sentence), handler)
 		}
 	}
 }
