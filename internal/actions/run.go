@@ -196,6 +196,9 @@ func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenari
 
 		myCtx.scenarioReport.End()
 		testReport.AddScenario(myCtx.scenarioReport)
+
+		scenario.MustFromContext(ctx).Done()
+
 		return ctx, err
 	}
 }

@@ -18,6 +18,12 @@ func (c *Context) GetConfig() *config.Config {
 	return c.config
 }
 
+func (c *Context) Done() {
+	if c.frontend.browser != nil {
+		c.frontend.browser.Close()
+	}
+}
+
 func NewContext(cfg *config.Config) *Context {
 	return &Context{
 		frontend: &frontend{

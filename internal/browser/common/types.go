@@ -9,6 +9,7 @@ import (
 type Browser interface {
 	NewPage(url string) Page
 	GetPages() []Page
+	Close()
 }
 
 type Page interface {
