@@ -1,7 +1,7 @@
 active_environment: "local"
 
 settings:
-  default_timeout: 5000
+  default_timeout: 1000
   page_load_timeout: 30000
   think_time: 10000
 

@@ -13,7 +13,7 @@ import (
 
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
-	frontCtx.browser = browser.CreateInstance(frontCtx.headlessMode, frontCtx.timeout, frontCtx.thinkTime, incognitoMode)
+	frontCtx.browser = browser.CreateInstance(frontCtx.headlessMode, frontCtx.thinkTime, incognitoMode)
 }
 
 func (c *Context) OpenNewPage(url string) {

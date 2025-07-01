@@ -2,6 +2,7 @@ package common
 
 import (
 	"reflect"
+	"time"
 
 	"github.com/go-rod/rod/lib/input"
 )
@@ -26,6 +27,7 @@ type Page interface {
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool
 	ExecuteJS(js string, args ...any) string
+	SetTimeout(timeout time.Duration)
 }
 
 type PageInfo struct {
