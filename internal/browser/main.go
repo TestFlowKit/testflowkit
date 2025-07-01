@@ -16,8 +16,8 @@ type page = common.Page
 type element = common.Element
 type Browser = common.Browser
 
-func CreateInstance(headlessMode bool, timeout, slowMotion time.Duration, incognitoMode bool) Browser {
-	return rod.New(headlessMode, timeout, slowMotion, incognitoMode)
+func CreateInstance(headlessMode bool, timeout, thinkTime time.Duration, incognitoMode bool) Browser {
+	return rod.New(headlessMode, timeout, thinkTime, incognitoMode)
 }
 
 func GetElementByLabel(page page, pageName, label string) (element, error) {

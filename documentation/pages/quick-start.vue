@@ -269,7 +269,7 @@ environments:
 settings:
   default_timeout: 15000
   headless: false
-  slow_motion: 1000
+  think_time: 1000
 
 frontend:
   pages:
