@@ -2,7 +2,6 @@ package form
 
 import (
 	"context"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -17,8 +16,8 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`^the user enters {string} into the {string} field`},
 		func(ctx context.Context, text, inputLabel string) (context.Context, error) {
-			currentPage, pageName := scenario.GetPage(ctx)
-			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(inputLabel))
+			scenarioCtx := scenario.MustFromContext(ctx)
+			input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(inputLabel))
 			if err != nil {
 				return ctx, err
 			}

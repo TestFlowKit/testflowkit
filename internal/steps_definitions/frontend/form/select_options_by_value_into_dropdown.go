@@ -2,7 +2,6 @@ package form
 
 import (
 	"context"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -47,8 +46,7 @@ func selectOptionsByValueIntoDropdownBuilder(phrases []string, doc stepbuilder.D
 		phrases,
 		func(ctx context.Context, optionValues, dropdownId string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(dropdownId))
+			input, err := scenarioCtx.GetHTMLElementByLabel(formatVar(dropdownId))
 			if err != nil {
 				return ctx, err
 			}

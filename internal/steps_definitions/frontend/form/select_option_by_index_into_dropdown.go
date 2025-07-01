@@ -2,7 +2,6 @@ package form
 
 import (
 	"context"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -18,8 +17,7 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 		[]string{`^the user selects the option at index {number} from the {string} dropdown$`},
 		func(ctx context.Context, index int, dropdownId string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownId))
+			input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(dropdownId))
 			if err != nil {
 				return ctx, err
 			}

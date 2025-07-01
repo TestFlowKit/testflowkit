@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -15,8 +14,7 @@ func (steps) elementShouldContainsText() stepbuilder.Step {
 		[]string{`^the {string} should contain the text {string}$`},
 		func(ctx context.Context, name, expectedText string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			element, err := browser.GetElementByLabel(currentPage, pageName, name)
+			element, err := scenarioCtx.GetHTMLElementByLabel(name)
 			if err != nil {
 				return ctx, err
 			}

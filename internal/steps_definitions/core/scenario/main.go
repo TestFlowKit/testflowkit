@@ -1,6 +1,7 @@
 package scenario
 
 import (
+	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 
 	"testflowkit/internal/browser/common"
@@ -16,6 +17,10 @@ type Context struct {
 
 func (c *Context) GetConfig() *config.Config {
 	return c.config
+}
+
+func (c *Context) GetHTMLElementByLabel(label string) (common.Element, error) {
+	return browser.GetElementByLabel(c.frontend.page, c.frontend.currentPageName, label)
 }
 
 func (c *Context) Done() {

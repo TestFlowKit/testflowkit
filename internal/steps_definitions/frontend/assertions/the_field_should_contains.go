@@ -3,7 +3,6 @@ package assertions
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -18,8 +17,7 @@ func (steps) theFieldShouldContain() stepbuilder.Step {
 		[]string{`^the value of the {string} field should be {string}`},
 		func(ctx context.Context, fieldId, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			page, pageName := scenarioCtx.GetCurrentPage()
-			input, err := browser.GetElementByLabel(page, pageName, formatFieldID(fieldId))
+			input, err := scenarioCtx.GetHTMLElementByLabel(formatFieldID(fieldId))
 			if err != nil {
 				return ctx, err
 			}

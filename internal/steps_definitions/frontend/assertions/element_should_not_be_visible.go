@@ -3,7 +3,6 @@ package assertions
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -13,14 +12,16 @@ func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should not be visible$`},
 		func(ctx context.Context, name string) (context.Context, error) {
-			currentPage, pageName := scenario.MustFromContext(ctx).GetCurrentPage()
-			element, err := browser.GetElementByLabel(currentPage, pageName, name)
+			scenarioCtx := scenario.MustFromContext(ctx)
+			element, err := scenarioCtx.GetHTMLElementByLabel(name)
 			if err != nil {
 				return ctx, err
 			}
+
 			if element.IsVisible() {
 				return ctx, fmt.Errorf("%s should not be visible", name)
 			}
+
 			return ctx, nil
 		},
 		func(name string) stepbuilder.ValidationErrors {
@@ -28,6 +29,7 @@ func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 			if !config.IsElementDefined(name) {
 				vc.AddMissingElement(name)
 			}
+
 			return vc
 		},
 		stepbuilder.DocParams{
