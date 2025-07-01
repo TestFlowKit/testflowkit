@@ -30,6 +30,10 @@ func (rb *rodBrowser) GetPages() []common.Page {
 	return pages
 }
 
+func (rb *rodBrowser) Close() {
+	rb.browser.MustClose()
+}
+
 func New(headlessMode bool, timeout, slowMotion time.Duration, incognitoMode bool) common.Browser {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).
