@@ -20,7 +20,11 @@ func (c *Context) GetConfig() *config.Config {
 }
 
 func (c *Context) GetHTMLElementByLabel(label string) (common.Element, error) {
-	return browser.GetElementByLabel(c.frontend.page, c.frontend.currentPageName, label)
+	// we can't do a cancel timeout here because it create a new page instance
+	c.frontend.page.SetTimeout(c.frontend.timeout)
+	element, err := browser.GetElementByLabel(c.frontend.page, c.frontend.currentPageName, label)
+
+	return element, err
 }
 
 func (c *Context) Done() {
