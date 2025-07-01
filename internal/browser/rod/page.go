@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"testflowkit/internal/browser/common"
+	"time"
 
 	"github.com/go-rod/rod"
 )
@@ -137,6 +138,10 @@ func (p *rodPage) Screenshot() ([]byte, error) {
 	}
 
 	return screenshot, nil
+}
+
+func (p *rodPage) SetTimeout(timeout time.Duration) {
+	p.page = p.page.Timeout(timeout)
 }
 
 func newRodPage(page *rod.Page) common.Page {

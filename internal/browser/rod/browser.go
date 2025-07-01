@@ -34,13 +34,13 @@ func (rb *rodBrowser) Close() {
 	rb.browser.MustClose()
 }
 
-func New(headlessMode bool, timeout, thinkTime time.Duration, incognitoMode bool) common.Browser {
+func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) common.Browser {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).
 		Headless(headlessMode).
 		MustLaunch()
 
-	newBrowser := rod.New().ControlURL(u).SlowMotion(thinkTime).Timeout(timeout).MustConnect()
+	newBrowser := rod.New().ControlURL(u).SlowMotion(thinkTime).MustConnect()
 	if incognitoMode {
 		newBrowser = newBrowser.MustIncognito()
 	}
