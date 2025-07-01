@@ -2,7 +2,6 @@ package form
 
 import (
 	"context"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -18,8 +17,7 @@ func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
 		[]string{`^the user selects the option with text {string} from the {string} dropdown$`},
 		func(ctx context.Context, optionText, dropdownName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			dropdown, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(dropdownName))
+			dropdown, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(dropdownName))
 			if err != nil {
 				return ctx, err
 			}

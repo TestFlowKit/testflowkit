@@ -3,7 +3,6 @@ package assertions
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -14,8 +13,7 @@ func (steps) elementShouldBeVisible() stepbuilder.Step {
 		[]string{`^the {string} should be visible$`},
 		func(ctx context.Context, elementName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			element, err := browser.GetElementByLabel(currentPage, pageName, elementName)
+			element, err := scenarioCtx.GetHTMLElementByLabel(elementName)
 			if err != nil {
 				return ctx, err
 			}
