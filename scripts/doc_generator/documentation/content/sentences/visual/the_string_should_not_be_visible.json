@@ -1,0 +1,1 @@
+{"sentence":"the {string} should not be visible","description":"verifies that an element is not visible on the page.","category":"visual","variables":[{"name":"name","type":"string","description":"The logical name of the element."}],"gherkinExample":"Then \"Submit button\" should not be visible"}

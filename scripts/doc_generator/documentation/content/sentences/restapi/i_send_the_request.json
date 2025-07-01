@@ -1,0 +1,1 @@
+{"sentence":"I send the request","description":"Sends the prepared HTTP request and stores the response.","category":"restapi","variables":null,"gherkinExample":"When I send the request"}

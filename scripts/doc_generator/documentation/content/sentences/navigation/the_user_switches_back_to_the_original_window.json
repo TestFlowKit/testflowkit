@@ -1,0 +1,1 @@
+{"sentence":"the user switches back to the original window","description":"switches back to the original browser window (usually the first window).","category":"navigation","variables":null,"gherkinExample":"When the user switches back to the original window"}

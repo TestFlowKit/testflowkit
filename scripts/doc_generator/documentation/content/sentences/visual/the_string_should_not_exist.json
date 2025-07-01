@@ -1,0 +1,1 @@
+{"sentence":"the {string} should not exist","description":"verifies that an element does not exist on the page.","category":"visual","variables":[{"name":"name","type":"string","description":"The logical name of the element."}],"gherkinExample":"Then the submit button should not exist"}

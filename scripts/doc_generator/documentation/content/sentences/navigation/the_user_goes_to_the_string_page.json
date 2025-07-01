@@ -1,0 +1,1 @@
+{"sentence":"the user goes to the {string} page","description":"Navigates to a page identified by a logical name.","category":"navigation","variables":[{"name":"page","type":"string","description":"The name of the page to navigate to."}],"gherkinExample":"When the user goes to the \"Login\" page"}

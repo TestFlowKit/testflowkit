@@ -1,0 +1,1 @@
+{"sentence":"the user unchecks the {string} checkbox","description":"unchecks a checkbox if it is currently checked.","category":"form","variables":[{"name":"checkBoxName","type":"string","description":"The name of the checkbox to uncheck."}],"gherkinExample":"When the user unchecks the \"Newsletter\" checkbox"}

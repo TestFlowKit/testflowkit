@@ -1,0 +1,1 @@
+{"sentence":"I have the following headers:","description":"Sets HTTP headers for the request using a table format.","category":"restapi","variables":[{"name":"headers","type":"table","description":"Table with header name and value pairs."}],"gherkinExample":"When I have the following headers:\n  | Content-Type | application/json |"}
