@@ -2,7 +2,6 @@ package assertions
 
 import (
 	"context"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -12,8 +11,8 @@ func (steps) elementShouldExist() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`^the {string} should exist$`},
 		func(ctx context.Context, name string) (context.Context, error) {
-			currentPage, pageName := scenario.MustFromContext(ctx).GetCurrentPage()
-			_, err := browser.GetElementByLabel(currentPage, pageName, name)
+			scenarioCtx := scenario.MustFromContext(ctx)
+			_, err := scenarioCtx.GetHTMLElementByLabel(name)
 			return ctx, err
 		},
 		func(name string) stepbuilder.ValidationErrors {

@@ -3,7 +3,6 @@ package visual
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -14,8 +13,7 @@ func (steps) scrollToElement() stepbuilder.Step {
 		[]string{`^the user scrolls to the {string} element$`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			page, pageName := scenarioCtx.GetCurrentPage()
-			element, err := browser.GetElementByLabel(page, pageName, fmt.Sprintf("%s_element", name))
+			element, err := scenarioCtx.GetHTMLElementByLabel(fmt.Sprintf("%s_element", name))
 			if err != nil {
 				return ctx, err
 			}

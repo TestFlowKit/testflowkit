@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"reflect"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	sb "testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -16,8 +15,7 @@ func (steps) checkCheckboxStatus() sb.Step {
 	}
 	definition := func(ctx context.Context, checkboxId, status string) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
-		currentPage, pageName := scenarioCtx.GetCurrentPage()
-		input, err := browser.GetElementByLabel(currentPage, pageName, formatVar(checkboxId))
+		input, err := scenarioCtx.GetHTMLElementByLabel(formatVar(checkboxId))
 		if err != nil {
 			return ctx, err
 		}

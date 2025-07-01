@@ -3,7 +3,6 @@ package assertions
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -14,8 +13,7 @@ func (steps) elementShouldNotExist() stepbuilder.Step {
 		[]string{`^the {string} should not exist$`},
 		func(ctx context.Context, name string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage, pageName := scenarioCtx.GetCurrentPage()
-			_, err := browser.GetElementByLabel(currentPage, pageName, name)
+			_, err := scenarioCtx.GetHTMLElementByLabel(name)
 			if err == nil {
 				return ctx, fmt.Errorf("%s should not exist", name)
 			}

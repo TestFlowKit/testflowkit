@@ -2,7 +2,6 @@ package mouse
 
 import (
 	"context"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -14,8 +13,8 @@ type clickCommon struct {
 
 func (c clickCommon) handler() func(context.Context, string) (context.Context, error) {
 	return func(ctx context.Context, label string) (context.Context, error) {
-		page, pageName := scenario.GetPage(ctx)
-		element, err := browser.GetElementByLabel(page, pageName, c.labelFormatter(label))
+		scCtx := scenario.MustFromContext(ctx)
+		element, err := scCtx.GetHTMLElementByLabel(c.labelFormatter(label))
 		if err != nil {
 			return ctx, err
 		}

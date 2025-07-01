@@ -3,7 +3,6 @@ package assertions
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -17,8 +16,7 @@ func (steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 
 	definition := func(ctx context.Context, radioId, expectedState string) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
-		currentPage, pageName := scenarioCtx.GetCurrentPage()
-		input, err := browser.GetElementByLabel(currentPage, pageName, formatLabel(radioId))
+		input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(radioId))
 		if err != nil {
 			return ctx, err
 		}
@@ -66,5 +64,5 @@ func getRadioState(isSelected bool) string {
 	if isSelected {
 		return "selected"
 	}
-	return "not selected"
+	return "unselected"
 }
