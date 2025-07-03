@@ -89,17 +89,17 @@
                 <div class="bg-white p-4 rounded border">
                     <h4 class="font-semibold text-blue-600">run</h4>
                     <p class="text-sm text-gray-600">Execute test scenarios</p>
-                    <code class="text-xs">testflowkit run [options]</code>
+                    <code class="text-xs">tkit run [options]</code>
                 </div>
                 <div class="bg-white p-4 rounded border">
                     <h4 class="font-semibold text-green-600">init</h4>
                     <p class="text-sm text-gray-600">Initialize project configuration</p>
-                    <code class="text-xs">testflowkit init</code>
+                    <code class="text-xs">tkit init</code>
                 </div>
                 <div class="bg-white p-4 rounded border">
                     <h4 class="font-semibold text-orange-600">validate</h4>
                     <p class="text-sm text-gray-600">Validate Gherkin files</p>
-                    <code class="text-xs">testflowkit validate [options]</code>
+                    <code class="text-xs">tkit validate [options]</code>
                 </div>
             </div>
         </div>
@@ -109,19 +109,19 @@
             <div class="space-y-2">
                 <div class="bg-gray-800 text-white p-3 rounded">
                     <code># Run all tests with default configuration</code><br>
-                    <code>testflowkit run</code>
+                    <code>tkit run</code>
                 </div>
                 <div class="bg-gray-800 text-white p-3 rounded">
                     <code># Run tests with custom configuration</code><br>
-                    <code>testflowkit run --config my-config.yml --env staging</code>
+                    <code>tkit run --config my-config.yml --env staging</code>
                 </div>
                 <div class="bg-gray-800 text-white p-3 rounded">
                     <code># Run specific tagged tests</code><br>
-                    <code>testflowkit run --tags "@smoke" --headless true</code>
+                    <code>tkit run --tags "@smoke" --headless true</code>
                 </div>
                 <div class="bg-gray-800 text-white p-3 rounded">
                     <code># Validate Gherkin files</code><br>
-                    <code>testflowkit validate --location ./features</code>
+                    <code>tkit validate --location ./features</code>
                 </div>
             </div>
         </div>

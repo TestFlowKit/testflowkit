@@ -61,7 +61,7 @@
                             <div class="bg-white p-3 rounded">
                                 <div class="font-medium text-gray-800">Windows:</div>
                                 <div class="text-sm text-gray-600">Extract the ZIP file and double-click
-                                    <code>testflowkit.exe</code>
+                                    <code>tkit.exe</code>
                                 </div>
                             </div>
                             <div class="bg-white p-3 rounded">

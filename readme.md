@@ -61,7 +61,7 @@ Download the latest release from [GitHub Releases](https://github.com/TestFlowKi
 
 ```bash
 # Initialize a new TestFlowKit project
-./testflowkit init
+./tkit init
 ```
 
 ### 2. Configure Your Application
@@ -133,13 +133,13 @@ Feature: User Authentication
 
 ```bash
 # Run all tests
-./testflowkit run
+./tkit run
 
 # Run specific tags
-./testflowkit run --tags "@smoke"
+./tkit run --tags "@smoke"
 
 # Run with specific configuration
-./testflowkit run --config ./custom-config.yml
+./tkit run --config ./custom-config.yml
 ```
 
 ## 📚 Documentation
@@ -151,6 +151,7 @@ For comprehensive documentation, visit the [official TestFlowKit documentation](
 - [Getting Started](https://testflowkit.dreamsfollowers.me/get-started)
 - [Configuration Guide](https://testflowkit.dreamsfollowers.me/configuration)
 - [Step Definitions](https://testflowkit.dreamsfollowers.me/sentences)
+- [FAQ & Troubleshooting](https://testflowkit.dreamsfollowers.me/troubleshooting)
 - [Test Execution Design (TED)](https://testflowkit.dreamsfollowers.me/docs/category/test-execution-design-ted)
 
 ## 🏗️ Project Structure
@@ -322,31 +323,31 @@ Scenario: Test with macro
 
 ```bash
 # Run tests with 4 parallel workers
-./testflowkit run --concurrency 4
+./tkit run --concurrency 4
 ```
 
 ### Environment-Specific Execution
 
 ```bash
 # Run tests against staging environment
-TEST_ENV=staging ./testflowkit run
+./tkit run --env=staging
 ```
 
 ### Custom Configuration
 
 ```bash
 # Use custom configuration file
-./testflowkit run --config ./custom-config.yml
+./tkit run --config ./custom-config.yml
 ```
 
 ### Tag-Based Execution
 
 ```bash
 # Run only smoke tests
-./testflowkit run --tags "@smoke"
+./tkit run --tags "@smoke"
 
 # Exclude slow tests
-./testflowkit run --tags "~@slow"
+./tkit run --tags "~@slow"
 ```
 
 ## 🛠️ Development
@@ -429,9 +430,11 @@ type(scope): description
 [optional footer]
 ```
 
-## 🐛 Bug Reports
+## 🐛 Bug Reports & Troubleshooting
 
-If you encounter a bug, please [create a GitHub issue](https://github.com/TestFlowKit/testflowkit/issues) with:
+If you encounter issues with TestFlowKit, please check our [Troubleshooting Guide](https://testflowkit.dreamsfollowers.me/troubleshooting) first for common solutions.
+
+For bugs not covered in the troubleshooting guide, please [create a GitHub issue](https://github.com/TestFlowKit/testflowkit/issues) with:
 
 - **Description**: Clear description of the problem
 - **Steps to Reproduce**: Detailed steps to reproduce the issue
