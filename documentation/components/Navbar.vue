@@ -16,31 +16,80 @@
                 <ul class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
                     <li><nuxt-link to="/" class="hover:underline" active-class="font-bold underline">Home</nuxt-link>
                     </li>
-                    <li><nuxt-link :to="{ name: 'qa-guide' }" class="hover:underline"
-                            active-class="font-bold underline">QA Guide</nuxt-link>
+
+                    <li class="relative">
+                        <button @click.stop="toggleGettingStartedMenu"
+                            class="hover:underline flex items-center space-x-1"
+                            :class="{ 'font-bold underline': menus.showGettingStartedMenu }">
+                            <span>Getting Started</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div v-show="menus.showGettingStartedMenu"
+                            class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div class="p-2">
+                                <nuxt-link :to="{ name: 'get-started' }"
+                                    class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded"
+                                    @click="toggleSubMenu('showGettingStartedMenu')">
+                                    Get Started
+                                </nuxt-link>
+                                <nuxt-link :to="{ name: 'quick-start' }"
+                                    class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded"
+                                    @click="toggleSubMenu('showGettingStartedMenu')">
+                                    Quick Start
+                                </nuxt-link>
+                                <nuxt-link :to="{ name: 'qa-guide' }"
+                                    class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded"
+                                    @click="toggleSubMenu('showGettingStartedMenu')">
+                                    QA Guide
+                                </nuxt-link>
+                            </div>
+                        </div>
                     </li>
-                    <li><nuxt-link :to="{ name: 'get-started' }" class="hover:underline"
-                            active-class="font-bold underline">Get
-                            started</nuxt-link></li>
-                    <li><nuxt-link :to="{ name: 'quick-start' }" class="hover:underline"
-                            active-class="font-bold underline">Quick
-                            Start</nuxt-link></li>
-                    <li><nuxt-link :to="{ name: 'configuration' }" class="hover:underline"
-                            active-class="font-bold underline">Configuration</nuxt-link>
+
+                    <li class="relative">
+                        <button @click.stop="toggleDocsMenu" class="hover:underline flex items-center space-x-1"
+                            :class="{ 'font-bold underline': menus.showDocsMenu }">
+                            <span>Documentation</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div v-show="menus.showDocsMenu"
+                            class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div class="p-2">
+                                <nuxt-link :to="{ name: 'configuration' }"
+                                    class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded"
+                                    @click="toggleSubMenu('showDocsMenu')">
+                                    Configuration
+                                </nuxt-link>
+                                <nuxt-link :to="{ name: 'sentences' }"
+                                    class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded"
+                                    @click="toggleSubMenu('showDocsMenu')">
+                                    Sentences
+                                </nuxt-link>
+                                <nuxt-link :to="{ name: 'troubleshooting' }"
+                                    class="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded"
+                                    @click="toggleSubMenu('showDocsMenu')">
+                                    Troubleshooting
+                                </nuxt-link>
+                            </div>
+                        </div>
                     </li>
-                    <li><nuxt-link :to="{ name: 'sentences' }" class="hover:underline"
-                            active-class="font-bold underline">Sentences</nuxt-link>
-                    </li>
+
                     <li class="relative">
                         <button @click.stop="toggleDownloadMenu" class="hover:underline flex items-center space-x-1"
-                            :class="{ 'font-bold underline': showDownloadMenu }">
+                            :class="{ 'font-bold underline': menus.showDownloadMenu }">
                             <span>Download</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div v-show="showDownloadMenu"
+                        <div v-show="menus.showDownloadMenu"
                             class="download-menu absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                             <div class="p-4">
                                 <h3 class="font-semibold text-gray-800 mb-3">Choose Platform</h3>
@@ -105,6 +154,7 @@
                             </div>
                         </div>
                     </li>
+
                     <li><a target="_blank" :href="githubUrl" class="hover:underline">Github</a></li>
                 </ul>
             </nav>
@@ -118,13 +168,25 @@ import { ref, onMounted, onUnmounted } from "vue";
 const router = useRouter();
 
 const githubUrl = "https://github.com/TestFlowKit/testflowkit";
+const menus = reactive({
+    showDownloadMenu: false,
+    showGettingStartedMenu: false,
+    showDocsMenu: false,
+});
 const showMenu = ref(false);
-const showDownloadMenu = ref(false);
 const selectedPlatform = ref('');
 const selectedArch = ref('');
 
 const toggleDownloadMenu = () => {
-    showDownloadMenu.value = !showDownloadMenu.value;
+    toggleSubMenu('showDownloadMenu');
+};
+
+const toggleGettingStartedMenu = () => {
+    toggleSubMenu('showGettingStartedMenu');
+};
+
+const toggleDocsMenu = () => {
+    toggleSubMenu('showDocsMenu');
 };
 
 const selectPlatform = (platform: string) => {
@@ -154,27 +216,39 @@ const downloadSelected = () => {
     link.click();
     document.body.removeChild(link);
 
-    // Close the menu
-    showDownloadMenu.value = false;
+    closeAllMenus();
+};
+
+const closeAllMenus = () => {
+    menus.showDownloadMenu = false;
+    menus.showGettingStartedMenu = false;
+    menus.showDocsMenu = false;
 };
 
 const handleClickOutside = (event: Event) => {
     const target = event.target as HTMLElement;
-    if (!target.closest('.download-menu') && !target.closest('button')) {
-        showDownloadMenu.value = false;
+    if (!target.closest('.download-menu') && !target.closest('.dropdown-menu') && !target.closest('button')) {
+        closeAllMenus();
     }
+};
+
+const toggleSubMenu = (menu: keyof typeof menus) => {
+    const currentValue = menus[menu];
+    for (const key in menus) {
+        menus[key as keyof typeof menus] = false;
+    }
+    menus[menu] = !currentValue;
 };
 
 watch(
     () => router.currentRoute.value.path,
     () => {
         showMenu.value = false;
-        showDownloadMenu.value = false;
+        closeAllMenus();
     },
     { immediate: true }
 );
 
-// Close download menu when clicking outside
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
 });
