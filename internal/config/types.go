@@ -60,6 +60,8 @@ type Config struct {
 }
 
 type GlobalSettings struct {
+	// DefaultTimeout is the maximum time (in milliseconds)
+	// to wait for an element to be found during element search operations.
 	DefaultTimeout int `yaml:"default_timeout" validate:"min=1000,max=300000"`
 
 	// PageLoadTimeout int `yaml:"page_load_timeout" validate:"min=1000,max=300000"`
@@ -217,6 +219,8 @@ func (c *Config) GetConcurrency() int {
 	return c.Settings.Concurrency
 }
 
+// GetTimeout returns the element search timeout as a time.Duration.
+// This timeout is used when searching for elements by CSS selectors or XPath expressions.
 func (c *Config) GetTimeout() time.Duration {
 	return time.Duration(c.Settings.DefaultTimeout) * time.Millisecond
 }
@@ -259,7 +263,7 @@ func (c *Config) validateFrontend() error {
 	}
 
 	if c.Settings.DefaultTimeout < 1000 || c.Settings.DefaultTimeout > 300000 {
-		return errors.New("default_timeout must be between 1000 and 300000 milliseconds")
+		return errors.New("default_timeout (element search timeout) must be between 1000 and 300000 milliseconds")
 	}
 
 	// if c.Settings.PageLoadTimeout < 5000 || c.Settings.PageLoadTimeout > 300000 {

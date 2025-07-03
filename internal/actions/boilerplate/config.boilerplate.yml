@@ -1,6 +1,8 @@
 active_environment: "local"
 
 settings:
+  # Element search timeout in milliseconds (1-300000ms)
+  # This is the maximum time to wait when searching for elements by CSS selectors or XPath
   default_timeout: 10000
   concurrency: 1
   headless: false

@@ -36,6 +36,11 @@
       <CodeBlock :code="environmentSection" language="yaml" />
     </AccordionItem>
 
+    <AccordionItem title="Settings Configuration">
+      <p>Configure global test execution settings including timeouts, concurrency, and reporting options.</p>
+      <CodeBlock :code="settingsSection" language="yaml" />
+    </AccordionItem>
+
     <AccordionItem title="Backend Configuration">
       <p>Configure API endpoints and default headers for backend testing.</p>
       <CodeBlock :code="backendSection" language="yaml" />
@@ -121,6 +126,34 @@ environments:
   production:
     frontend_base_url: "https://example.com"
     api_base_url: "https://api.example.com"
+`.trim();
+
+const settingsSection = `
+settings:
+  # Element search timeout in milliseconds (1-300000ms)
+  # Maximum time to wait when searching for elements by CSS selectors or XPath
+  default_timeout: 30000
+  
+  # Number of parallel test executions
+  concurrency: 5
+  
+  # Run browser in headless mode (no UI)
+  headless: false
+  
+  # Delay between actions in milliseconds (for debugging)
+  think_time: 1000
+  
+  # Take screenshot on test failure
+  screenshot_on_failure: true
+  
+  # Test report format
+  report_format: "html"
+  
+  # Location of Gherkin feature files
+  gherkin_location: "./e2e/features"
+  
+  # Filter tests by tags
+  tags: "@smoke"
 `.trim();
 
 const backendSection = `

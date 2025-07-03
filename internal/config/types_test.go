@@ -2,6 +2,7 @@ package config
 
 import (
 	"testing"
+	"time"
 )
 
 func TestParseSelectorString(t *testing.T) {
@@ -152,5 +153,46 @@ func TestSelector_String(t *testing.T) {
 
 	if result != expected {
 		t.Errorf("Selector.String() = %v, want %v", result, expected)
+	}
+}
+
+func TestConfig_GetTimeout(t *testing.T) {
+	tests := []struct {
+		name           string
+		defaultTimeout int
+		expectedMs     int64
+	}{
+		{
+			name:           "10 seconds timeout",
+			defaultTimeout: 10000,
+			expectedMs:     10000,
+		},
+		{
+			name:           "30 seconds timeout",
+			defaultTimeout: 30000,
+			expectedMs:     30000,
+		},
+		{
+			name:           "1 minute timeout",
+			defaultTimeout: 60000,
+			expectedMs:     60000,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := &Config{
+				Settings: GlobalSettings{
+					DefaultTimeout: tt.defaultTimeout,
+				},
+			}
+
+			result := config.GetTimeout()
+			expected := time.Duration(tt.expectedMs) * time.Millisecond
+
+			if result != expected {
+				t.Errorf("Config.GetTimeout() = %v, want %v", result, expected)
+			}
+		})
 	}
 }

@@ -267,6 +267,7 @@ environments:
     frontend_base_url: https://testflowkit.dreamsfollowers.me
 
 settings:
+  # Element search timeout in milliseconds
   default_timeout: 15000
   headless: false
   think_time: 1000
