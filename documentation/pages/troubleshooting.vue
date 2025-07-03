@@ -205,7 +205,7 @@
                         </ul>
                         <h4 class="font-semibold mb-2 mt-3">Solutions:</h4>
                         <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
-                            <li>Increase timeout in configuration</li>
+                            <li>Increase element search timeout in configuration</li>
                             <li>Verify element selectors in browser dev tools</li>
                             <li>Add wait conditions for dynamic content</li>
                             <li>Use XPath selectors for complex elements</li>
@@ -328,7 +328,7 @@
                             you can:
                         </p>
                         <ul class="text-gray-600 list-disc list-inside space-y-1">
-                            <li>Increase the default timeout for slow-loading content</li>
+                            <li>Increase the element search timeout for slow-loading content</li>
                             <li>Use XPath selectors that can wait for specific text or attributes</li>
                             <li>Add custom wait steps in your feature files</li>
                         </ul>

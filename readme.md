@@ -72,6 +72,8 @@ Edit the generated `config.yml` file with your application details:
 active_environment: "local"
 
 settings:
+  # Element search timeout in milliseconds (1-300000ms)
+  # Maximum time to wait when searching for elements by CSS selectors or XPath
   default_timeout: 10000
   concurrency: 1
   headless: false
@@ -191,7 +193,7 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 
 ### Global Settings
 
-- **Timeouts**: Element wait times and page load timeouts
+- **Element Search Timeout**: Maximum time to wait when searching for elements by CSS selectors or XPath expressions
 - **Execution**: Concurrency, headless mode, screenshot settings
 - **Reporting**: Output formats and locations
 

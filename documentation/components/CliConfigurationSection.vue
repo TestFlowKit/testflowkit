@@ -18,7 +18,8 @@
                     <tbody>
                         <tr>
                             <td class="border px-4 py-2"><code>default_timeout</code></td>
-                            <td class="border px-4 py-2">Maximum test execution time (in milliseconds).</td>
+                            <td class="border px-4 py-2">Maximum time to wait when searching for elements by CSS
+                                selectors or XPath (in milliseconds).</td>
                             <td class="border px-4 py-2"><code>10000</code></td>
                             <td class="border px-4 py-2"><code>default_timeout: 30000</code></td>
                         </tr>
@@ -111,6 +112,8 @@ const cliConfigExample = `
 active_environment: "local"
 
 settings:
+  # Element search timeout in milliseconds (1-300000ms)
+  # Maximum time to wait when searching for elements by CSS selectors or XPath
   default_timeout: 30000
   concurrency: 5
   headless: false
