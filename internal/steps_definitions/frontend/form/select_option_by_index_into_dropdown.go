@@ -2,6 +2,8 @@ package form
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 	"testflowkit/internal/config"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -15,16 +17,21 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`the user selects the option at index {number} from the {string} dropdown`},
-		func(ctx context.Context, index int, dropdownId string) (context.Context, error) {
+		func(ctx context.Context, index, dropdownId string) (context.Context, error) {
+			indexInt, err := strconv.Atoi(index)
+			if err != nil {
+				return ctx, fmt.Errorf("invalid index: %s", index)
+			}
+
 			scenarioCtx := scenario.MustFromContext(ctx)
 			input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(dropdownId))
 			if err != nil {
 				return ctx, err
 			}
 
-			return ctx, input.SelectByIndex(index)
+			return ctx, input.SelectByIndex(indexInt)
 		},
-		func(_ int, dropdownName string) stepbuilder.ValidationErrors {
+		func(_ string, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
 			label := formatLabel(dropdownName)
 			if !config.IsElementDefined(label) {

@@ -6,7 +6,7 @@ import (
 
 type supportedTypes interface {
 	// Add supported types here
-	string | int | float64 | bool | *godog.Table
+	string | *godog.Table
 }
 
 type DocParams struct {
