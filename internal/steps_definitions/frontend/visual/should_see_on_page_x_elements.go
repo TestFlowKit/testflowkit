@@ -3,6 +3,7 @@ package visual
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -11,12 +12,17 @@ import (
 func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`the user should see {number} {string} on the page`},
-		func(ctx context.Context, expectedCount int, elementName string) (context.Context, error) {
+		func(ctx context.Context, expectedCount, elementName string) (context.Context, error) {
+			expectedCountInt, err := strconv.Atoi(expectedCount)
+			if err != nil {
+				return ctx, fmt.Errorf("invalid expected count: %s", expectedCount)
+			}
+
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageName := scenarioCtx.GetCurrentPage()
 			elementCount := browser.GetElementCount(currentPage, pageName, elementName)
-			if elementCount != expectedCount {
-				return ctx, fmt.Errorf("%d %s expected but %d %s found", expectedCount, elementName, elementCount, elementName)
+			if elementCount != expectedCountInt {
+				return ctx, fmt.Errorf("%d %s expected but %d %s found", expectedCountInt, elementName, elementCount, elementName)
 			}
 			return ctx, nil
 		},

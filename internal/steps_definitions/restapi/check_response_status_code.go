@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
@@ -12,7 +13,12 @@ import (
 func (steps) checkResponseStatusCode() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`the response status code should be {number}`},
-		func(ctx context.Context, expectedStatusCode int) (context.Context, error) {
+		func(ctx context.Context, expectedStatusCode string) (context.Context, error) {
+			expectedStatusCodeInt, err := strconv.Atoi(expectedStatusCode)
+			if err != nil {
+				return ctx, fmt.Errorf("invalid status code: %s", expectedStatusCode)
+			}
+
 			scenarioCtx := scenario.MustFromContext(ctx)
 
 			response := scenarioCtx.GetResponse()
@@ -21,8 +27,8 @@ func (steps) checkResponseStatusCode() stepbuilder.Step {
 			}
 
 			actualStatusCode := response.StatusCode
-			if actualStatusCode != expectedStatusCode {
-				return ctx, fmt.Errorf("expected status code %d, but got %d", expectedStatusCode, actualStatusCode)
+			if actualStatusCode != expectedStatusCodeInt {
+				return ctx, fmt.Errorf("expected status code %d, but got %d", expectedStatusCodeInt, actualStatusCode)
 			}
 
 			return ctx, nil

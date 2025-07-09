@@ -6,6 +6,7 @@ import (
 
 	"testflowkit/internal/steps_definitions/core/scenario"
 	"testflowkit/internal/steps_definitions/core/stepbuilder"
+	"testflowkit/internal/steps_definitions/helpers"
 )
 
 func (steps) responseBodyPathShouldExist() stepbuilder.Step {
@@ -19,7 +20,7 @@ func (steps) responseBodyPathShouldExist() stepbuilder.Step {
 				return ctx, errors.New("no response available. Please send a request first")
 			}
 
-			_, err := getValueFromDotNotation(response.Body, jsonPath)
+			_, err := helpers.GetJSONPathValue(response.Body, jsonPath)
 			if err != nil {
 				return ctx, err
 			}
