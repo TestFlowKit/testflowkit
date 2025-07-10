@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
-	"testflowkit/internal/steps_definitions/core/scenario"
+	stepdefinitions "testflowkit/internal/step_definitions"
+	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/reporters"
@@ -136,20 +137,23 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 }
 func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog.AfterStepHook {
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
+		scenarioCtx := scenario.MustFromContext(ctx)
+
+		stepText := scenarioCtx.ReplaceVariableOccurence(st.Text)
 		if err == nil {
-			myCtx.addStep(st.Text, status, nil)
+			myCtx.addStep(stepText, status, nil)
 			return ctx, nil
 		}
 
 		screenshotPath := ""
 		if config.Settings.ScreenshotOnFailure {
-			currentPage := scenario.MustFromContext(ctx).GetCurrentPageOnly()
+			currentPage := scenarioCtx.GetCurrentPageOnly()
 			if currentPage != nil {
 				screenshotPath = takeScreenshot(st, currentPage)
 			}
 		}
 
-		myCtx.addStep(st.Text, status, stepError{
+		myCtx.addStep(stepText, status, stepError{
 			error:          err,
 			screenshotPath: screenshotPath,
 		})
@@ -209,7 +213,7 @@ func newScenarioCtx() myScenarioCtx {
 }
 
 func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
-	for _, step := range GetAllSteps() {
+	for _, step := range stepdefinitions.GetAll() {
 		handler := step.GetDefinition()
 		for _, sentence := range step.GetSentences() {
 			ctx.Step(formatStep(sentence), handler)

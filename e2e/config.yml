@@ -55,6 +55,8 @@ frontend:
         - "#target-element"
 
     form_e2e:
+      page_title:
+        - "#page-title"
       test_checkbox:
         - "#checkbox"
         - "#rtt"
