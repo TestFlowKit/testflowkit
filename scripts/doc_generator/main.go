@@ -9,9 +9,9 @@ import (
 	"regexp"
 	"slices"
 	"strings"
-	"testflowkit/internal/steps_definitions/core/stepbuilder"
-	"testflowkit/internal/steps_definitions/frontend"
-	"testflowkit/internal/steps_definitions/restapi"
+	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/step_definitions/frontend"
+	"testflowkit/internal/step_definitions/restapi"
 	"testflowkit/pkg/logger"
 )
 

@@ -3,6 +3,7 @@ package main
 import (
 	"testflowkit/internal/actions"
 	"testflowkit/internal/config"
+	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/pkg/logger"
 )
 
@@ -43,7 +44,7 @@ func displayConfigSummary(cfg *config.Config) {
 	logger.Info("--- Configuration Summary ---")
 
 	env, _ := cfg.GetCurrentEnvironment()
-	logger.InfoFf("Available Steps: %d", len(actions.GetAllSteps()))
+	logger.InfoFf("Available Steps: %d", len(stepdefinitions.GetAll()))
 
 	logger.InfoFf("Active Environment: %s", cfg.ActiveEnvironment)
 	logger.InfoFf("Frontend Base URL: %s", env.FrontendBaseURL)
