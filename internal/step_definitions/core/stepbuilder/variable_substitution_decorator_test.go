@@ -100,3 +100,37 @@ func TestVariableSubstitutionDecorator_RemovesQuotes(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, value, ctx.Value(testContextKey{}))
 }
+
+func TestVariableSubstitutionDecorator_ReplaceJSONVariable(t *testing.T) {
+	step := NewWithOneVariable(
+		[]string{"sentence"},
+		func(ctx context.Context, value string) (context.Context, error) {
+			return context.WithValue(ctx, testContextKey{}, value), nil
+		},
+		nil,
+		DocParams{},
+	)
+
+	decorator := VariableSubstitutionDecorator{step: step}
+	definition, ok := decorator.GetDefinition().(func(context.Context, string) (context.Context, error))
+	require.True(t, ok, "Failed to cast definition to definitionType")
+
+	scCtx := scenario.NewContext(&config.Config{})
+	const value = "setted variable"
+	const key1 = "name"
+	const key2 = "age"
+	const value2 = "20"
+	scCtx.SetVariable(key1, value)
+	scCtx.SetVariable(key2, value2)
+
+	jsonString := `{"name": "{{ name }}", "age": {{ age }}}`
+	jsonString = scCtx.ReplaceVariableOccurence(jsonString)
+
+	const expectedJSONString = `{"name": "setted variable", "age": 20}`
+	defCtx := newVarContextMock(scCtx)
+	ctx, err := definition(defCtx, jsonString)
+	actualJSON, ok := ctx.Value(testContextKey{}).(string)
+	assert.True(t, ok)
+	require.NoError(t, err)
+	require.JSONEq(t, expectedJSONString, actualJSON)
+}
