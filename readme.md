@@ -28,6 +28,7 @@
 - **Slow Motion Mode**: Debug-friendly execution with configurable delays
 - **Cross-Browser Support**: Chrome-based automation with Rod browser engine
 - **Configuration Management**: YAML-based configuration with environment-specific settings
+- **Variable System**: Dynamic data storage and substitution throughout test scenarios
 
 ## 📋 Prerequisites
 
@@ -131,7 +132,32 @@ Feature: User Authentication
     And the "welcome_message" should be visible
 ```
 
-### 4. Run Tests
+### 4. Using Variables for Dynamic Testing
+
+TestFlowKit provides powerful variable support for dynamic test data:
+
+```gherkin
+Feature: Dynamic User Testing
+  As a user
+  I want to test with dynamic data
+  So that my tests are more flexible
+
+  Scenario: Test with API data and variables
+    Given I prepare a request for the "get_user" endpoint
+    And I set the following path params:
+      | id | 123 |
+    When I send the request
+    And I store the JSON path "data.name" from the response into "user_name" variable
+    And I store the JSON path "data.email" from the response into "user_email" variable
+    Then the response status code should be 200
+
+    When the user goes to the "profile" page
+    And the user enters "{{user_name}}" into the "name" field
+    And the user enters "{{user_email}}" into the "email" field
+    Then the "name" field should contain "{{user_name}}"
+```
+
+### 5. Run Tests
 
 ```bash
 # Run all tests
@@ -153,6 +179,7 @@ For comprehensive documentation, visit the [official TestFlowKit documentation](
 - [Getting Started](https://testflowkit.dreamsfollowers.me/get-started)
 - [Configuration Guide](https://testflowkit.dreamsfollowers.me/configuration)
 - [Step Definitions](https://testflowkit.dreamsfollowers.me/sentences)
+- [Variables System](https://testflowkit.dreamsfollowers.me/variables)
 - [FAQ & Troubleshooting](https://testflowkit.dreamsfollowers.me/troubleshooting)
 - [Test Execution Design (TED)](https://testflowkit.dreamsfollowers.me/docs/category/test-execution-design-ted)
 
@@ -298,6 +325,74 @@ Then the response status code should be 200
 And the response body should contain "userId"
 And the response body path "id" should exist
 ```
+
+### Variables System
+
+TestFlowKit provides a powerful variable system for dynamic data management:
+
+#### Variable Syntax
+
+Variables use the `{{variable_name}}` syntax and are automatically substituted in all step parameters:
+
+```gherkin
+# Store custom values
+When I store the "John Doe" into "user_name" variable
+And I store the "test@example.com" into "user_email" variable
+
+# Use variables in other steps
+When the user enters "{{user_name}}" into the "name" field
+And the user enters "{{user_email}}" into the "email" field
+```
+
+#### Variable Types
+
+**Custom Variables**: Store any custom value for reuse
+
+```gherkin
+When I store the "Active" into "status" variable
+```
+
+**JSON Path Variables**: Extract data from API responses
+
+```gherkin
+When I store the JSON path "data.user.id" from the response into "user_id" variable
+And I store the JSON path "items[0].name" from the response into "first_item" variable
+```
+
+**HTML Element Variables**: Capture content from web page elements
+
+```gherkin
+When I store the content of "page_title" into "title" variable
+And I store the content of "user_name_label" into "displayed_name" variable
+```
+
+#### Advanced Variable Usage
+
+Variables can be used in complex scenarios for data-driven testing:
+
+```gherkin
+Scenario: End-to-end data flow with variables
+  Given I prepare a request for the "get_user" endpoint
+  And I set the following path params:
+    | id | 123 |
+  When I send the request
+  And I store the JSON path "data.name" from the response into "api_user_name" variable
+  And I store the JSON path "data.email" from the response into "api_user_email" variable
+  Then the response status code should be 200
+
+  When the user goes to the "profile" page
+  And I store the content of "displayed_name" into "page_user_name" variable
+  And the user enters "{{api_user_email}}" into the "email" field
+  Then the "email" field should contain "{{api_user_email}}"
+  And the "page_user_name" should equal "{{api_user_name}}"
+```
+
+#### Variable Features
+
+- **Automatic Substitution**: Variables are replaced in strings, tables, and parameters
+- **Scope**: Variables persist throughout the entire scenario
+- **Type Support**: Supports strings, numbers, booleans, and complex data structures
+- **Cross-Step Usage**: Use variables across different step types (API, frontend, assertions)
 
 ### Macros
 

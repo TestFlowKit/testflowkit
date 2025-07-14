@@ -1,48 +1,55 @@
 <template>
-  <div class="bg-blue-100 p-6 rounded-lg mb-8">
-    <h2 class="text-2xl font-semibold mb-4">Test Configuration</h2>
-    <p>Define variables, page objects, and base URLs for your tests. This YAML file helps organize your tests and
+  <div class="bg-blue-100 p-4 md:p-6 rounded-lg mb-8">
+    <h2 class="text-xl md:text-2xl font-semibold mb-4">Test Configuration</h2>
+    <p class="text-sm md:text-base">Define variables, page objects, and base URLs for your tests. This YAML file helps
+      organize your tests and
       makes them more maintainable.</p>
 
     <AccordionItem title="Frontend Elements">
-      <p>The <code>frontend.elements</code> section allows you to define reusable selectors for UI elements. Elements
+      <p class="text-sm md:text-base">The <code>frontend.elements</code> section allows you to define reusable selectors
+        for UI elements. Elements
         can be organized by page or as common elements.</p>
-      <ul class="list-disc list-inside mb-4">
+      <ul class="list-disc list-inside mb-4 text-sm md:text-base">
         <li><code>common</code>: Elements that are used across multiple pages.</li>
         <li><code>page-specific</code>: Elements specific to a particular page.</li>
       </ul>
     </AccordionItem>
 
     <AccordionItem title="Elements Section">
-      <p>Define reusable selectors for common UI elements with multiple fallback options. TestFlowKit supports both CSS
+      <p class="text-sm md:text-base">Define reusable selectors for common UI elements with multiple fallback options.
+        TestFlowKit supports both CSS
         selectors and XPath expressions.</p>
       <CodeBlock :code="elementsSection" language="yaml" />
     </AccordionItem>
 
     <AccordionItem title="XPath Selector Support">
-      <p>TestFlowKit provides full XPath 1.0 support for complex element selection. Use the <code>xpath:</code> prefix
+      <p class="text-sm md:text-base">TestFlowKit provides full XPath 1.0 support for complex element selection. Use the
+        <code>xpath:</code> prefix
         to specify XPath expressions.</p>
       <CodeBlock :code="xpathSection" language="yaml" />
     </AccordionItem>
 
     <AccordionItem title="Pages Section">
-      <p>Define URLs for different pages used in your tests. These can be relative paths or absolute URLs.</p>
+      <p class="text-sm md:text-base">Define URLs for different pages used in your tests. These can be relative paths or
+        absolute URLs.</p>
       <CodeBlock :code="pagesSection" language="yaml" />
     </AccordionItem>
 
     <AccordionItem title="Environment Configuration">
-      <p>Define different environments with their base URLs. The <code>active_environment</code> determines which
+      <p class="text-sm md:text-base">Define different environments with their base URLs. The
+        <code>active_environment</code> determines which
         environment to use.</p>
       <CodeBlock :code="environmentSection" language="yaml" />
     </AccordionItem>
 
     <AccordionItem title="Settings Configuration">
-      <p>Configure global test execution settings including timeouts, concurrency, and reporting options.</p>
+      <p class="text-sm md:text-base">Configure global test execution settings including timeouts, concurrency, and
+        reporting options.</p>
       <CodeBlock :code="settingsSection" language="yaml" />
     </AccordionItem>
 
     <AccordionItem title="Backend Configuration">
-      <p>Configure API endpoints and default headers for backend testing.</p>
+      <p class="text-sm md:text-base">Configure API endpoints and default headers for backend testing.</p>
       <CodeBlock :code="backendSection" language="yaml" />
     </AccordionItem>
 

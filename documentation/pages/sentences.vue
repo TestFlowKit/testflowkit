@@ -42,7 +42,50 @@
             </AccordionItem>
         </div>
 
-        <div class="max-w-6xl mx-auto p-4">
+        <div class="bg-green-100 p-6 rounded-lg mb-8">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-2xl font-semibold">Variables Support</h2>
+                    <p class="mt-2">TestFlowKit provides powerful variable support for dynamic test data and cross-step
+                        data sharing:</p>
+                </div>
+                <nuxt-link to="/variables"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Learn More About Variables
+                </nuxt-link>
+            </div>
+
+            <AccordionItem title="Variable Syntax">
+                <p>Variables in TestFlowKit use the <code>&#123;&#123;variable_name&#125;&#125;</code> syntax and are
+                    automatically substituted in all step parameters:</p>
+                <ul class="list-disc list-inside mb-4">
+                    <li><strong>Variable Declaration:</strong> <code>&#123;&#123;variable_name&#125;&#125;</code></li>
+                    <li><strong>Automatic Substitution:</strong> Variables are replaced in strings, tables, and
+                        parameters</li>
+                    <li><strong>Scope:</strong> Variables persist throughout the entire scenario</li>
+                    <li><strong>Type Support:</strong> Supports strings, numbers, booleans, and complex data structures
+                    </li>
+                </ul>
+                <CodeBlock :code="variableSyntaxExamples" language="gherkin" />
+            </AccordionItem>
+
+            <AccordionItem title="Variable Types">
+                <p>TestFlowKit supports three main types of variable storage:</p>
+                <ul class="list-disc list-inside mb-4">
+                    <li><strong>Custom Variables:</strong> Store any custom value for reuse</li>
+                    <li><strong>JSON Path Variables:</strong> Extract data from API responses</li>
+                    <li><strong>HTML Element Variables:</strong> Capture content from web page elements</li>
+                </ul>
+                <CodeBlock :code="variableTypesExamples" language="gherkin" />
+            </AccordionItem>
+
+            <AccordionItem title="Advanced Variable Usage">
+                <p>Variables can be used in complex scenarios for data-driven testing:</p>
+                <CodeBlock :code="advancedVariableExamples" language="gherkin" />
+            </AccordionItem>
+        </div>
+
+        <div class="mb-6">
             <SentenceFilter :sentences="allSentences || []" v-model:search-query="searchQuery"
                 v-model:selected-category="selectedCategory" @filtered="updateFilteredSentences" />
         </div>
@@ -52,7 +95,7 @@
         </div>
 
         <ClientOnly>
-            <div v-if="status === 'success' && filteredSentences.length > 0" class="max-w-6xl mx-auto p-4">
+            <div v-if="status === 'success' && filteredSentences.length > 0">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <SentenceDefinitionCard v-for="(definition, index) in paginatedSentences" v-bind="definition"
                         :key="`${currentPage}-${index}-${definition.sentence}`" />
@@ -209,6 +252,48 @@ frontend:
         - "xpath://form[@id='login-form']//input[@type='email']"
         - "input[name='email']"
         - "#email"
+`.trim();
+
+const variableSyntaxExamples = `
+# Basic variable usage
+Given I store the "John Doe" into "user_name" variable
+When the user enters "{{user_name}}" into the "name" field
+
+# Variables in tables
+When I set the following path params:
+  | id | {{user_id}} |
+  | name | {{user_name}} |
+
+# Variables in assertions
+Then the "welcome_message" should contain "{{user_name}}"
+`.trim();
+
+const variableTypesExamples = `
+# Custom Variables
+When I store the "test@example.com" into "email" variable
+
+# JSON Path Variables
+When I store the JSON path "data.user.id" from the response into "user_id" variable
+
+# HTML Element Variables
+When I store the content of "page_title" into "title" variable
+`.trim();
+
+const advancedVariableExamples = `
+Scenario: End-to-end data flow with variables
+  Given I prepare a request for the "get_user" endpoint
+  And I set the following path params:
+    | id | 123 |
+  When I send the request
+  And I store the JSON path "data.name" from the response into "api_user_name" variable
+  And I store the JSON path "data.email" from the response into "api_user_email" variable
+  Then the response status code should be 200
+  
+  When the user goes to the "profile" page
+  And I store the content of "displayed_name" into "page_user_name" variable
+  And the user enters "{{api_user_email}}" into the "email" field
+  Then the "email" field should contain "{{api_user_email}}"
+  And the "page_user_name" should equal "{{api_user_name}}"
 `.trim();
 </script>
 
