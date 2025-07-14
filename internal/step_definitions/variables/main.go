@@ -12,5 +12,14 @@ func GetAllSteps() []stepbuilder.Step {
 		st.storeJSONPathIntoVariable(),
 		st.storeElementContentIntoVariable(),
 		st.storeCustomVariable(),
+		st.variableShouldContains(),
 	}
+}
+
+func GetDocs() []stepbuilder.Documentation {
+	var docs []stepbuilder.Documentation
+	for _, step := range GetAllSteps() {
+		docs = append(docs, step.GetDocumentation())
+	}
+	return docs
 }

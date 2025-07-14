@@ -1,17 +1,18 @@
 <template>
-    <div class="flex flex-col min-h-screen">
-        <NavBar />
-
-        <main class="container mx-auto py-8 flex-grow px-2 md:px-0">
-            <slot />
-        </main>
-
-        <Footer />
+    <div class="min-h-screen">
+        <Navbar />
+        <Sidebar>
+            <div class="p-6 lg:p-8">
+                <slot />
+            </div>
+        </Sidebar>
     </div>
-
 </template>
 
 <script setup lang="ts">
-import Footer from '../components/Footer.vue';
-import NavBar from '../components/Navbar.vue';
+import Sidebar from '../components/Sidebar.vue';
+import Navbar from '../components/Navbar.vue';
+import useSidebar from '../composables/useSidebar';
+
+useSidebar();
 </script>
