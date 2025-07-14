@@ -124,7 +124,7 @@ func TestVariableSubstitutionDecorator_ReplaceJSONVariable(t *testing.T) {
 	scCtx.SetVariable(key2, value2)
 
 	jsonString := `{"name": "{{ name }}", "age": {{ age }}}`
-	jsonString = scCtx.ReplaceVariableOccurence(jsonString)
+	jsonString = scenario.ReplaceVariablesInString(scCtx, jsonString)
 
 	const expectedJSONString = `{"name": "setted variable", "age": 20}`
 	defCtx := newVarContextMock(scCtx)

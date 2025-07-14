@@ -26,13 +26,19 @@ func (steps) setPathParams() stepbuilder.Step {
 				return ctx, err
 			}
 
+			parsedParams, err := scenario.ReplaceVariablesInMap(scenarioCtx, params)
+			if err != nil {
+				return ctx, err
+			}
+
 			var unknownParams []string
 
-			for param := range params {
+			for param := range parsedParams {
 				isKnowParam := strings.Contains(endpoint.Path, "{"+param+"}")
 
 				if isKnowParam {
-					scenarioCtx.AddPathParam(param, params[param])
+					paramValue := parsedParams[param]
+					scenarioCtx.AddPathParam(param, paramValue)
 					continue
 				}
 

@@ -261,40 +261,6 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 	assert.NotEqual(t, "sentence-details", pageName)
 }
 
-func TestShouldReplaceVariableOccurenceByThisValue(t *testing.T) {
-	ctx := NewContext(&config.Config{})
-	ctx.SetVariable("testVar", "testValue")
-	ctx.SetVariable("anotherVar", "anotherValue")
-
-	const sentence = "This is a test sentence with a variable: {{ testVar }} and another one: {{anotherVar}}."
-	replacedSentence := ctx.ReplaceVariableOccurence(sentence)
-	assert.Equal(t, "This is a test sentence with a variable: testValue and another one: anotherValue.", replacedSentence)
-}
-
-func TestShouldNotReplaceUndefinedVariable(t *testing.T) {
-	ctx := NewContext(&config.Config{})
-	ctx.SetVariable("anotherVar", "anotherValue")
-
-	expectedSentence := "This is a test sentence with a variable: {{ testVar }} and another one: anotherValue."
-	const sentence = "This is a test sentence with a variable: {{ testVar }} and another one: {{anotherVar}}."
-	replacedSentence := ctx.ReplaceVariableOccurence(sentence)
-	assert.Equal(t, expectedSentence, replacedSentence)
-}
-
-func TestVariableSubstitutionDecorator_ReplaceVariableInATrueSentence(t *testing.T) {
-	scCtx := NewContext(&config.Config{})
-	const key, value = "postTitle", "My Post Title"
-	const key2, value2 = "postField", "My Post Field"
-	scCtx.SetVariable(key, value)
-	scCtx.SetVariable(key2, value2)
-
-	const sentence = "the user enters {{ postTitle }} into the {{ postField }} field"
-
-	replacedSentence := scCtx.ReplaceVariableOccurence(sentence)
-
-	assert.Equal(t, "the user enters My Post Title into the My Post Field field", replacedSentence)
-}
-
 type TestPage struct {
 	url string
 	common.Page

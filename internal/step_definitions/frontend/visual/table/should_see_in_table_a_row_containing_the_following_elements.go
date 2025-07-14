@@ -2,12 +2,13 @@ package table
 
 import (
 	"context"
+	"maps"
+	"slices"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
-	"golang.org/x/exp/maps"
 )
 
 func (steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
@@ -16,7 +17,7 @@ func (steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	| Name | Age |
 	| John | 30  |
 	`
-	return stepbuilder.NewWithOneVariable[*godog.Table](
+	return stepbuilder.NewWithOneVariable(
 		[]string{`the user should see a row containing the following elements`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
@@ -25,9 +26,15 @@ func (steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 				return ctx, err
 			}
 
+			parsedData, err := scenario.ReplaceVariablesInArray(scenarioCtx, data)
+			if err != nil {
+				return ctx, err
+			}
+
 			currentPage := scenarioCtx.GetCurrentPageOnly()
-			for _, rowDetails := range data {
-				_, getRowErr := getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
+			for _, rowDetails := range parsedData {
+				values := slices.Sorted(maps.Values(rowDetails))
+				_, getRowErr := getTableRowByCellsContent(currentPage, values)
 				if getRowErr != nil {
 					return ctx, getRowErr
 				}

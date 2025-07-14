@@ -1,13 +1,8 @@
 package scenario
 
 import (
-	"fmt"
-	"log"
-	"regexp"
-	"strings"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
-	"testflowkit/internal/step_definitions/core"
 
 	"testflowkit/internal/browser/common"
 
@@ -19,29 +14,6 @@ type Context struct {
 	http      *RESTAPIContext
 	config    *config.Config
 	variables map[string]any
-}
-
-func (c *Context) ReplaceVariableOccurence(sentence string) string {
-	re := regexp.MustCompile(core.VariablePattern)
-	matches := re.FindAllStringSubmatch(sentence, -1)
-	replacedSentence := sentence
-
-	const correctMatchLength = 2
-	for _, v := range matches {
-		if len(v) < correctMatchLength {
-			log.Printf("Invalid variable match: %s", v)
-			continue
-		}
-
-		varDef, varName := v[0], strings.TrimSpace(v[1])
-		if value, exists := c.variables[varName]; exists {
-			replacedSentence = strings.ReplaceAll(replacedSentence, varDef, fmt.Sprintf("%v", value))
-		} else {
-			log.Printf("Variable '%s' not found in context", varName)
-		}
-	}
-
-	return replacedSentence
 }
 
 func (c *Context) GetConfig() *config.Config {
@@ -64,16 +36,6 @@ func (c *Context) Done() {
 
 func (c *Context) SetVariable(name string, value any) {
 	c.variables[name] = value
-}
-
-func (c *Context) GetVariable(name string) (any, bool) {
-	value, exists := c.variables[name]
-	return value, exists
-}
-
-func (c *Context) HasVariable(name string) bool {
-	_, exists := c.variables[name]
-	return exists
 }
 
 func NewContext(cfg *config.Config) *Context {

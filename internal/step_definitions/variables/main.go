@@ -11,5 +11,6 @@ func GetAllSteps() []stepbuilder.Step {
 	return []stepbuilder.Step{
 		st.storeJSONPathIntoVariable(),
 		st.storeElementContentIntoVariable(),
+		st.storeCustomVariable(),
 	}
 }
