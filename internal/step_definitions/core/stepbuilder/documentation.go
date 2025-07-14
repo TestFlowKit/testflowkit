@@ -24,6 +24,7 @@ const (
 	Navigation StepCategory = "navigation"
 	Mouse      StepCategory = "mouse"
 	RESTAPI    StepCategory = "restapi"
+	Variable   StepCategory = "variable"
 )
 
 type VarType string

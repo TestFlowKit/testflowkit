@@ -58,7 +58,7 @@ func (d *VariableSubstitutionDecorator) GetDefinition() any {
 		for i := 1; i < len(args); i++ {
 			arg := args[i]
 			if arg.Type().Kind() == reflect.String {
-				newArg := scCtx.ReplaceVariableOccurence(arg.String())
+				newArg := scenario.ReplaceVariablesInString(scCtx, arg.String())
 				args[i] = reflect.ValueOf(newArg)
 			}
 		}

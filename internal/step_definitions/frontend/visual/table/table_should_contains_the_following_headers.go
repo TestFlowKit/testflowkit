@@ -2,12 +2,13 @@ package table
 
 import (
 	"context"
+	"maps"
+	"slices"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
-	"golang.org/x/exp/maps"
 )
 
 func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
@@ -25,8 +26,13 @@ func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 				return ctx, err
 			}
 
+			parsedData, err := scenario.ReplaceVariablesInMap(scenarioCtx, data)
+			if err != nil {
+				return ctx, err
+			}
+
 			currentPage := scenarioCtx.GetCurrentPageOnly()
-			_, err = getTableHeaderByCellsContent(currentPage, maps.Values(data))
+			_, err = getTableHeaderByCellsContent(currentPage, slices.Sorted(maps.Values(parsedData)))
 			return ctx, err
 		},
 		nil,

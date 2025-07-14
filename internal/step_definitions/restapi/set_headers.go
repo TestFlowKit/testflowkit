@@ -15,7 +15,8 @@ func (steps) setHeaders() stepbuilder.Step {
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			for _, row := range table.Rows[1:] {
-				scenarioCtx.AddHeader(row.Cells[0].Value, row.Cells[1].Value)
+				cells := row.Cells
+				scenarioCtx.AddHeader(cells[0].Value, cells[1].Value)
 			}
 			return ctx, nil
 		},

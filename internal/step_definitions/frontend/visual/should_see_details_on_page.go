@@ -20,9 +20,14 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 			return ctx, errors.New("details malformed please go to the doc")
 		}
 
+		parsedData, parseErr := scenario.ReplaceVariablesInMap(scenarioCtx, data)
+		if parseErr != nil {
+			return ctx, fmt.Errorf("failed to parse variables in table data: %w", parseErr)
+		}
+
 		currentPage := scenarioCtx.GetCurrentPageOnly()
 		var errMsgs []string
-		for name, value := range data {
+		for name, value := range parsedData {
 			elt, err := currentPage.GetOneByTextContent(value)
 			if err != nil {
 				errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))

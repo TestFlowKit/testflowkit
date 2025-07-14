@@ -36,7 +36,7 @@ func (steps) storeElementContentIntoVariable() stepbuilder.Step {
 				{Name: "varName", Description: "The name of the variable to store the content in", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When I store the content of "user_name_label" into "displayed_name" variable`,
-			Category: stepbuilder.Visual,
+			Category: stepbuilder.Variable,
 		},
 	)
 }

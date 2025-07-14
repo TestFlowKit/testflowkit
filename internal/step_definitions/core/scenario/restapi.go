@@ -27,10 +27,14 @@ func (c *Context) GetEndpoint() EndpointEnricher {
 }
 
 func (c *Context) AddPathParam(param string, s string) {
+	param = ReplaceVariablesInString(c, param)
+	s = ReplaceVariablesInString(c, s)
 	c.http.Endpoint.PathParams[param] = s
 }
 
 func (c *Context) AddQueryParam(key, value string) {
+	key = ReplaceVariablesInString(c, key)
+	value = ReplaceVariablesInString(c, value)
 	c.http.Endpoint.QueryParams[key] = value
 }
 
@@ -44,6 +48,8 @@ func (c *Context) SetRequestBody(body []byte) error {
 }
 
 func (c *Context) AddHeader(key, value string) {
+	key = ReplaceVariablesInString(c, key)
+	value = ReplaceVariablesInString(c, value)
 	c.http.RequestHeaders[key] = value
 }
 

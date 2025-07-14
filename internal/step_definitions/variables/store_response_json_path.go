@@ -42,7 +42,7 @@ func (steps) storeJSONPathIntoVariable() stepbuilder.Step {
 				{Name: "varName", Description: "The name of the variable to store the value in", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `When I store the response JSON path "data.user.id" from the response into "user_id" variable`,
-			Category: stepbuilder.RESTAPI,
+			Category: stepbuilder.Variable,
 		},
 	)
 }

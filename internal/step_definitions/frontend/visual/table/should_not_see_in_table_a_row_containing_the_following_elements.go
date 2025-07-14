@@ -3,12 +3,13 @@ package table
 import (
 	"context"
 	"errors"
+	"maps"
+	"slices"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
-	"golang.org/x/exp/maps"
 )
 
 func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
@@ -18,7 +19,7 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 	| John | 30  |
 	`
 
-	return stepbuilder.NewWithOneVariable[*godog.Table](
+	return stepbuilder.NewWithOneVariable(
 		[]string{`the user should not see a row containing the following elements`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
@@ -27,9 +28,16 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 				return ctx, err
 			}
 
+			parsedData, err := scenario.ReplaceVariablesInArray(scenarioCtx, data)
+			if err != nil {
+				return ctx, err
+			}
+
 			currentPage := scenarioCtx.GetCurrentPageOnly()
-			for _, rowDetails := range data {
-				_, err = getTableRowByCellsContent(currentPage, maps.Values(rowDetails))
+			for _, rowDetails := range parsedData {
+				values := slices.Sorted(maps.Values(rowDetails))
+
+				_, err = getTableRowByCellsContent(currentPage, values)
 				if err == nil {
 					return ctx, errors.New("row containing the specified elements was found but should not be visible")
 				}

@@ -139,7 +139,7 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
 
-		stepText := scenarioCtx.ReplaceVariableOccurence(st.Text)
+		stepText := scenario.ReplaceVariablesInString(scenarioCtx, st.Text)
 		if err == nil {
 			myCtx.addStep(stepText, status, nil)
 			return ctx, nil

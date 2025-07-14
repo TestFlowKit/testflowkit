@@ -2,12 +2,13 @@ package table
 
 import (
 	"context"
+	"maps"
+	"slices"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
-	"golang.org/x/exp/maps"
 )
 
 // TODO: click on cell instead of row
@@ -17,7 +18,7 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 	| Name | Age |
 	| John | 30  |
 	`
-	return stepbuilder.NewWithOneVariable[*godog.Table](
+	return stepbuilder.NewWithOneVariable(
 		[]string{`the user clicks on the row containing the following elements`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
@@ -26,8 +27,15 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 				return ctx, err
 			}
 
-			for _, rowDetails := range data {
-				element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), maps.Values(rowDetails))
+			parsedData, err := scenario.ReplaceVariablesInArray(scenarioCtx, data)
+			if err != nil {
+				return ctx, err
+			}
+
+			for _, rowDetails := range parsedData {
+				values := slices.Sorted(maps.Values(rowDetails))
+
+				element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), values)
 				if getRowErr != nil {
 					return ctx, getRowErr
 				}
