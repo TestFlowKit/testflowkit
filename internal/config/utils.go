@@ -14,6 +14,16 @@ func IsElementDefined(elementName string) bool {
 	return false
 }
 
+func IsFileDefined(fileName string) bool {
+	defs := cfg.GetFileDefinitions()
+	if defs == nil {
+		return false
+	}
+
+	_, exists := defs[fileName]
+	return exists
+}
+
 func IsPageDefined(pageName string) bool {
 	pageURL, getFrontendURLErr := cfg.GetFrontendURL(pageName)
 	if getFrontendURLErr != nil {

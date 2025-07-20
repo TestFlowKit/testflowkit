@@ -4,12 +4,10 @@ settings:
   default_timeout: 1000
   page_load_timeout: 30000
   think_time: 10000
-
   screenshot_on_failure: true
   video_recording: false
   concurrency: 1
   headless: true
-
   report_format: "html"
   gherkin_location: "e2e/features"
 
@@ -65,8 +63,32 @@ frontend:
         - "#select"
       multiple_dropdown:
         - "#select-multiple"
+
+    file_upload_e2e:
+      avatar_field:
+        - "input[type='file'][name='avatar']"
+        - "#avatar-upload"
+      gallery_field:
+        - "input[type='file'][name='gallery'][multiple]"
+        - "#gallery-upload"
+      document_field:
+        - "input[type='file'][name='document']"
+      data_field:
+        - "input[type='file'][name='data']"
+        - "#data-upload"
+      upload_button:
+        - "#upload-btn"
+        - "button[type='submit']"
+      status_message:
+        - "#status-message"
+      file_list:
+        - "#file-list"
+      files_uploaded_block:
+        - "#file-items"
+
   pages:
     form_e2e: "form"
+    file_upload_e2e: "file-upload"
     google: "https://www.google.com"
     visual_e2e: "visual"
     table_e2e: "/table"
@@ -111,7 +133,6 @@ backend:
       path: "/albums/{id}"
       description: "Retrieve a specific album by ID"
 
-    # Photos endpoints
     get_photos:
       method: "GET"
       path: "/photos"
@@ -121,3 +142,13 @@ backend:
       method: "GET"
       path: "/albums/{id}/photos"
       description: "Retrieve photos for a specific album"
+
+files:
+  base_directory: "./test-files"
+  definitions:
+    avatar_image: "images/avatar.png"
+    gallery_image1: "images/gallery/image1.jpg"
+    gallery_image2: "images/gallery/image2.jpg"
+    gallery_image3: "images/gallery/image3.jpg"
+    test_document: "documents/test.pdf"
+    sample_csv: "data/sample.csv"

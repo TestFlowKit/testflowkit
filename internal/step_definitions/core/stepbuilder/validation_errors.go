@@ -3,6 +3,7 @@ package stepbuilder
 type ValidationErrors struct {
 	missingPages    []string
 	missingElements []string
+	missingFiles    []string
 	otherErrors     []string
 	undefinedSteps  []string
 }
@@ -19,10 +20,16 @@ func (ve *ValidationErrors) AddMissingElement(name string) {
 	ve.missingElements = append(ve.missingElements, name)
 }
 
+func (ve *ValidationErrors) AddMissingFile(name string) {
+	ve.missingFiles = append(ve.missingFiles, name)
+}
+
 func (ve *ValidationErrors) AddUndefinedStep(text string) {
 	ve.undefinedSteps = append(ve.undefinedSteps, text)
 }
 
 func (ve *ValidationErrors) HasErrors() bool {
-	return len(ve.missingPages) > 0 || len(ve.missingElements) > 0
+	frontErrors := len(ve.missingPages) > 0 || len(ve.missingElements) > 0 || len(ve.missingFiles) > 0
+	otherErrors := len(ve.otherErrors) > 0 || len(ve.undefinedSteps) > 0
+	return frontErrors || otherErrors
 }

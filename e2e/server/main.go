@@ -17,6 +17,7 @@ func main() {
 		"visual",
 		"details",
 		"scroll",
+		"file-upload",
 	}
 
 	_, filename, _, _ := runtime.Caller(0)

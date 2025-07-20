@@ -57,10 +57,11 @@ func (e *EndpointEnricher) getSimpleURL() (string, error) {
 	}
 
 	fullURL, err := url.JoinPath(e.ConfiguredBaseURL, parsedURL.Path)
-	logger.InfoFf("Full URL joined: %s", fullURL)
 	if err != nil {
 		return "", err
 	}
+
+	logger.InfoFf("Full URL joined: %s", fullURL)
 
 	unescapedURL, _ := url.PathUnescape(fullURL)
 	return unescapedURL, nil

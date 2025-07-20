@@ -49,6 +49,8 @@ type Element interface {
 	IsVisible() bool
 	TextContent() string
 	GetPropertyValue(property string, kind reflect.Kind) any
+	UploadFile(filePath string) error
+	UploadMultipleFiles(filePaths []string) error
 }
 
 type Keyboard interface {

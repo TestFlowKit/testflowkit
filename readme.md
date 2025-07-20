@@ -110,6 +110,13 @@ backend:
       method: "GET"
       path: "/users/{id}"
       description: "Retrieve user by ID"
+
+files:
+  base_directory: "./"
+  definitions:
+    profile_image: "images/profile.jpg"
+    test_document: "documents/test.pdf"
+    sample_csv: "data/sample.csv"
 ```
 
 ### 3. Write Your First Test
@@ -154,7 +161,9 @@ Feature: Dynamic User Testing
     When the user goes to the "profile" page
     And the user enters "{{user_name}}" into the "name" field
     And the user enters "{{user_email}}" into the "email" field
+    And the user uploads the "profile_image" file into the "avatar" field
     Then the "name" field should contain "{{user_name}}"
+    And the "avatar" field should contain the uploaded file
 ```
 
 ### 5. Run Tests
@@ -243,6 +252,12 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 - **Default Headers**: Common HTTP headers for API requests
 - **Authentication**: API authentication configuration
 
+### File Configuration
+
+- **File Directory**: Base directory where test files are stored
+- **File Definitions**: Logical file names mapped to actual file paths
+- **Support for Subdirectories**: Organized file structure with nested folders
+
 ## 🧪 Writing Tests
 
 ### Frontend Testing
@@ -263,6 +278,8 @@ When the user goes to the "login" page
 And the user enters "test@example.com" into the "email" field
 And the user selects "Option 1" from the "dropdown" dropdown
 And the user checks the "remember_me" checkbox
+And the user uploads the "profile_image" file into the "avatar" field
+And the user uploads the "image1, image2, image3" files into the "gallery" field
 
 # Assertions
 Then the "welcome_message" should be visible
@@ -309,6 +326,46 @@ frontend:
 
 TestFlowKit automatically tries multiple selectors in parallel and uses the first one that finds an element, providing robust element detection even when page structures change.
 
+### File Upload Testing
+
+TestFlowKit provides comprehensive file upload testing for both frontend forms and REST APIs:
+
+#### Frontend File Upload
+
+Upload files to web forms using logical file names defined in configuration:
+
+```gherkin
+# Single file upload
+When the user uploads the "profile_image" file into the "avatar" field
+
+# Multiple file upload
+When the user uploads the "image1, image2, image3" files into the "gallery" field
+```
+
+#### File Configuration
+
+Configure files in your `config.yml`:
+
+```yaml
+files:
+  base_directory: "test"
+  definitions:
+    profile_image: "images/profile.jpg"
+    avatar_image: "images/avatar.png"
+    gallery_image1: "images/gallery/image1.jpg"
+    gallery_image2: "images/gallery/image2.jpg"
+    gallery_image3: "images/gallery/image3.jpg"
+    test_document: "documents/test.pdf"
+    sample_csv: "data/sample.csv"
+```
+
+**File Configuration Features:**
+
+- **Logical Names**: Use descriptive names instead of file paths in tests
+- **Subdirectory Support**: Organize files in nested folders
+- **Multiple File Types**: Support for images, documents, data files, etc.
+- **Path Resolution**: Automatic path resolution relative to file directory
+
 ### API Testing
 
 Full REST API testing with request/response validation:
@@ -319,6 +376,7 @@ Given I prepare a request for the "get_user" endpoint
 When I set the following path params:
   | id | 1 |
 And I send the request
+
 
 # Response Validation
 Then the response status code should be 200

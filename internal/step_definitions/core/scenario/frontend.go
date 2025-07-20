@@ -73,13 +73,12 @@ func (c *Context) getPageNameByURL(completeURL string) (string, error) {
 
 		isPageURLComplete := parsedPageURL.Scheme != ""
 		if !isPageURLComplete {
-			pageURL, err = url.JoinPath(c.config.GetFrontendBaseURL(), pageURL)
-			if err != nil {
+			completePageURL, joinErr := url.JoinPath(c.config.GetFrontendBaseURL(), pageURL)
+			if joinErr != nil {
 				continue
 			}
-
-			parsedPageURL, err = url.Parse(pageURL)
-			if err != nil {
+			parsedPageURL, parseErr = url.Parse(completePageURL)
+			if parseErr != nil {
 				continue
 			}
 		}

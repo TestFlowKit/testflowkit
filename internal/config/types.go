@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -57,6 +58,8 @@ type Config struct {
 	Frontend FrontendConfig `yaml:"frontend" validate:"required"`
 
 	Backend BackendConfig `yaml:"backend"`
+
+	Files FileConfig `yaml:"files"`
 }
 
 type GlobalSettings struct {
@@ -108,6 +111,11 @@ type Endpoint struct {
 	Description string `yaml:"description" validate:"required"`
 }
 
+type FileConfig struct {
+	Definitions   map[string]string `yaml:"definitions"`
+	BaseDirectory string            `yaml:"base_directory"`
+}
+
 func (c *Config) GetCurrentEnvironment() (Environment, error) {
 	env, exists := c.Environments[c.ActiveEnvironment]
 	if !exists {
@@ -131,11 +139,7 @@ func (c *Config) GetAPIEndpoint(endpointName string) (string, Endpoint, error) {
 		return parsedURL.String(), endpoint, nil
 	}
 
-	fullURL, err := url.JoinPath(c.GetBackendBaseURL(), parsedURL.Path)
-	if err != nil {
-		return "", Endpoint{}, fmt.Errorf("failed to join base URL and endpoint path: %w", err)
-	}
-
+	fullURL := filepath.Join(c.GetBackendBaseURL(), parsedURL.Path)
 	return fullURL, endpoint, nil
 }
 
@@ -150,15 +154,15 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 			return pagePath, nil
 		}
 
-		fullURL, errJoin := url.JoinPath(env.FrontendBaseURL, pagePath)
-		if errJoin != nil {
-			return "", err
-		}
-
+		fullURL := filepath.Join(env.FrontendBaseURL, pagePath)
 		return fullURL, nil
 	}
 
 	return env.FrontendBaseURL, nil
+}
+
+func (c *Config) GetFileDefinitions() map[string]string {
+	return c.Files.Definitions
 }
 
 func (c *Config) GetElementSelectors(page, elementName string) []Selector {
@@ -234,12 +238,43 @@ func (c *Config) GetFrontendBaseURL() string {
 }
 
 func (c *Config) GetBackendBaseURL() string {
-	return c.Environments[c.ActiveEnvironment].APIBaseURL
+	env, err := c.GetCurrentEnvironment()
+	if err != nil {
+		return ""
+	}
+	return env.APIBaseURL
 }
 
-// func (c *Config) GetPageLoadTimeout() time.Duration {
-// 	return time.Duration(c.Settings.PageLoadTimeout) * time.Millisecond
-// }
+func (c *Config) GetFileBaseDirectory() string {
+	return c.Files.BaseDirectory
+}
+
+func (c *Config) GetFilesPaths(fileNames []string) ([]string, error) {
+	defs := c.GetFileDefinitions()
+	if defs == nil {
+		return []string{}, errors.New("no file definitions configured")
+	}
+
+	filePaths := []string{}
+	notFoundFiles := []string{}
+	for _, fileName := range fileNames {
+		filePath, exists := defs[fileName]
+		if !exists {
+			notFoundFiles = append(notFoundFiles, fileName)
+			continue
+		}
+
+		fullPath := filepath.Join(c.GetFileBaseDirectory(), filePath)
+
+		filePaths = append(filePaths, fullPath)
+	}
+
+	if len(notFoundFiles) > 0 {
+		return nil, fmt.Errorf("files do not exist: %v", notFoundFiles)
+	}
+
+	return filePaths, nil
+}
 
 func (c *Config) ValidateConfiguration() error {
 	if err := c.validateGlobalSettings(); err != nil {
