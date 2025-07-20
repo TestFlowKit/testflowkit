@@ -3,6 +3,7 @@ package rod
 import (
 	"errors"
 	"fmt"
+	"os"
 	"reflect"
 	"slices"
 	"strconv"
@@ -128,6 +129,39 @@ func (e *rodElement) IsChecked() bool {
 
 func (e *rodElement) Clear() error {
 	return e.element.Input("")
+}
+
+func (e *rodElement) UploadFile(filePath string) error {
+	if err := e.checkFilesExist([]string{filePath}); err != nil {
+		return err
+	}
+	return e.element.SetFiles([]string{filePath})
+}
+
+func (e *rodElement) UploadMultipleFiles(filePaths []string) error {
+	if err := e.checkFilesExist(filePaths); err != nil {
+		return err
+	}
+	return e.element.SetFiles(filePaths)
+}
+
+func (e *rodElement) checkFilesExist(filePaths []string) error {
+	if len(filePaths) == 0 {
+		return errors.New("no file paths provided")
+	}
+
+	notFoundFiles := []string{}
+	for _, filePath := range filePaths {
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			notFoundFiles = append(notFoundFiles, filePath)
+		}
+	}
+
+	if len(notFoundFiles) > 0 {
+		return fmt.Errorf("files do not exist: %v", notFoundFiles)
+	}
+
+	return nil
 }
 
 func (e *rodElement) ScrollIntoView() error {

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            width: 100%;
+            background-color: #fafafa;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #007bff;
+        }
+
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .file-size {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .upload-progress {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #007bff;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="page-title">File Upload Test Page</h1>
+
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="avatar">Avatar Upload:</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*" data-testid="avatar-field">
+                <div id="avatar-status" class="status-message" style="display: none;"></div>
+                <div id="avatar-validation" class="validation-error" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="gallery">Gallery Upload (Multiple):</label>
+                <input type="file" id="gallery" name="gallery" accept="image/*" multiple data-testid="gallery-field">
+                <div id="gallery-status" class="status-message" style="display: none;"></div>
+                <div id="gallery-validation" class="validation-error" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="document">Document Upload:</label>
+                <input type="file" id="document" name="document" accept=".pdf,.doc,.docx" data-testid="document-field">
+                <div id="document-status" class="status-message" style="display: none;"></div>
+                <div id="document-validation" class="validation-error" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="data">Data Upload (CSV):</label>
+                <input type="file" id="data" name="data" accept=".csv,.xlsx,.xls" data-testid="data-field">
+                <div id="data-status" class="status-message" style="display: none;"></div>
+                <div id="data-validation" class="validation-error" style="display: none;"></div>
+            </div>
+
+            <button type="submit" id="upload-btn" data-testid="upload-button">Upload Files</button>
+        </form>
+
+        <div id="status-message" class="status-message" style="display: none;"></div>
+
+        <div id="file-list" class="file-list" style="display: none;">
+            <h3>Uploaded Files:</h3>
+            <div id="file-items"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const statusMessage = document.getElementById('status-message');
+        const fileList = document.getElementById('file-list');
+        const fileItems = document.getElementById('file-items');
+        const uploadBtn = document.getElementById('upload-btn');
+
+        // File validation functions
+        function validateFile(file, fieldName) {
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const errors = [];
+
+            if (file.size > maxSize) {
+                errors.push(`File size exceeds 5MB limit`);
+            }
+
+            if (fieldName === 'avatar' || fieldName === 'gallery') {
+                if (!file.type.startsWith('image/')) {
+                    errors.push(`Please select an image file`);
+                }
+            }
+
+            if (fieldName === 'document') {
+                const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(file.type)) {
+                    errors.push(`Please select a PDF or Word document`);
+                }
+            }
+
+            if (fieldName === 'data') {
+                const allowedTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+                if (!allowedTypes.includes(file.type)) {
+                    errors.push(`Please select a CSV or Excel file`);
+                }
+            }
+
+            return errors;
+        }
+
+        function showStatus(elementId, type, message) {
+            const statusElement = document.getElementById(elementId);
+            statusElement.textContent = message;
+            statusElement.className = `status-message ${type}`;
+            statusElement.style.display = 'block';
+        }
+
+        function showValidationError(elementId, message) {
+            const validationElement = document.getElementById(elementId);
+            validationElement.textContent = message;
+            validationElement.style.display = 'block';
+        }
+
+        function hideValidationError(elementId) {
+            const validationElement = document.getElementById(elementId);
+            validationElement.style.display = 'none';
+        }
+
+        function updateFileList() {
+            const files = [];
+            const avatarFile = document.getElementById('avatar').files[0];
+            const galleryFiles = document.getElementById('gallery').files;
+            const documentFile = document.getElementById('document').files[0];
+            const dataFile = document.getElementById('data').files[0];
+
+            if (avatarFile) files.push({ name: avatarFile.name, size: avatarFile.size, type: 'Avatar' });
+            if (galleryFiles.length > 0) {
+                for (let i = 0; i < galleryFiles.length; i++) {
+                    files.push({ name: galleryFiles[i].name, size: galleryFiles[i].size, type: 'Gallery' });
+                }
+            }
+            if (documentFile) files.push({ name: documentFile.name, size: documentFile.size, type: 'Document' });
+            if (dataFile) files.push({ name: dataFile.name, size: dataFile.size, type: 'Data' });
+
+            if (files.length > 0) {
+                fileItems.innerHTML = '';
+                files.forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-size">${(file.size / 1024).toFixed(1)} KB (${file.type})</span>
+                    `;
+                    fileItems.appendChild(fileItem);
+                });
+                fileList.style.display = 'block';
+            } else {
+                fileList.style.display = 'none';
+            }
+        }
+
+        // Form submission
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            let hasErrors = false;
+            const formData = new FormData();
+
+            // Validate and collect files
+            const avatarFile = document.getElementById('avatar').files[0];
+            const galleryFiles = document.getElementById('gallery').files;
+            const documentFile = document.getElementById('document').files[0];
+            const dataFile = document.getElementById('data').files[0];
+
+            // Check if any file is selected
+            if (!avatarFile && galleryFiles.length === 0 && !documentFile && !dataFile) {
+                showStatus('status-message', 'error', 'Please select at least one file to upload');
+                return;
+            }
+
+            // Validate avatar file
+            if (avatarFile) {
+                const errors = validateFile(avatarFile, 'avatar');
+                if (errors.length > 0) {
+                    showValidationError('avatar-validation', errors.join(', '));
+                    hasErrors = true;
+                } else {
+                    hideValidationError('avatar-validation');
+                    formData.append('avatar', avatarFile);
+                    showStatus('avatar-status', 'success', `Avatar uploaded: ${avatarFile.name}`);
+                }
+            }
+
+            // Validate gallery files
+            if (galleryFiles.length > 0) {
+                const errors = [];
+                for (let i = 0; i < galleryFiles.length; i++) {
+                    const fileErrors = validateFile(galleryFiles[i], 'gallery');
+                    errors.push(...fileErrors);
+                }
+                if (errors.length > 0) {
+                    showValidationError('gallery-validation', errors.join(', '));
+                    hasErrors = true;
+                } else {
+                    hideValidationError('gallery-validation');
+                    for (let i = 0; i < galleryFiles.length; i++) {
+                        formData.append('gallery', galleryFiles[i]);
+                    }
+                    showStatus('gallery-status', 'success', `${galleryFiles.length} gallery files uploaded`);
+                }
+            }
+
+            // Validate document file
+            if (documentFile) {
+                const errors = validateFile(documentFile, 'document');
+                if (errors.length > 0) {
+                    showValidationError('document-validation', errors.join(', '));
+                    hasErrors = true;
+                } else {
+                    hideValidationError('document-validation');
+                    formData.append('document', documentFile);
+                    showStatus('document-status', 'success', `Document uploaded: ${documentFile.name}`);
+                }
+            }
+
+            // Validate data file
+            if (dataFile) {
+                const errors = validateFile(dataFile, 'data');
+                if (errors.length > 0) {
+                    showValidationError('data-validation', errors.join(', '));
+                    hasErrors = true;
+                } else {
+                    hideValidationError('data-validation');
+                    formData.append('data', dataFile);
+                    showStatus('data-status', 'success', `Data file uploaded: ${dataFile.name}`);
+                }
+            }
+
+            if (hasErrors) {
+                showStatus('status-message', 'error', 'Please fix the validation errors before uploading');
+                return;
+            }
+
+            // Disable button and show progress
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+            showStatus('status-message', 'info', 'Uploading files...');
+
+            // Simulate upload with progress
+            setTimeout(() => {
+                showStatus('status-message', 'success', 'All files uploaded successfully!');
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload Files';
+            }, 2000);
+        });
+
+        // File change event listeners
+        document.getElementById('avatar').addEventListener('change', function (e) {
+            hideValidationError('avatar-validation');
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const errors = validateFile(file, 'avatar');
+                if (errors.length > 0) {
+                    showValidationError('avatar-validation', errors.join(', '));
+                    showStatus('avatar-status', 'error', 'Invalid file selected');
+                } else {
+                    showStatus('avatar-status', 'success', `Selected: ${file.name}`);
+                }
+            } else {
+                document.getElementById('avatar-status').style.display = 'none';
+            }
+            updateFileList();
+        });
+
+        document.getElementById('gallery').addEventListener('change', function (e) {
+            hideValidationError('gallery-validation');
+            if (e.target.files.length > 0) {
+                const files = Array.from(e.target.files);
+                const allValid = files.every(file => validateFile(file, 'gallery').length === 0);
+                if (allValid) {
+                    const fileNames = files.map(f => f.name).join(', ');
+                    showStatus('gallery-status', 'success', `Selected: ${fileNames}`);
+                } else {
+                    showValidationError('gallery-validation', 'One or more files are invalid');
+                    showStatus('gallery-status', 'error', 'Invalid files selected');
+                }
+            } else {
+                document.getElementById('gallery-status').style.display = 'none';
+            }
+            updateFileList();
+        });
+
+        document.getElementById('document').addEventListener('change', function (e) {
+            hideValidationError('document-validation');
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const errors = validateFile(file, 'document');
+                if (errors.length > 0) {
+                    showValidationError('document-validation', errors.join(', '));
+                    showStatus('document-status', 'error', 'Invalid file selected');
+                } else {
+                    showStatus('document-status', 'success', `Selected: ${file.name}`);
+                }
+            } else {
+                document.getElementById('document-status').style.display = 'none';
+            }
+            updateFileList();
+        });
+
+        document.getElementById('data').addEventListener('change', function (e) {
+            hideValidationError('data-validation');
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const errors = validateFile(file, 'data');
+                if (errors.length > 0) {
+                    showValidationError('data-validation', errors.join(', '));
+                    showStatus('data-status', 'error', 'Invalid file selected');
+                } else {
+                    showStatus('data-status', 'success', `Selected: ${file.name}`);
+                }
+            } else {
+                document.getElementById('data-status').style.display = 'none';
+            }
+            updateFileList();
+        });
+    </script>
+</body>
+
+</html>
