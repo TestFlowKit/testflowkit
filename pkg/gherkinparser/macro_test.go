@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetMacroTitles(t *testing.T) {
+func Test_GetMacroTitles(t *testing.T) {
 	tests := []struct {
 		name     string
 		macros   []*scenario
@@ -45,7 +45,7 @@ func TestGetMacroTitles(t *testing.T) {
 	}
 }
 
-func TestGetMacros(t *testing.T) {
+func Test_GetMacros(t *testing.T) {
 	tests := []struct {
 		name          string
 		macroFeatures []*Feature
@@ -56,13 +56,15 @@ func TestGetMacros(t *testing.T) {
 			macroFeatures: []*Feature{
 				{
 					scenarios: []*scenario{
-						{Name: "first macro"},
-						{Name: "second macro"},
+						{Name: "first macro", Tags: []*messages.Tag{{Name: MacroTag}}},
+						{Name: "second macro", Tags: []*messages.Tag{{Name: MacroTag}}},
+						{Name: "none macro"},
 					},
 				},
 				{
 					scenarios: []*scenario{
-						{Name: "third macro"},
+						{Name: "third macro", Tags: []*messages.Tag{{Name: MacroTag}}},
+						{Name: "simple scenario", Tags: []*messages.Tag{{Name: "Test"}}},
 					},
 				},
 			},
@@ -92,7 +94,7 @@ func TestGetMacros(t *testing.T) {
 	}
 }
 
-func TestApplyMacro(t *testing.T) {
+func Test_ApplyMacro(t *testing.T) {
 	tests := []struct {
 		name           string
 		scenario       *scenario

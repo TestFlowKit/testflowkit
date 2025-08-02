@@ -9,10 +9,18 @@ import (
 	messages "github.com/cucumber/messages/go/v21"
 )
 
+const MacroTag = "@macro"
+
 func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
 	macroTitles := getMacroTitles(macros)
+	mustContainsMacro := regexp.MustCompile(strings.Join(macroTitles, "|"))
 	for _, f := range featuresContainingMacros {
-		featureContent := strings.Split(string(f.Contents), "\n")
+		content := string(f.Contents)
+		if !mustContainsMacro.MatchString(content) {
+			continue
+		}
+
+		featureContent := strings.Split(content, "\n")
 
 		if f.background != nil {
 			applyMacro(f.background.Steps, macroTitles, macros, featureContent)
@@ -28,8 +36,7 @@ func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
 				scenarioContent += step.Text + "\n"
 			}
 
-			r := regexp.MustCompile(strings.Join(macroTitles, "|"))
-			if !r.MatchString(scenarioContent) {
+			if !mustContainsMacro.MatchString(scenarioContent) {
 				continue
 			}
 
@@ -66,11 +73,23 @@ func applyMacro(steps []*messages.Step, macroTitles []string, macros []*scenario
 	}
 }
 
-func getMacros(macroFeatures []*Feature) []*scenario {
+func getMacros(features []*Feature) []*scenario {
 	var macros []*scenario
 
-	for _, sc := range macroFeatures {
-		macros = append(macros, sc.scenarios...)
+	for _, f := range features {
+		if !isFileContainsMacros(f) {
+			continue
+		}
+
+		for _, sc := range f.scenarios {
+			if sc == nil || len(sc.Tags) == 0 {
+				continue
+			}
+
+			if isMacroScenario(sc) {
+				macros = append(macros, sc)
+			}
+		}
 	}
 
 	return macros
@@ -83,4 +102,24 @@ func getMacroTitles(macros []*scenario) []string {
 	}
 
 	return titles
+}
+
+func isFileContainsMacros(feature *Feature) bool {
+	for _, sc := range feature.scenarios {
+		for _, tag := range sc.Tags {
+			if tag.Name == MacroTag {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func isMacroScenario(scenario *messages.Scenario) bool {
+	for _, tag := range scenario.Tags {
+		if tag.Name == MacroTag {
+			return true
+		}
+	}
+	return false
 }

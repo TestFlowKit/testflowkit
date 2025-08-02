@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
-	"slices"
 	"strings"
 	"testflowkit/pkg/logger"
 
@@ -15,18 +13,15 @@ import (
 )
 
 func Parse(featureFilesLocation string) []*Feature {
-	features := getFeaturesAndMacros(featureFilesLocation)
-	macroFeatures, testFeatures := separateMacroAndTestsFeatures(features)
+	features := getFeatures(featureFilesLocation)
+	macros := getMacros(features)
 
-	macros := getMacros(macroFeatures)
-	featuresContainingMacros, featuresWithoutMacros := separateFeaturesContainingMacrosOrNot(macros, testFeatures)
+	applyMacros(macros, features)
 
-	applyMacros(macros, featuresContainingMacros)
-
-	return slices.Concat(featuresWithoutMacros, featuresContainingMacros)
+	return features
 }
 
-func getFeaturesAndMacros(featureFilesLocation string) []*Feature {
+func getFeatures(featureFilesLocation string) []*Feature {
 	featuresPaths, getFeaturesErr := getFeaturesPaths(featureFilesLocation)
 	if getFeaturesErr != nil {
 		logger.Fatal("Error getting features paths", getFeaturesErr)
@@ -94,36 +89,4 @@ func parseFeatureFile(featurePath string) *Feature {
 		scenarios,
 		background,
 	)
-}
-
-func separateMacroAndTestsFeatures(features []*Feature) ([]*Feature, []*Feature) {
-	var macroFeatures, testFeatures []*Feature
-	for _, feature := range features {
-		isMacroFeature := strings.HasSuffix(feature.uri, ".macro.feature")
-		if isMacroFeature {
-			macroFeatures = append(macroFeatures, feature)
-		} else {
-			testFeatures = append(testFeatures, feature)
-		}
-	}
-	return macroFeatures, testFeatures
-}
-
-func separateFeaturesContainingMacrosOrNot(macros []*scenario, testFeatures []*Feature) ([]*Feature, []*Feature) {
-	if len(macros) == 0 {
-		return []*Feature{}, testFeatures
-	}
-
-	var featuresContainingMacros, featuresWithoutMacros []*Feature
-	macrostitles := getMacroTitles(macros)
-	r := regexp.MustCompile(strings.Join(macrostitles, "|"))
-
-	for _, f := range testFeatures {
-		if r.Match(f.Contents) {
-			featuresContainingMacros = append(featuresContainingMacros, f)
-		} else {
-			featuresWithoutMacros = append(featuresWithoutMacros, f)
-		}
-	}
-	return featuresContainingMacros, featuresWithoutMacros
 }

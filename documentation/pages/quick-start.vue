@@ -186,6 +186,46 @@
             </div>
         </section>
 
+        <!-- Macro Example Section -->
+        <section class="bg-white p-4 md:p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800">Bonus: Using Macros for Reusable Tests</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-purple-50 p-4 md:p-6 rounded-lg">
+                    <h3 class="font-semibold mb-4 text-purple-800">What are Macros?</h3>
+                    <p class="text-gray-600 mb-4">
+                        Macros allow you to create reusable test scenarios. Instead of writing the same test steps over and over, you can define them once and reuse them with different data.
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 p-4 md:p-6 rounded-lg">
+                    <h3 class="font-semibold mb-4">Create a Macro</h3>
+                    <p class="text-gray-600 mb-4">
+                        Create a file called <code>search.feature</code> in the <code>features</code> directory. The <code>@macro</code> tag is what defines a macro, not the file name:
+                    </p>
+                    <CodeBlock language="gherkin" :code="macroExample" />
+                </div>
+
+                <div class="bg-blue-50 p-4 md:p-6 rounded-lg">
+                    <h3 class="font-semibold mb-4">Use the Macro</h3>
+                    <p class="text-gray-600 mb-4">
+                        Now you can use this macro in your test scenarios with different search terms:
+                    </p>
+                    <CodeBlock language="gherkin" :code="macroUsageExample" />
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-400 p-3 md:p-4">
+                    <h4 class="font-semibold text-green-800 mb-2">Macro Benefits:</h4>
+                    <ul class="text-green-700 space-y-1 text-sm">
+                        <li>• <strong>Reusability:</strong> Write once, use many times</li>
+                        <li>• <strong>Maintainability:</strong> Update in one place</li>
+                        <li>• <strong>Parameterization:</strong> Use different data each time</li>
+                        <li>• <strong>Organization:</strong> Keep common patterns separate</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- Running the Test Section -->
         <section class=" bg-white p-4 md:p-8 rounded-lg shadow-md">
             <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800">Run Your Test</h2>
@@ -235,8 +275,12 @@
                         class="bg-blue-600 text-white px-4 md:px-6 py-3 rounded-lg hover:bg-blue-700">
                         📚 Explore More Test Patterns
                     </nuxt-link>
-                    <nuxt-link to="/qa-guide"
+                    <nuxt-link to="/macros"
                         class="bg-purple-600 text-white px-4 md:px-6 py-3 rounded-lg hover:bg-purple-700">
+                        🔧 Learn About Macros
+                    </nuxt-link>
+                    <nuxt-link to="/qa-guide"
+                        class="bg-green-600 text-white px-4 md:px-6 py-3 rounded-lg hover:bg-green-700">
                         🧪 QA Guide for Non-Technical Users
                     </nuxt-link>
                 </div>
@@ -296,6 +340,22 @@ const gherkinTest = `Feature: Search Functionality
    Given the user is on the "sentences" page
    When the user enters "browser" into the "search" field
    Then the user should see a element which contains "the user navigates back"`
+
+const macroExample = `Feature: Search Macros
+
+ @macro
+ Scenario: Search for term
+   Given the user is on the "sentences" page
+   When the user enters "browser" into the "search" field
+   Then the user should see a element which contains "browser automation"`
+
+const macroUsageExample = `Feature: Multiple Search Tests
+
+ Scenario: Search for browser automation
+   Given Search for term
+   
+ Scenario: Search for navigation
+   Given Search for term`
 
 const runCommand = './tkit run'
 

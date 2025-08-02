@@ -454,23 +454,61 @@ Scenario: End-to-end data flow with variables
 
 ### Macros
 
-Create reusable test scenarios:
+Create reusable test scenarios to reduce code duplication and improve maintainability:
+
+#### Macro Definition
 
 ```gherkin
-# In login.macro.feature
+# In login.feature
+@macro
 Scenario: Login with credentials
   Given the user is on the homepage
   When the user goes to the "login" page
-  And the user enters "{email}" into the "email" field
-  And the user enters "{password}" into the "password" field
+  And the user enters "test@example.com" into the "email" field
+  And the user enters "password123" into the "password" field
   And the user clicks on the "login" button
 
-# In test.feature
-Scenario: Test with macro
-  Given Login with credentials
-    | email    | password   |
-    | user@test| pass123    |
+@macro
+Scenario: Logout user
+  Given the user is logged in
+  When the user clicks on the "logout" button
+  Then the user should be navigated to "login" page
 ```
+
+#### Using Macros
+
+```gherkin
+# In test.feature
+Scenario: Admin user login
+  Given Login with credentials
+  Then the user should be navigated to "dashboard" page
+
+Scenario: Regular user login
+  Given Login with credentials
+  Then the user should be navigated to "dashboard" page
+```
+
+#### Macro Benefits
+
+- **Reusability**: Define common test patterns once
+- **Maintainability**: Update logic in one place
+- **Step Grouping**: Group related steps into reusable blocks
+- **Better Organization**: Separate macro definitions from test scenarios
+
+#### File Organization
+
+```
+e2e/features/
+├── macros/
+│   ├── authentication.feature  # Contains @macro scenarios
+│   ├── data-setup.feature      # Contains @macro scenarios
+│   └── workflows.feature       # Contains @macro scenarios
+└── tests/
+    ├── login.feature           # Regular test scenarios
+    └── user-management.feature # Regular test scenarios
+```
+
+**Note:** The `@macro` tag identifies macro scenarios, not the file name. You can organize macros in any feature file structure you prefer.
 
 ## 🚀 Advanced Usage
 

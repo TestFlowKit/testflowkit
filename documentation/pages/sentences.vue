@@ -42,6 +42,40 @@
             </AccordionItem>
         </div>
 
+        <div class="bg-purple-100 p-6 rounded-lg mb-8">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-2xl font-semibold">Macro System</h2>
+                    <p class="mt-2">TestFlowKit provides a powerful macro system for creating reusable test scenarios and reducing code duplication:</p>
+                </div>
+                <nuxt-link to="/macros"
+                    class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    Learn More About Macros
+                </nuxt-link>
+            </div>
+
+            <AccordionItem title="Macro Basics">
+                <p>Macros allow you to define reusable test scenarios with parameter support:</p>
+                <ul class="list-disc list-inside mb-4">
+                    <li><strong>Reusable Scenarios:</strong> Define common test patterns once</li>
+                    <li><strong>Parameter Support:</strong> Pass different data to the same macro</li>
+                    <li><strong>Better Organization:</strong> Separate macro definitions from test scenarios</li>
+                    <li><strong>Maintainability:</strong> Update logic in one place</li>
+                </ul>
+                <CodeBlock :code="macroBasicsExample" language="gherkin" />
+            </AccordionItem>
+
+            <AccordionItem title="Macro Usage">
+                <p>Use macros in your test scenarios by referencing the macro scenario name:</p>
+                <CodeBlock :code="macroUsageExample" language="gherkin" />
+            </AccordionItem>
+
+            <AccordionItem title="Macro Organization">
+                <p>Organize your macro files for better maintainability:</p>
+                <CodeBlock :code="macroOrganizationExample" language="bash" />
+            </AccordionItem>
+        </div>
+
         <div class="bg-green-100 p-6 rounded-lg mb-8">
             <div class="flex justify-between items-start mb-4">
                 <div>
@@ -295,6 +329,33 @@ Scenario: End-to-end data flow with variables
   Then the "email" field should contain "{{api_user_email}}"
   And the "page_user_name" should equal "{{api_user_name}}"
 `.trim();
+
+const macroBasicsExample = `
+@macro
+Scenario: Login with credentials
+  Given the user is on the homepage
+  When the user goes to the "login" page
+  And the user enters "test@example.com" into the "email" field
+  And the user enters "password123" into the "password" field
+  And the user clicks on the "login" button
+`.trim();
+
+const macroUsageExample = `
+Scenario: Test with macro
+  Given Login with credentials
+  Then the user should be navigated to "dashboard" page
+`.trim();
+
+const macroOrganizationExample = `e2e/features/
+├── macros/
+│   ├── authentication.feature  # Contains @macro scenarios
+│   ├── data-setup.feature      # Contains @macro scenarios
+│   └── workflows.feature       # Contains @macro scenarios
+└── tests/
+    ├── login.feature           # Regular test scenarios
+    └── user-management.feature # Regular test scenarios
+
+# Note: The @macro tag identifies macro scenarios, not the file name`.trim();
 </script>
 
 <style scoped>

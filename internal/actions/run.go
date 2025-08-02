@@ -2,6 +2,7 @@ package actions
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -39,7 +40,7 @@ func run(appConfig *config.Config) {
 		Concurrency:         appConfig.GetConcurrency(),
 		Format:              "pretty",
 		ShowStepDefinitions: false,
-		Tags:                appConfig.Settings.Tags,
+		Tags:                getTagsExludingMacros(appConfig.Settings.Tags),
 		FeatureContents:     features,
 	}
 
@@ -120,6 +121,7 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 		})
 	}
 }
+
 func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		scenarioCtx := scenario.NewContext(config)
@@ -135,6 +137,7 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 		sc.After(afterScenarioHookInitializer(testReport, &myCtx))
 	}
 }
+
 func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog.AfterStepHook {
 	return func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
@@ -219,6 +222,15 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 			ctx.Step(formatStep(sentence), handler)
 		}
 	}
+}
+
+func getTagsExludingMacros(tags string) string {
+	excludeMacros := fmt.Sprintf("~%s", gherkinparser.MacroTag)
+	if tags == "" {
+		return excludeMacros
+	}
+
+	return fmt.Sprintf("%s && %s", tags, excludeMacros)
 }
 
 type myScenarioCtx struct {
