@@ -93,6 +93,18 @@
                                 </nuxt-link>
                             </li>
                             <li>
+                                <nuxt-link to="/macros"
+                                    class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                                    active-class="bg-blue-50 text-blue-700 border-r-2 border-blue-700">
+                                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                        </path>
+                                    </svg>
+                                    Macros
+                                </nuxt-link>
+                            </li>
+                            <li>
                                 <nuxt-link to="/troubleshooting"
                                     class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
                                     active-class="bg-blue-50 text-blue-700 border-r-2 border-blue-700">

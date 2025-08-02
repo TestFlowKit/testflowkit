@@ -8,7 +8,7 @@ import (
 )
 
 func TestApplyMacros_ReplacesMacroStepsWithStepsFromMacro(t *testing.T) {
-	featuresContainingMacros := []*Feature{
+	features := []*Feature{
 		{
 			Contents: []byte("Scenario: Test scenario\nGiven a step\nWhen a macro step\nThen a result"),
 			scenarios: []*scenario{
@@ -32,10 +32,10 @@ func TestApplyMacros_ReplacesMacroStepsWithStepsFromMacro(t *testing.T) {
 		},
 	}
 
-	applyMacros(macros, featuresContainingMacros)
+	applyMacros(macros, features)
 
 	expectedContent := "Scenario: Test scenario\nGiven a step\nWhen macro step 1\nAnd macro step 2\nThen a result"
-	assert.Equal(t, expectedContent, string(featuresContainingMacros[0].Contents))
+	assert.Equal(t, expectedContent, string(features[0].Contents))
 }
 
 func TestApplyMacros_NoReplacementWhenNoMacroSteps(t *testing.T) {
