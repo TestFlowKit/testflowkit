@@ -371,20 +371,68 @@ Advanced Gherkin parsing with macro support and feature processing.
 
 **Macro System:**
 
+Advanced Gherkin parsing with macro support for reusable test scenarios.
+
+**Key Features:**
+
+- **Macro Processing**: Reusable scenario definitions with direct step substitution
+- **Feature Separation**: Macro vs test feature distinction using `@macro` tags
+- **Parallel Processing**: Concurrent feature parsing and macro application
+- **Error Handling**: Graceful parsing error recovery and circular dependency detection
+
+**Macro Definition:**
+
 ```gherkin
-# login.macro.feature
+# login.feature (or any feature file)
+@macro
 Scenario: Login with credentials
   Given the user is on the homepage
   When the user goes to the "login" page
-  And the user enters "{email}" into the "email" field
-  And the user enters "{password}" into the "password" field
+  And the user enters "test@example.com" into the "email" field
+  And the user enters "password123" into the "password" field
   And the user clicks on the "login" button
 
+@macro
+Scenario: Logout user
+  Given the user is logged in
+  When the user clicks on the "logout" button
+  Then the user should be navigated to "login" page
+```
+
+**Note:** The `@macro` tag identifies macro scenarios, not the file name. Macros are static groups of steps that get substituted directly.
+
+**Macro Usage:**
+
+```gherkin
 # test.feature
-Scenario: Test with macro
+Scenario: Admin user login
   Given Login with credentials
-    | email    | password   |
-    | user@test| pass123    |
+  Then the user should be navigated to "dashboard" page
+
+Scenario: Regular user login
+  Given Login with credentials
+  Then the user should be navigated to "dashboard" page
+```
+
+**Implementation Details:**
+
+```go
+// Macro processing workflow
+func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
+    macroTitles := getMacroTitles(macros)
+    mustContainsMacro := regexp.MustCompile(strings.Join(macroTitles, "|"))
+
+    for _, f := range featuresContainingMacros {
+        // Process each feature file for macro references
+        if f.background != nil {
+            applyMacro(f.background.Steps, macroTitles, macros, featureContent)
+        }
+
+        for _, sc := range f.scenarios {
+            applyMacro(sc.Steps, macroTitles, macros, featureContent)
+        }
+    }
+}
 ```
 
 ### 6. Reporting System (`pkg/reporters/`)
