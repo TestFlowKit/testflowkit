@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      go-dependencies:
+        patterns:
+          - "*"
+        applies-to: version-updates
+
+  - package-ecosystem: "npm"
+    directory: "/documentation"
+    schedule:
+      interval: "weekly"
+    groups:
+      node-dependencies:
+        patterns:
+          - "*"
+        applies-to: version-updates
