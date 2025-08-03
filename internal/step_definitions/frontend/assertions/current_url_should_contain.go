@@ -32,7 +32,7 @@ func (steps) currentURLShouldContain() stepbuilder.Step {
 				{Name: "expectedURLPart", Description: description, Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the current URL should contain "dashboard"`,
-			Category: stepbuilder.Visual,
+			Category: stepbuilder.Assertions,
 		},
 	)
 }

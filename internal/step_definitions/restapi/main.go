@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/step_definitions/restapi/assertions"
 )
 
 type steps struct {
@@ -17,10 +18,11 @@ func GetAllSteps() []stepbuilder.Step {
 		st.setRequestBody(),
 		st.setPathParams(),
 		st.sendRequest(),
-		st.checkResponseStatusCode(),
-		st.responseBodyShouldContain(),
-		st.responseBodyPathShouldExist(),
 	}
+}
+
+func GetAssertionSteps() []stepbuilder.Step {
+	return assertions.GetSteps()
 }
 
 func GetDocs() []stepbuilder.Documentation {

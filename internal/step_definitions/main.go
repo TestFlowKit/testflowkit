@@ -12,6 +12,7 @@ func GetAll() []stepbuilder.Step {
 	allSteps := slices.Concat(
 		frontend.GetAllSteps(),
 		restapi.GetAllSteps(),
+		restapi.GetAssertionSteps(),
 		variables.GetAllSteps(),
 	)
 

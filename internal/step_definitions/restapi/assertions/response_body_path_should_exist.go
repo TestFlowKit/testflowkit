@@ -1,4 +1,4 @@
-package restapi
+package assertions
 
 import (
 	"context"
@@ -38,7 +38,7 @@ func (steps) responseBodyPathShouldExist() stepbuilder.Step {
 				},
 			},
 			Example:  `Then the response body path "user.id" should exist`,
-			Category: stepbuilder.RESTAPI,
+			Category: stepbuilder.Assertions,
 		},
 	)
 }

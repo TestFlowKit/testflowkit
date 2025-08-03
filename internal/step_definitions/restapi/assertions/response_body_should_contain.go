@@ -1,4 +1,4 @@
-package restapi
+package assertions
 
 import (
 	"context"
@@ -41,7 +41,7 @@ func (steps) responseBodyShouldContain() stepbuilder.Step {
 				},
 			},
 			Example:  `Then the response body should contain "success"`,
-			Category: stepbuilder.RESTAPI,
+			Category: stepbuilder.Assertions,
 		},
 	)
 }

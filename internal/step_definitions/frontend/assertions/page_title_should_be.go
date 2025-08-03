@@ -30,7 +30,7 @@ func (steps) pageTitleShouldBe() stepbuilder.Step {
 				{Name: "expectedTitle", Description: "The expected page title to match.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the page title should be "Welcome to TestFlowKit"`,
-			Category: stepbuilder.Visual,
+			Category: stepbuilder.Assertions,
 		},
 	)
 }
