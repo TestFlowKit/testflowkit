@@ -1,4 +1,4 @@
-package restapi
+package assertions
 
 import (
 	"context"
@@ -44,7 +44,7 @@ func (steps) checkResponseStatusCode() stepbuilder.Step {
 				},
 			},
 			Example:  `Then the response status code should be 200`,
-			Category: stepbuilder.RESTAPI,
+			Category: stepbuilder.Assertions,
 		},
 	)
 }

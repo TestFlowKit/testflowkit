@@ -52,7 +52,7 @@ func (steps) elementAttributeShouldBe() stepbuilder.Step {
 				{Name: "expectedValue", Description: "The expected value of the attribute.", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the "href" attribute of the "login_link" element should be "/login"`,
-			Category: stepbuilder.Visual,
+			Category: stepbuilder.Assertions,
 		},
 	)
 }

@@ -25,6 +25,7 @@ const (
 	Mouse      StepCategory = "mouse"
 	RESTAPI    StepCategory = "restapi"
 	Variable   StepCategory = "variable"
+	Assertions StepCategory = "assertions"
 )
 
 type VarType string
