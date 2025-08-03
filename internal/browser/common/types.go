@@ -31,7 +31,8 @@ type Page interface {
 }
 
 type PageInfo struct {
-	URL string
+	URL   string
+	Title string
 }
 
 type Element interface {
