@@ -9,4 +9,7 @@ RUN apk add --no-cache curl
 
 COPY . .
 
+# Make healthcheck script executable
+RUN chmod +x healthcheck.sh
+
 CMD go run main.go

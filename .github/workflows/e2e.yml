@@ -9,23 +9,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: start server
-        run: docker compose -f e2e/compose.yml up server -d
+      - name: Build and start server
+        run: docker compose -f e2e/compose.yml up server -d --build
 
-      - name: launch e2e tests
-        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e
+      - name: Wait for server to be ready
+        run: |
+          echo "Waiting for server to be ready..."
+          docker compose -f e2e/compose.yml logs server
+          echo "Server container started!"
+
+      - name: Launch e2e tests
+        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e --build
 
       - name: Get test results
         if: failure()
         run: docker compose -f e2e/compose.yml cp e2e:/app/report .
 
-      - name: upload test results
+      - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: report
 
-      - name: down server container
+      - name: Clean up containers
         if: always()
-        run: docker compose -f e2e/compose.yml down
+        run: docker compose -f e2e/compose.yml down --remove-orphans
