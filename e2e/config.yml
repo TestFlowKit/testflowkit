@@ -29,8 +29,6 @@ frontend:
     common:
       visual_test_button:
         - "button"
-      text_field:
-        - "xpath://*[@id='text']"
       textarea_field:
         - "#textarea"
       double_click_button:
@@ -55,6 +53,8 @@ frontend:
     form_e2e:
       page_title:
         - "#page-title"
+      text_field:
+        - "xpath://*[@id='text']"
       test_checkbox:
         - "#checkbox"
         - "#rtt"
