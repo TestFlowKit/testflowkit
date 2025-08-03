@@ -1,365 +1,181 @@
 <!doctype html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Formulaire de test E2E</title>
-        <link
-            href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
-            rel="stylesheet"
-        />
-    </head>
-    <body class="bg-gray-100 min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <nav class="bg-white shadow-lg rounded-lg p-4 mb-6">
-                <div class="flex justify-between items-center">
-                    <h1 class="text-xl font-semibold text-gray-800" id="page-title">
-                        Formulaire de test E2E
-                    </h1>
-                    <div class="flex space-x-4">
-                        <a
-                            href="/"
-                            class="text-blue-600 hover:text-blue-800 font-medium"
-                            >Accueil</a
-                        >
-                        <a
-                            href="table"
-                            class="text-blue-600 hover:text-blue-800 font-medium"
-                            >Tableau</a
-                        >
-                        <a
-                            href="details"
-                            class="text-blue-600 hover:text-blue-800 font-medium"
-                            >Détails</a
-                        >
-                        <a
-                            href="visual"
-                            class="text-blue-600 hover:text-blue-800 font-medium"
-                            >Effets</a
-                        >
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulaire de test E2E</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <nav class="bg-white shadow-lg rounded-lg p-4 mb-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-semibold text-gray-800" id="page-title">
+                    Formulaire de test E2E
+                </h1>
+                <div class="flex space-x-4">
+                    <a href="/" class="text-blue-600 hover:text-blue-800 font-medium">Accueil</a>
+                    <a href="table" class="text-blue-600 hover:text-blue-800 font-medium">Tableau</a>
+                    <a href="details" class="text-blue-600 hover:text-blue-800 font-medium">Détails</a>
+                    <a href="visual" class="text-blue-600 hover:text-blue-800 font-medium">Effets</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <form action="#" method="post" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="text" class="block text-sm font-medium text-gray-700 mb-1">Texte :</label>
+                        <input type="text" id="text" name="text-input"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail :</label>
+                        <input type="email" id="email" name="email"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe
+                            :</label>
+                        <input type="password" id="password" name="password"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="number" class="block text-sm font-medium text-gray-700 mb-1">Numéro :</label>
+                        <input type="number" id="number" name="number" min="1" max="100"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="tel" class="block text-sm font-medium text-gray-700 mb-1">Téléphone :</label>
+                        <input type="tel" id="tel" name="tel"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="url" class="block text-sm font-medium text-gray-700 mb-1">URL :</label>
+                        <input type="url" id="url" name="url"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date :</label>
+                        <input type="date" id="date" name="date"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="month" class="block text-sm font-medium text-gray-700 mb-1">Mois :</label>
+                        <input type="month" id="month" name="month"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="week" class="block text-sm font-medium text-gray-700 mb-1">Semaine :</label>
+                        <input type="week" id="week" name="week"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="time" class="block text-sm font-medium text-gray-700 mb-1">Heure :</label>
+                        <input type="time" id="time" name="time"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="datetime-local" class="block text-sm font-medium text-gray-700 mb-1">Date et Heure
+                            locale :</label>
+                        <input type="datetime-local" id="datetime-local" name="datetime-local"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                        <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Couleur :</label>
+                        <input type="color" id="color" name="color"
+                            class="w-full h-10 px-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
                 </div>
-            </nav>
 
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <form action="#" method="post" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label
-                                for="text"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Texte :</label
-                            >
-                            <input
-                                type="text"
-                                id="text"
-                                name="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
+                <input type="hidden" id="hidden" name="hidden" value="valeur_cachée" />
+
+                <div>
+                    <label for="file" class="block text-sm font-medium text-gray-700 mb-1">Fichier :</label>
+                    <input type="file" id="file" name="file"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" id="checkbox" name="checkbox"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                    <label for="checkbox" class="ml-2 block text-sm text-gray-700">Case à cocher</label>
+                </div>
+
+                <div>
+                    <p class="text-sm font-medium text-gray-700 mb-2">
+                        Options :
+                    </p>
+                    <div class="flex space-x-4">
+                        <div class="flex items-center">
+                            <input type="radio" id="radio1" name="radio" value="option1"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                            <label for="radio1" class="ml-2 block text-sm text-gray-700">Option 1</label>
                         </div>
-
-                        <div>
-                            <label
-                                for="email"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >E-mail :</label
-                            >
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="password"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Mot de passe :</label
-                            >
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="number"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Numéro :</label
-                            >
-                            <input
-                                type="number"
-                                id="number"
-                                name="number"
-                                min="1"
-                                max="100"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="tel"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Téléphone :</label
-                            >
-                            <input
-                                type="tel"
-                                id="tel"
-                                name="tel"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="url"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >URL :</label
-                            >
-                            <input
-                                type="url"
-                                id="url"
-                                name="url"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="date"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Date :</label
-                            >
-                            <input
-                                type="date"
-                                id="date"
-                                name="date"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="month"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Mois :</label
-                            >
-                            <input
-                                type="month"
-                                id="month"
-                                name="month"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="week"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Semaine :</label
-                            >
-                            <input
-                                type="week"
-                                id="week"
-                                name="week"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="time"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Heure :</label
-                            >
-                            <input
-                                type="time"
-                                id="time"
-                                name="time"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="datetime-local"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Date et Heure locale :</label
-                            >
-                            <input
-                                type="datetime-local"
-                                id="datetime-local"
-                                name="datetime-local"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div>
-                            <label
-                                for="color"
-                                class="block text-sm font-medium text-gray-700 mb-1"
-                                >Couleur :</label
-                            >
-                            <input
-                                type="color"
-                                id="color"
-                                name="color"
-                                class="w-full h-10 px-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
+                        <div class="flex items-center">
+                            <input type="radio" id="radio2" name="radio" value="option2"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                            <label for="radio2" class="ml-2 block text-sm text-gray-700">Option 2</label>
                         </div>
                     </div>
+                </div>
 
-                    <input
-                        type="hidden"
-                        id="hidden"
-                        name="hidden"
-                        value="valeur_cachée"
-                    />
+                <div>
+                    <label for="select" class="block text-sm font-medium text-gray-700 mb-1">Choisissez une option
+                        :</label>
+                    <select id="select" name="select"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
 
-                    <div>
-                        <label
-                            for="file"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Fichier :</label
-                        >
-                        <input
-                            type="file"
-                            id="file"
-                            name="file"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
+                <div>
+                    <label for="select-multiple" class="block text-sm font-medium text-gray-700 mb-1">Choisissez une ou
+                        plusieurs options :</label>
+                    <select id="select-multiple" name="select" multiple
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
 
-                    <div class="flex items-center">
-                        <input
-                            type="checkbox"
-                            id="checkbox"
-                            name="checkbox"
-                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label
-                            for="checkbox"
-                            class="ml-2 block text-sm text-gray-700"
-                            >Case à cocher</label
-                        >
-                    </div>
+                <div>
+                    <label for="textarea" class="block text-sm font-medium text-gray-700 mb-1">Texte multiligne
+                        :</label>
+                    <textarea id="textarea" name="textarea" rows="4"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
 
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 mb-2">
-                            Options :
-                        </p>
-                        <div class="flex space-x-4">
-                            <div class="flex items-center">
-                                <input
-                                    type="radio"
-                                    id="radio1"
-                                    name="radio"
-                                    value="option1"
-                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                                />
-                                <label
-                                    for="radio1"
-                                    class="ml-2 block text-sm text-gray-700"
-                                    >Option 1</label
-                                >
-                            </div>
-                            <div class="flex items-center">
-                                <input
-                                    type="radio"
-                                    id="radio2"
-                                    name="radio"
-                                    value="option2"
-                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                                />
-                                <label
-                                    for="radio2"
-                                    class="ml-2 block text-sm text-gray-700"
-                                    >Option 2</label
-                                >
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <label for="range" class="block text-sm font-medium text-gray-700 mb-1">Plage de valeurs :</label>
+                    <input type="range" id="range" name="range" min="0" max="100"
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                </div>
 
-                    <div>
-                        <label
-                            for="select"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Choisissez une option :</label
-                        >
-                        <select
-                            id="select"
-                            name="select"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label
-                            for="select-multiple"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Choisissez une ou plusieurs options :</label
-                        >
-                        <select
-                            id="select-multiple"
-                            name="select"
-                            multiple
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label
-                            for="textarea"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Texte multiligne :</label
-                        >
-                        <textarea
-                            id="textarea"
-                            name="textarea"
-                            rows="4"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        ></textarea>
-                    </div>
-
-                    <div>
-                        <label
-                            for="range"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                            >Plage de valeurs :</label
-                        >
-                        <input
-                            type="range"
-                            id="range"
-                            name="range"
-                            min="0"
-                            max="100"
-                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                        />
-                    </div>
-
-                    <div class="pt-4">
-                        <input
-                            type="submit"
-                            value="Envoyer"
-                            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium"
-                        />
-                    </div>
-                </form>
-            </div>
+                <div class="pt-4">
+                    <input type="submit" value="Envoyer"
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium" />
+                </div>
+            </form>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

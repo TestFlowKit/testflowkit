@@ -24,5 +24,6 @@ func GetSteps() []stepbuilder.Step {
 		handlers.elementShouldExist(),
 		handlers.pageTitleShouldBe(),
 		handlers.currentURLShouldContain(),
+		handlers.elementAttributeShouldBe(),
 	}
 }
