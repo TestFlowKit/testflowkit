@@ -6,11 +6,13 @@ services:
     build:
       context: server
       dockerfile: Dockerfile
+
     healthcheck:
-      test: "curl -f http://0.0.0.0:3000"
+      test: ["CMD", "./healthcheck.sh"]
       interval: 3s
-      timeout: 2s
-      retries: 3
+      timeout: 5s
+      retries: 5
+      start_period: 2s
 
   e2e:
     container_name: e2e_tests
