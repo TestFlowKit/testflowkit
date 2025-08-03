@@ -23,13 +23,15 @@ func (steps) elementAttributeShouldBe() stepbuilder.Step {
 				return ctx, fmt.Errorf("%s is not visible", elementName)
 			}
 
-			actualValue, isString := element.GetPropertyValue(attributeName, reflect.String).(string)
+			actualValue, isString := element.GetAttributeValue(attributeName, reflect.String).(string)
 			if !isString {
-				return ctx, fmt.Errorf("attribute '%s' is not a string or does not exist on element '%s'", attributeName, elementName)
+				msg := "attribute '%s' is not a string or does not exist on element '%s'"
+				return ctx, fmt.Errorf(msg, attributeName, elementName)
 			}
 
 			if actualValue != expectedValue {
-				return ctx, fmt.Errorf("attribute '%s' of element '%s' is '%s', expected '%s'", attributeName, elementName, actualValue, expectedValue)
+				msg := "attribute '%s' of element '%s' is '%s', expected '%s'"
+				return ctx, fmt.Errorf(msg, attributeName, elementName, actualValue, expectedValue)
 			}
 
 			return ctx, nil
@@ -45,7 +47,7 @@ func (steps) elementAttributeShouldBe() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the specified attribute of an element matches the expected value exactly.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "attributeName", Description: "The name of the HTML attribute to check (e.g., 'href', 'src', 'class', 'id').", Type: stepbuilder.VarTypeString},
+				{Name: "attributeName", Description: "The name of the HTML attribute to check.", Type: stepbuilder.VarTypeString},
 				{Name: "elementName", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "expectedValue", Description: "The expected value of the attribute.", Type: stepbuilder.VarTypeString},
 			},
