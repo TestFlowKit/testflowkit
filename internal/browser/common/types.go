@@ -49,7 +49,7 @@ type Element interface {
 	SelectByIndex(int) error
 	IsVisible() bool
 	TextContent() string
-	GetPropertyValue(property string, kind reflect.Kind) any
+	GetAttributeValue(attribute string, kind reflect.Kind) any
 	UploadFile(filePath string) error
 	UploadMultipleFiles(filePaths []string) error
 }

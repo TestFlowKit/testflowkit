@@ -19,7 +19,7 @@ func (steps) checkCheckboxStatus() sb.Step {
 		if err != nil {
 			return ctx, err
 		}
-		checkValue, isBoolean := input.GetPropertyValue("checked", reflect.Bool).(bool)
+		checkValue, isBoolean := input.GetAttributeValue("checked", reflect.Bool).(bool)
 
 		if isBoolean && checkValue && status == "checked" || !checkValue && status == "unchecked" {
 			return ctx, nil

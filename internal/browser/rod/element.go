@@ -101,7 +101,7 @@ func (e *rodElement) SelectByIndex(optionIndex int) error {
 	return e.SelectByText([]string{optionsElts[optionIndex].MustText()})
 }
 
-func (e *rodElement) GetPropertyValue(property string, kind reflect.Kind) any {
+func (e *rodElement) GetAttributeValue(property string, kind reflect.Kind) any {
 	value := e.element.MustProperty(property)
 
 	if kind == reflect.Bool {
