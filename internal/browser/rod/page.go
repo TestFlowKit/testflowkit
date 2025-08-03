@@ -38,8 +38,10 @@ func (p *rodPage) GetAllBySelector(selector string) ([]common.Element, error) {
 }
 
 func (p *rodPage) GetInfo() common.PageInfo {
+	info := p.page.MustInfo()
 	return common.PageInfo{
-		URL: p.page.MustInfo().URL,
+		URL:   info.URL,
+		Title: info.Title,
 	}
 }
 

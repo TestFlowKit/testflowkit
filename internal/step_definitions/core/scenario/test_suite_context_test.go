@@ -262,12 +262,14 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 }
 
 type TestPage struct {
-	url string
+	url   string
+	title string
 	common.Page
 }
 
 func (p *TestPage) GetInfo() common.PageInfo {
 	return common.PageInfo{
-		URL: p.url,
+		URL:   p.url,
+		Title: p.title,
 	}
 }

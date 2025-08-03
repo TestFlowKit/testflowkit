@@ -22,5 +22,7 @@ func GetSteps() []stepbuilder.Step {
 		handlers.elementShouldNotExist(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.elementShouldExist(),
+		handlers.pageTitleShouldBe(),
+		handlers.currentURLShouldContain(),
 	}
 }
