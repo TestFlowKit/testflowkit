@@ -1036,7 +1036,7 @@
     which "^5.0.0"
     ws "^8.18.3"
 
-"@nuxt/kit@4.0.2", "@nuxt/kit@^4.0.1":
+"@nuxt/kit@4.0.2", "@nuxt/kit@^4.0.1", "@nuxt/kit@^4.0.2":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-4.0.2.tgz#fa4600fd52e366918f867034af1bf12bfef842c1"
   integrity sha512-OtLkVYHpfrm1FzGSGxl0H3QXLgO41yxOgni5S6zzLG4gblG71Fy82B2QTdqJLzTLKWObiILKDhrysBtmDkp3LA==
@@ -1063,7 +1063,7 @@
     unimport "^5.2.0"
     untyped "^2.0.0"
 
-"@nuxt/kit@^3.15.4", "@nuxt/kit@^3.16.0", "@nuxt/kit@^3.16.2", "@nuxt/kit@^3.17.5", "@nuxt/kit@^3.17.6":
+"@nuxt/kit@^3.15.4", "@nuxt/kit@^3.16.0", "@nuxt/kit@^3.16.2", "@nuxt/kit@^3.17.6":
   version "3.18.0"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.18.0.tgz#771acbdaefb1eda2dbbc3c6d9833817913cea507"
   integrity sha512-svS1CBEx7gMgEIaNYrQt26J/t5bDSUdIf7GQWr5M6yszOzLw+IVzyfH7TBmuxZEbjovhLaJEG379mgKp82H/lA==
