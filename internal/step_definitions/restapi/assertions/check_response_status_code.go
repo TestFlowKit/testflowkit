@@ -44,7 +44,7 @@ func (steps) checkResponseStatusCode() stepbuilder.Step {
 				},
 			},
 			Example:  `Then the response status code should be 200`,
-			Category: stepbuilder.Assertions,
+			Category: stepbuilder.RESTAPI,
 		},
 	)
 }

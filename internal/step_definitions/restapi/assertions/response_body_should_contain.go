@@ -41,7 +41,7 @@ func (steps) responseBodyShouldContain() stepbuilder.Step {
 				},
 			},
 			Example:  `Then the response body should contain "success"`,
-			Category: stepbuilder.Assertions,
+			Category: stepbuilder.RESTAPI,
 		},
 	)
 }
