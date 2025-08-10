@@ -27,3 +27,11 @@ func GetSteps() []stepbuilder.Step {
 		handlers.elementAttributeShouldBe(),
 	}
 }
+
+func GetDocs() []stepbuilder.Documentation {
+	var docs []stepbuilder.Documentation
+	for _, step := range GetSteps() {
+		docs = append(docs, step.GetDocumentation())
+	}
+	return docs
+}

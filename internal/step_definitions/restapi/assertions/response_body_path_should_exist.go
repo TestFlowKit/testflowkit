@@ -38,7 +38,7 @@ func (steps) responseBodyPathShouldExist() stepbuilder.Step {
 				},
 			},
 			Example:  `Then the response body path "user.id" should exist`,
-			Category: stepbuilder.Assertions,
+			Category: stepbuilder.RESTAPI,
 		},
 	)
 }
