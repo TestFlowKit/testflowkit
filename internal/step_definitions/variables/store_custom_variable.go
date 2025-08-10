@@ -10,7 +10,7 @@ import (
 func (steps) storeCustomVariable() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{
-			`I store the {string} into {string} variable`,
+			`I store the value {string} into {string} variable`,
 		},
 		func(ctx context.Context, value, varName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
