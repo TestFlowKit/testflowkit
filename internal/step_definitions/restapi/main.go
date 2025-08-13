@@ -17,7 +17,9 @@ func GetAllSteps() []stepbuilder.Step {
 		st.setHeaders(),
 		st.setQueryParams(),
 		st.setRequestBody(),
+		st.setJSONRequestBody(),
 		st.setPathParams(),
+		st.debugRequest(),
 		st.sendRequest(),
 	}, GetAssertionSteps())
 }

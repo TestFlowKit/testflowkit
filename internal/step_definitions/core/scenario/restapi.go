@@ -39,6 +39,11 @@ func (c *Context) AddQueryParam(key, value string) {
 }
 
 func (c *Context) SetRequestBody(body []byte) error {
+	c.http.RequestBody = body
+	return nil
+}
+
+func (c *Context) SetRequestBodyAsJSON(body []byte) error {
 	var jsonTest interface{}
 	if err := json.Unmarshal(body, &jsonTest); err != nil {
 		return fmt.Errorf("invalid JSON in request body: %w", err)
