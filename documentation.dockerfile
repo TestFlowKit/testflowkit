@@ -1,4 +1,4 @@
-FROM golang:1.24.0-bookworm AS doc_generation
+FROM golang:1.25rc3-alpine3.22 AS doc_generation
 
 WORKDIR /app
 
