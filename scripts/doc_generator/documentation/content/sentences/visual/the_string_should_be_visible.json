@@ -1,1 +1,0 @@
-{"sentence":"the {string} should be visible","description":"This assertion checks if the element is present in the DOM and displayed on the page.","category":"visual","variables":[{"name":"name","type":"string","description":"The logical name of the element."}],"gherkinExample":"Then the submit button should be visible"}

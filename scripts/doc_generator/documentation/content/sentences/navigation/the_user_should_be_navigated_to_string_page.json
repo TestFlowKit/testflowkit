@@ -1,1 +1,0 @@
-{"sentence":"the user should be navigated to {string} page","description":"checks if the user is navigated to a page.","category":"navigation","variables":[{"name":"pageName","type":"string","description":"The name of the page to navigate to."}],"gherkinExample":"Then I should be navigated to \"Home\" page"}

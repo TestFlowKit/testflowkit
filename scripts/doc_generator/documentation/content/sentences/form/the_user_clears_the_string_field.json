@@ -1,1 +1,0 @@
-{"sentence":"the user clears the {string} field","description":"clears the content of an input field.","category":"form","variables":[{"name":"inputLabel","type":"string","description":"The label of the input field to clear."}],"gherkinExample":"When the user clears the \"Username\" field"}

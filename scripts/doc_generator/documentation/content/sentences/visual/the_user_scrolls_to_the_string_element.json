@@ -1,1 +1,0 @@
-{"sentence":"the user scrolls to the {string} element","description":"Scrolls the page until the specified element is visible in the viewport.","category":"visual","variables":[{"name":"name","type":"string","description":"The logical name of the element to check."}],"gherkinExample":"When the user scrolls to the \"Submit Button at the bottom\" element"}

@@ -1,1 +1,0 @@
-{"sentence":"the user right clicks on {string}","description":"performs a right click action on the element identified by its logical name","category":"mouse","variables":[{"name":"name","type":"string","description":"The logical name of element to right click on."}],"gherkinExample":"When the user right clicks on \"Submit button\""}

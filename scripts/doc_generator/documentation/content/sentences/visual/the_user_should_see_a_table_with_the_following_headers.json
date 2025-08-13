@@ -1,1 +1,0 @@
-{"sentence":"the user should see a table with the following headers","description":"checks if a table contains the following headers.","category":"visual","variables":[{"name":"table","type":"table","description":"The table containing the headers to check."}],"gherkinExample":"\n\tWhen the user should see a table with the following headers\n\t| Name | Age |\n\t"}

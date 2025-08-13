@@ -1,1 +1,0 @@
-{"sentence":"the response body path {string} should exist","description":"Verifies that a specific JSON path exists in the response body.","category":"restapi","variables":[{"name":"jsonPath","type":"string","description":"The JSON path to check (e.g., 'user.id', 'data.items[0].name')"}],"gherkinExample":"Then the response body path \"user.id\" should exist"}

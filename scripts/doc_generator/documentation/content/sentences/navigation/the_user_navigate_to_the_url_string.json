@@ -1,1 +1,0 @@
-{"sentence":"the user navigate to the URL {string}","description":"directs the browser to open the specified absolute URL","category":"navigation","variables":[{"name":"URL","type":"string","description":"the absolute URL"}],"gherkinExample":"When the user navigates to the URL \"https://myapp.com/login\""}

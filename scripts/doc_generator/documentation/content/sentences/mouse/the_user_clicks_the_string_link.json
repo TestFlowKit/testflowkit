@@ -1,1 +1,0 @@
-{"sentence":"the user clicks the {string} link","description":"performs a click action on the link identified by its logical name","category":"mouse","variables":[{"name":"name","type":"string","description":"The logical name of link to click on."}],"gherkinExample":"When the user clicks the \"Forgot Password\" link"}
