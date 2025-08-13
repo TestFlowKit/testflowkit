@@ -1,6 +1,7 @@
 package restapi
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -18,38 +19,28 @@ func (steps) sendRequest() stepbuilder.Step {
 		[]string{`I send the request`},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			endpoint := scenarioCtx.GetEndpoint()
-			logger.InfoFf("Sending %s request to: %s", endpoint.Method, endpoint.GetFullURL())
+
 			cfg := scenarioCtx.GetConfig()
 			client := &http.Client{
 				Timeout: time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
 			}
 
-			finalURL := endpoint.GetFullURL()
-
-			logger.InfoFf("Final URL: %s", finalURL)
-
 			var bodyReader io.Reader
-			if scenarioCtx.GetRequestBody() != nil {
-				bodyReader = strings.NewReader(string(scenarioCtx.GetRequestBody()))
+			requestBody := scenarioCtx.GetRequestBody()
+			if requestBody != nil {
+				bodyReader = bytes.NewReader(requestBody)
 			}
 
-			req, err := http.NewRequestWithContext(ctx, endpoint.Method, finalURL, bodyReader)
-			if err != nil {
-				return ctx, fmt.Errorf("failed to create HTTP request: %w", err)
-			}
-
-			for key, value := range scenarioCtx.GetRequestHeaders() {
-				req.Header.Set(key, value)
+			req, prepReqErr := prepareRequest(ctx, scenarioCtx, bodyReader)
+			if prepReqErr != nil {
+				return ctx, prepReqErr
 			}
 
 			startTime := time.Now()
-			logger.InfoFf("Sending request to: %s", req.URL.String())
-			resp, err := client.Do(req)
+			resp, reqErr := client.Do(req)
 			duration := time.Since(startTime)
-
-			if err != nil {
-				return ctx, fmt.Errorf("failed to send request: %w", err)
+			if reqErr != nil {
+				return ctx, fmt.Errorf("failed to send request: %w", reqErr)
 			}
 			defer resp.Body.Close()
 
@@ -57,8 +48,8 @@ func (steps) sendRequest() stepbuilder.Step {
 			if err != nil {
 				return ctx, fmt.Errorf("failed to read response body: %w", err)
 			}
-
 			scenarioCtx.SetResponse(resp.StatusCode, responseBody)
+
 
 			logger.InfoFf("Request completed - Status: %d, Duration: %v, Response size: %d bytes",
 				resp.StatusCode, duration, len(responseBody))
@@ -73,4 +64,44 @@ func (steps) sendRequest() stepbuilder.Step {
 			Category:    stepbuilder.RESTAPI,
 		},
 	)
+}
+
+func prepareRequest(ctx context.Context, scenarioCtx *scenario.Context, bodyReader io.Reader, ) (*http.Request, error) {
+
+	endpoint := scenarioCtx.GetEndpoint()
+	finalURL := endpoint.GetFullURL()
+	req, err := http.NewRequestWithContext(ctx, endpoint.Method, finalURL, bodyReader)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	for key, value := range scenarioCtx.GetRequestHeaders() {
+		req.Header.Set(key, value)
+	}
+
+
+	const contentTypeHeader = "Content-Type"
+	if req.Header.Get(contentTypeHeader) == "" && scenarioCtx.GetRequestBody() != nil {
+		body := scenarioCtx.GetRequestBody()
+		contentType := getContentType(body)
+		if contentType != "" {
+			req.Header.Set(contentTypeHeader, contentType)
+		}
+	}
+	return req, nil
+}
+
+func getContentType(body []byte) string {
+	if len(body) == 0 {
+		return "text/plain"
+	}
+	if body[0] == '{' || body[0] == '[' {
+		return "application/json"
+	}
+
+	if strings.HasPrefix(string(body), "<?xml") {
+		return "application/xml"
+	}
+
+	return "text/plain"
 }

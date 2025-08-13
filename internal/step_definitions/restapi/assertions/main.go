@@ -14,5 +14,6 @@ func GetSteps() []stepbuilder.Step {
 		handlers.checkResponseStatusCode(),
 		handlers.responseBodyShouldContain(),
 		handlers.responseBodyPathShouldExist(),
+		handlers.responseBodyShouldBe(),
 	}
 }
