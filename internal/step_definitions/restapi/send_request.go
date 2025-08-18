@@ -25,22 +25,17 @@ func (steps) sendRequest() stepbuilder.Step {
 				Timeout: time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
 			}
 
-			var bodyReader io.Reader
-			requestBody := scenarioCtx.GetRequestBody()
-			if requestBody != nil {
-				bodyReader = bytes.NewReader(requestBody)
-			}
-
-			req, prepReqErr := prepareRequest(ctx, scenarioCtx, bodyReader)
-			if prepReqErr != nil {
-				return ctx, prepReqErr
+			req, err := createRequest(ctx)
+			if err != nil {
+				return ctx, err
 			}
 
 			startTime := time.Now()
-			resp, reqErr := client.Do(req)
+
+			resp, err := client.Do(req)
 			duration := time.Since(startTime)
-			if reqErr != nil {
-				return ctx, fmt.Errorf("failed to send request: %w", reqErr)
+			if err != nil {
+				return ctx, fmt.Errorf("failed to send request: %w", err)
 			}
 			defer resp.Body.Close()
 
@@ -49,7 +44,6 @@ func (steps) sendRequest() stepbuilder.Step {
 				return ctx, fmt.Errorf("failed to read response body: %w", err)
 			}
 			scenarioCtx.SetResponse(resp.StatusCode, responseBody)
-
 
 			logger.InfoFf("Request completed - Status: %d, Duration: %v, Response size: %d bytes",
 				resp.StatusCode, duration, len(responseBody))
@@ -66,10 +60,15 @@ func (steps) sendRequest() stepbuilder.Step {
 	)
 }
 
-func prepareRequest(ctx context.Context, scenarioCtx *scenario.Context, bodyReader io.Reader, ) (*http.Request, error) {
+func createRequest(ctx context.Context) (*http.Request, error) {
+	scenarioCtx := scenario.MustFromContext(ctx)
 
 	endpoint := scenarioCtx.GetEndpoint()
+	bodyReader := getBodyReader(scenarioCtx)
+
 	finalURL := endpoint.GetFullURL()
+	logger.InfoFf("Sending %s request to: %s", endpoint.Method, finalURL)
+
 	req, err := http.NewRequestWithContext(ctx, endpoint.Method, finalURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
@@ -79,22 +78,29 @@ func prepareRequest(ctx context.Context, scenarioCtx *scenario.Context, bodyRead
 		req.Header.Set(key, value)
 	}
 
-
-	const contentTypeHeader = "Content-Type"
-	if req.Header.Get(contentTypeHeader) == "" && scenarioCtx.GetRequestBody() != nil {
+	if req.Header.Get("Content-Type") == "" && scenarioCtx.GetRequestBody() != nil {
 		body := scenarioCtx.GetRequestBody()
 		contentType := getContentType(body)
 		if contentType != "" {
-			req.Header.Set(contentTypeHeader, contentType)
+			req.Header.Set("Content-Type", contentType)
 		}
 	}
 	return req, nil
 }
 
-func getContentType(body []byte) string {
-	if len(body) == 0 {
-		return "text/plain"
+func getBodyReader(scenarioCtx *scenario.Context) io.Reader {
+	var bodyReader io.Reader
+	requestBody := scenarioCtx.GetRequestBody()
+	if requestBody != nil {
+		bodyReader = bytes.NewReader(requestBody)
+		logger.InfoFf("Request body found: %d bytes", len(requestBody))
+	} else {
+		logger.InfoFf("No request body set")
 	}
+	return bodyReader
+}
+
+func getContentType(body []byte) string {
 	if body[0] == '{' || body[0] == '[' {
 		return "application/json"
 	}
