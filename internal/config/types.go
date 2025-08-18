@@ -55,7 +55,7 @@ type Config struct {
 
 	Environments map[string]Environment `yaml:"environments" validate:"required,min=1"`
 
-	Frontend FrontendConfig `yaml:"frontend" validate:"required"`
+	Frontend FrontendConfig `yaml:"frontend"`
 
 	Backend BackendConfig `yaml:"backend"`
 
@@ -87,15 +87,15 @@ type GlobalSettings struct {
 }
 
 type Environment struct {
-	FrontendBaseURL string `yaml:"frontend_base_url" validate:"required,url"`
+	FrontendBaseURL string `yaml:"frontend_base_url" validate:"url"`
 
-	APIBaseURL string `yaml:"api_base_url" validate:"required,url"`
+	APIBaseURL string `yaml:"api_base_url" validate:"url"`
 }
 
 type FrontendConfig struct {
-	Elements map[string]map[string][]string `yaml:"elements" validate:"required"`
+	Elements map[string]map[string][]string `yaml:"elements"`
 
-	Pages map[string]string `yaml:"pages" validate:"required"`
+	Pages map[string]string `yaml:"pages"`
 }
 
 type BackendConfig struct {
