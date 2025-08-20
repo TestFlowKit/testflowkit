@@ -52,7 +52,7 @@ func TestSanitizeFilename(t *testing.T) {
 func TestScreenshotOnFailureConfig(t *testing.T) {
 	// Test with screenshot on failure enabled
 	config1 := &config.Config{
-		Settings: config.GlobalSettings{
+		Frontend: config.FrontendConfig{
 			ScreenshotOnFailure: true,
 		},
 	}
@@ -63,7 +63,7 @@ func TestScreenshotOnFailureConfig(t *testing.T) {
 
 	// Test with screenshot on failure disabled
 	config2 := &config.Config{
-		Settings: config.GlobalSettings{
+		Frontend: config.FrontendConfig{
 			ScreenshotOnFailure: false,
 		},
 	}

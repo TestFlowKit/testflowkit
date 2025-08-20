@@ -62,11 +62,11 @@ func applyOverrides(config *Config, overrides Overrides) {
 		config.Settings.Tags = overrides.Settings.Tags
 	}
 
-	if overrides.Settings.DefaultTimeout > 0 {
-		config.Settings.DefaultTimeout = overrides.Settings.DefaultTimeout
+	if overrides.Frontend.DefaultTimeout > 0 {
+		config.Frontend.DefaultTimeout = overrides.Frontend.DefaultTimeout
 	}
 
-	config.Settings.Headless = overrides.Headless
+	config.Frontend.Headless = overrides.Frontend.Headless
 }
 
 func Get() (*Config, error) {
@@ -79,5 +79,5 @@ func Get() (*Config, error) {
 type Overrides struct {
 	ActiveEnvironment string
 	Settings          GlobalSettings
-	Headless          bool
+	Frontend          FrontendConfig
 }

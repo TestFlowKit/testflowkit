@@ -3,12 +3,8 @@ active_environment: "local"
 settings:
   # Element search timeout in milliseconds (1-300000ms)
   # This is the maximum time to wait when searching for elements by CSS selectors or XPath
-  default_timeout: 10000
   concurrency: 1
-  headless: false
   think_time: 1000
-  screenshot_on_failure: true
-
   report_format: "html"
   gherkin_location: "./e2e/features"
 
@@ -20,6 +16,9 @@ environments:
     frontend_base_url: "https://staging.example.com"
 
 frontend:
+  default_timeout: 10000
+  headless: false
+  screenshot_on_failure: true
   elements:
     common:
       loading_spinner:

@@ -149,7 +149,7 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 		}
 
 		screenshotPath := ""
-		if config.Settings.ScreenshotOnFailure {
+		if config.Frontend.ScreenshotOnFailure {
 			currentPage := scenarioCtx.GetCurrentPageOnly()
 			if currentPage != nil {
 				screenshotPath = takeScreenshot(st, currentPage)

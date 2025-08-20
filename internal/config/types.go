@@ -63,19 +63,12 @@ type Config struct {
 }
 
 type GlobalSettings struct {
-	// DefaultTimeout is the maximum time (in milliseconds)
-	// to wait for an element to be found during element search operations.
-	DefaultTimeout int `yaml:"default_timeout" validate:"min=1000,max=300000"`
 
 	// PageLoadTimeout int `yaml:"page_load_timeout" validate:"min=1000,max=300000"`
-
-	ScreenshotOnFailure bool `yaml:"screenshot_on_failure"`
 
 	// VideoRecording bool `yaml:"video_recording"`
 
 	Concurrency int `yaml:"concurrency" validate:"min=1,max=20"`
-
-	Headless bool `yaml:"headless"`
 
 	ThinkTime int `yaml:"think_time" validate:"omitempty" `
 
@@ -93,6 +86,14 @@ type Environment struct {
 }
 
 type FrontendConfig struct {
+	// DefaultTimeout is the maximum time (in milliseconds)
+	// to wait for an element to be found during element search operations.
+	DefaultTimeout int `yaml:"default_timeout" validate:"min=1000,max=300000"`
+
+	ScreenshotOnFailure bool `yaml:"screenshot_on_failure"`
+
+	Headless bool `yaml:"headless"`
+
 	Elements map[string]map[string][]string `yaml:"elements"`
 
 	Pages map[string]string `yaml:"pages"`
@@ -200,7 +201,7 @@ func (c *Config) getElementSelectors(key string) func(string) []Selector {
 }
 
 func (c *Config) GetThinkTime() time.Duration {
-	if c.Settings.ThinkTime == 0 || c.Settings.Headless {
+	if c.Settings.ThinkTime == 0 || c.Frontend.Headless {
 		return 0
 	}
 
@@ -213,7 +214,7 @@ func (c *Config) GetThinkTime() time.Duration {
 }
 
 func (c *Config) IsHeadlessModeEnabled() bool {
-	return c.Settings.Headless
+	return c.Frontend.Headless
 }
 
 func (c *Config) GetConcurrency() int {
@@ -226,11 +227,11 @@ func (c *Config) GetConcurrency() int {
 // GetTimeout returns the element search timeout as a time.Duration.
 // This timeout is used when searching for elements by CSS selectors or XPath expressions.
 func (c *Config) GetTimeout() time.Duration {
-	return time.Duration(c.Settings.DefaultTimeout) * time.Millisecond
+	return time.Duration(c.Frontend.DefaultTimeout) * time.Millisecond
 }
 
 func (c *Config) IsScreenshotOnFailureEnabled() bool {
-	return c.Settings.ScreenshotOnFailure
+	return c.Frontend.ScreenshotOnFailure
 }
 
 func (c *Config) GetFrontendBaseURL() string {
@@ -297,7 +298,7 @@ func (c *Config) validateFrontend() error {
 		return errors.New("frontend pages configuration is required")
 	}
 
-	if c.Settings.DefaultTimeout < 1000 || c.Settings.DefaultTimeout > 300000 {
+	if c.Frontend.DefaultTimeout < 1000 || c.Frontend.DefaultTimeout > 300000 {
 		return errors.New("default_timeout (element search timeout) must be between 1000 and 300000 milliseconds")
 	}
 
