@@ -33,9 +33,11 @@ func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 			Settings: config.GlobalSettings{
 				GherkinLocation: a.Run.GherkinLocation,
 				Tags:            a.Run.Tags,
-				DefaultTimeout:  a.GetTimeout(),
 			},
-			Headless: a.Run.Headless,
+			Frontend: config.FrontendConfig{
+				DefaultTimeout: a.GetTimeout(),
+				Headless:       a.Run.Headless,
+			},
 		}
 	}
 

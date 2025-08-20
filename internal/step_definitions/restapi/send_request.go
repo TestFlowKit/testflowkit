@@ -22,7 +22,7 @@ func (steps) sendRequest() stepbuilder.Step {
 
 			cfg := scenarioCtx.GetConfig()
 			client := &http.Client{
-				Timeout: time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
+				Timeout: time.Duration(cfg.Frontend.DefaultTimeout) * time.Millisecond,
 			}
 
 			req, err := createRequest(ctx)

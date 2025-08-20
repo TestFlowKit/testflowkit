@@ -43,7 +43,7 @@ func NewContext(cfg *config.Config) *Context {
 		frontend: &frontend{
 			browser:      nil,
 			page:         nil,
-			timeout:      time.Duration(cfg.Settings.DefaultTimeout) * time.Millisecond,
+			timeout:      time.Duration(cfg.Frontend.DefaultTimeout) * time.Millisecond,
 			headlessMode: cfg.IsHeadlessModeEnabled(),
 			thinkTime:    cfg.GetThinkTime(),
 		},

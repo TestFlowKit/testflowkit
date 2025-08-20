@@ -1,13 +1,10 @@
 active_environment: "local"
 
 settings:
-  default_timeout: 1000
   page_load_timeout: 30000
   think_time: 10000
-  screenshot_on_failure: true
   video_recording: false
   concurrency: 1
-  headless: true
   report_format: "html"
   gherkin_location: "e2e/features"
 
@@ -25,6 +22,9 @@ environments:
     api_base_url: "http://mock-server:3001"
 
 frontend:
+  default_timeout: 1000
+  headless: true
+  screenshot_on_failure: true
   elements:
     common:
       visual_test_button:
