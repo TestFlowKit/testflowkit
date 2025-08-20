@@ -43,6 +43,7 @@ func (steps) sendRequest() stepbuilder.Step {
 			if err != nil {
 				return ctx, fmt.Errorf("failed to read response body: %w", err)
 			}
+
 			scenarioCtx.SetResponse(resp.StatusCode, responseBody)
 
 			logger.InfoFf("Request completed - Status: %d, Duration: %v, Response size: %d bytes",
