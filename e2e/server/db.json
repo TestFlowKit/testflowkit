@@ -1,0 +1,78 @@
+{
+  "posts": [
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "qui est esse",
+      "body": "est rerum tempore vitae sequi sint nihil reprehenderit dolor beatae ea dolores neque fugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis qui aperiam non debitis possimus qui neque nisi nulla"
+    },
+    {
+      "title": "Test Post Title",
+      "body": "This is a test post body for API testing",
+      "userId": 1,
+      "id": 3
+    },
+    {
+      "title": "Test Post Title",
+      "body": "This is a test post body for API testing",
+      "userId": 1,
+      "id": 4
+    },
+    {
+      "title": "Test Post Title",
+      "body": "This is a test post body for API testing",
+      "userId": 1,
+      "id": 5
+    },
+    {
+      "title": "Test Post Title",
+      "body": "This is a test post body for API testing",
+      "userId": 1,
+      "id": 6
+    },
+    {
+      "title": "Test Post Title",
+      "body": "This is a test post body for API testing",
+      "userId": 1,
+      "id": 7
+    }
+  ],
+  "albums": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "quidem molestiae enim"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "sunt qui excepturi placeat culpa"
+    }
+  ],
+  "photos": [
+    {
+      "id": 1,
+      "albumId": 1,
+      "title": "accusamus beatae ad facilis cum similique qui sunt",
+      "url": "https://via.placeholder.com/600/92c952",
+      "thumbnailUrl": "https://via.placeholder.com/150/92c952"
+    },
+    {
+      "id": 2,
+      "albumId": 1,
+      "title": "reprehenderit est deserunt velit ipsam",
+      "url": "https://via.placeholder.com/600/771796",
+      "thumbnailUrl": "https://via.placeholder.com/150/771796"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Leanne Graham",
+      "username": "Bret",
+      "email": "Sincere@april.biz",
+      "phone": "1-770-736-8031 x56442",
+      "website": "hildegard.org"
+    }
+  ]
+}

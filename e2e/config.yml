@@ -14,15 +14,15 @@ settings:
 environments:
   local:
     frontend_base_url: "http://0.0.0.0:3000"
-    api_base_url: "https://jsonplaceholder.typicode.com"
+    api_base_url: "http://localhost:3001"
 
   local_windows:
     frontend_base_url: "http://localhost:3000"
-    api_base_url: "https://jsonplaceholder.typicode.com"
+    api_base_url: "http://localhost:3001"
 
   ci:
     frontend_base_url: "http://server:3000"
-    api_base_url: "https://jsonplaceholder.typicode.com"
+    api_base_url: "http://mock-server:3001"
 
 frontend:
   elements:

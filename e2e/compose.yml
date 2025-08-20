@@ -8,11 +8,29 @@ services:
       dockerfile: Dockerfile
 
     healthcheck:
-      test: ["CMD", "./healthcheck.sh"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 3s
       timeout: 5s
       retries: 5
       start_period: 2s
+
+  mock-server:
+    container_name: mock_server
+    networks:
+      - default
+    build:
+      context: server
+      dockerfile: Dockerfile.mock
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
 
   e2e:
     container_name: e2e_tests
@@ -23,6 +41,8 @@ services:
       dockerfile: e2e/Dockerfile
     depends_on:
       server:
+        condition: service_healthy
+      mock-server:
         condition: service_healthy
 
 networks:
