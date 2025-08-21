@@ -32,10 +32,14 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 				return ctx, err
 			}
 
+			page, errPage := scenarioCtx.GetCurrentPageOnly()
+			if errPage != nil {
+				return ctx, errPage
+			}
+
 			for _, rowDetails := range parsedData {
 				values := slices.Sorted(maps.Values(rowDetails))
-
-				element, getRowErr := getTableRowByCellsContent(scenarioCtx.GetCurrentPageOnly(), values)
+				element, getRowErr := getTableRowByCellsContent(page, values)
 				if getRowErr != nil {
 					return ctx, getRowErr
 				}

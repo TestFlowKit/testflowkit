@@ -1,0 +1,108 @@
+package config
+
+import (
+	"path/filepath"
+	"strings"
+	"time"
+)
+
+func (c *Config) GetElementSelectors(page, elementName string) []Selector {
+	elementName = GetLabelKey(elementName)
+	var selectors []Selector
+
+	chainOfResponsibility := []func(string) []Selector{
+		c.getElementSelectors(page),
+		c.getElementSelectors("common"),
+	}
+
+	for _, chain := range chainOfResponsibility {
+		selectors = append(selectors, chain(elementName)...)
+		if len(selectors) > 0 {
+			return selectors
+		}
+	}
+
+	return []Selector{}
+}
+
+func (c *Config) getElementSelectors(key string) func(string) []Selector {
+	return func(elementName string) []Selector {
+		var selectors []Selector
+		if pageElements, isFound := c.GetFrontendElements()[key]; isFound {
+			if selectorStrs, isSelectorsFound := pageElements[elementName]; isSelectorsFound {
+				for _, selectorStr := range selectorStrs {
+					selectors = append(selectors, NewSelector(selectorStr))
+				}
+				return selectors
+			}
+		}
+		return selectors
+	}
+}
+
+func (c *Config) IsHeadlessModeEnabled() bool {
+	if c.IsFrontendDefined() {
+		return c.Frontend.Headless
+	}
+	return false
+}
+
+// GetTimeout returns the element search timeout as a time.Duration.
+// This timeout is used when searching for elements by CSS selectors or XPath expressions.
+func (c *Config) GetTimeout() time.Duration {
+	return c.GetFrontendTimeout()
+}
+
+func (c *Config) IsScreenshotOnFailureEnabled() bool {
+	if c.IsFrontendDefined() {
+		return c.Frontend.ScreenshotOnFailure
+	}
+	return false
+}
+
+func (c *Config) GetFrontendBaseURL() string {
+	return c.Environments[c.ActiveEnvironment].FrontendBaseURL
+}
+
+func (c *Config) IsFrontendDefined() bool {
+	return c.Frontend != nil
+}
+
+func (c *Config) GetFrontendElements() FrontendElements {
+	if c.IsFrontendDefined() {
+		return c.Frontend.Elements
+	}
+	return make(FrontendElements)
+}
+
+func (c *Config) GetFrontendPages() FrontendPages {
+	if c.IsFrontendDefined() {
+		return c.Frontend.Pages
+	}
+	return make(FrontendPages)
+}
+
+func (c *Config) GetFrontendTimeout() time.Duration {
+	if !c.IsFrontendDefined() {
+		return 0
+	}
+	return time.Duration(c.Frontend.DefaultTimeout) * time.Millisecond
+}
+
+func (c *Config) GetFrontendURL(page string) (string, error) {
+	env, err := c.GetCurrentEnvironment()
+	if err != nil {
+		return "", err
+	}
+
+	if pagePath, ok := c.GetFrontendPages()[GetLabelKey(page)]; ok {
+		if strings.HasPrefix(pagePath, "http://") || strings.HasPrefix(pagePath, "https://") {
+			return pagePath, nil
+		}
+
+		fullURL := filepath.Join(env.FrontendBaseURL, pagePath)
+		return fullURL, nil
+	}
+
+	return env.FrontendBaseURL, nil
+}

@@ -62,11 +62,12 @@ func applyOverrides(config *Config, overrides Overrides) {
 		config.Settings.Tags = overrides.Settings.Tags
 	}
 
-	if overrides.Frontend.DefaultTimeout > 0 {
-		config.Frontend.DefaultTimeout = overrides.Frontend.DefaultTimeout
+	if config.IsFrontendDefined() {
+		if overrides.Frontend.DefaultTimeout > 0 {
+			config.Frontend.DefaultTimeout = overrides.Frontend.DefaultTimeout
+		}
+		config.Frontend.Headless = overrides.Frontend.Headless
 	}
-
-	config.Frontend.Headless = overrides.Frontend.Headless
 }
 
 func Get() (*Config, error) {

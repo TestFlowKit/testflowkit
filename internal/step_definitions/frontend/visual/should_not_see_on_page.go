@@ -10,25 +10,30 @@ import (
 
 func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`the user should not see "{string}" on the page`},
-		func(ctx context.Context, word string) (context.Context, error) {
+		[]string{`the user should not see {string} on the page`},
+		func(ctx context.Context, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			elt, err := scenarioCtx.GetCurrentPageOnly().GetOneBySelector("body")
+			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
+			body, err := currentPage.GetOneBySelector("body")
 			if err != nil {
 				return ctx, err
 			}
-			if strings.Contains(elt.TextContent(), word) {
-				return ctx, fmt.Errorf("%s should not be visible", word)
+
+			if strings.Contains(body.TextContent(), text) {
+				return ctx, fmt.Errorf("%s should not be visible", text)
 			}
 			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "checks if a word is not visible on the page.",
+			Description: "checks if a specific text is not visible on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "word", Description: "The word to check.", Type: stepbuilder.VarTypeString},
+				{Name: "text", Description: "The text that should not be visible on the page.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the user should not see \"Submit\" on the page",
+			Example:  "Then the user should not see \"Error\" on the page",
 			Category: stepbuilder.Visual,
 		},
 	)

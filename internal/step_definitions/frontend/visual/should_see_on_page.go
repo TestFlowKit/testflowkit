@@ -13,7 +13,11 @@ func (steps) shouldSeeOnPage() stepbuilder.Step {
 		[]string{`the user should see "{string}" on the page`},
 		func(ctx context.Context, word string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			elt, err := scenarioCtx.GetCurrentPageOnly().GetOneBySelector("body")
+			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
+			elt, err := currentPage.GetOneBySelector("body")
 			if err != nil {
 				return ctx, err
 			}

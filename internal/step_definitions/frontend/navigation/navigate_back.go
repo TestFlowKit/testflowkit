@@ -6,19 +6,21 @@ import (
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 )
 
-func (steps) theUserNavigateBack() stepbuilder.Step {
+func (steps) navigateBack() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
 		[]string{`the user navigates back`},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage := scenarioCtx.GetCurrentPageOnly()
+			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
 			currentPage.Back()
 			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "navigates back in the browser history.",
-			Variables:   nil,
+			Description: "navigates back to the previous page in browser history.",
 			Example:     "When the user navigates back",
 			Category:    stepbuilder.Navigation,
 		},

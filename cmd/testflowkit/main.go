@@ -43,24 +43,33 @@ func main() {
 func displayConfigSummary(cfg *config.Config) {
 	logger.Info("--- Configuration Summary ---")
 
-	env, _ := cfg.GetCurrentEnvironment()
 	logger.InfoFf("Available Steps: %d", len(stepdefinitions.GetAll()))
 
 	logger.InfoFf("Active Environment: %s", cfg.ActiveEnvironment)
-	logger.InfoFf("Frontend Base URL: %s", env.FrontendBaseURL)
-	logger.InfoFf("API Base URL: %s", env.APIBaseURL)
-	logger.InfoFf("Headless Mode: %t", cfg.Frontend.Headless)
 	logger.InfoFf("Concurrency: %d", cfg.Settings.Concurrency)
 	logger.InfoFf("Report Format: %s", cfg.Settings.ReportFormat)
 	logger.InfoFf("Gherkin Location: %s", cfg.Settings.GherkinLocation)
-	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
-	logger.InfoFf("Default Timeout: %dms", cfg.Frontend.DefaultTimeout)
-	// logger.InfoFf("Page Load Timeout: %dms", cfg.Settings.PageLoadTimeout)
-	logger.InfoFf("Screenshot on Failure: %t", cfg.Frontend.ScreenshotOnFailure)
-	// logger.InfoFf("Video Recording: %t", cfg.Settings.VideoRecording)
 	logger.InfoFf("Think Time: %v", cfg.Settings.ThinkTime)
-	logger.InfoFf("Elements Configured: %d page groups", len(cfg.Frontend.Elements))
+	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
+
+	if cfg.IsFrontendDefined() {
+		displayFrontSummary(cfg)
+	}
+
+	env, _ := cfg.GetCurrentEnvironment()
+	logger.InfoFf("API Base URL: %s", env.APIBaseURL)
 	logger.InfoFf("API Endpoints: %d endpoints", len(cfg.Backend.Endpoints))
 
 	logger.Info("--- Configuration Summary End ---\n")
+}
+
+func displayFrontSummary(conf *config.Config) {
+	env, _ := conf.GetCurrentEnvironment()
+
+	frontConf := conf.Frontend
+	logger.InfoFf("Headless Mode: %t", frontConf.Headless)
+	logger.InfoFf("Default Timeout: %dms", frontConf.DefaultTimeout)
+	logger.InfoFf("Frontend Base URL: %s", env.FrontendBaseURL)
+	logger.InfoFf("Screenshot on Failure: %t", frontConf.ScreenshotOnFailure)
+	logger.InfoFf("Elements Configured: %d page groups", len(frontConf.Elements))
 }

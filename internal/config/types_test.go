@@ -182,7 +182,7 @@ func TestConfig_GetTimeout(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			config := &Config{
-				Frontend: FrontendConfig{
+				Frontend: &FrontendConfig{
 					DefaultTimeout: tt.defaultTimeout,
 				},
 			}

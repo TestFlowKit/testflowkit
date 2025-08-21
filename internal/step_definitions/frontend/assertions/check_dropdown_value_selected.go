@@ -28,7 +28,10 @@ func (steps) dropdownHasValuesSelected() stepbuilder.Step {
 		[]string{`the {string} dropdown should have "{string}" selected`},
 		func(ctx context.Context, dropdownId, optionLabels string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			currentPage := scenarioCtx.GetCurrentPageOnly()
+			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
 			selector, err := currentPage.GetAllBySelector(formatVar(dropdownId))
 			if err != nil {
 				return ctx, err

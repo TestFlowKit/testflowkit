@@ -11,7 +11,11 @@ func (s steps) doubleClickOnElementWhichContains() stepbuilder.Step {
 		[]string{`the user double clicks on {string} which contains "{string}"`},
 		func(ctx context.Context, _, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)
+			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
+			element, err := currentPage.GetOneByTextContent(text)
 			if err != nil {
 				return ctx, err
 			}
@@ -25,7 +29,7 @@ func (s steps) doubleClickOnElementWhichContains() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to double click on.", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user double clicks on \"Submit button\" which contains \"Submit\"",
+			Example:  "When the user double clicks on \"File item\" which contains \"document.pdf\"",
 			Category: stepbuilder.Mouse,
 		},
 	)

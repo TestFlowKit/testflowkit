@@ -25,7 +25,11 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 			return ctx, fmt.Errorf("failed to parse variables in table data: %w", parseErr)
 		}
 
-		currentPage := scenarioCtx.GetCurrentPageOnly()
+		currentPage, errPage := scenarioCtx.GetCurrentPageOnly()
+		if errPage != nil {
+			return ctx, errPage
+		}
+
 		var errMsgs []string
 		for name, value := range parsedData {
 			elt, err := currentPage.GetOneByTextContent(value)

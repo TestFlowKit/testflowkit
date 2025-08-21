@@ -31,7 +31,11 @@ func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 				return ctx, err
 			}
 
-			currentPage := scenarioCtx.GetCurrentPageOnly()
+			currentPage, errPage := scenarioCtx.GetCurrentPageOnly()
+			if errPage != nil {
+				return ctx, errPage
+			}
+
 			_, err = getTableHeaderByCellsContent(currentPage, slices.Sorted(maps.Values(parsedData)))
 			return ctx, err
 		},
