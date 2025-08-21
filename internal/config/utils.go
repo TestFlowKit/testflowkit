@@ -5,7 +5,7 @@ import (
 )
 
 func IsElementDefined(elementName string) bool {
-	for _, pageElements := range cfg.Frontend.Elements {
+	for _, pageElements := range cfg.GetFrontendElements() {
 		if _, ok := pageElements[elementName]; ok {
 			return true
 		}

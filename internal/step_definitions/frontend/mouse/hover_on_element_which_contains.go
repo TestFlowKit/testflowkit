@@ -11,7 +11,11 @@ func (s steps) hoverOnElementWhichContains() stepbuilder.Step {
 		[]string{`the user hovers on {string} which contains {string}`},
 		func(ctx context.Context, _, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			element, err := scenarioCtx.GetCurrentPageOnly().GetOneByTextContent(text)
+			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
+			element, err := currentPage.GetOneByTextContent(text)
 			if err != nil {
 				return ctx, err
 			}

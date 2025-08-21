@@ -6,12 +6,12 @@ import (
 	"testflowkit/internal/config"
 )
 
-func GetPage(ctx context.Context) (common.Page, string) {
+func GetPage(ctx context.Context) (common.Page, string, error) {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.GetCurrentPage()
 }
 
-func GetPageOnly(ctx context.Context) common.Page {
+func GetPageOnly(ctx context.Context) (common.Page, error) {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.GetCurrentPageOnly()
 }

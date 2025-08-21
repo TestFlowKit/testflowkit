@@ -33,7 +33,11 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 				return ctx, err
 			}
 
-			currentPage := scenarioCtx.GetCurrentPageOnly()
+			currentPage, errPage := scenarioCtx.GetCurrentPageOnly()
+			if errPage != nil {
+				return ctx, errPage
+			}
+
 			for _, rowDetails := range parsedData {
 				values := slices.Sorted(maps.Values(rowDetails))
 

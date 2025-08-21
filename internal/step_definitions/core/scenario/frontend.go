@@ -11,6 +11,8 @@ import (
 	"testflowkit/pkg/logger"
 )
 
+var errNoCurrentPageAvailable = errors.New("no current page available")
+
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
 	frontCtx.browser = browser.CreateInstance(frontCtx.headlessMode, frontCtx.thinkTime, incognitoMode)
@@ -32,8 +34,18 @@ func (c *Context) GetPages() []common.Page {
 	return c.frontend.browser.GetPages()
 }
 
-func (c *Context) GetCurrentPage() (common.Page, string) {
-	return c.frontend.page, c.frontend.currentPageName
+func (c *Context) GetCurrentPage() (common.Page, string, error) {
+	if c.frontend.page == nil {
+		return nil, "", errNoCurrentPageAvailable
+	}
+	return c.frontend.page, c.frontend.currentPageName, nil
+}
+
+func (c *Context) GetCurrentPageOnly() (common.Page, error) {
+	if c.frontend.page == nil {
+		return nil, errNoCurrentPageAvailable
+	}
+	return c.frontend.page, nil
 }
 
 func (c *Context) UpdatePageNameIfNeeded() {
@@ -55,17 +67,13 @@ func (c *Context) UpdatePageNameIfNeeded() {
 	c.frontend.currentPageName = savedPageName
 }
 
-func (c *Context) GetCurrentPageOnly() common.Page {
-	return c.frontend.page
-}
-
 func (c *Context) getPageNameByURL(completeURL string) (string, error) {
 	completeURLParsed, err := url.Parse(completeURL)
 	if err != nil {
 		return "", errors.New("cannot parse complete URL: " + err.Error())
 	}
 
-	for pageName, pageURL := range c.config.Frontend.Pages {
+	for pageName, pageURL := range c.config.GetFrontendPages() {
 		parsedPageURL, parseErr := url.Parse(pageURL)
 		if parseErr != nil {
 			continue

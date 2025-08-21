@@ -13,7 +13,7 @@ func TestShouldInstanciateCorrectlyNewFrontendContext(t *testing.T) {
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 		},
@@ -38,7 +38,7 @@ func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{
@@ -87,7 +87,7 @@ func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{
@@ -119,7 +119,7 @@ func TestShouldGetPageNameByURLForInternalPageWithBaseURLContainingPath(t *testi
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{
@@ -149,7 +149,7 @@ func TestShouldGetPageNameByURLExternalWithBaseURLContainingPath(t *testing.T) {
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{
@@ -181,7 +181,7 @@ func TestShouldGetPageNameByURLInternalWithBaseURLContainingPath(t *testing.T) {
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{
@@ -212,7 +212,7 @@ func TestShouldGetPageNameByURLWithVariableForInternalPage(t *testing.T) {
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{
@@ -243,7 +243,7 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
-		Frontend: config.FrontendConfig{
+		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
 			Pages: map[string]string{

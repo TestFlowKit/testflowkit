@@ -19,10 +19,12 @@ func (steps) sendRequest() stepbuilder.Step {
 		[]string{`I send the request`},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
+			const defaultDuration = 2
 
-			cfg := scenarioCtx.GetConfig()
 			client := &http.Client{
-				Timeout: time.Duration(cfg.Frontend.DefaultTimeout) * time.Millisecond,
+				// TODO: add timeout configureable
+				// Timeout: time.Duration(cfg.Frontend.DefaultTimeout) * time.Millisecond,
+				Timeout: time.Duration(defaultDuration) * time.Second,
 			}
 
 			req, err := createRequest(ctx)

@@ -12,18 +12,17 @@ func (steps) pageTitleShouldBe() stepbuilder.Step {
 		[]string{`the page title should be {string}`},
 		func(ctx context.Context, expectedTitle string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			page := scenarioCtx.GetCurrentPageOnly()
-
+			page, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
 			pageInfo := page.GetInfo()
 			if pageInfo.Title != expectedTitle {
-				return ctx, fmt.Errorf("page title is '%s', expected '%s'", pageInfo.Title, expectedTitle)
+				return ctx, fmt.Errorf("expected page title to be '%s', but found '%s'", expectedTitle, pageInfo.Title)
 			}
-
 			return ctx, nil
 		},
-		func(_ string) stepbuilder.ValidationErrors {
-			return stepbuilder.ValidationErrors{}
-		},
+		nil,
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the current page title matches the specified title exactly.",
 			Variables: []stepbuilder.DocVariable{

@@ -14,18 +14,17 @@ func (steps) currentURLShouldContain() stepbuilder.Step {
 		[]string{`the current URL should contain {string}`},
 		func(ctx context.Context, expectedURLPart string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			page := scenarioCtx.GetCurrentPageOnly()
-
+			page, pageErr := scenarioCtx.GetCurrentPageOnly()
+			if pageErr != nil {
+				return ctx, pageErr
+			}
 			pageInfo := page.GetInfo()
 			if !strings.Contains(pageInfo.URL, expectedURLPart) {
 				return ctx, fmt.Errorf("current URL '%s' does not contain '%s'", pageInfo.URL, expectedURLPart)
 			}
-
 			return ctx, nil
 		},
-		func(_ string) stepbuilder.ValidationErrors {
-			return stepbuilder.ValidationErrors{}
-		},
+		nil,
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the current page URL contains the specified substring.",
 			Variables: []stepbuilder.DocVariable{

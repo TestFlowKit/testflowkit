@@ -14,7 +14,7 @@ func GetSteps() []stepbuilder.Step {
 		handlers.userNavigateToPage(),
 		handlers.userWait(),
 		handlers.refreshPage(),
-		handlers.theUserNavigateBack(),
+		handlers.navigateBack(),
 		handlers.userNavigateToURL(),
 		handlers.openANewBrowserTab(),
 		handlers.openANewPrivateBrowserTab(),

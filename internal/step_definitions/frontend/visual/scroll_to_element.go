@@ -3,7 +3,6 @@ package visual
 import (
 	"context"
 	"fmt"
-	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 )
@@ -13,28 +12,21 @@ func (steps) scrollToElement() stepbuilder.Step {
 		[]string{`the user scrolls to the {string} element`},
 		func(ctx context.Context, elementName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			elt, err := scenarioCtx.GetHTMLElementByLabel(fmt.Sprintf("%s_element", elementName))
+
+			element, err := scenarioCtx.GetHTMLElementByLabel(fmt.Sprintf("%s_element", elementName))
+
 			if err != nil {
 				return ctx, err
 			}
-
-			scrollErr := elt.ScrollIntoView()
-			if scrollErr != nil {
-				return ctx, scrollErr
+			errScroll := element.ScrollIntoView()
+			if errScroll != nil {
+				return ctx, fmt.Errorf("failed to scroll to elementName '%s': %w", elementName, errScroll)
 			}
 			return ctx, nil
 		},
-		func(name string) stepbuilder.ValidationErrors {
-			vc := stepbuilder.ValidationErrors{}
-			variable := fmt.Sprintf("%s_element", name)
-			if !config.IsElementDefined(variable) {
-				vc.AddMissingElement(variable)
-			}
-
-			return vc
-		},
+		nil,
 		stepbuilder.DocParams{
-			Description: "scrolls to the specified element.",
+			Description: "scrolls to a specific element on the page.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "elementName", Description: "The name of the element to scroll to.", Type: stepbuilder.VarTypeString},
 			},
