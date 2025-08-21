@@ -452,48 +452,80 @@ Scenario: End-to-end data flow with variables
 - **Type Support**: Supports strings, numbers, booleans, and complex data structures
 - **Cross-Step Usage**: Use variables across different step types (API, frontend, assertions)
 
-### Macros
+### Macros with Parameterized Variables
 
-Create reusable test scenarios to reduce code duplication and improve maintainability:
+Create reusable, parameterized test scenarios to reduce code duplication and improve maintainability. The macro system supports variable substitution through table definitions.
 
-#### Macro Definition
+#### Macro Definition with Variables
 
 ```gherkin
 # In login.feature
 @macro
-Scenario: Login with credentials
-  Given the user is on the homepage
-  When the user goes to the "login" page
-  And the user enters "test@example.com" into the "email" field
-  And the user enters "password123" into the "password" field
-  And the user clicks on the "login" button
+Scenario: user login with credentials
+  Given the user is on the login page
+  When the user fills the "username" field with |username|
+  And the user fills the "password" field with |password|
+  And the user clicks the "login" button
+  Then the user should be logged in successfully
 
 @macro
-Scenario: Logout user
+Scenario: user logout
   Given the user is logged in
-  When the user clicks on the "logout" button
-  Then the user should be navigated to "login" page
+  When the user clicks the "logout" button
+  Then the user should be logged out successfully
 ```
 
-#### Using Macros
+**Key Features:**
+
+- Use `|variable_name|` syntax to define variable placeholders
+- Variables are automatically substituted during macro expansion
+- Support for multiple variables in a single macro
+
+#### Using Parameterized Macros
 
 ```gherkin
 # In test.feature
-Scenario: Admin user login
-  Given Login with credentials
-  Then the user should be navigated to "dashboard" page
+Scenario: Test login with valid credentials
+  When user login with credentials
+    | username | password |
+    | oki     | ler123   |
+  Then the user should be logged in successfully
 
-Scenario: Regular user login
-  Given Login with credentials
-  Then the user should be navigated to "dashboard" page
+Scenario: Test login with different credentials
+  When user login with credentials
+    | username | password |
+    | admin   | secret   |
+  Then the user should be logged in successfully
+```
+
+#### Complex Workflow Macros
+
+```gherkin
+@macro
+Scenario: complete user workflow
+  Given the user is on the login page
+  When the user fills the "username" field with |username|
+  And the user fills the "password" field with |password|
+  And the user clicks the "login" button
+  Then the user should be logged in successfully
+  When the user navigates to the |page| page
+  Then the user should see the |page| page
+
+# Usage
+Scenario: Test complete workflow
+  When complete user workflow
+    | username | password | page      |
+    | oki     | ler123   | dashboard |
+  Then the user should see the dashboard page
 ```
 
 #### Macro Benefits
 
-- **Reusability**: Define common test patterns once
-- **Maintainability**: Update logic in one place
-- **Step Grouping**: Group related steps into reusable blocks
+- **Parameterized Reusability**: Use the same macro with different data sets
+- **Table-Driven Testing**: Easy to test multiple scenarios with different parameters
+- **Maintainability**: Update logic in one place, affects all usages
 - **Better Organization**: Separate macro definitions from test scenarios
+- **Dynamic Behavior**: Adapt macros to different test requirements
 
 #### File Organization
 
@@ -509,6 +541,36 @@ e2e/features/
 ```
 
 **Note:** The `@macro` tag identifies macro scenarios, not the file name. You can organize macros in any feature file structure you prefer.
+
+#### Variable Substitution
+
+The system automatically replaces `|variable_name|` placeholders with actual values from the data table:
+
+**Macro definition:**
+
+```gherkin
+When the user fills the "username" field with |username|
+```
+
+**Macro invocation:**
+
+```gherkin
+| username | password |
+| oki     | ler123   |
+```
+
+**Result:**
+
+```gherkin
+When the user fills the "username" field with oki
+```
+
+#### Best Practices
+
+- **Naming**: Use descriptive macro names that clearly indicate their purpose
+- **Variables**: Keep variables focused and specific to the macro's purpose
+- **Documentation**: Use clear, descriptive step text that explains the intent
+- **Testing**: Test macros with different variable combinations to ensure reliability
 
 ## 🚀 Advanced Usage
 
