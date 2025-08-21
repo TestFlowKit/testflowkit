@@ -2,8 +2,9 @@
 Feature: visual e2e tests
 
   Background:
-    Given the user opens a new browser tab
-    Then the user goes to the visual e2e page
+    Given the user is on page
+      | page_name  |
+      | visual e2e |
 
   Scenario: User should see certain things on page
     Given the user should not see "L'élément a été caché." on the page

@@ -11,6 +11,69 @@ import (
 
 const MacroTag = "@macro"
 
+type MacroVariable struct {
+	Name  string
+	Value string
+}
+
+type MacroCall struct {
+	MacroName string
+	Variables map[string]string
+}
+
+func parseMacroCallWithTable(step *messages.Step, macroTitles []string) (*MacroCall, error) {
+	stepText := step.Text
+
+	var macroName string
+	for _, title := range macroTitles {
+		if stepText == title {
+			macroName = title
+			break
+		}
+	}
+
+	if macroName == "" {
+		return nil, fmt.Errorf("no macro found in step: %s", stepText)
+	}
+
+	variables := make(map[string]string)
+	if step.DataTable == nil {
+		return &MacroCall{
+			MacroName: macroName,
+			Variables: variables,
+		}, nil
+	}
+
+	table := step.DataTable
+	const headerAndFirstRow = 2
+	if len(table.Rows) >= headerAndFirstRow {
+		headers := table.Rows[0].Cells
+		dataRow := table.Rows[1].Cells
+
+		for i, header := range headers {
+			varName := strings.TrimSpace(header.Value)
+			varValue := strings.TrimSpace(dataRow[i].Value)
+			variables[varName] = varValue
+		}
+	}
+
+	return &MacroCall{
+		MacroName: macroName,
+		Variables: variables,
+	}, nil
+}
+
+func SubstituteVariables(stepText string, variables map[string]string) string {
+	result := stepText
+
+	for varName, varValue := range variables {
+		placeholder := fmt.Sprintf("|%s|", varName)
+		result = strings.ReplaceAll(result, placeholder, varValue)
+	}
+
+	return result
+}
+
 func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
 	macroTitles := getMacroTitles(macros)
 	mustContainsMacro := regexp.MustCompile(strings.Join(macroTitles, "|"))
@@ -49,14 +112,19 @@ func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
 
 func applyMacro(steps []*messages.Step, macroTitles []string, macros []*scenario, featureContent []string) {
 	for _, step := range steps {
-		isMacroStep := slices.Contains(macroTitles, step.Text)
-		if !isMacroStep {
+		macroCall, err := parseMacroCallWithTable(step, macroTitles)
+		if err != nil {
 			continue
 		}
 
 		macroIdx := slices.IndexFunc(macroTitles, func(title string) bool {
-			return title == step.Text
+			return title == macroCall.MacroName
 		})
+
+		isMacroStep := macroIdx != -1
+		if !isMacroStep {
+			continue
+		}
 
 		macro := macros[macroIdx]
 		var steps []string
@@ -66,7 +134,8 @@ func applyMacro(steps []*messages.Step, macroTitles []string, macros []*scenario
 				keyword = "And"
 			}
 
-			steps = append(steps, fmt.Sprintf("%s %s", keyword, macroStep.Text))
+			substitutedText := SubstituteVariables(macroStep.Text, macroCall.Variables)
+			steps = append(steps, fmt.Sprintf("%s %s", keyword, substitutedText))
 		}
 
 		featureContent[step.Location.Line-1] = strings.Join(steps, "\n")

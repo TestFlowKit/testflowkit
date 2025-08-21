@@ -7,6 +7,6 @@ Feature: macro
 
 
   @macro
-  Scenario: the user is on table e2e page
+  Scenario: the user is on page
     Given the user opens a new browser tab
-    When the user goes to the table e2e page
+    When the user goes to the |page_name| page
