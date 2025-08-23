@@ -30,9 +30,7 @@ dist/
 **/.idea/*
 
 documentation/content
-# cursor except
 
-.cursorrules/
 
 tkit*
 
@@ -40,3 +38,8 @@ tkit*
 report/screenshots/
 
 config.yml
+
+
+#IDEs
+.kiro/
+.cursorrules/

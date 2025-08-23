@@ -1,49 +1,29 @@
 active_environment: "local"
 
 settings:
-  # Element search timeout in milliseconds (1-300000ms)
-  # This is the maximum time to wait when searching for elements by CSS selectors or XPath
   concurrency: 1
   think_time: 1000
   report_format: "html"
-  gherkin_location: "./e2e/features"
+  gherkin_location: "./features"
 
 environments:
   local:
-    frontend_base_url: "http://example.com"
-
-  staging:
-    frontend_base_url: "https://staging.example.com"
+    frontend_base_url: "https://testflowkit.dreamsfollowers.me"
 
 frontend:
   default_timeout: 10000
   headless: false
   screenshot_on_failure: true
+
   elements:
     common:
-      loading_spinner:
-        - "[data-testid='loading-spinner']"
-        - ".spinner"
-        - "xpath://div[contains(@class, 'loading')]"
+      get_started_button:
+        - "xpath://a[contains(text(), 'Get Started Now')]"
 
-      submit_button:
-        - "button[type='submit']"
-        - "xpath://button[@type='submit']"
-        - "xpath://input[@type='submit']"
+      sentence_filter_field:
+        - "input[placeholder*='Search step definitions...']"
 
   pages:
-    google: "https://www.google.com"
-    github: "https://github.com"
-
-backend:
-  default_headers:
-    Content-Type: "application/json"
-    Accept: "application/json"
-    User-Agent: "TestFlowKit/1.0"
-    X-Requested-With: "TestFlowKit"
-
-  endpoints:
-    get_user:
-      method: "GET"
-      path: "/users/{id}"
-      description: "Retrieve user information by ID"
+    home: "/"
+    get_started: "/get-started"
+    sentences: "/sentences"
