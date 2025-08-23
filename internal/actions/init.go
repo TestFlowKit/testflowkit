@@ -120,14 +120,14 @@ func createDirectoryStructure(state *InitializationState) error {
 }
 
 func createSampleFeature(state *InitializationState) error {
-	sampleFeaturePath := filepath.Join("features", "sample.feature")
+	sampleFeaturePath := filepath.Join(featuresDir, "sample.feature")
 
-	if err := validatePath(sampleFeaturePath, "features"); err != nil {
+	if err := validatePath(sampleFeaturePath, featuresDir); err != nil {
 		logger.Error("Invalid sample feature path: "+err.Error(), nil, nil)
 		return err
 	}
 
-	if err := validateFilePermissions("features"); err != nil {
+	if err := validateFilePermissions(featuresDir); err != nil {
 		logger.Error("Permission validation failed for features directory: "+err.Error(), nil, nil)
 		return err
 	}
