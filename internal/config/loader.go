@@ -19,23 +19,12 @@ var (
 
 func Load(configFilePath string, overrides Overrides) error {
 	cfgOnce.Do(func() {
-		logger.InfoFf("Loading configuration from: %s", configFilePath)
-
-		data, err := os.ReadFile(configFilePath)
-		if err != nil {
-			errCfg = fmt.Errorf("failed to read config file '%s': %w", configFilePath, err)
+		config, shouldReturn := loadFile(configFilePath)
+		if shouldReturn {
 			return
 		}
 
-		var config Config
-		if yamlErr := yaml.Unmarshal(data, &config); yamlErr != nil {
-			errCfg = fmt.Errorf("failed to parse YAML configuration: %w", err)
-			return
-		}
-
-		logger.Info("Configuration parsed successfully")
-
-		applyOverrides(&config, overrides)
+		applyOverrides(config, overrides)
 
 		if validateErr := config.ValidateConfiguration(); validateErr != nil {
 			errCfg = fmt.Errorf("invalid configuration: %w", validateErr)
@@ -43,10 +32,29 @@ func Load(configFilePath string, overrides Overrides) error {
 		}
 
 		logger.InfoFf("Configuration loaded successfully for environment: %s", config.ActiveEnvironment)
-		cfg = &config
+		cfg = config
 	})
 
 	return errCfg
+}
+
+func loadFile(configFilePath string) (*Config, bool) {
+	logger.InfoFf("Loading configuration from: %s", configFilePath)
+
+	data, err := os.ReadFile(configFilePath)
+	if err != nil {
+		errCfg = fmt.Errorf("failed to read config file '%s': %w", configFilePath, err)
+		return &Config{}, true
+	}
+
+	var config Config
+	if yamlErr := yaml.Unmarshal(data, &config); yamlErr != nil {
+		errCfg = fmt.Errorf("failed to parse YAML configuration: %w", err)
+		return &Config{}, true
+	}
+
+	logger.Info("Configuration parsed successfully")
+	return &config, false
 }
 
 func applyOverrides(config *Config, overrides Overrides) {
