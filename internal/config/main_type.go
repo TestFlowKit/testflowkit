@@ -23,6 +23,8 @@ type Config struct {
 	Backend BackendConfig `yaml:"backend"`
 
 	Files FileConfig `yaml:"files"`
+
+	appVersion string
 }
 
 func (c *Config) GetCurrentEnvironment() (Environment, error) {
@@ -183,4 +185,15 @@ func (c *Config) validateGlobalSettings() error {
 		return fmt.Errorf("report_format must be one of: %s", strings.Join(validReportFormats, ", "))
 	}
 	return nil
+}
+
+func (c *Config) SetVersion(ver string) {
+	c.appVersion = ver
+}
+
+func (c *Config) GetVersion() string {
+	if c.appVersion == "" {
+		return "unknown"
+	}
+	return c.appVersion
 }

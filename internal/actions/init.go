@@ -22,6 +22,39 @@ var configTemplate string
 //go:embed boilerplate/sample.boilerplate.feature
 var sampleFeatureTemplate string
 
+func initMode(_ *config.Config, _ error) {
+	logger.Info("Initializing TestFlowKit project...")
+
+	state := &InitializationState{
+		createdFiles: make([]string, 0),
+		createdDirs:  make([]string, 0),
+	}
+
+	cleanup := func(err error) {
+		logger.Error("Initialization failed: "+err.Error(), nil, nil)
+		logger.Info("Cleaning up partially created files...")
+		state.cleanup()
+		logger.Fatal("Initialization aborted due to errors", err)
+	}
+
+	if err := createConfigFile(state); err != nil {
+		cleanup(err)
+		return
+	}
+
+	if err := createDirectoryStructure(state); err != nil {
+		cleanup(err)
+		return
+	}
+
+	if err := createSampleFeature(state); err != nil {
+		cleanup(err)
+		return
+	}
+
+	displayGuidance()
+}
+
 type InitializationState struct {
 	createdFiles []string
 	createdDirs  []string
@@ -208,37 +241,4 @@ func displayGuidance() {
 
 	logger.Info("✨ Welcome to TestFlowKit! Your sample test is ready to run against our documentation site.")
 	logger.Info("   Happy testing! 🧪")
-}
-
-func initMode(_ *config.Config) {
-	logger.Info("Initializing TestFlowKit project...")
-
-	state := &InitializationState{
-		createdFiles: make([]string, 0),
-		createdDirs:  make([]string, 0),
-	}
-
-	cleanup := func(err error) {
-		logger.Error("Initialization failed: "+err.Error(), nil, nil)
-		logger.Info("Cleaning up partially created files...")
-		state.cleanup()
-		logger.Fatal("Initialization aborted due to errors", err)
-	}
-
-	if err := createConfigFile(state); err != nil {
-		cleanup(err)
-		return
-	}
-
-	if err := createDirectoryStructure(state); err != nil {
-		cleanup(err)
-		return
-	}
-
-	if err := createSampleFeature(state); err != nil {
-		cleanup(err)
-		return
-	}
-
-	displayGuidance()
 }

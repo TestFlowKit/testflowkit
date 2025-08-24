@@ -15,7 +15,13 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
-func validate(appConfig *config.Config) {
+func validate(appConfig *config.Config, cfgErr error) {
+	if cfgErr != nil {
+		logger.Fatal("VALIDATE", cfgErr)
+	}
+
+	displayConfigSummary(appConfig)
+
 	logger.Info("Validate gherkin files ...")
 
 	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)

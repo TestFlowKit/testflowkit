@@ -22,7 +22,12 @@ import (
 
 const screenshotDir = "report/screenshots"
 
-func run(appConfig *config.Config) {
+func run(appConfig *config.Config, errCfg error) {
+	if errCfg != nil {
+		logger.Fatal("RUN", errCfg)
+	}
+
+	displayConfigSummary(appConfig)
 	logger.Info("Starting tests execution ...")
 
 	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)

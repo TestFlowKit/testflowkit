@@ -9,9 +9,11 @@ import (
 )
 
 type argsConfig struct {
-	Run      *runCmd      `arg:"subcommand:run" help:"run tests"`
-	Init     *initCmd     `arg:"subcommand:init" help:"init cmd config"`
-	Validate *validateCmd `arg:"subcommand:validate" help:"validate gherkin files"`
+	Version    bool         `arg:"--version,-v" help:"show version information"`
+	Run        *runCmd      `arg:"subcommand:run" help:"run tests"`
+	Init       *initCmd     `arg:"subcommand:init" help:"init cmd config"`
+	Validate   *validateCmd `arg:"subcommand:validate" help:"validate gherkin files"`
+	VersionCmd *versionCmd  `arg:"subcommand:version" help:"show version information"`
 }
 
 func (a *argsConfig) getConfigPath() (string, error) {
@@ -54,6 +56,10 @@ func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 }
 
 func (a *argsConfig) getMode() (config.Mode, error) {
+	if a.Version || a.VersionCmd != nil {
+		return config.VersionMode, nil
+	}
+
 	if a.Run != nil {
 		return config.RunMode, nil
 	}
@@ -93,6 +99,10 @@ type initCmd struct {
 
 type validateCmd struct {
 	commonCmd
+}
+
+type versionCmd struct {
+	// No additional fields needed - simple command
 }
 
 type commonCmd struct {
