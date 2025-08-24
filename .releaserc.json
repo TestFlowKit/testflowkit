@@ -58,31 +58,7 @@
         }
       }
     ],
-    [
-      "@semantic-release/github",
-      {
-        "assets": [
-          {
-            "path": "build/tkit-darwin-amd64.zip",
-            "label": "tkit-darwin-amd64"
-          },
-          {
-            "path": "build/tkit-darwin-arm64.zip",
-            "label": "tkit-darwin-arm64"
-          },
-          { "path": "build/tkit-linux-amd64.zip", "label": "tkit-linux-amd64" },
-          { "path": "build/tkit-linux-arm64.zip", "label": "tkit-linux-arm64" },
-          {
-            "path": "build/tkit-windows-amd64.zip",
-            "label": "tkit-windows-amd64"
-          },
-          {
-            "path": "build/tkit-windows-arm64.zip",
-            "label": "tkit-windows-arm64"
-          }
-        ]
-      }
-    ]
+"@semantic-release/github"
   ],
   "tagFormat": "${version}"
 }

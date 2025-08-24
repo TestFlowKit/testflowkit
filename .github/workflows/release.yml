@@ -70,15 +70,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Set Up Go Environment
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ vars.GO_VERSION }}
-
-      - name: Build Go Binaries
-        run: |
-          make releases
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -95,11 +86,45 @@ jobs:
             @semantic-release/exec \
             conventional-changelog-conventionalcommits
 
-      - name: Run Semantic Release
+      - name: Run Semantic Release (Create Tag)
         env:
           GITHUB_TOKEN: ${{ vars.GH_TOKEN_SEMANTIC_RELEASE }}
-
         run: npx semantic-release
+
+      - name: Set Up Go Environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ vars.GO_VERSION }}
+
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+
+      - name: Build Go Binaries with Version Tag
+        run: |
+          # Fetch the latest tags to ensure we have the newly created tag
+          git fetch --tags
+          make releases
+
+      - name: Upload Release Assets
+        env:
+          GITHUB_TOKEN: ${{ vars.GH_TOKEN_SEMANTIC_RELEASE }}
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          echo "Latest tag: $LATEST_TAG"
+          
+          # Upload all build artifacts to the release
+          for file in build/*.zip; do
+            if [ -f "$file" ]; then
+              echo "Uploading $file to release $LATEST_TAG"
+              gh release upload "$LATEST_TAG" "$file" --clobber
+            fi
+          done
   deploy_doc:
     needs:
       - release

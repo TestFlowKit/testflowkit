@@ -6,15 +6,16 @@ import (
 	"testflowkit/pkg/logger"
 )
 
-func Execute(cfg *config.Config, mode config.Mode) {
-	modes := map[config.Mode]func(*config.Config){
+func Execute(cfg *config.Config, cfgErr error, mode config.Mode) {
+	modes := map[config.Mode]func(*config.Config, error){
 		config.RunMode:        run,
 		config.InitMode:       initMode,
 		config.ValidationMode: validate,
+		config.VersionMode:    version,
 	}
 
 	if action, ok := modes[mode]; ok {
-		action(cfg)
+		action(cfg, cfgErr)
 	} else {
 		logger.Fatal(fmt.Sprintf("unknown mode: %s", mode), nil)
 	}
