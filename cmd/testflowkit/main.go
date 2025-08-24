@@ -19,28 +19,29 @@ func main() {
 	}
 
 	cfg, err := getConfig(args, err)
-	if cfg != nil {
-		cfg.SetVersion(Version)
-	}
 
 	actions.Execute(cfg, err, mode)
 }
 
 func getConfig(args argsConfig, err error) (*config.Config, error) {
 	cfgPath, getcfigPathErr := args.getConfigPath()
+	defaultConf := &config.Config{}
+	defaultConf.SetVersion(Version)
 	if getcfigPathErr != nil {
-		logger.Fatal("Failed to get config path", getcfigPathErr)
+		return defaultConf, fmt.Errorf("failed to get config path: %w", getcfigPathErr)
 	}
 
 	configLoadErr := config.Load(cfgPath, args.getAppConfigOverrides())
 	if configLoadErr != nil {
-		return nil, fmt.Errorf("failed to load config: %w", configLoadErr)
+		return defaultConf, fmt.Errorf("failed to load config: %w", configLoadErr)
 	}
 
 	cfg, configGetErr := config.Get()
 	if configGetErr != nil {
-		return nil, fmt.Errorf("failed to get config: %w", err)
+		return defaultConf, fmt.Errorf("failed to get config: %w", err)
 	}
+
+	cfg.SetVersion(Version)
 
 	return cfg, nil
 }
