@@ -17,3 +17,7 @@ func SplitAndTrim(s, sep string) []string {
 func SuffixWithUnderscore(str, suffix string) string {
 	return fmt.Sprintf("%s_%s", strings.Trim(str, " "), strings.Trim(suffix, " "))
 }
+
+func SnakeCase(label string) string {
+	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
+}

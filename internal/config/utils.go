@@ -1,12 +1,13 @@
 package config
 
 import (
-	"strings"
+	"testflowkit/internal/utils/stringutils"
 )
 
 func IsElementDefined(elementName string) bool {
+	key := stringutils.SnakeCase(elementName)
 	for _, pageElements := range cfg.GetFrontendElements() {
-		if _, ok := pageElements[elementName]; ok {
+		if _, ok := pageElements[key]; ok {
 			return true
 		}
 	}
@@ -31,8 +32,4 @@ func IsPageDefined(pageName string) bool {
 	}
 
 	return pageURL != ""
-}
-
-func GetLabelKey(label string) string {
-	return strings.ToLower(strings.ReplaceAll(label, " ", "_"))
 }

@@ -3,11 +3,12 @@ package config
 import (
 	"path/filepath"
 	"strings"
+	"testflowkit/internal/utils/stringutils"
 	"time"
 )
 
 func (c *Config) GetElementSelectors(page, elementName string) []Selector {
-	elementName = GetLabelKey(elementName)
+	elementName = stringutils.SnakeCase(elementName)
 	var selectors []Selector
 
 	chainOfResponsibility := []func(string) []Selector{
@@ -95,7 +96,7 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 		return "", err
 	}
 
-	if pagePath, ok := c.GetFrontendPages()[GetLabelKey(page)]; ok {
+	if pagePath, ok := c.GetFrontendPages()[stringutils.SnakeCase(page)]; ok {
 		if strings.HasPrefix(pagePath, "http://") || strings.HasPrefix(pagePath, "https://") {
 			return pagePath, nil
 		}
