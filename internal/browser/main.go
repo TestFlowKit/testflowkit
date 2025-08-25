@@ -27,7 +27,7 @@ func GetElementByLabel(page page, pageName, label string) (element, error) {
 		return nil, err
 	}
 
-	selectors := cfg.GetElementSelectors(pageName, config.GetLabelKey(label))
+	selectors := cfg.GetElementSelectors(pageName, label)
 	if len(selectors) == 0 {
 		return nil, errors.New("no selectors found for element " + label)
 	}

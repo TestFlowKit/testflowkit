@@ -5,7 +5,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"testflowkit/internal/config"
+	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/logger"
 )
 
@@ -22,7 +22,7 @@ type ValidatorContext struct {
 }
 
 func (vc *ValidatorContext) addMissingPage(label string) {
-	key := config.GetLabelKey(label)
+	key := stringutils.SnakeCase(label)
 
 	if slices.Contains(vc.missingPages, key) {
 		return
@@ -31,7 +31,7 @@ func (vc *ValidatorContext) addMissingPage(label string) {
 }
 
 func (vc *ValidatorContext) addMissingElement(label string) {
-	key := config.GetLabelKey(label)
+	key := stringutils.SnakeCase(label)
 	if slices.Contains(vc.missingElements, key) {
 		return
 	}
