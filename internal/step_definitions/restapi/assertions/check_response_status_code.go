@@ -28,7 +28,7 @@ func (steps) checkResponseStatusCode() stepbuilder.Step {
 
 			actualStatusCode := response.StatusCode
 			if actualStatusCode != expectedStatusCodeInt {
-				return ctx, fmt.Errorf("expected status code %d, but got %d", expectedStatusCodeInt, actualStatusCode)
+				return ctx, fmt.Errorf("expected status code %d, but got %d with response\n%s", expectedStatusCodeInt, actualStatusCode, string(response.Body))
 			}
 
 			return ctx, nil
