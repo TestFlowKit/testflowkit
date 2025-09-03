@@ -2,6 +2,22 @@
 Feature: Posts API Testing
 
 
+    @macro
+    Scenario: I try to create a new post with the following details:
+        this macro was created for test a bug in macro application
+        the macro did not include the docstring
+
+        Given I prepare a request for the "create_post" endpoint
+        When I set the request body to:
+            """
+            {
+            "title": "|title|",
+            "body": "|body|",
+            "userId": |userId|
+            }
+            """
+        And I send the request
+
     Scenario: Retrieve all posts successfully
         Given I prepare a request for the "get_posts" endpoint
         When I send the request
@@ -27,16 +43,9 @@ Feature: Posts API Testing
         And the response body path "body" should exist
 
     Scenario: Create a new post
-        Given I prepare a request for the "create_post" endpoint
-        When I set the request body to:
-            """
-            {
-                "title": "Test Post Title",
-                "body": "This is a test post body for API testing",
-                "userId": 1
-            }
-            """
-        And I send the request
+        When I try to create a new post with the following details:
+            | title           | body                                     | userId |
+            | Test Post Title | This is a test post body for API testing | 1      |
         Then the response status code should be 201
 
 
