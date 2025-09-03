@@ -63,7 +63,11 @@ func (c *Context) GetRequestBody() []byte {
 }
 
 func (c *Context) GetRequestHeaders() map[string]string {
-	return c.http.RequestHeaders
+	headers := c.config.Backend.DefaultHeaders
+	for key, v := range c.http.RequestHeaders {
+		headers[key] = v
+	}
+	return headers
 }
 
 func (c *Context) SetResponse(statusCode int, body []byte) {
