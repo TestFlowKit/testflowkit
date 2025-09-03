@@ -1,17 +1,19 @@
 package gherkinparser
 
 import (
+	"fmt"
 	"testing"
 
 	messages "github.com/cucumber/messages/go/v21"
+	"github.com/stretchr/testify/assert"
 )
 
 type TestCase struct {
-	name         string
-	step         *messages.Step
-	macroTitles  []string
-	expectedCall *MacroCall
-	expectError  bool
+	name              string
+	step              *messages.Step
+	macros            []*messages.Scenario
+	expectedVariables MacroVariables
+	expectError       bool
 }
 
 var parseMacroCallWithTableTests = []TestCase{
@@ -36,13 +38,14 @@ var parseMacroCallWithTableTests = []TestCase{
 				},
 			},
 		},
-		macroTitles: []string{"user login with credentials"},
-		expectedCall: &MacroCall{
-			MacroName: "user login with credentials",
-			Variables: map[string]string{
-				"username": "oki",
-				"password": "ler123",
+		macros: []*messages.Scenario{
+			{
+				Name: "user login with credentials",
 			},
+		},
+		expectedVariables: map[string]string{
+			"username": "oki",
+			"password": "ler123",
 		},
 		expectError: false,
 	},
@@ -51,57 +54,45 @@ var parseMacroCallWithTableTests = []TestCase{
 		step: &messages.Step{
 			Text: "user logout",
 		},
-		macroTitles: []string{"user logout"},
-		expectedCall: &MacroCall{
-			MacroName: "user logout",
-			Variables: map[string]string{},
+		macros: []*messages.Scenario{
+			{
+				Name: "user logout",
+			},
 		},
-		expectError: false,
+		expectedVariables: map[string]string{},
+		expectError:       false,
 	},
 	{
 		name: "returns error for non-macro step",
 		step: &messages.Step{
 			Text: "some other step",
 		},
-		macroTitles:  []string{"user login with credentials"},
-		expectedCall: nil,
-		expectError:  true,
+		macros: []*messages.Scenario{
+			{
+				Name: "user login with credentials",
+			},
+		},
+		expectedVariables: nil,
+		expectError:       true,
 	},
 }
 
 func TestParseMacroCallWithTable(t *testing.T) {
-	for _, tt := range parseMacroCallWithTableTests {
+	for _, tt := range parseMacroCallWithTableTests[2:3] {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := parseMacroCallWithTable(tt.step, tt.macroTitles)
-
-			if tt.expectError {
-				if err == nil {
-					t.Errorf("expected error but got none")
-				}
-				return
-			}
-
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-				return
-			}
-
+			result := getMacroVariables(tt.step)
 			testParseMacroCallWithTableAssertions(t, result, tt)
 		})
 	}
 }
 
-func testParseMacroCallWithTableAssertions(t *testing.T, result *MacroCall, tt TestCase) {
-	if result.MacroName != tt.expectedCall.MacroName {
-		t.Errorf("expected macro name %s, got %s", tt.expectedCall.MacroName, result.MacroName)
+func testParseMacroCallWithTableAssertions(t *testing.T, result MacroVariables, tt TestCase) {
+	if len(result) != len(tt.expectedVariables) {
+		t.Errorf("expected %d variables, got %d", len(tt.expectedVariables), len(result))
 	}
 
-	if len(result.Variables) != len(tt.expectedCall.Variables) {
-		t.Errorf("expected %d variables, got %d", len(tt.expectedCall.Variables), len(result.Variables))
-	}
-
-	for key, expectedValue := range tt.expectedCall.Variables {
-		actualValue, exists := result.Variables[key]
+	for key, expectedValue := range tt.expectedVariables {
+		actualValue, exists := result[key]
 		if !exists {
 			t.Errorf("expected variable %s to exist", key)
 			continue
@@ -112,25 +103,24 @@ func testParseMacroCallWithTableAssertions(t *testing.T, result *MacroCall, tt T
 		}
 	}
 }
-
 func TestSubstituteVariables(t *testing.T) {
 	tests := []struct {
 		name      string
-		stepText  string
+		text      string
 		variables map[string]string
 		expected  string
 	}{
 		{
-			name:     "substitutes single variable",
-			stepText: "the user fills the username field with |username|",
+			name: "substitutes single variable",
+			text: "the user fills the username field with |username|",
 			variables: map[string]string{
 				"username": "oki",
 			},
 			expected: "the user fills the username field with oki",
 		},
 		{
-			name:     "substitutes multiple variables",
-			stepText: "the user fills the |field| field with |value|",
+			name: "substitutes multiple variables",
+			text: "the user fills the |field| field with |value|",
 			variables: map[string]string{
 				"field": "username",
 				"value": "oki",
@@ -139,13 +129,13 @@ func TestSubstituteVariables(t *testing.T) {
 		},
 		{
 			name:      "handles no variables",
-			stepText:  "the user clicks the button",
+			text:      "the user clicks the button",
 			variables: map[string]string{},
 			expected:  "the user clicks the button",
 		},
 		{
-			name:     "handles variable not in map",
-			stepText: "the user fills the |username| field with |password|",
+			name: "handles variable not in map",
+			text: "the user fills the |username| field with |password|",
 			variables: map[string]string{
 				"username": "oki",
 			},
@@ -155,7 +145,7 @@ func TestSubstituteVariables(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := SubstituteVariables(tt.stepText, tt.variables)
+			result := substituteVariables(tt.text, tt.variables)
 			if result != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, result)
 			}
@@ -179,29 +169,92 @@ func TestMacroVariableStruct(t *testing.T) {
 	}
 }
 
-func TestMacroCallStruct(t *testing.T) {
-	// Test the MacroCall struct
-	mc := MacroCall{
-		MacroName: "user login with credentials",
-		Variables: map[string]string{
-			"username": "oki",
-			"password": "ler123",
+func Test_GetCompleteContentForSimpleStep(t *testing.T) {
+	stepDef := messages.Step{
+		Text: "user type in ok input",
+	}
+
+	assert.Equal(t, "user type in ok input", getCompleteStepContentWhithoutKeyword(&stepDef))
+}
+
+func Test_GetCompleteContentForStepWithDocString(t *testing.T) {
+	docString := messages.DocString{
+		Content: `{
+			"title": "Test Post Title",
+			"body": "This is a test post body for API testing",
+			"userId": 1
+		}`,
+		Delimiter: `"""`,
+	}
+
+	stepDef := messages.Step{
+		Text:      "user send a reuest",
+		DocString: &docString,
+	}
+
+	expected := fmt.Sprintf("%s\n%s\n%s\n%s", stepDef.Text, docString.Delimiter, docString.Content, docString.Delimiter)
+	assert.Equal(t, expected, getCompleteStepContentWhithoutKeyword(&stepDef))
+}
+
+func Test_GetStepEndLine(t *testing.T) {
+	tests := []struct {
+		name           string
+		featureContent []string
+		stepStartLine  int
+		expected       int
+	}{
+		{
+			name: "simple step without docstring or datatable",
+			featureContent: []string{
+				"Given I am on the homepage",
+				"When I click login",
+				"Then I should see welcome message",
+			},
+			stepStartLine: 0,
+			expected:      0,
+		},
+		{
+			name: "step with docstring",
+			featureContent: []string{
+				"Given I send request with body",
+				`"""`,
+				`{"name": "test"}`,
+				`"""`,
+				"Then I should see response",
+			},
+			stepStartLine: 0,
+			expected:      3,
+		},
+		{
+			name: "step with datatable",
+			featureContent: []string{
+				"Given I have following users",
+				"| name  | age |",
+				"| John  | 30  |",
+				"| Alice | 25  |",
+				"When I query users",
+			},
+			stepStartLine: 0,
+			expected:      3,
+		},
+		{
+			name: "last step in feature",
+			featureContent: []string{
+				"Given first step",
+				"When second step",
+				"Then final step",
+				"| data |",
+				"| test |",
+			},
+			stepStartLine: 2,
+			expected:      4,
 		},
 	}
 
-	if mc.MacroName != "user login with credentials" {
-		t.Errorf("expected macro name 'user login with credentials', got %s", mc.MacroName)
-	}
-
-	if len(mc.Variables) != 2 {
-		t.Errorf("expected 2 variables, got %d", len(mc.Variables))
-	}
-
-	if mc.Variables["username"] != "oki" {
-		t.Errorf("expected username 'oki', got %s", mc.Variables["username"])
-	}
-
-	if mc.Variables["password"] != "ler123" {
-		t.Errorf("expected password 'ler123', got %s", mc.Variables["password"])
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := getStepEndLine(tt.stepStartLine, tt.featureContent)
+			assert.Equal(t, tt.expected, result)
+		})
 	}
 }

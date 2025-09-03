@@ -1,6 +1,7 @@
 package gherkinparser
 
 import (
+	"strings"
 	"testing"
 
 	messages "github.com/cucumber/messages/go/v21"
@@ -131,7 +132,8 @@ func Test_ApplyMacro(t *testing.T) {
 			expected: []string{
 				"Scenario: Test scenario",
 				"Given a step",
-				"When macro step 1\nAnd macro step 2",
+				"When macro step 1",
+				"And macro step 2",
 				"Then a result",
 			},
 		},
@@ -200,7 +202,8 @@ func Test_ApplyMacro(t *testing.T) {
 			expected: []string{
 				"Scenario: Test scenario",
 				"Given first macro step 1",
-				"When second macro step 1\nAnd second macro step 2",
+				"When second macro step 1",
+				"And second macro step 2",
 				"Then a result",
 			},
 		},
@@ -208,8 +211,77 @@ func Test_ApplyMacro(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			applyMacro(tt.scenario.Steps, tt.macroTitles, tt.macros, tt.featureContent)
-			assert.Equal(t, tt.expected, tt.featureContent)
+			// Create a copy of the feature content for testing
+			testContent := make([]string, len(tt.featureContent))
+			copy(testContent, tt.featureContent)
+
+			applyMacro(tt.scenario.Steps, tt.macros, &testContent)
+			assert.Equal(t, tt.expected, testContent)
+		})
+	}
+}
+
+func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
+	tests := []struct {
+		name           string
+		scenario       *messages.Scenario
+		macros         []*messages.Scenario
+		featureContent []string
+		expected       []string
+	}{
+		{
+			name: "replaces macro step with only docstring",
+			scenario: &messages.Scenario{
+				Steps: []*messages.Step{
+					{Keyword: "Given", Text: "a step"},
+					{Keyword: "When", Text: "a macro step with doc", Location: &messages.Location{Line: 3}},
+					{Keyword: "Then", Text: "a result"},
+				},
+			},
+			macros: []*messages.Scenario{
+				{
+					Name: "a macro step with doc",
+					Steps: []*messages.Step{
+						{Keyword: "Given", Text: "macro step 1"},
+						{Keyword: "And", Text: "macro step 2", DocString: &messages.DocString{
+							Content: "This is a docstring",
+						}},
+					},
+				},
+			},
+			featureContent: []string{
+				"Scenario: Test scenario",
+				"Given a step",
+				"When a macro step with doc",
+				"Then a result",
+			},
+			expected: []string{
+				"Scenario: Test scenario",
+				"Given a step",
+				"When macro step 1",
+				"And macro step 2",
+				"\"\"\"",
+				"This is a docstring",
+				"\"\"\"",
+				"Then a result",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Create a copy of the feature content for testing
+			testContent := make([]string, len(tt.featureContent))
+			copy(testContent, tt.featureContent)
+
+			applyMacro(tt.scenario.Steps, tt.macros, &testContent)
+
+			// Trim any trailing empty lines for comparison
+			for len(testContent) > 0 && strings.TrimSpace(testContent[len(testContent)-1]) == "" {
+				testContent = testContent[:len(testContent)-1]
+			}
+
+			assert.Equal(t, tt.expected, testContent)
 		})
 	}
 }
