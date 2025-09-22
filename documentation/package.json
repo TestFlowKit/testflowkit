@@ -11,14 +11,14 @@
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",
-    "@nuxt/content": "^3.6.3",
+    "@nuxt/content": "^3.7.1",
     "@nuxt/kit": "^4.0.2",
-    "better-sqlite3": "^12.2.0",
+    "better-sqlite3": "^12.3.0",
     "highlight.js": "^11.11.1",
-    "nuxt": "^4.0.2",
+    "nuxt": "^4.1.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.1.13",
     "vue": "latest",
     "vue-router": "latest"
   },
