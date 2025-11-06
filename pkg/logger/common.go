@@ -43,13 +43,11 @@ const (
 const indent = "  "
 
 func GetIndents(number int) string {
-	idents := ""
 	var identsSb47 strings.Builder
 	for range number {
 		identsSb47.WriteString(indent)
 	}
-	idents += identsSb47.String()
-	return idents
+	return identsSb47.String()
 }
 
 func formatList(elements []string) string {
