@@ -86,12 +86,11 @@ func applyMacros(macros []*scenario, features []*Feature) {
 				continue
 			}
 
-			var scenarioStepTexts string
 			var scenarioStepTextsSb90 strings.Builder
 			for _, step := range sc.Steps {
 				scenarioStepTextsSb90.WriteString(step.Text + "\n")
 			}
-			scenarioStepTexts += scenarioStepTextsSb90.String()
+			scenarioStepTexts := scenarioStepTextsSb90.String()
 
 			if !mustContainsMacro.MatchString(scenarioStepTexts) {
 				continue
