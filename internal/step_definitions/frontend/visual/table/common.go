@@ -6,18 +6,18 @@ import (
 	"log"
 	"slices"
 	"strings"
-	"testflowkit/internal/browser/common"
+	"testflowkit/pkg/browser"
 )
 
-func getTableRowByCellsContent(currentPage common.Page, cellsContent []string) (common.Element, error) {
+func getTableRowByCellsContent(currentPage browser.Page, cellsContent []string) (browser.Element, error) {
 	return getTableRowOrHeaderByCellsContent(currentPage, "td", cellsContent)
 }
 
-func getTableHeaderByCellsContent(currentPage common.Page, cellsContent []string) (common.Element, error) {
+func getTableHeaderByCellsContent(currentPage browser.Page, cellsContent []string) (browser.Element, error) {
 	return getTableRowOrHeaderByCellsContent(currentPage, "th", cellsContent)
 }
 
-func getTableRowOrHeaderByCellsContent(page common.Page, selector string, content []string) (common.Element, error) {
+func getTableRowOrHeaderByCellsContent(page browser.Page, selector string, content []string) (browser.Element, error) {
 	allowedValues := []string{"th", "td"}
 	if !slices.Contains(allowedValues, selector) {
 		log.Panicf("only %s allowed", strings.Join(allowedValues, ", "))

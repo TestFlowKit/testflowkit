@@ -1,8 +1,8 @@
 package scenario
 
 import (
-	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
+	"testflowkit/pkg/browser"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -73,7 +73,7 @@ func TestShouldReturnErrorIfPageNameNotFound(t *testing.T) {
 
 	pageName, err := ctx.getPageNameByURL("https://localhost:3000/unknown")
 	assert.Equal(t, "page name not found", err.Error())
-	assert.Equal(t, "", pageName)
+	assert.Empty(t, pageName)
 }
 
 func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
@@ -266,11 +266,11 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 type TestPage struct {
 	url   string
 	title string
-	common.Page
+	browser.Page
 }
 
-func (p *TestPage) GetInfo() common.PageInfo {
-	return common.PageInfo{
+func (p *TestPage) GetInfo() browser.PageInfo {
+	return browser.PageInfo{
 		URL:   p.url,
 		Title: p.title,
 	}

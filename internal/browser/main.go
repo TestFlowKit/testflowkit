@@ -5,22 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"testflowkit/internal/browser/common"
-	"testflowkit/internal/browser/rod"
 	"testflowkit/internal/config"
+	"testflowkit/pkg/browser"
 	"testflowkit/pkg/logger"
-	"time"
 )
 
-type page = common.Page
-type element = common.Element
-type Browser = common.Browser
-
-func CreateInstance(headlessMode bool, thinkTime time.Duration, incognitoMode bool) Browser {
-	return rod.New(headlessMode, thinkTime, incognitoMode)
-}
-
-func GetElementByLabel(page page, pageName, label string) (element, error) {
+func GetElementByLabel(page browser.Page, pageName, label string) (browser.Element, error) {
 	cfg, err := config.Get()
 
 	if err != nil {
@@ -40,18 +30,21 @@ func GetElementByLabel(page page, pageName, label string) (element, error) {
 	return elt, nil
 }
 
-func getElementBySelectors(page page, potentialSelectors []config.Selector) element {
+func getElementBySelectors(page browser.Page, potentialSelectors []config.Selector) browser.Element {
 	ctx, cancel := context.WithCancel(context.Background())
 
-	ch := make(chan element, 1)
+	ch := make(chan browser.Element, 1)
 	defer close(ch)
 
 	var mu sync.RWMutex
 	for _, selector := range potentialSelectors {
-		go searchForSelector(contextWrapper{
-			Context: ctx,
-			cancel:  cancel,
-		}, &mu, page, selector, ch)
+		go searchForSelector(searchSelectorParams{
+			ctx:      contextWrapper{Context: ctx, cancel: cancel},
+			mu:       &mu,
+			page:     page,
+			selector: selector,
+			resultCh: ch,
+		})
 	}
 
 	<-ctx.Done()
@@ -60,48 +53,57 @@ func getElementBySelectors(page page, potentialSelectors []config.Selector) elem
 	return <-ch
 }
 
-func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p page, selector config.Selector, ch chan<- element) {
-	var elt element
+// searchSelectorParams holds the parameters for searching a selector.
+type searchSelectorParams struct {
+	ctx      contextWrapper
+	mu       *sync.RWMutex
+	page     browser.Page
+	selector config.Selector
+	resultCh chan<- browser.Element
+}
+
+func searchForSelector(params searchSelectorParams) {
+	var elt browser.Element
 	var err error
 
-	value := selector.String()
-	if selector.IsXPath() {
-		elt, err = p.GetOneByXPath(value)
+	value := params.selector.String()
+	if params.selector.IsXPath() {
+		elt, err = params.page.GetOneByXPath(value)
 	} else {
-		elt, err = p.GetOneBySelector(value)
+		elt, err = params.page.GetOneBySelector(value)
 	}
 
 	if err != nil {
-		logger.Warn(fmt.Sprintf("element not found with %s selector %s", selector.Type, value), []string{
+		logger.Warn(fmt.Sprintf("element not found with %s selector %s", params.selector.Type, value), []string{
 			"Please fix the selector in the configuration file",
 			"Please verify that page is accessible",
 		})
 
 		select {
-		case <-ctx.Done():
+		case <-params.ctx.Done():
 			return
 		default:
-			ch <- nil
-			ctx.cancel()
+			params.resultCh <- nil
+			params.ctx.cancel()
 			return
 		}
 	}
 
 	if elt != nil {
-		mu.Lock()
-		defer mu.Unlock()
+		params.mu.Lock()
+		defer params.mu.Unlock()
 
 		select {
-		case <-ctx.Done():
+		case <-params.ctx.Done():
 			return
 		default:
-			ch <- elt
-			ctx.cancel()
+			params.resultCh <- elt
+			params.ctx.cancel()
 		}
 	}
 }
 
-func getActiveSelector(page page, potentialSelectors []config.Selector) config.Selector {
+func getActiveSelector(page browser.Page, potentialSelectors []config.Selector) config.Selector {
 	ch := make(chan config.Selector, 1)
 	defer close(ch)
 
@@ -125,7 +127,7 @@ func getActiveSelector(page page, potentialSelectors []config.Selector) config.S
 	return <-ch
 }
 
-func GetElementCount(page page, pageName, label string) int {
+func GetElementCount(page browser.Page, pageName, label string) int {
 	cfg, err := config.Get()
 	if err != nil {
 		return 0
@@ -134,13 +136,13 @@ func GetElementCount(page page, pageName, label string) int {
 	potentialSelectors := cfg.GetElementSelectors(pageName, label)
 	selector := getActiveSelector(page, potentialSelectors)
 
-	var elements []element
+	var elements []browser.Element
 	var err2 error
 
 	if selector.IsXPath() {
 		elt, getByXpathErr := page.GetOneByXPath(selector.Value)
 		if getByXpathErr == nil {
-			elements = []element{elt}
+			elements = []browser.Element{elt}
 		}
 	} else {
 		elements, err2 = page.GetAllBySelector(selector.Value)

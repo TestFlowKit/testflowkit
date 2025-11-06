@@ -1,9 +1,9 @@
 package mouse
 
 import (
-	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/browser"
 )
 
 func (steps) doubleClickOn() stepbuilder.Step {
@@ -11,7 +11,7 @@ func (steps) doubleClickOn() stepbuilder.Step {
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`the user double clicks on {string}`},
-		commonSimpleElementInteraction(func(element common.Element) error {
+		commonSimpleElementInteraction(func(element browser.Element) error {
 			return element.DoubleClick()
 		}),
 		func(label string) stepbuilder.ValidationErrors {

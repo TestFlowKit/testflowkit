@@ -2,16 +2,16 @@ package scenario
 
 import (
 	"context"
-	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
+	"testflowkit/pkg/browser"
 )
 
-func GetPage(ctx context.Context) (common.Page, string, error) {
+func GetPage(ctx context.Context) (browser.Page, string, error) {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.GetCurrentPage()
 }
 
-func GetPageOnly(ctx context.Context) (common.Page, error) {
+func GetPageOnly(ctx context.Context) (browser.Page, error) {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.GetCurrentPageOnly()
 }
@@ -26,17 +26,17 @@ func OpenPage(ctx context.Context, url string) {
 	scenarioCtx.OpenNewPage(url)
 }
 
-func SetPage(ctx context.Context, page common.Page) error {
+func SetPage(ctx context.Context, page browser.Page) error {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.SetCurrentPage(page)
 }
 
-func GetKeyboard(ctx context.Context) common.Keyboard {
+func GetKeyboard(ctx context.Context) browser.Keyboard {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.GetCurrentPageKeyboard()
 }
 
-func GetPages(ctx context.Context) []common.Page {
+func GetPages(ctx context.Context) []browser.Page {
 	scenarioCtx := MustFromContext(ctx)
 	return scenarioCtx.GetPages()
 }

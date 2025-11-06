@@ -5,8 +5,8 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"testflowkit/pkg"
 	"testflowkit/pkg/logger"
-	"testflowkit/pkg/utils"
 )
 
 //go:embed html_report.template.html
@@ -20,7 +20,7 @@ func (r htmlReportFormatter) format(ts htmlTestSuiteDetails) string {
 		logger.Fatal("cannot parse report template", err)
 	}
 
-	wr := utils.TextWriter{}
+	wr := pkg.TextWriter{}
 	err = tmpl.Execute(&wr, ts)
 	if err != nil {
 		logger.Fatal("cannot execute template", err)

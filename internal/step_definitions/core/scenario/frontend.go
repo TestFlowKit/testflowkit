@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	"testflowkit/internal/browser"
-	"testflowkit/internal/browser/common"
+	internalbrowser "testflowkit/internal/browser"
+	"testflowkit/pkg/browser"
 	"testflowkit/pkg/logger"
 )
 
@@ -15,7 +15,12 @@ var errNoCurrentPageAvailable = errors.New("no current page available")
 
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
-	frontCtx.browser = browser.CreateInstance(frontCtx.headlessMode, frontCtx.thinkTime, incognitoMode)
+	frontCtx.browser = internalbrowser.CreateInstance(internalbrowser.Config{
+		DriverType:    internalbrowser.DriverRod,
+		HeadlessMode:  frontCtx.headlessMode,
+		ThinkTime:     frontCtx.thinkTime,
+		IncognitoMode: incognitoMode,
+	})
 }
 
 func (c *Context) OpenNewPage(url string) {
@@ -30,18 +35,18 @@ func (c *Context) EnsureBrowserInitialized() {
 	}
 }
 
-func (c *Context) GetPages() []common.Page {
+func (c *Context) GetPages() []browser.Page {
 	return c.frontend.browser.GetPages()
 }
 
-func (c *Context) GetCurrentPage() (common.Page, string, error) {
+func (c *Context) GetCurrentPage() (browser.Page, string, error) {
 	if c.frontend.page == nil {
 		return nil, "", errNoCurrentPageAvailable
 	}
 	return c.frontend.page, c.frontend.currentPageName, nil
 }
 
-func (c *Context) GetCurrentPageOnly() (common.Page, error) {
+func (c *Context) GetCurrentPageOnly() (browser.Page, error) {
 	if c.frontend.page == nil {
 		return nil, errNoCurrentPageAvailable
 	}
@@ -126,7 +131,7 @@ func (*Context) getPageNameForVariablizedURL(varURL, currentURL *url.URL, pageNa
 	return "", errors.New("URL does not match")
 }
 
-func (c *Context) SetCurrentPage(page common.Page) error {
+func (c *Context) SetCurrentPage(page browser.Page) error {
 	if page == nil {
 		return errors.New("cannot set current page: page is nil")
 	}
@@ -139,6 +144,6 @@ func (c *Context) SetCurrentPage(page common.Page) error {
 	return nil
 }
 
-func (c *Context) GetCurrentPageKeyboard() common.Keyboard {
+func (c *Context) GetCurrentPageKeyboard() browser.Keyboard {
 	return c.frontend.page.GetKeyboard()
 }

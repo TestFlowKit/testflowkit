@@ -2,13 +2,13 @@ package mouse
 
 import (
 	"context"
-	"testflowkit/internal/browser/common"
 	"testflowkit/internal/step_definitions/core/scenario"
+	"testflowkit/pkg/browser"
 )
 
 type simpleElementInteractionFunc = func(ctx context.Context, label string) (context.Context, error)
 
-func commonSimpleElementInteraction(action func(common.Element) error) simpleElementInteractionFunc {
+func commonSimpleElementInteraction(action func(browser.Element) error) simpleElementInteractionFunc {
 	return func(ctx context.Context, label string) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
 		element, err := scenarioCtx.GetHTMLElementByLabel(label)
