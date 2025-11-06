@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"testflowkit/internal/browser/common"
 	"testflowkit/internal/config"
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core/scenario"
+	"testflowkit/pkg/browser"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/reporters"
@@ -169,7 +169,7 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 	}
 }
 
-func takeScreenshot(st *godog.Step, currentPage common.Page) string {
+func takeScreenshot(st *godog.Step, currentPage browser.Page) string {
 	safeStepName := sanitizeFilename(st.Text)
 	timestamp := time.Now().Format("20060102_150405_000")
 	screenshotPath := filepath.Join(screenshotDir, safeStepName+"_"+timestamp+".png")

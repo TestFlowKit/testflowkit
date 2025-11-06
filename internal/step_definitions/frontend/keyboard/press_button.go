@@ -6,21 +6,20 @@ import (
 	"strings"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
-
-	"github.com/go-rod/rod/lib/input"
+	"testflowkit/pkg/browser"
 )
 
 func (k keyboardSteps) userPressButton() stepbuilder.Step {
-	dic := map[string]input.Key{
-		"Enter":       input.Enter,
-		"Tab":         input.Tab,
-		"Delete":      input.Delete,
-		"Escape":      input.Escape,
-		"Space":       input.Space,
-		"Arrow Up":    input.ArrowUp,
-		"Arrow Right": input.ArrowRight,
-		"Arrow Down":  input.ArrowDown,
-		"Arrow Left":  input.ArrowLeft,
+	dic := map[string]browser.Key{
+		"Enter":       browser.KeyEnter,
+		"Tab":         browser.KeyTab,
+		"Delete":      browser.KeyDelete,
+		"Escape":      browser.KeyEscape,
+		"Space":       browser.KeySpace,
+		"Arrow Up":    browser.KeyArrowUp,
+		"Arrow Right": browser.KeyArrowRight,
+		"Arrow Down":  browser.KeyArrowDown,
+		"Arrow Left":  browser.KeyArrowLeft,
 	}
 
 	var supportedKeys []string
@@ -32,8 +31,8 @@ func (k keyboardSteps) userPressButton() stepbuilder.Step {
 		[]string{fmt.Sprintf(`the user presses the "(%s)" key`, strings.Join(supportedKeys, "|"))},
 		func(ctx context.Context, key string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			inputKey := dic[key]
-			if inputKey == '0' {
+			inputKey, ok := dic[key]
+			if !ok {
 				return ctx, fmt.Errorf("%s key not recognized", key)
 			}
 

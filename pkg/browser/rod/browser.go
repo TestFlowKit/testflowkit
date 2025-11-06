@@ -1,7 +1,7 @@
 package rod
 
 import (
-	"testflowkit/internal/browser/common"
+	"testflowkit/pkg/browser"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -12,7 +12,7 @@ type rodBrowser struct {
 	browser *rod.Browser
 }
 
-func (rb *rodBrowser) NewPage(url string) common.Page {
+func (rb *rodBrowser) NewPage(url string) browser.Page {
 	page := rb.browser.MustPage(url)
 
 	page.MustWaitNavigation()
@@ -20,9 +20,9 @@ func (rb *rodBrowser) NewPage(url string) common.Page {
 	return newRodPage(page)
 }
 
-func (rb *rodBrowser) GetPages() []common.Page {
+func (rb *rodBrowser) GetPages() []browser.Page {
 	rodPages := rb.browser.MustPages()
-	var pages []common.Page
+	var pages []browser.Page
 	for _, rodPage := range rodPages {
 		pages = append(pages, newRodPage(rodPage))
 	}
@@ -34,7 +34,8 @@ func (rb *rodBrowser) Close() {
 	rb.browser.MustClose()
 }
 
-func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) common.Browser {
+// New creates a new rod browser client instance.
+func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser.Client {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).
 		Headless(headlessMode).

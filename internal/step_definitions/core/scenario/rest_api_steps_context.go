@@ -46,7 +46,7 @@ func (e *EndpointEnricher) GetFullURL() string {
 }
 
 func (e *EndpointEnricher) getSimpleURL() (string, error) {
-	parsedURL, err := url.Parse(e.Endpoint.Path)
+	parsedURL, err := url.Parse(e.Path)
 	if err != nil {
 		return "", err
 	}

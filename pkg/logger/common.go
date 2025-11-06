@@ -44,9 +44,11 @@ const indent = "  "
 
 func GetIndents(number int) string {
 	idents := ""
+	var identsSb47 strings.Builder
 	for range number {
-		idents += indent
+		identsSb47.WriteString(indent)
 	}
+	idents += identsSb47.String()
 	return idents
 }
 

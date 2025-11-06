@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"slices"
 	"strconv"
-	"testflowkit/internal/browser/common"
+	"testflowkit/pkg/browser"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
@@ -168,6 +168,6 @@ func (e *rodElement) ScrollIntoView() error {
 	return e.element.ScrollIntoView()
 }
 
-func newRodElement(element *rod.Element) common.Element {
+func newRodElement(element *rod.Element) browser.Element {
 	return &rodElement{element: element}
 }
