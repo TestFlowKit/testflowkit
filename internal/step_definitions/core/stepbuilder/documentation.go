@@ -24,6 +24,7 @@ const (
 	Navigation StepCategory = "navigation"
 	Mouse      StepCategory = "mouse"
 	RESTAPI    StepCategory = "restapi"
+	GraphQL    StepCategory = "graphql"
 	Variable   StepCategory = "variable"
 	Assertions StepCategory = "assertions"
 )

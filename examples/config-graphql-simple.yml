@@ -1,0 +1,82 @@
+active_environment: "local"
+
+settings:
+  page_load_timeout: 30000
+  think_time: 1000
+  video_recording: false
+  concurrency: 1
+  report_format: "html"
+  gherkin_location: "features"
+
+environments:
+  local:
+    frontend_base_url: "http://localhost:3000"
+    api_base_url: "http://localhost:4000"
+
+backend:
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+
+  # Simple GraphQL Configuration
+  graphql:
+    endpoint: "/graphql"
+    introspection_enabled: true
+    default_headers:
+      Content-Type: "application/json"
+    
+    operations:
+      # Basic Query
+      get_user:
+        type: "query"
+        operation: |
+          query GetUser($id: ID!) {
+            user(id: $id) {
+              id
+              name
+              email
+            }
+          }
+        description: "Get user by ID"
+      
+      # Query with Array Variables
+      search_users_by_tags:
+        type: "query"
+        operation: |
+          query SearchUsersByTags($tags: [String!]!) {
+            users(tags: $tags) {
+              id
+              name
+              email
+              tags
+            }
+          }
+        description: "Search users by tags array"
+      
+      # Basic Mutation
+      create_user:
+        type: "mutation"
+        operation: |
+          mutation CreateUser($name: String!, $email: String!) {
+            createUser(input: { name: $name, email: $email }) {
+              id
+              name
+              email
+              createdAt
+            }
+          }
+        description: "Create a new user"
+      
+      # Mutation with Array Input
+      assign_user_roles:
+        type: "mutation"
+        operation: |
+          mutation AssignUserRoles($userId: ID!, $roles: [String!]!) {
+            assignRoles(userId: $userId, roles: $roles) {
+              id
+              name
+              roles
+              updatedAt
+            }
+          }
+        description: "Assign multiple roles to a user"

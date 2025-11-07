@@ -12,6 +12,7 @@ import (
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/step_definitions/frontend"
 	"testflowkit/internal/step_definitions/frontend/assertions"
+	"testflowkit/internal/step_definitions/graphql"
 	"testflowkit/internal/step_definitions/restapi"
 	"testflowkit/internal/step_definitions/variables"
 	"testflowkit/pkg/logger"
@@ -24,7 +25,7 @@ func main() {
 	}
 	outputDir := path.Join(wd, "documentation", "content", "sentences")
 
-	allDocs := slices.Concat(frontend.GetDocs(), restapi.GetDocs(), variables.GetDocs(), assertions.GetDocs())
+	allDocs := slices.Concat(frontend.GetDocs(), restapi.GetDocs(), graphql.GetDocs(), variables.GetDocs(), assertions.GetDocs())
 	generateDocs(allDocs, outputDir)
 }
 
