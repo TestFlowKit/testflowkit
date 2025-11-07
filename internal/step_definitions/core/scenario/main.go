@@ -11,6 +11,7 @@ import (
 type Context struct {
 	frontend  *frontend
 	http      *RESTAPIContext
+	graphql   *GraphQLContext
 	config    *config.Config
 	variables map[string]any
 }
@@ -47,6 +48,7 @@ func NewContext(cfg *config.Config) *Context {
 		http: &RESTAPIContext{
 			RequestHeaders: make(map[string]string),
 		},
+		graphql:   NewGraphQLContext(),
 		config:    cfg,
 		variables: make(map[string]any),
 	}

@@ -102,6 +102,55 @@ backend:
     User-Agent: "TestFlowKit/1.0"
     X-Requested-With: "TestFlowKit"
 
+  graphql:
+    endpoint: "/graphql"
+    introspection_enabled: true
+    default_headers:
+      Content-Type: "application/json"
+    operations:
+      get_user_profile:
+        type: "query"
+        operation: |
+          query GetUserProfile($userId: ID!) {
+            user(id: $userId) {
+              id
+              name
+              email
+              profile {
+                avatar
+                bio
+              }
+            }
+          }
+        description: "Fetch user profile with nested data"
+      
+      update_user:
+        type: "mutation"
+        operation: |
+          mutation UpdateUser($id: ID!, $input: UserInput!) {
+            updateUser(id: $id, input: $input) {
+              id
+              name
+              email
+              updatedAt
+            }
+          }
+        description: "Update user information"
+      
+      search_users:
+        type: "query"
+        operation: |
+          query SearchUsers($tags: [String!]!, $statuses: [UserStatus!]!, $limit: Int) {
+            users(tags: $tags, statuses: $statuses, limit: $limit) {
+              id
+              name
+              email
+              tags
+              status
+            }
+          }
+        description: "Search users by tags and statuses with array parameters"
+
   endpoints:
     get_posts:
       method: "GET"

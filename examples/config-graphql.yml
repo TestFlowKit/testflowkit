@@ -1,0 +1,301 @@
+active_environment: "development"
+
+settings:
+  page_load_timeout: 30000
+  think_time: 1000
+  video_recording: false
+  concurrency: 1
+  report_format: "html"
+  gherkin_location: "features"
+
+environments:
+  development:
+    frontend_base_url: "http://localhost:3000"
+    api_base_url: "http://localhost:4000"
+  
+  staging:
+    frontend_base_url: "https://staging.example.com"
+    api_base_url: "https://api-staging.example.com"
+  
+  production:
+    frontend_base_url: "https://example.com"
+    api_base_url: "https://api.example.com"
+
+backend:
+  default_headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+    User-Agent: "TestFlowKit/1.0"
+    Authorization: "Bearer ${API_TOKEN}"
+
+  # GraphQL Configuration Examples
+  graphql:
+    endpoint: "/graphql"
+    introspection_enabled: true
+    default_headers:
+      Content-Type: "application/json"
+      Accept: "application/json"
+    
+    operations:
+      # Simple Query Example
+      get_user_profile:
+        type: "query"
+        operation: |
+          query GetUserProfile($userId: ID!) {
+            user(id: $userId) {
+              id
+              name
+              email
+              profile {
+                avatar
+                bio
+                createdAt
+              }
+            }
+          }
+        description: "Fetch user profile with nested data"
+      
+      # Query with Array Variables
+      search_users:
+        type: "query"
+        operation: |
+          query SearchUsers($tags: [String!]!, $statuses: [UserStatus!]!, $limit: Int, $offset: Int) {
+            users(tags: $tags, statuses: $statuses, limit: $limit, offset: $offset) {
+              id
+              name
+              email
+              tags
+              status
+              profile {
+                avatar
+                bio
+              }
+              createdAt
+              updatedAt
+            }
+          }
+        description: "Search users by tags and statuses with array parameters and pagination"
+      
+      # Query with Complex Filtering
+      get_posts_with_filters:
+        type: "query"
+        operation: |
+          query GetPostsWithFilters($filters: PostFilters!, $sort: PostSort, $pagination: PaginationInput) {
+            posts(filters: $filters, sort: $sort, pagination: $pagination) {
+              edges {
+                node {
+                  id
+                  title
+                  content
+                  author {
+                    id
+                    name
+                    email
+                  }
+                  tags
+                  publishedAt
+                  updatedAt
+                }
+                cursor
+              }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+              }
+              totalCount
+            }
+          }
+        description: "Get posts with complex filtering, sorting, and cursor-based pagination"
+      
+      # Simple Mutation Example
+      create_user:
+        type: "mutation"
+        operation: |
+          mutation CreateUser($input: CreateUserInput!) {
+            createUser(input: $input) {
+              user {
+                id
+                name
+                email
+                profile {
+                  avatar
+                  bio
+                }
+                createdAt
+              }
+              errors {
+                field
+                message
+                code
+              }
+            }
+          }
+        description: "Create a new user with input validation"
+      
+      # Mutation with Array Input
+      update_user_tags:
+        type: "mutation"
+        operation: |
+          mutation UpdateUserTags($userId: ID!, $tags: [String!]!, $removeExisting: Boolean) {
+            updateUser(id: $userId, input: { tags: $tags, removeExistingTags: $removeExisting }) {
+              user {
+                id
+                name
+                tags
+                updatedAt
+              }
+              errors {
+                field
+                message
+                code
+              }
+            }
+          }
+        description: "Update user tags with array input and optional flag"
+      
+      # Complex Mutation with Nested Input
+      create_post_with_media:
+        type: "mutation"
+        operation: |
+          mutation CreatePostWithMedia($input: CreatePostInput!) {
+            createPost(input: $input) {
+              post {
+                id
+                title
+                content
+                author {
+                  id
+                  name
+                }
+                media {
+                  id
+                  url
+                  type
+                  alt
+                }
+                tags
+                publishedAt
+                createdAt
+              }
+              errors {
+                field
+                message
+                code
+              }
+            }
+          }
+        description: "Create a post with media attachments and complex nested input"
+      
+      # Batch Mutation Example
+      bulk_update_posts:
+        type: "mutation"
+        operation: |
+          mutation BulkUpdatePosts($updates: [PostUpdateInput!]!) {
+            bulkUpdatePosts(updates: $updates) {
+              posts {
+                id
+                title
+                status
+                updatedAt
+              }
+              errors {
+                index
+                field
+                message
+                code
+              }
+            }
+          }
+        description: "Bulk update multiple posts with array of update inputs"
+      
+      # Query with Fragments
+      get_user_with_posts:
+        type: "query"
+        operation: |
+          query GetUserWithPosts($userId: ID!, $postLimit: Int) {
+            user(id: $userId) {
+              ...UserDetails
+              posts(limit: $postLimit) {
+                ...PostSummary
+              }
+            }
+          }
+          
+          fragment UserDetails on User {
+            id
+            name
+            email
+            profile {
+              avatar
+              bio
+              website
+            }
+            createdAt
+            updatedAt
+          }
+          
+          fragment PostSummary on Post {
+            id
+            title
+            excerpt
+            publishedAt
+            tags
+            commentCount
+            likeCount
+          }
+        description: "Get user details with posts using GraphQL fragments"
+      
+      # Subscription Example (for future WebSocket support)
+      subscribe_to_user_updates:
+        type: "subscription"
+        operation: |
+          subscription SubscribeToUserUpdates($userId: ID!) {
+            userUpdated(userId: $userId) {
+              id
+              name
+              email
+              profile {
+                avatar
+                bio
+              }
+              updatedAt
+            }
+          }
+        description: "Subscribe to real-time user updates"
+
+  # REST API endpoints for comparison
+  endpoints:
+    get_users:
+      method: "GET"
+      path: "/users"
+      description: "Retrieve all users (REST endpoint)"
+    
+    get_user_by_id:
+      method: "GET"
+      path: "/users/{id}"
+      description: "Retrieve a specific user by ID (REST endpoint)"
+    
+    create_user_rest:
+      method: "POST"
+      path: "/users"
+      description: "Create a new user (REST endpoint)"
+    
+    update_user_rest:
+      method: "PUT"
+      path: "/users/{id}"
+      description: "Update a user (REST endpoint)"
+    
+    delete_user:
+      method: "DELETE"
+      path: "/users/{id}"
+      description: "Delete a user (REST endpoint)"
+
+files:
+  base_directory: "./test-files"
+  definitions:
+    user_avatar: "images/avatar.png"
+    post_image: "images/post-image.jpg"
+    document_pdf: "documents/sample.pdf"
+    test_data_csv: "data/test-data.csv"

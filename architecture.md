@@ -9,42 +9,26 @@ TestFlowKit is a modular, extensible web test automation framework built in Go. 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Application Layer                        │
-├─────────────────────────────────────────────────────────────┤
-│  Command Line Interface (CLI)                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │   Run Mode  │  │  Init Mode  │  │ Validate    │         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│  CLI Interface (Run, Init, Validate)                       │
 └─────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────────────────────────────────────┐
 │                    Business Logic Layer                     │
-├─────────────────────────────────────────────────────────────┤
 │  Test Execution Engine                                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │ Gherkin     │  │ Step        │  │ Scenario    │         │
-│  │ Parser      │  │ Builder     │  │ Context     │         │
-│  │             │  │             │  │             │         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│  • Gherkin Parser  • Step Builder  • Scenario Context      │
 └─────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────────────────────────────────────┐
 │                    Domain Layer                             │
-├─────────────────────────────────────────────────────────────┤
 │  Core Domain Models                                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │ Browser     │  │ Config      │  │ Reporter    │         │
-│  │ Interface   │  │ Management  │  │ System      │         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│  • Browser Interface  • Config Management  • Reporter       │
+│  • GraphQL Client     • HTTP Client       • Variables      │
 └─────────────────────────────────────────────────────────────┘
                               │
 ┌─────────────────────────────────────────────────────────────┐
 │                    Infrastructure Layer                     │
-├─────────────────────────────────────────────────────────────┤
 │  External Dependencies                                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │ Rod Browser │  │ HTTP Client │  │ File System │         │
-│  │ Engine      │  │             │  │             │         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│  • Rod Browser Engine  • HTTP Client  • File System        │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -53,87 +37,38 @@ TestFlowKit is a modular, extensible web test automation framework built in Go. 
 ```
 testflowkit/
 ├── cmd/testflowkit/                    # Application Entry Point
-│   ├── main.go                        # Main application entry point
-│   └── args.config.go                 # CLI argument parsing
 ├── internal/                          # Private application code
 │   ├── actions/                       # Application actions
-│   │   ├── main.go                    # Action dispatcher
-│   │   ├── run.go                     # Test execution logic
-│   │   ├── init.go                    # Project initialization
-│   │   ├── validate.go                # Configuration validation
-│   │   └── boilerplate/               # Template generation
 │   ├── browser/                       # Browser automation layer
-│   │   ├── main.go                    # Browser factory
-│   │   ├── common/                    # Common interfaces
-│   │   │   └── types.go               # Browser interface definitions
-│   │   └── rod/                       # Rod browser implementation
-│   │       ├── browser.go             # Browser instance management
-│   │       ├── page.go                # Page operations
-│   │       ├── element.go             # Element interactions
-│   │       └── keyboard.go            # Keyboard input handling
 │   ├── config/                        # Configuration management
-│   │   ├── loader.go                  # Configuration loading
-│   │   ├── types.go                   # Configuration structures
-│   │   ├── mode.go                    # Execution modes
-│   │   └── utils.go                   # Configuration utilities
-│   └── steps_definitions/             # Gherkin step implementations
-│       ├── core/                      # Core step framework
-│       │   ├── scenario/              # Scenario context management
-│       │   │   ├── main.go            # Context factory
-│       │   │   ├── frontend.go        # Frontend context operations
-│       │   │   ├── rest_api_steps_context.go # API context
-│       │   │   └── helpers.go         # Context utilities
-│       │   └── stepbuilder/           # Step definition builder
-│       │       ├── types.go           # Step definition structures
-│       │       ├── step_no_var.go     # No-variable steps
-│       │       ├── step_one_var.go    # Single-variable steps
-│       │       ├── step_two_vars.go   # Two-variable steps
-│       │       ├── documentation.go   # Step documentation
-│       │       └── validation_errors.go # Validation framework
-│       ├── frontend/                  # Frontend testing steps
-│       │   ├── main.go                # Frontend step registry
-│       │   ├── assertions/            # Assertion steps
-│       │   ├── form/                  # Form interaction steps
-│       │   ├── navigation/            # Navigation steps
-│       │   ├── mouse/                 # Mouse interaction steps
-│       │   ├── keyboard/              # Keyboard input steps
-│       │   └── visual/                # Visual verification steps
-│       └── restapi/                   # API testing steps
-│           ├── main.go                # API step registry
-│           ├── prepare_request.go     # Request preparation
-│           ├── send_request.go        # Request execution
-│           ├── check_response_status_code.go # Status validation
-│           └── response_body_should_contain.go # Response validation
+│   ├── graphql/                       # GraphQL client and utilities
+│   ├── step_definitions/              # Gherkin step implementations
+│   │   ├── core/                      # Core step framework
+│   │   ├── frontend/                  # Frontend testing steps
+│   │   ├── restapi/                   # REST API testing steps
+│   │   ├── graphql/                   # GraphQL testing steps
+│   │   ├── variables/                 # Variable management steps
+│   │   └── helpers/                   # Helper utilities
+│   └── utils/                         # Internal utilities
 ├── pkg/                              # Public packages
 │   ├── gherkinparser/                # Gherkin parsing and processing
-│   │   ├── main.go                   # Main parser entry point
-│   │   ├── types.go                  # Gherkin data structures
-│   │   ├── macro.go                  # Macro processing logic
-│   │   └── apply_macros.go           # Macro application
+│   ├── graphql/                      # Public GraphQL package
 │   ├── logger/                       # Logging system
-│   │   ├── common.go                 # Common logging interface
-│   │   ├── info.go                   # Info level logging
-│   │   ├── error.go                  # Error level logging
-│   │   ├── warn.go                   # Warning level logging
-│   │   └── success.go                # Success level logging
 │   ├── reporters/                    # Test reporting system
-│   │   ├── main.go                   # Report factory
-│   │   ├── report_formatter.go       # Report formatting interface
-│   │   ├── html_report.formatter.go  # HTML report generation
-│   │   ├── json_report_formatter.go  # JSON report generation
-│   │   ├── html_report.template.html # HTML report template
-│   │   └── scenario.go               # Scenario result tracking
 │   └── utils/                        # Utility functions
-│       └── text_writer.go            # Text output utilities
 ├── e2e/                             # End-to-end test examples
 │   ├── features/                    # Gherkin feature files
-│   │   ├── frontend/                # Frontend test examples
-│   │   └── restapi/                 # API test examples
-│   ├── compose.yml                  # Docker compose for test environment
+│   ├── test-files/                  # Test data files
 │   └── server/                      # Test server for examples
-├── documentation/                   # Project documentation
+├── examples/                        # Configuration examples
+├── documentation/                   # Project documentation website
 ├── scripts/                         # Build and utility scripts
-└── build/                          # Build artifacts
+├── readme.md                       # Project README
+├── architecture.md                 # This architecture document
+├── GraphQL-Usage-Guide.md          # GraphQL usage documentation
+├── Makefile                        # Build automation
+├── go.mod                          # Go module definition
+└── go.sum                          # Go module checksums
 ```
 
 ## 🔧 Core Components
@@ -198,6 +133,42 @@ backend:
       method: "GET"
       path: "/api/endpoint"
       description: "Endpoint description"
+
+  graphql:
+    endpoint: "/graphql"
+    introspection_enabled: true
+    default_headers:
+      Content-Type: "application/json"
+    operations:
+      get_user_profile:
+        type: "query"
+        operation: |
+          query GetUserProfile($userId: ID!) {
+            user(id: $userId) {
+              id
+              name
+              email
+              profile {
+                avatar
+                bio
+              }
+            }
+          }
+        description: "Fetch user profile with nested data"
+
+      search_users:
+        type: "query"
+        operation: |
+          query SearchUsers($tags: [String!]!, $statuses: [UserStatus!]!) {
+            users(tags: $tags, statuses: $statuses) {
+              id
+              name
+              email
+              tags
+              status
+            }
+          }
+        description: "Search users by tags and statuses with array parameters"
 ```
 
 **Selector Configuration Examples:**
@@ -299,6 +270,71 @@ func searchForSelector(ctx contextWrapper, mu *sync.RWMutex, p page, selector co
 
 The framework executes multiple selectors in parallel, automatically selecting the first successful match, providing robust element detection even when page structures change.
 
+### 7. GraphQL Client Layer (`internal/graphql/`)
+
+Comprehensive GraphQL client implementation with schema introspection and validation support.
+
+**Key Components:**
+
+- **GraphQL Client**: HTTP-based GraphQL request execution
+- **Schema Introspection**: Automatic schema fetching and caching
+- **Operation Validation**: Schema-based operation validation
+- **Variable Parsing**: Intelligent parsing of complex variable types
+
+**Design Patterns:**
+
+- **Client Pattern**: Centralized GraphQL request handling
+- **Strategy Pattern**: Multiple variable parsing strategies
+- **Cache Pattern**: Schema caching for performance optimization
+- **Validation Pattern**: Pre-execution operation validation
+
+**GraphQL Client Architecture:**
+
+```go
+type Client struct {
+    httpClient  *http.Client
+    endpoint    string
+    headers     map[string]string
+}
+
+type Request struct {
+    Query     string                 `json:"query"`
+    Variables map[string]interface{} `json:"variables,omitempty"`
+}
+
+type Response struct {
+    Data       json.RawMessage        `json:"data,omitempty"`
+    Errors     []GraphQLError         `json:"errors,omitempty"`
+    Extensions map[string]interface{} `json:"extensions,omitempty"`
+}
+```
+
+**Variable Type Support:**
+
+The GraphQL client supports comprehensive variable type parsing:
+
+- **Primitive Types**: Strings, numbers, booleans, IDs
+- **Array Types**: `["item1", "item2"]`, `[1, 2, 3]`, `[true, false]`
+- **Object Types**: `{"key": "value", "nested": {"field": true}}`
+- **Mixed Arrays**: `[{"id": 1, "name": "John"}, {"id": 2, "name": "Jane"}]`
+
+**Schema Introspection:**
+
+```go
+type IntrospectionClient struct {
+    client *Client
+    cache  map[string]*Schema
+}
+
+func (ic *IntrospectionClient) GetSchema(ctx context.Context) (*Schema, error) {
+    // Fetch and cache GraphQL schema for validation
+}
+
+func (ic *IntrospectionClient) ValidateOperation(operation string) error {
+    // Validate operation against cached schema
+}
+```
+
 ### 4. Step Definition Framework (`internal/steps_definitions/`)
 
 Modular step definition system with validation and documentation support.
@@ -317,7 +353,9 @@ Modular step definition system with validation and documentation support.
 - **State Management**: Test execution state
 - **Browser Management**: Browser instance lifecycle
 - **API Context**: HTTP request/response management
+- **GraphQL Context**: GraphQL request/response management with variable support
 - **Page Management**: Current page tracking
+- **Variable System**: Cross-step data storage and retrieval
 
 **Step Definition Example:**
 
@@ -353,6 +391,43 @@ func (steps) elementShouldBeVisible() stepbuilder.Step {
             },
             Example:  "Then the submit button should be visible",
             Category: stepbuilder.Visual,
+        },
+    )
+}
+```
+
+**GraphQL Step Definition Example:**
+
+```go
+func (steps) prepareGraphQLRequest() stepbuilder.Step {
+    return stepbuilder.NewWithOneVariable(
+        []string{`I prepare a GraphQL request for the {string} operation`},
+        func(ctx context.Context, operationName string) (context.Context, error) {
+            scenarioCtx := scenario.MustFromContext(ctx)
+            cfg := scenarioCtx.GetConfig()
+
+            operation, err := cfg.GetGraphQLOperation(operationName)
+            if err != nil {
+                return ctx, fmt.Errorf("failed to resolve GraphQL operation '%s': %w", operationName, err)
+            }
+
+            scenarioCtx.SetGraphQLOperation(operationName, operation)
+
+            logger.InfoFf("GraphQL request prepared for operation '%s'", operationName)
+            return ctx, nil
+        },
+        nil,
+        stepbuilder.DocParams{
+            Description: "Prepares a GraphQL request for a configured operation.",
+            Variables: []stepbuilder.DocVariable{
+                {
+                    Name:        "operationName",
+                    Description: "The logical operation name as defined in configuration",
+                    Type:        stepbuilder.VarTypeString,
+                },
+            },
+            Example:  `Given I prepare a GraphQL request for the "get_user_profile" operation`,
+            Category: stepbuilder.GraphQL,
         },
     )
 }
@@ -609,18 +684,30 @@ func (b *CustomBrowser) NewPage() (common.Page, error) {
 - Individual component testing
 - Mock interfaces for isolation
 - High test coverage requirements
+- GraphQL client and variable parsing testing
 
 ### 2. Integration Testing
 
 - Component interaction testing
 - End-to-end workflow validation
 - Configuration integration tests
+- GraphQL schema introspection testing
 
 ### 3. End-to-End Testing
 
 - Complete test execution flows
 - Real browser automation testing
 - Cross-platform compatibility testing
+- GraphQL API integration testing
+
+### 4. GraphQL Testing Patterns
+
+- **Query Testing**: Validate GraphQL queries with various variable types
+- **Mutation Testing**: Test GraphQL mutations with complex input objects
+- **Array Variable Testing**: Comprehensive testing of array variable parsing and execution
+- **Error Handling**: Test GraphQL error responses and validation
+- **Schema Validation**: Test operation validation against GraphQL schemas
+- **Data Flow Testing**: Test data extraction and variable storage from GraphQL responses
 
 ## 🔄 CI/CD Integration
 

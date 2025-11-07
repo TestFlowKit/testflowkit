@@ -15,6 +15,7 @@
 - **Multi-Environment Support**: Configure and switch between different environments (local, staging, production)
 - **Frontend Testing**: Comprehensive web UI automation with smart element detection
 - **Backend API Testing**: Full REST API testing capabilities with request/response validation
+- **GraphQL Support**: Complete GraphQL testing with queries, mutations, schema validation, and array variable support
 - **Macro System**: Reusable test scenarios to reduce code duplication
 - **Parallel Execution**: Run tests concurrently for faster execution
 - **Rich Reporting**: HTML and JSON report formats with detailed test results
@@ -105,11 +106,33 @@ frontend:
     dashboard: "/dashboard"
 
 backend:
+  # REST API endpoints
   endpoints:
     get_user:
       method: "GET"
       path: "/users/{id}"
       description: "Retrieve user by ID"
+  
+  # GraphQL configuration
+  graphql:
+    endpoint: "/graphql"
+    introspection_enabled: true
+    operations:
+      get_user_profile:
+        type: "query"
+        operation: |
+          query GetUserProfile($userId: ID!) {
+            user(id: $userId) {
+              id
+              name
+              email
+              profile {
+                avatar
+                bio
+              }
+            }
+          }
+        description: "Fetch user profile with nested data"
 
 files:
   base_directory: "./"
@@ -189,6 +212,7 @@ For comprehensive documentation, visit the [official TestFlowKit documentation](
 - [Configuration Guide](https://testflowkit.dreamsfollowers.me/configuration)
 - [Step Definitions](https://testflowkit.dreamsfollowers.me/sentences)
 - [Variables System](https://testflowkit.dreamsfollowers.me/variables)
+- [GraphQL Testing Guide](GraphQL-Usage-Guide.md)
 - [FAQ & Troubleshooting](https://testflowkit.dreamsfollowers.me/troubleshooting)
 - [Test Execution Design (TED)](https://testflowkit.dreamsfollowers.me/docs/category/test-execution-design-ted)
 
@@ -248,9 +272,13 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 
 ### Backend Configuration
 
-- **API Endpoints**: REST API definitions with methods and paths
+- **REST API Endpoints**: REST API definitions with methods and paths
+- **GraphQL Operations**: GraphQL queries, mutations, and subscriptions with comprehensive variable support
+- **Array Variables**: Full support for GraphQL array variables including strings, numbers, and complex objects
 - **Default Headers**: Common HTTP headers for API requests
 - **Authentication**: API authentication configuration
+- **Schema Introspection**: GraphQL schema validation and operation verification
+- **Variable Parsing**: Intelligent parsing of JSON objects, arrays, and primitive types
 
 ### File Configuration
 
@@ -368,20 +396,79 @@ files:
 
 ### API Testing
 
+#### REST API Testing
+
 Full REST API testing with request/response validation:
 
 ```gherkin
-# API Requests
+# REST API Requests
 Given I prepare a request for the "get_user" endpoint
 When I set the following path params:
   | id | 1 |
 And I send the request
 
-
 # Response Validation
 Then the response status code should be 200
 And the response body should contain "userId"
 And the response body path "id" should exist
+```
+
+#### GraphQL Testing
+
+Comprehensive GraphQL testing with queries, mutations, array variables, and schema validation:
+
+```gherkin
+# GraphQL Query with Variables
+Given I prepare a GraphQL request for the "get_user_profile" operation
+And I set the following GraphQL variables:
+  | userId | 123 |
+When I send the GraphQL request
+Then the GraphQL response should not contain errors
+And the GraphQL response should contain data at path "user.name"
+And I store the GraphQL data at path "user.id" into "userId" variable
+
+# GraphQL with Array Variables
+Given I prepare a GraphQL request for the "search_users" operation
+And I set the following GraphQL variables:
+  | tags     | ["frontend", "testing", "automation"] |
+  | statuses | ["active", "verified"]               |
+  | limit    | 10                                   |
+When I send the GraphQL request
+Then the GraphQL response should not contain errors
+And I store the GraphQL array at path "users" into "foundUsers" variable
+
+# GraphQL with Individual Array Variables
+Given I prepare a GraphQL request for the "update_user_tags" operation
+And I set the GraphQL variable "userId" to "123"
+And I set the GraphQL variable "tags" to array ["frontend", "backend", "testing"]
+When I send the GraphQL request
+Then the GraphQL response should not contain errors
+And the GraphQL response should contain data at path "updateUser.tags"
+
+# GraphQL Mutations with Complex Input
+Given I prepare a GraphQL request for the "create_post" operation
+And I set the following GraphQL variables:
+  | input | {"title": "New Post", "content": "Post content", "tags": ["tech", "tutorial"]} |
+When I send the GraphQL request
+Then the GraphQL response should not contain errors
+And the GraphQL response should contain data at path "createPost.post.id"
+
+# GraphQL Error Handling
+Given I prepare a GraphQL request for the "get_user_profile" operation
+And I set the following GraphQL variables:
+  | userId | invalid_id |
+When I send the GraphQL request
+Then the GraphQL response should contain errors
+
+# GraphQL with Custom Headers
+Given I prepare a GraphQL request for the "get_user_profile" operation
+And I set the following GraphQL headers:
+  | Authorization | Bearer token123 |
+  | X-Client-ID   | test-client     |
+And I set the following GraphQL variables:
+  | userId | 123 |
+When I send the GraphQL request
+Then the GraphQL response should not contain errors
 ```
 
 ### Variables System
