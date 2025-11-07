@@ -1,4 +1,4 @@
-FROM golang:1.24.0-alpine AS build
+FROM golang:1.25-alpine AS build
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ WORKDIR /app/cmd/testflowkit
 RUN go build -o tkit
 
 
-FROM alpine:3.21
+FROM alpine:3.22
 
 LABEL authors="marckent04"
 
