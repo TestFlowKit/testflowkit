@@ -7,7 +7,7 @@ require (
 	github.com/cucumber/godog v0.15.1
 	github.com/go-rod/rod v0.116.2
 	github.com/goccy/go-yaml v1.18.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	github.com/tdewolff/parse v2.3.4+incompatible
 )
 
@@ -15,7 +15,7 @@ require github.com/cucumber/messages/go/v21 v21.0.1
 
 require (
 	github.com/fatih/color v1.18.0
-	github.com/gofrs/uuid/v5 v5.3.2
+	github.com/gofrs/uuid/v5 v5.4.0
 	github.com/tidwall/gjson v1.18.0
 )
 
