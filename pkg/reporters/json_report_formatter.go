@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"testflowkit/internal/utils/fileutils"
 )
 
 type jsonReportFormatter struct{}
@@ -41,7 +42,7 @@ func (f jsonReportFormatter) WriteReport(details testSuiteDetails) {
 		return
 	}
 
-	if mkdirErr := os.MkdirAll("report", 0755); mkdirErr != nil {
+	if mkdirErr := os.MkdirAll("report", fileutils.DirPermission); mkdirErr != nil {
 		log.Panicf("cannot create report directory ( %s )\n", mkdirErr)
 	}
 

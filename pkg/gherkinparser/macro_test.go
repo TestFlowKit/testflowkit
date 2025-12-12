@@ -11,12 +11,12 @@ import (
 func Test_GetMacroTitles(t *testing.T) {
 	tests := []struct {
 		name     string
-		macros   []*scenario
+		macros   []scenario
 		expected []string
 	}{
 		{
 			name: "returns titles from multiple macros",
-			macros: []*scenario{
+			macros: []scenario{
 				{Name: "first macro"},
 				{Name: "second macro"},
 				{Name: "third macro"},
@@ -25,12 +25,12 @@ func Test_GetMacroTitles(t *testing.T) {
 		},
 		{
 			name:     "returns empty slice for empty macros",
-			macros:   []*scenario{},
+			macros:   []scenario{},
 			expected: nil,
 		},
 		{
 			name: "handles macros with empty names",
-			macros: []*scenario{
+			macros: []scenario{
 				{Name: ""},
 				{Name: "named macro"},
 			},
@@ -96,136 +96,138 @@ func Test_GetMacros(t *testing.T) {
 }
 
 func Test_ApplyMacro(t *testing.T) {
-	tests := []struct {
-		name           string
-		scenario       *scenario
-		macroTitles    []string
-		macros         []*scenario
-		featureContent []string
-		expected       []string
-	}{
-		{
-			name: "replaces single macro step",
-			scenario: &scenario{
-				Steps: []*step{
-					{Keyword: "Given", Text: "a step"},
-					{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 3}},
-					{Keyword: "Then", Text: "a result"},
-				},
-			},
-			macroTitles: []string{"a macro step"},
-			macros: []*scenario{
-				{
-					Name: "a macro step",
-					Steps: []*step{
-						{Keyword: "Given", Text: "macro step 1"},
-						{Keyword: "And", Text: "macro step 2"},
-					},
-				},
-			},
-			featureContent: []string{
-				"Scenario: Test scenario",
-				"Given a step",
-				"When a macro step",
-				"Then a result",
-			},
-			expected: []string{
-				"Scenario: Test scenario",
-				"Given a step",
-				"When macro step 1",
-				"And macro step 2",
-				"Then a result",
-			},
-		},
-		{
-			name: "handles scenario with no macro steps",
-			scenario: &scenario{
-				Steps: []*step{
-					{Keyword: "Given", Text: "a step"},
-					{Keyword: "When", Text: "another step", Location: &messages.Location{Line: 3}},
-					{Keyword: "Then", Text: "a result"},
-				},
-			},
-			macroTitles: []string{"a macro step"},
-			macros: []*scenario{
-				{
-					Name: "a macro step",
-					Steps: []*step{
-						{Keyword: "Given", Text: "macro step 1"},
-					},
-				},
-			},
-			featureContent: []string{
-				"Scenario: Test scenario",
-				"Given a step",
-				"When another step",
-				"Then a result",
-			},
-			expected: []string{
-				"Scenario: Test scenario",
-				"Given a step",
-				"When another step",
-				"Then a result",
-			},
-		},
-		{
-			name: "handles multiple macro steps",
-			scenario: &scenario{
-				Steps: []*step{
-					{Keyword: "Given", Text: "first macro", Location: &messages.Location{Line: 2}},
-					{Keyword: "When", Text: "second macro", Location: &messages.Location{Line: 3}},
-					{Keyword: "Then", Text: "a result"},
-				},
-			},
-			macroTitles: []string{"first macro", "second macro"},
-			macros: []*scenario{
-				{
-					Name: "first macro",
-					Steps: []*step{
-						{Keyword: "Given", Text: "first macro step 1"},
-					},
-				},
-				{
-					Name: "second macro",
-					Steps: []*step{
-						{Keyword: "When", Text: "second macro step 1"},
-						{Keyword: "And", Text: "second macro step 2"},
-					},
-				},
-			},
-			featureContent: []string{
-				"Scenario: Test scenario",
-				"Given first macro",
-				"When second macro",
-				"Then a result",
-			},
-			expected: []string{
-				"Scenario: Test scenario",
-				"Given first macro step 1",
-				"When second macro step 1",
-				"And second macro step 2",
-				"Then a result",
-			},
-		},
-	}
-
-	for _, tt := range tests {
+	for _, tt := range applyMacroTests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Create a copy of the feature content for testing
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			applyMacro(tt.scenario.Steps, tt.macros, &testContent)
-			assert.Equal(t, tt.expected, testContent)
+			newContent := applyMacro(tt.scenario.Steps, tt.macros, strings.Join(testContent, "\n"))
+			assert.Equal(t, strings.Join(tt.expected, "\n"), newContent)
 		})
 	}
+}
+
+type testApplyMacro struct {
+	name           string
+	scenario       *scenario
+	macroTitles    []string
+	macros         []scenario
+	featureContent []string
+	expected       []string
+}
+
+var applyMacroTests = []testApplyMacro{
+	{
+		name: "replaces single macro step",
+		scenario: &scenario{
+			Steps: []*step{
+				{Keyword: "Given", Text: "a step"},
+				{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 3}},
+				{Keyword: "Then", Text: "a result"},
+			},
+		},
+		macroTitles: []string{"a macro step"},
+		macros: []scenario{
+			{
+				Name: "a macro step",
+				Steps: []*step{
+					{Keyword: "Given", Text: "macro step 1"},
+					{Keyword: "And", Text: "macro step 2"},
+				},
+			},
+		},
+		featureContent: []string{
+			"Scenario: Test scenario",
+			"Given a step",
+			"When a macro step",
+			"Then a result",
+		},
+		expected: []string{
+			"Scenario: Test scenario",
+			"Given a step",
+			"When macro step 1",
+			"And macro step 2",
+			"Then a result",
+		},
+	},
+	{
+		name: "handles scenario with no macro steps",
+		scenario: &scenario{
+			Steps: []*step{
+				{Keyword: "Given", Text: "a step"},
+				{Keyword: "When", Text: "another step", Location: &messages.Location{Line: 3}},
+				{Keyword: "Then", Text: "a result"},
+			},
+		},
+		macroTitles: []string{"a macro step"},
+		macros: []scenario{
+			{
+				Name: "a macro step",
+				Steps: []*step{
+					{Keyword: "Given", Text: "macro step 1"},
+				},
+			},
+		},
+		featureContent: []string{
+			"Scenario: Test scenario",
+			"Given a step",
+			"When another step",
+			"Then a result",
+		},
+		expected: []string{
+			"Scenario: Test scenario",
+			"Given a step",
+			"When another step",
+			"Then a result",
+		},
+	},
+	{
+		name: "handles multiple macro steps",
+		scenario: &scenario{
+			Steps: []*step{
+				{Keyword: "Given", Text: "first macro", Location: &messages.Location{Line: 2}},
+				{Keyword: "When", Text: "second macro", Location: &messages.Location{Line: 3}},
+				{Keyword: "Then", Text: "a result"},
+			},
+		},
+		macroTitles: []string{"first macro", "second macro"},
+		macros: []scenario{
+			{
+				Name: "first macro",
+				Steps: []*step{
+					{Keyword: "Given", Text: "first macro step 1"},
+				},
+			},
+			{
+				Name: "second macro",
+				Steps: []*step{
+					{Keyword: "When", Text: "second macro step 1"},
+					{Keyword: "And", Text: "second macro step 2"},
+				},
+			},
+		},
+		featureContent: []string{
+			"Scenario: Test scenario",
+			"Given first macro",
+			"When second macro",
+			"Then a result",
+		},
+		expected: []string{
+			"Scenario: Test scenario",
+			"Given first macro step 1",
+			"When second macro step 1",
+			"And second macro step 2",
+			"Then a result",
+		},
+	},
 }
 
 func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 	tests := []struct {
 		name           string
 		scenario       *messages.Scenario
-		macros         []*messages.Scenario
+		macros         []messages.Scenario
 		featureContent []string
 		expected       []string
 	}{
@@ -238,7 +240,7 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 					{Keyword: "Then", Text: "a result"},
 				},
 			},
-			macros: []*messages.Scenario{
+			macros: []messages.Scenario{
 				{
 					Name: "a macro step with doc",
 					Steps: []*messages.Step{
@@ -274,14 +276,14 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			applyMacro(tt.scenario.Steps, tt.macros, &testContent)
+			content := applyMacro(tt.scenario.Steps, tt.macros, strings.Join(tt.featureContent, "\n"))
 
-			// Trim any trailing empty lines for comparison
-			for len(testContent) > 0 && strings.TrimSpace(testContent[len(testContent)-1]) == "" {
-				testContent = testContent[:len(testContent)-1]
-			}
+			// // Trim any trailing empty lines for comparison
+			// for len(testContent) > 0 && strings.TrimSpace(testContent[len(testContent)-1]) == "" {
+			// 	testContent = testContent[:len(testContent)-1]
+			// }
 
-			assert.Equal(t, tt.expected, testContent)
+			assert.Equal(t, strings.Join(tt.expected, "\n"), content)
 		})
 	}
 }

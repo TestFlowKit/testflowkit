@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testflowkit/internal/config"
+	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/logger"
 )
 
@@ -141,7 +142,8 @@ func createDirectoryStructure(state *InitializationState) error {
 		return err
 	}
 
-	err := os.MkdirAll(featuresDir, 0755)
+	const dirPerm = 0755
+	err := os.MkdirAll(featuresDir, dirPerm)
 	if err != nil {
 		logger.Error("Failed to create features directory: "+err.Error(), nil, nil)
 		return err
@@ -173,7 +175,7 @@ func createSampleFeature(state *InitializationState) error {
 		return err
 	}
 
-	err := os.WriteFile(sampleFeaturePath, []byte(sampleFeatureTemplate), 0600)
+	err := os.WriteFile(sampleFeaturePath, []byte(sampleFeatureTemplate), fileutils.FilePermission)
 	if err != nil {
 		logger.Error("Failed to create sample feature file: "+err.Error(), nil, nil)
 		return err
@@ -205,7 +207,7 @@ func createConfigFile(state *InitializationState) error {
 		return err
 	}
 
-	err := os.WriteFile(configPath, []byte(configTemplate), 0600)
+	err := os.WriteFile(configPath, []byte(configTemplate), fileutils.FilePermission)
 	if err != nil {
 		logger.Error("Failed to create config file: "+err.Error(), nil, nil)
 		return err

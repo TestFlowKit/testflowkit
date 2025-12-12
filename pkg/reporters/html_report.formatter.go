@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg"
 	"testflowkit/pkg/logger"
 )
@@ -32,7 +33,7 @@ func (r htmlReportFormatter) format(ts htmlTestSuiteDetails) string {
 func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
 	content := r.formatContent(details)
 
-	if err := os.MkdirAll("report", 0755); err != nil {
+	if err := os.MkdirAll("report", fileutils.DirPermission); err != nil {
 		log.Panicf("cannot create report directory ( %s )\n", err)
 	}
 

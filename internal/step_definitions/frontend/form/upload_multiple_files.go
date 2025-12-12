@@ -10,44 +10,15 @@ import (
 	"testflowkit/internal/utils/stringutils"
 )
 
-func (steps) userUploadsMultipleFilesIntoField() stepbuilder.Step {
-	formatLabel := func(label string) string {
-		return stringutils.SuffixWithUnderscore(label, "field")
-	}
-
+func (steps) userUploadsMultipleFiles() stepbuilder.Step {
 	filenamesDesc := "Comma-separated list of logical file names as defined in configuration."
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`the user uploads the {string} files into the {string} field`},
-		func(ctx context.Context, fileNames, inputLabel string) (context.Context, error) {
-			scenarioCtx := scenario.MustFromContext(ctx)
-			cfg := scenarioCtx.GetConfig()
-
-			fileNameList := strings.Split(fileNames, ",")
-			for i, name := range fileNameList {
-				fileNameList[i] = strings.TrimSpace(name)
-			}
-
-			filePaths, err := cfg.GetFilesPaths(fileNameList)
-			if err != nil {
-				return ctx, fmt.Errorf("failed to get file paths for '%s': %w", fileNames, err)
-			}
-
-			input, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(inputLabel))
-			if err != nil {
-				return ctx, err
-			}
-
-			err = input.UploadMultipleFiles(filePaths)
-			if err != nil {
-				return ctx, fmt.Errorf("failed to upload files '%s' to field '%s': %w", fileNames, inputLabel, err)
-			}
-
-			return ctx, nil
-		},
+		userUploadsMultipleFilesHandler,
 		func(fileNames, inputLabel string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatLabel(inputLabel)
+			label := userUploadsMultipleFilesFormatLabel(inputLabel)
 
 			if !config.IsElementDefined(label) {
 				vc.AddMissingElement(label)
@@ -73,4 +44,35 @@ func (steps) userUploadsMultipleFilesIntoField() stepbuilder.Step {
 			Category: stepbuilder.Form,
 		},
 	)
+}
+
+func userUploadsMultipleFilesHandler(ctx context.Context, fileNames, inputLabel string) (context.Context, error) {
+	scenarioCtx := scenario.MustFromContext(ctx)
+	cfg := scenarioCtx.GetConfig()
+
+	fileNameList := strings.Split(fileNames, ",")
+	for i, name := range fileNameList {
+		fileNameList[i] = strings.TrimSpace(name)
+	}
+
+	filePaths, err := cfg.GetFilesPaths(fileNameList)
+	if err != nil {
+		return ctx, fmt.Errorf("failed to get file paths for '%s': %w", fileNames, err)
+	}
+
+	input, err := scenarioCtx.GetHTMLElementByLabel(userUploadsMultipleFilesFormatLabel(inputLabel))
+	if err != nil {
+		return ctx, err
+	}
+
+	err = input.UploadMultipleFiles(filePaths)
+	if err != nil {
+		return ctx, fmt.Errorf("failed to upload files '%s' to field '%s': %w", fileNames, inputLabel, err)
+	}
+
+	return ctx, nil
+}
+
+func userUploadsMultipleFilesFormatLabel(label string) string {
+	return stringutils.SuffixWithUnderscore(label, "field")
 }

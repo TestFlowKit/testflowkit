@@ -114,7 +114,7 @@ func (p *rodPage) Focus() {
 	p.page = p.page.MustActivate()
 }
 
-// TODO: be sure its work on SPA
+// TODO: be sure its work on SPA.
 func (p *rodPage) WaitLoading() {
 	p.page.MustWaitNavigation()
 	p.page = p.page.MustWaitDOMStable()

@@ -22,6 +22,6 @@ func GetSteps() []stepbuilder.Step {
 		handlers.selectRadioButton(),
 		handlers.clearField(),
 		handlers.userUploadsFileIntoField(),
-		handlers.userUploadsMultipleFilesIntoField(),
+		handlers.userUploadsMultipleFiles(),
 	}
 }

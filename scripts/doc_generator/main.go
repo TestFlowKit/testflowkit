@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -14,6 +13,7 @@ import (
 	"testflowkit/internal/step_definitions/frontend/assertions"
 	"testflowkit/internal/step_definitions/restapi"
 	"testflowkit/internal/step_definitions/variables"
+	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/logger"
 )
 
@@ -31,14 +31,14 @@ func main() {
 func generateDocs(stepDocumentations []stepbuilder.Documentation, outputDir string) {
 	err := os.RemoveAll(outputDir)
 	if err != nil {
-		logger.Fatal(fmt.Sprintf("Error removing directory %s", outputDir), err)
+		logger.Fatal("Error removing directory "+outputDir, err)
 	}
 
 	docs := formatSentencesDocs(stepDocumentations)
 	for _, documentation := range docs {
 		jsonData, jsonEerr := json.Marshal(documentation)
 		if jsonEerr != nil {
-			logger.Fatal(fmt.Sprintf("%s documentation generation failed", documentation.Sentence), err)
+			logger.Fatal(documentation.Sentence+" documentation generation failed", err)
 		}
 
 		filename := formatFilename(documentation.Sentence)
@@ -46,7 +46,7 @@ func generateDocs(stepDocumentations []stepbuilder.Documentation, outputDir stri
 
 		fileCreationErr := createFileWithDirectories(filePath, jsonData)
 		if fileCreationErr != nil {
-			logger.Fatal(fmt.Sprintf("Error creating file %s", filePath), err)
+			logger.Fatal("Error creating file "+filePath, err)
 		}
 	}
 }
@@ -81,18 +81,18 @@ func formatFilename(sentence string) string {
 	sentence = re.ReplaceAllString(sentence, "")
 	sentence = strings.ReplaceAll(sentence, " ", "_")
 	sentence = strings.ReplaceAll(sentence, "'", "")
-	return fmt.Sprintf("%s.json", strings.ToLower(sentence))
+	return strings.ToLower(sentence) + ".json"
 }
 
 func createFileWithDirectories(filePath string, data []byte) error {
 	dir := filepath.Dir(filePath)
 
-	err := os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, fileutils.DirPermission)
 	if err != nil {
 		return err
 	}
 
-	mkdErr := os.WriteFile(filePath, data, 0600)
+	mkdErr := os.WriteFile(filePath, data, fileutils.FilePermission)
 	if mkdErr != nil {
 		return err
 	}

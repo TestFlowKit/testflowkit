@@ -10,6 +10,8 @@ import (
 	"testflowkit/internal/config"
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core/scenario"
+	"testflowkit/internal/utils/fileutils"
+
 	"testflowkit/pkg/browser"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
@@ -30,31 +32,7 @@ func run(appConfig *config.Config, errCfg error) {
 	displayConfigSummary(appConfig)
 	logger.Info("Starting tests execution ...")
 
-	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
-	features := make([]godog.Feature, len(parsedFeatures))
-	for i, f := range parsedFeatures {
-		features[i] = godog.Feature{
-			Name:     f.Name,
-			Contents: f.Contents,
-		}
-	}
-
-	testReport := reporters.New(appConfig.Settings.ReportFormat)
-	var opts = godog.Options{
-		Output:              &buffer.Writer{},
-		Concurrency:         appConfig.GetConcurrency(),
-		Format:              "pretty",
-		ShowStepDefinitions: false,
-		Tags:                getTagsExludingMacros(appConfig.Settings.Tags),
-		FeatureContents:     features,
-	}
-
-	testSuite := godog.TestSuite{
-		Name:                 "Test Suite",
-		Options:              &opts,
-		TestSuiteInitializer: testSuiteInitializer(&testReport),
-		ScenarioInitializer:  scenarioInitializer(appConfig, &testReport),
-	}
+	testReport, testSuite := prepareTestSuite(appConfig)
 
 	logger.Info("Running tests ...")
 	testSuite.Run()
@@ -91,6 +69,35 @@ func run(appConfig *config.Config, errCfg error) {
 	os.Exit(1)
 }
 
+func prepareTestSuite(appConfig *config.Config) (reporters.Report, godog.TestSuite) {
+	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
+	features := make([]godog.Feature, len(parsedFeatures))
+	for i, f := range parsedFeatures {
+		features[i] = godog.Feature{
+			Name:     f.Name,
+			Contents: f.Contents,
+		}
+	}
+
+	testReport := reporters.New(appConfig.Settings.ReportFormat)
+	var opts = godog.Options{
+		Output:              &buffer.Writer{},
+		Concurrency:         appConfig.GetConcurrency(),
+		Format:              "pretty",
+		ShowStepDefinitions: false,
+		Tags:                getTagsExludingMacros(appConfig.Settings.Tags),
+		FeatureContents:     features,
+	}
+
+	testSuite := godog.TestSuite{
+		Name:                 "Test Suite",
+		Options:              &opts,
+		TestSuiteInitializer: testSuiteInitializer(&testReport),
+		ScenarioInitializer:  scenarioInitializer(appConfig, &testReport),
+	}
+	return testReport, testSuite
+}
+
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.BeforeSuite(func() {
@@ -105,7 +112,7 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 				})
 				os.Exit(1)
 			}
-			mkdirErr := os.MkdirAll(screenshotDir, 0755)
+			mkdirErr := os.MkdirAll(screenshotDir, fileutils.DirPermission)
 			if mkdirErr != nil {
 				logger.Error("Failed to create screenshot directory", []string{
 					"please check the permissions of the directory",
@@ -182,7 +189,7 @@ func takeScreenshot(st *godog.Step, currentPage browser.Page) string {
 		})
 		screenshotPath = ""
 	} else {
-		if writeErr := os.WriteFile(screenshotPath, screenshotData, 0600); writeErr != nil {
+		if writeErr := os.WriteFile(screenshotPath, screenshotData, fileutils.FilePermission); writeErr != nil {
 			logger.Warn("Failed to save screenshot file", []string{
 				"step: " + st.Text,
 				"path: " + screenshotPath,
@@ -230,7 +237,7 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 }
 
 func getTagsExludingMacros(tags string) string {
-	excludeMacros := fmt.Sprintf("~%s", gherkinparser.MacroTag)
+	excludeMacros := "~" + gherkinparser.MacroTag
 	if tags == "" {
 		return excludeMacros
 	}

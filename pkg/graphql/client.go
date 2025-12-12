@@ -93,22 +93,12 @@ func (c *Client) GetHeaders() map[string]string {
 
 // Execute sends a GraphQL request and returns the response.
 func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
-	// Validate request
-	if req.Query == "" {
-		return nil, NewConfigurationError("GraphQL query is required", nil)
-	}
-
-	// Marshal the request to JSON
-	requestBody, err := json.Marshal(req)
+	requestBody, err := c.getReqBody(req)
 	if err != nil {
-		return nil, NewConfigurationError(
-			"failed to marshal GraphQL request",
-			map[string]interface{}{"marshal_error": err.Error()},
-		)
+		return nil, err
 	}
 
-	// Create HTTP request
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, c.endpoint, bytes.NewBuffer(requestBody))
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, c.endpoint, requestBody)
 	if err != nil {
 		return nil, NewNetworkError(
 			"failed to create HTTP request",
@@ -119,10 +109,7 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 		)
 	}
 
-	// Set Content-Type header (required for GraphQL)
 	httpReq.Header.Set("Content-Type", "application/json")
-
-	// Set additional headers
 	for key, value := range c.headers {
 		httpReq.Header.Set(key, value)
 	}
@@ -169,6 +156,21 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 	}
 
 	return graphqlResp, nil
+}
+
+func (*Client) getReqBody(req Request) (*bytes.Buffer, error) {
+	if req.Query == "" {
+		return nil, NewConfigurationError("GraphQL query is required", nil)
+	}
+
+	requestBody, err := json.Marshal(req)
+	if err != nil {
+		return nil, NewConfigurationError(
+			"failed to marshal GraphQL request",
+			map[string]interface{}{"marshal_error": err.Error()},
+		)
+	}
+	return bytes.NewBuffer(requestBody), nil
 }
 
 // ExecuteWithBuilder executes a request using a RequestBuilder.

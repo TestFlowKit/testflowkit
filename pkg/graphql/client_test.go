@@ -67,6 +67,47 @@ func TestClient_SetHeaders(t *testing.T) {
 
 func TestClient_Execute(t *testing.T) {
 	// Create a test server
+	server := createTestServer(t)
+	defer server.Close()
+
+	// Create client
+	client := NewClient(server.URL)
+
+	// Execute request
+	req := Request{
+		Query: `query { user { id name } }`,
+		Variables: map[string]interface{}{
+			"id": "123",
+		},
+	}
+
+	ctx := context.Background()
+	response, err := client.Execute(ctx, req)
+	if err != nil {
+		t.Fatalf("Execute failed: %v", err)
+	}
+
+	if !response.HasData() {
+		t.Error("Expected response to have data")
+	}
+
+	if response.HasErrors() {
+		t.Error("Expected response to have no errors")
+	}
+
+	// Test data extraction
+	parser := response.GetParser()
+	userNameResult, err := parser.GetDataAtPath("user.name")
+	if err != nil {
+		t.Fatalf("Failed to extract user name: %v", err)
+	}
+
+	if userNameResult.String() != "John Doe" {
+		t.Errorf("Expected user name 'John Doe', got %s", userNameResult.String())
+	}
+}
+
+func createTestServer(t *testing.T) *httptest.Server {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify request method and content type
 		if r.Method != http.MethodPost {
@@ -103,43 +144,7 @@ func TestClient_Execute(t *testing.T) {
 			t.Fatalf("Failed to encode response: %v", err)
 		}
 	}))
-	defer server.Close()
-
-	// Create client
-	client := NewClient(server.URL)
-
-	// Execute request
-	req := Request{
-		Query: `query { user { id name } }`,
-		Variables: map[string]interface{}{
-			"id": "123",
-		},
-	}
-
-	ctx := context.Background()
-	response, err := client.Execute(ctx, req)
-	if err != nil {
-		t.Fatalf("Execute failed: %v", err)
-	}
-
-	if !response.HasData() {
-		t.Error("Expected response to have data")
-	}
-
-	if response.HasErrors() {
-		t.Error("Expected response to have no errors")
-	}
-
-	// Test data extraction
-	parser := response.GetParser()
-	userName, err := parser.GetDataAsString("user.name")
-	if err != nil {
-		t.Fatalf("Failed to extract user name: %v", err)
-	}
-
-	if userName != "John Doe" {
-		t.Errorf("Expected user name 'John Doe', got %s", userName)
-	}
+	return server
 }
 
 func TestClient_Query(t *testing.T) {
@@ -178,13 +183,13 @@ func TestClient_Query(t *testing.T) {
 	}
 
 	parser := response.GetParser()
-	users, err := parser.GetDataAsArray("users")
+	users, err := parser.GetDataAtPath("users")
 	if err != nil {
 		t.Fatalf("Failed to extract users: %v", err)
 	}
 
-	if len(users) != 2 {
-		t.Errorf("Expected 2 users, got %d", len(users))
+	if len(users.Array()) != 2 {
+		t.Errorf("Expected 2 users, got %d", len(users.Array()))
 	}
 }
 
@@ -226,13 +231,13 @@ func TestClient_Mutate(t *testing.T) {
 	}
 
 	parser := response.GetParser()
-	userID, err := parser.GetDataAsString("createUser.id")
+	userIDResult, err := parser.GetDataAtPath("createUser.id")
 	if err != nil {
 		t.Fatalf("Failed to extract user ID: %v", err)
 	}
 
-	if userID != "123" {
-		t.Errorf("Expected user ID '123', got %s", userID)
+	if userIDResult.String() != "123" {
+		t.Errorf("Expected user ID '123', got %s", userIDResult.String())
 	}
 }
 
@@ -271,13 +276,13 @@ func TestClient_ExecuteWithBuilder(t *testing.T) {
 	}
 
 	parser := response.GetParser()
-	email, err := parser.GetDataAsString("user.email")
+	email, err := parser.GetDataAtPath("user.email")
 	if err != nil {
 		t.Fatalf("Failed to extract email: %v", err)
 	}
 
-	if email != "test@example.com" {
-		t.Errorf("Expected email 'test@example.com', got %s", email)
+	if email.String() != "test@example.com" {
+		t.Errorf("Expected email 'test@example.com', got %s", email.String())
 	}
 }
 

@@ -11,7 +11,7 @@ import (
 
 func (steps) dropdownHasValuesSelected() stepbuilder.Step {
 	formatVar := func(label string) string {
-		return fmt.Sprintf("%s_dropdown", label)
+		return label + "_dropdown"
 	}
 
 	doc := stepbuilder.DocParams{

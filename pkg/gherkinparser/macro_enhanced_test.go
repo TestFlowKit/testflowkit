@@ -1,7 +1,6 @@
 package gherkinparser
 
 import (
-	"fmt"
 	"testing"
 
 	messages "github.com/cucumber/messages/go/v21"
@@ -80,7 +79,7 @@ var parseMacroCallWithTableTests = []TestCase{
 func TestParseMacroCallWithTable(t *testing.T) {
 	for _, tt := range parseMacroCallWithTableTests[2:3] {
 		t.Run(tt.name, func(t *testing.T) {
-			result := getMacroVariables(tt.step)
+			result := getMacroVariables(tt.step.DataTable)
 			testParseMacroCallWithTableAssertions(t, result, tt)
 		})
 	}
@@ -167,33 +166,6 @@ func TestMacroVariableStruct(t *testing.T) {
 	if mv.Value != "oki" {
 		t.Errorf("expected value 'oki', got %s", mv.Value)
 	}
-}
-
-func Test_GetCompleteContentForSimpleStep(t *testing.T) {
-	stepDef := messages.Step{
-		Text: "user type in ok input",
-	}
-
-	assert.Equal(t, "user type in ok input", getCompleteStepContentWhithoutKeyword(&stepDef))
-}
-
-func Test_GetCompleteContentForStepWithDocString(t *testing.T) {
-	docString := messages.DocString{
-		Content: `{
-			"title": "Test Post Title",
-			"body": "This is a test post body for API testing",
-			"userId": 1
-		}`,
-		Delimiter: `"""`,
-	}
-
-	stepDef := messages.Step{
-		Text:      "user send a reuest",
-		DocString: &docString,
-	}
-
-	expected := fmt.Sprintf("%s\n%s\n%s\n%s", stepDef.Text, docString.Delimiter, docString.Content, docString.Delimiter)
-	assert.Equal(t, expected, getCompleteStepContentWhithoutKeyword(&stepDef))
 }
 
 func Test_GetStepEndLine(t *testing.T) {

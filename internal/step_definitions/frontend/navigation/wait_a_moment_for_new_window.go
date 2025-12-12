@@ -18,7 +18,7 @@ func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			duration, err := time.ParseDuration(waitTime)
 			if err != nil {
-				logger.Error(fmt.Sprintf("Invalid duration format: %s", waitTime), []string{
+				logger.Error("Invalid duration format: "+waitTime, []string{
 					"Duration should be in the format of 1s, 500ms, etc.",
 				}, nil)
 				return ctx, err
@@ -50,7 +50,7 @@ func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 			vc := stepbuilder.ValidationErrors{}
 			_, err := time.ParseDuration(duration)
 			if err != nil {
-				vc.AddError(fmt.Sprintf("Invalid duration format: %s", duration))
+				vc.AddError("Invalid duration format: " + duration)
 			}
 			return vc
 		},

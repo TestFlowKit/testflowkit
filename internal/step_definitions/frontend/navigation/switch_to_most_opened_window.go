@@ -22,7 +22,7 @@ func (steps) switchToMostOpenedWindow() stepbuilder.Step {
 			if err := scenarioCtx.SetCurrentPage(newPage); err != nil {
 				return ctx, fmt.Errorf("failed to set current page: %w", err)
 			}
-			logger.Info(fmt.Sprintf("Switched to new window with URL: %s", newPage.GetInfo().URL))
+			logger.Info("Switched to new window with URL: " + newPage.GetInfo().URL)
 			return ctx, nil
 		},
 		nil,

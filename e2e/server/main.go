@@ -29,9 +29,9 @@ func main() {
 	})
 
 	for _, file := range files {
-		http.HandleFunc(fmt.Sprintf("/%s", file), func(w http.ResponseWriter, r *http.Request) {
+		http.HandleFunc("/"+file, func(w http.ResponseWriter, r *http.Request) {
 			log.Println(r.URL.Path, "requested")
-			filePath := path.Join(currDir, fmt.Sprintf("%s.html", file))
+			filePath := path.Join(currDir, file+".html")
 			http.ServeFile(w, r, filePath)
 		})
 	}
