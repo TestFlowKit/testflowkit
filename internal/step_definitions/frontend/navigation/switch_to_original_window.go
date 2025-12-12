@@ -31,7 +31,7 @@ func (steps) switchToOriginalWindow() stepbuilder.Step {
 				return ctx, fmt.Errorf("failed to set current page: %w", err)
 			}
 
-			logger.Info(fmt.Sprintf("Switched back to original window with URL: %s", originalPage.GetInfo().URL))
+			logger.Info("Switched back to original window with URL: " + originalPage.GetInfo().URL)
 
 			return ctx, nil
 		},

@@ -2,7 +2,6 @@ package form
 
 import (
 	"context"
-	"fmt"
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
@@ -29,7 +28,7 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 				return ctx, err
 			}
 
-			logger.Warn(fmt.Sprintf("%s checkbox is not unchecked because it is already unchecked", checkBoxName), []string{})
+			logger.Warn(checkBoxName+" checkbox is not unchecked because it is already unchecked", []string{})
 			return ctx, nil
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {

@@ -2,7 +2,6 @@ package actions
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strings"
 	"testflowkit/internal/config"
@@ -111,7 +110,7 @@ func validateTestSuiteInitializer(validatorCtx *stepbuilder.ValidatorContext) fu
 
 			if validatorCtx.HasUndefinedSteps() {
 				undefinedStepsListFormatted := strings.Join(validatorCtx.GetUndefinedSteps(), "\n")
-				msg := fmt.Sprintf("List of undefined steps: \n%s", undefinedStepsListFormatted)
+				msg := "List of undefined steps: \n" + undefinedStepsListFormatted
 				logger.Error("Steps validation failed",
 					[]string{
 						"Steps are malformed in the gherkin files",

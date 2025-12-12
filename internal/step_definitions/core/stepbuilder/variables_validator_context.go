@@ -61,9 +61,9 @@ func (vc *ValidatorContext) GetUndefinedSteps() []string {
 func (vc *ValidatorContext) GetElementsErrorsFormatted() string {
 	lines := []string{
 		"Add the following elements to the configuration file:",
-		fmt.Sprintf("%selements:", logger.GetIndents(1)),
-		fmt.Sprintf("%scommon:", logger.GetIndents(categoryTypeIdent)),
-		fmt.Sprintf("%s...", logger.GetIndents(variableIdent)),
+		logger.GetIndents(1) + "elements:",
+		logger.GetIndents(categoryTypeIdent) + "common:",
+		logger.GetIndents(variableIdent) + "...",
 	}
 
 	idnt := logger.GetIndents(variableIdent)
@@ -78,9 +78,9 @@ func (vc *ValidatorContext) GetElementsErrorsFormatted() string {
 func (vc *ValidatorContext) GetPagesErrorsFormatted() string {
 	lines := []string{
 		"Add the following pages to the configuration file:",
-		fmt.Sprintf("%sglobal:", logger.GetIndents(1)),
-		fmt.Sprintf("%spages:", logger.GetIndents(categoryTypeIdent)),
-		fmt.Sprintf("%s...", logger.GetIndents(variableIdent)),
+		logger.GetIndents(1) + "global:",
+		logger.GetIndents(categoryTypeIdent) + "pages:",
+		logger.GetIndents(variableIdent) + "...",
 	}
 
 	pageFormat := logger.GetIndents(variableIdent) + "%s:"

@@ -1,7 +1,7 @@
 package gherkinparser
 
 import (
-	"fmt"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,10 +15,7 @@ import (
 func Parse(featureFilesLocation string) []*Feature {
 	features := getFeatures(featureFilesLocation)
 	macros := getMacros(features)
-
-	applyMacros(macros, features)
-
-	return features
+	return applyMacros(macros, features)
 }
 
 func getFeatures(featureFilesLocation string) []*Feature {
@@ -59,16 +56,26 @@ func getFeaturesPaths(featureFilesLocation string) ([]string, error) {
 func parseFeatureFile(featurePath string) *Feature {
 	fileContent, readFileErr := os.ReadFile(featurePath)
 	if readFileErr != nil {
-		msg := fmt.Sprintf("Error reading fileContent: %s", featurePath)
+		msg := "Error reading fileContent: " + featurePath
 		logger.Warn(msg, []string{"Please check the file read permissions"})
 	}
-	gherkinDoc, gherkinParseErr := gherkin.ParseGherkinDocument(strings.NewReader(string(fileContent)), func() string {
+
+	featureParsed, err := parseFeatureContent(string(fileContent))
+	if err != nil && errors.Is(err, errFeatureParse) {
+		logger.Warn("Error parsing feature file: "+featurePath, []string{"Please check the file syntax"})
+		return nil
+	}
+
+	return featureParsed
+}
+
+func parseFeatureContent(content string) (*Feature, error) {
+	gherkinDoc, gherkinParseErr := gherkin.ParseGherkinDocument(strings.NewReader(content), func() string {
 		return uuid.Must(uuid.NewV4()).String()
 	})
 
 	if gherkinParseErr != nil {
-		logger.Warn(fmt.Sprintf("Error parsing feature file: %s", featurePath), []string{"Please check the file syntax"})
-		return nil
+		return nil, errFeatureParse
 	}
 
 	var scenarios []*scenario
@@ -84,9 +91,10 @@ func parseFeatureFile(featurePath string) *Feature {
 
 	return newFeature(
 		gherkinDoc.Feature.Name,
-		featurePath,
-		fileContent,
+		[]byte(content),
 		scenarios,
 		background,
-	)
+	), nil
 }
+
+var errFeatureParse = errors.New("error parsing feature content")

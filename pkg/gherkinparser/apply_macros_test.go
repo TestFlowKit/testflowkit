@@ -1,6 +1,7 @@
 package gherkinparser
 
 import (
+	"strings"
 	"testing"
 
 	messages "github.com/cucumber/messages/go/v21"
@@ -10,19 +11,21 @@ import (
 func TestApplyMacros_ReplacesMacroStepsWithStepsFromMacro(t *testing.T) {
 	features := []*Feature{
 		{
-			Contents: []byte("Scenario: Test scenario\nGiven a step\nWhen a macro step\nThen a result"),
+			Name:     "Test Feature",
+			Contents: []byte("Feature: Test Feature\nScenario: Test scenario\nGiven a step\nWhen a macro step\nThen a result"),
 			scenarios: []*scenario{
 				{
+					Name: "test scenario",
 					Steps: []*step{
 						{Keyword: "Given", Text: "a step"},
-						{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 3}},
+						{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 4}},
 						{Keyword: "Then", Text: "a result"},
 					},
 				},
 			},
 		},
 	}
-	macros := []*scenario{
+	macros := []scenario{
 		{
 			Name: "a macro step",
 			Steps: []*step{
@@ -32,10 +35,17 @@ func TestApplyMacros_ReplacesMacroStepsWithStepsFromMacro(t *testing.T) {
 		},
 	}
 
-	applyMacros(macros, features)
+	newFeatures := applyMacros(macros, features)
 
-	expectedContent := "Scenario: Test scenario\nGiven a step\nWhen macro step 1\nAnd macro step 2\nThen a result"
-	assert.Equal(t, expectedContent, string(features[0].Contents))
+	expectedContentLines := []string{
+		"Feature: Test Feature",
+		"Scenario: Test scenario",
+		"Given a step",
+		"When macro step 1",
+		"And macro step 2",
+		"Then a result",
+	}
+	assert.Equal(t, strings.Join(expectedContentLines, "\n"), string(newFeatures[0].Contents))
 }
 
 func TestApplyMacros_NoReplacementWhenNoMacroSteps(t *testing.T) {
@@ -53,7 +63,7 @@ func TestApplyMacros_NoReplacementWhenNoMacroSteps(t *testing.T) {
 			},
 		},
 	}
-	macros := []*scenario{
+	macros := []scenario{
 		{
 			Name: "a macro step",
 			Steps: []*step{
@@ -71,7 +81,7 @@ func TestApplyMacros_NoReplacementWhenNoMacroSteps(t *testing.T) {
 
 func TestApplyMacros_EmptyFeaturesContainingMacros(t *testing.T) {
 	featuresContainingMacros := []*Feature{}
-	macros := []*scenario{
+	macros := []scenario{
 		{
 			Name: "a macro step",
 			Steps: []*step{
@@ -101,7 +111,7 @@ func TestApplyMacros_EmptyMacroTitles(t *testing.T) {
 			},
 		},
 	}
-	var macros []*scenario
+	var macros []scenario
 
 	applyMacros(macros, featuresContainingMacros)
 
@@ -112,6 +122,7 @@ func TestApplyMacros_EmptyMacroTitles(t *testing.T) {
 func TestApplyMacros_ReplacesMacroStepsInBackground(t *testing.T) {
 	featuresContainingMacros := []*Feature{
 		{
+			Name: "Test feature",
 			Contents: []byte(`Feature: Test feature
 
 Background:
@@ -123,6 +134,7 @@ Given a step
 Then a result`),
 			scenarios: []*scenario{
 				{
+					Name: "Test scenario",
 					Steps: []*step{
 						{Keyword: "Given", Text: "a step"},
 						{Keyword: "Then", Text: "a result"},
@@ -137,7 +149,7 @@ Then a result`),
 			},
 		},
 	}
-	macros := []*scenario{
+	macros := []scenario{
 		{
 			Name: "a macro step",
 			Steps: []*step{
@@ -147,7 +159,7 @@ Then a result`),
 		},
 	}
 
-	applyMacros(macros, featuresContainingMacros)
+	result := applyMacros(macros, featuresContainingMacros)
 
 	expectedContent := `Feature: Test feature
 
@@ -159,7 +171,7 @@ And macro step 2
 Scenario: Test scenario
 Given a step
 Then a result`
-	assert.Equal(t, expectedContent, string(featuresContainingMacros[0].Contents))
+	assert.Equal(t, expectedContent, string(result[0].Contents))
 }
 
 func TestApplyMacros_NoReplacementInBackgroundWhenNoMacroSteps(t *testing.T) {
@@ -190,7 +202,7 @@ Then a result`),
 			},
 		},
 	}
-	macros := []*scenario{
+	macros := []scenario{
 		{
 			Name: "a macro step",
 			Steps: []*step{

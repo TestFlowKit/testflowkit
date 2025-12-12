@@ -11,7 +11,7 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-// TODO: click on cell instead of row
+// TODO: click on cell instead of row.
 func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 	const example = `
 	When the user clicks on the row containing the following elements

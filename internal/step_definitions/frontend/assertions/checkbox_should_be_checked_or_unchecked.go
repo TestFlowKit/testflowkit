@@ -11,7 +11,7 @@ import (
 
 func (steps) checkCheckboxStatus() sb.Step {
 	formatVar := func(label string) string {
-		return fmt.Sprintf("%s_checkbox", label)
+		return label + "_checkbox"
 	}
 	definition := func(ctx context.Context, checkboxId, status string) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)

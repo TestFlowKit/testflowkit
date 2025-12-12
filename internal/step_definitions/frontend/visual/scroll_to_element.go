@@ -13,7 +13,7 @@ func (steps) scrollToElement() stepbuilder.Step {
 		func(ctx context.Context, elementName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 
-			element, err := scenarioCtx.GetHTMLElementByLabel(fmt.Sprintf("%s_element", elementName))
+			element, err := scenarioCtx.GetHTMLElementByLabel(elementName + "_element")
 
 			if err != nil {
 				return ctx, err

@@ -10,7 +10,7 @@ import (
 
 func (steps) theFieldShouldContain() stepbuilder.Step {
 	formatFieldID := func(fieldId string) string {
-		return fmt.Sprintf("%s_field", fieldId)
+		return fieldId + "_field"
 	}
 
 	return stepbuilder.NewWithTwoVariables(

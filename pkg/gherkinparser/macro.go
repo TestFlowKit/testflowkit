@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"testflowkit/pkg/logger"
+	"unicode/utf8"
 
 	messages "github.com/cucumber/messages/go/v21"
 )
@@ -18,12 +20,11 @@ type MacroVariable struct {
 
 type MacroVariables = map[string]string
 
-func getMacroVariables(step *messages.Step) MacroVariables {
-	if step.DataTable == nil {
+func getMacroVariables(table *messages.DataTable) MacroVariables {
+	if table == nil {
 		return make(map[string]string)
 	}
 
-	table := step.DataTable
 	variables := make(map[string]string)
 	const headerAndFirstRow = 2
 	if len(table.Rows) >= headerAndFirstRow {
@@ -51,61 +52,68 @@ func substituteVariables(stepContent string, variables MacroVariables) string {
 	return result
 }
 
-func getCompleteStepContentWhithoutKeyword(step *messages.Step) string {
-	result := step.Text
-
-	if step.DocString != nil {
-		ds := step.DocString
-		docString := fmt.Sprintf("%s\n%s\n%s", ds.Delimiter, ds.Content, ds.Delimiter)
-
-		result = fmt.Sprintf("%s\n%s", result, docString)
+// TODO: refactor for better understanding.
+func applyMacros(macros []scenario, features []*Feature) []*Feature {
+	newFeatures := make([]*Feature, 0, len(features))
+	for _, f := range features {
+		currFeature, err := applyMacroToFeature(macros, *f)
+		if err != nil {
+			logger.Warn("Error applying macros to feature: "+f.Name, []string{err.Error()})
+		}
+		newFeatures = append(newFeatures, currFeature)
 	}
 
-	// TODO: in datatable
-
-	return result
+	return newFeatures
 }
 
-func applyMacros(macros []*scenario, features []*Feature) {
+func applyMacroToFeature(macros []scenario, feature Feature) (*Feature, error) {
 	macroTitles := getMacroTitles(macros)
-	mustContainsMacro := regexp.MustCompile(strings.Join(macroTitles, "|"))
+	currContent := string(feature.Contents)
 
-	for _, f := range features {
-		content := string(f.Contents)
-		if !mustContainsMacro.MatchString(content) {
+	canContainsMacroRegex := regexp.MustCompile(strings.Join(macroTitles, "|"))
+	if !canContainsMacroRegex.MatchString(currContent) {
+		return &feature, nil
+	}
+
+	if feature.background != nil && containsMacro(feature.background.Steps, macroTitles) {
+		currContent = applyMacro(feature.background.Steps, macros, currContent)
+		fUpdated, err := parseFeatureContent(currContent)
+		if err != nil {
+			return nil, err
+		}
+		feature = *fUpdated
+	}
+
+	for _, sc := range feature.scenarios {
+		if sc == nil || isMacroScenario(sc) || !containsMacro(sc.Steps, macroTitles) {
 			continue
 		}
 
-		featureContent := strings.Split(content, "\n")
-		if f.background != nil {
-			applyMacro(f.background.Steps, macros, &featureContent)
+		newFeatureContent := applyMacro(sc.Steps, macros, string(feature.Contents))
+		fUpdated, err := parseFeatureContent(newFeatureContent)
+		if err != nil {
+			continue
 		}
-
-		for _, sc := range f.scenarios {
-			if sc == nil {
-				continue
-			}
-
-			var scenarioStepTextsSb90 strings.Builder
-			for _, step := range sc.Steps {
-				scenarioStepTextsSb90.WriteString(step.Text + "\n")
-			}
-			scenarioStepTexts := scenarioStepTextsSb90.String()
-
-			if !mustContainsMacro.MatchString(scenarioStepTexts) {
-				continue
-			}
-
-			applyMacro(sc.Steps, macros, &featureContent)
-		}
-
-		f.Contents = []byte(strings.Join(featureContent, "\n"))
+		feature = *fUpdated
 	}
+
+	return &feature, nil
 }
 
-func applyMacro(steps []*messages.Step, macros []*scenario, featureContent *[]string) {
+func containsMacro(steps []*messages.Step, macroNames []string) bool {
+	reg := regexp.MustCompile(strings.Join(macroNames, "|"))
+	var stepTextSb strings.Builder
 	for _, step := range steps {
-		macroIdx := slices.IndexFunc(macros, func(macro *scenario) bool {
+		stepTextSb.WriteString(step.Text + "\n")
+	}
+	return reg.MatchString(stepTextSb.String())
+}
+
+// apply macro and return updated feature content.
+func applyMacro(scenarioSteps []*messages.Step, macros []scenario, featureContent string) string {
+	featureContentLines := strings.Split(featureContent, "\n")
+	for _, step := range scenarioSteps {
+		macroIdx := slices.IndexFunc(macros, func(macro scenario) bool {
 			return macro.Name == step.Text
 		})
 
@@ -114,23 +122,29 @@ func applyMacro(steps []*messages.Step, macros []*scenario, featureContent *[]st
 			continue
 		}
 
-		expandedSteps := expandMacroSteps(macros[macroIdx], step)
+		expandedSteps := expandMacroSteps(ExpandMacroParam{
+			Macro:     macros[macroIdx],
+			Keyword:   step.Keyword,
+			DataTable: step.DataTable,
+		})
 
 		stepStartLine := int(step.Location.Line) - 1
-		stepEndLine := getStepEndLine(stepStartLine, *featureContent)
+		stepEndLine := getStepEndLine(stepStartLine, featureContentLines)
 
-		*featureContent = slices.Delete(*featureContent, stepStartLine, stepEndLine+1)
+		featureContentLines = slices.Delete(featureContentLines, stepStartLine, stepEndLine+1)
 
-		*featureContent = slices.Insert(*featureContent, stepStartLine, expandedSteps...)
+		featureContentLines = slices.Insert(featureContentLines, stepStartLine, expandedSteps...)
 	}
+
+	return strings.Join(featureContentLines, "\n")
 }
 
-func expandMacroSteps(macro *scenario, step *messages.Step) []string {
-	variables := getMacroVariables(step)
+func expandMacroSteps(params ExpandMacroParam) []string {
+	variables := getMacroVariables(params.DataTable)
 
 	var expandedSteps []string
-	for idx, macroStep := range macro.Steps {
-		keyword := step.Keyword
+	for idx, macroStep := range params.Macro.Steps {
+		keyword := params.Keyword
 		if idx > 0 {
 			keyword = "And"
 		}
@@ -149,9 +163,58 @@ func expandMacroSteps(macro *scenario, step *messages.Step) []string {
 			expandedSteps = append(expandedSteps, delimiter)
 		}
 
-		// TODO: Handle datatable if needed
+		if macroStep.DataTable != nil {
+			expandedSteps = append(expandedSteps, convertDatatableToString(macroStep.DataTable))
+		}
 	}
 	return expandedSteps
+}
+
+func convertDatatableToString(dt *messages.DataTable) string {
+	if dt == nil || len(dt.Rows) == 0 {
+		return ""
+	}
+
+	colWidths := calculateColWidths(dt)
+
+	var sb strings.Builder
+
+	// 2. Build the string
+	for _, row := range dt.Rows {
+		sb.WriteString(strings.Repeat(" ", int(row.Location.Column)-1))
+
+		sb.WriteString("|")
+		for i, cell := range row.Cells {
+			val := cell.Value
+			width := colWidths[i]
+			currentLen := utf8.RuneCountInString(val)
+
+			sb.WriteString(" ")
+			sb.WriteString(val)
+
+			// Pad with spaces
+			sb.WriteString(strings.Repeat(" ", width-currentLen))
+			sb.WriteString(" |")
+		}
+		sb.WriteString("\n")
+	}
+
+	return sb.String()
+}
+
+func calculateColWidths(dt *messages.DataTable) map[int]int {
+	colWidths := make(map[int]int)
+
+	for _, row := range dt.Rows {
+		for i, cell := range row.Cells {
+			// Use RuneCountInString to handle multi-byte characters correctly (e.g. emojis)
+			length := utf8.RuneCountInString(cell.Value)
+			if length > colWidths[i] {
+				colWidths[i] = length
+			}
+		}
+	}
+	return colWidths
 }
 
 func getStepEndLine(stepStartLine int, featureContent []string) int {
@@ -193,8 +256,8 @@ func getStepEndLine(stepStartLine int, featureContent []string) int {
 	return stepEndLine
 }
 
-func getMacros(features []*Feature) []*scenario {
-	var macros []*scenario
+func getMacros(features []*Feature) []scenario {
+	var macros []scenario
 
 	for _, f := range features {
 		if !isFileContainsMacros(f) {
@@ -202,12 +265,8 @@ func getMacros(features []*Feature) []*scenario {
 		}
 
 		for _, sc := range f.scenarios {
-			if sc == nil || len(sc.Tags) == 0 {
-				continue
-			}
-
 			if isMacroScenario(sc) {
-				macros = append(macros, sc)
+				macros = append(macros, *sc)
 			}
 		}
 	}
@@ -215,7 +274,7 @@ func getMacros(features []*Feature) []*scenario {
 	return macros
 }
 
-func getMacroTitles(macros []*scenario) []string {
+func getMacroTitles(macros []scenario) []string {
 	var titles []string
 	for _, macro := range macros {
 		titles = append(titles, macro.Name)
@@ -236,10 +295,19 @@ func isFileContainsMacros(feature *Feature) bool {
 }
 
 func isMacroScenario(scenario *messages.Scenario) bool {
+	if scenario == nil || len(scenario.Tags) == 0 {
+		return false
+	}
 	for _, tag := range scenario.Tags {
-		if tag.Name == MacroTag {
+		if strings.ToLower(tag.Name) == MacroTag {
 			return true
 		}
 	}
 	return false
+}
+
+type ExpandMacroParam struct {
+	Macro     scenario
+	Keyword   string
+	DataTable *messages.DataTable
 }

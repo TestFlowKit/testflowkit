@@ -5,63 +5,63 @@ import (
 	"time"
 )
 
-func TestParseSelectorString(t *testing.T) {
-	tests := []struct {
-		name     string
-		input    string
-		expected Selector
-	}{
-		{
-			name:  "CSS selector without prefix",
-			input: "button[type='submit']",
-			expected: Selector{
-				Type:  SelectorTypeCSS,
-				Value: "button[type='submit']",
-			},
+var parseSelectorStringtestCases = []struct {
+	name     string
+	input    string
+	expected Selector
+}{
+	{
+		name:  "CSS selector without prefix",
+		input: "button[type='submit']",
+		expected: Selector{
+			Type:  SelectorTypeCSS,
+			Value: "button[type='submit']",
 		},
-		{
-			name:  "CSS selector with class",
-			input: ".spinner",
-			expected: Selector{
-				Type:  SelectorTypeCSS,
-				Value: ".spinner",
-			},
+	},
+	{
+		name:  "CSS selector with class",
+		input: ".spinner",
+		expected: Selector{
+			Type:  SelectorTypeCSS,
+			Value: ".spinner",
 		},
-		{
-			name:  "XPath selector with prefix",
-			input: "xpath://div[contains(@class, 'loading')]",
-			expected: Selector{
-				Type:  SelectorTypeXPath,
-				Value: "//div[contains(@class, 'loading')]",
-			},
+	},
+	{
+		name:  "XPath selector with prefix",
+		input: "xpath://div[contains(@class, 'loading')]",
+		expected: Selector{
+			Type:  SelectorTypeXPath,
+			Value: "//div[contains(@class, 'loading')]",
 		},
-		{
-			name:  "XPath selector with button",
-			input: "xpath://button[@type='submit']",
-			expected: Selector{
-				Type:  SelectorTypeXPath,
-				Value: "//button[@type='submit']",
-			},
+	},
+	{
+		name:  "XPath selector with button",
+		input: "xpath://button[@type='submit']",
+		expected: Selector{
+			Type:  SelectorTypeXPath,
+			Value: "//button[@type='submit']",
 		},
-		{
-			name:  "CSS selector with whitespace",
-			input: "  button[type='submit']  ",
-			expected: Selector{
-				Type:  SelectorTypeCSS,
-				Value: "button[type='submit']",
-			},
+	},
+	{
+		name:  "CSS selector with whitespace",
+		input: "  button[type='submit']  ",
+		expected: Selector{
+			Type:  SelectorTypeCSS,
+			Value: "button[type='submit']",
 		},
-		{
-			name:  "XPath selector with whitespace",
-			input: "  xpath://div[contains(@class, 'loading')]  ",
-			expected: Selector{
-				Type:  SelectorTypeXPath,
-				Value: "//div[contains(@class, 'loading')]",
-			},
+	},
+	{
+		name:  "XPath selector with whitespace",
+		input: "  xpath://div[contains(@class, 'loading')]  ",
+		expected: Selector{
+			Type:  SelectorTypeXPath,
+			Value: "//div[contains(@class, 'loading')]",
 		},
-	}
+	},
+}
 
-	for _, tt := range tests {
+func TestParseSelectorString(t *testing.T) {
+	for _, tt := range parseSelectorStringtestCases {
 		t.Run(tt.name, func(t *testing.T) {
 			result := NewSelector(tt.input)
 			if result.Type != tt.expected.Type {
