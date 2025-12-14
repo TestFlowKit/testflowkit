@@ -44,12 +44,9 @@ jobs:
         with:
           go-version: ${{ vars.GO_VERSION }}
 
-      - name: Install golangci-lint
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-
-      - name: Run golangci-lint
-        run: golangci-lint run ./...
-
+      - name: Golangci-lint
+        uses: golangci/golangci-lint-action@v9.2.0
+      
       - name: Run Unit Tests
         run: go test ./...
 
