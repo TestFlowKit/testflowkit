@@ -1,4 +1,4 @@
-FROM golang:1.24.0-alpine
+FROM golang:1.25-alpine
 
 LABEL authors="marckent04"
 
@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD go run main.go
+CMD ["go", "run", "main.go"]
