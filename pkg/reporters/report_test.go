@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func newReport(formatType string) Report {
+func newReport(formatType string) *Report {
 	return New(formatType)
 }
 func TestReportShouldBeDisabledBecauseReportFormatNotRecognized(t *testing.T) {

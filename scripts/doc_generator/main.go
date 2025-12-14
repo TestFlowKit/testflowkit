@@ -8,10 +8,10 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"testflowkit/internal/step_definitions/backend"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/step_definitions/frontend"
 	"testflowkit/internal/step_definitions/frontend/assertions"
-	"testflowkit/internal/step_definitions/restapi"
 	"testflowkit/internal/step_definitions/variables"
 	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/logger"
@@ -24,7 +24,7 @@ func main() {
 	}
 	outputDir := path.Join(wd, "documentation", "content", "sentences")
 
-	allDocs := slices.Concat(frontend.GetDocs(), restapi.GetDocs(), variables.GetDocs(), assertions.GetDocs())
+	allDocs := slices.Concat(frontend.GetDocs(), backend.GetDocs(), variables.GetDocs(), assertions.GetDocs())
 	generateDocs(allDocs, outputDir)
 }
 

@@ -105,6 +105,7 @@ frontend:
     dashboard: "/dashboard"
 
 backend:
+  # REST API endpoints
   endpoints:
     get_user:
       method: "GET"
@@ -151,7 +152,7 @@ Feature: Dynamic User Testing
 
   Scenario: Test with API data and variables
     Given I prepare a request for the "get_user" endpoint
-    And I set the following path params:
+    And I set the following path parameters:
       | id | 123 |
     When I send the request
     And I store the JSON path "data.name" from the response into "user_name" variable
@@ -189,6 +190,7 @@ For comprehensive documentation, visit the [official TestFlowKit documentation](
 - [Configuration Guide](https://testflowkit.dreamsfollowers.me/configuration)
 - [Step Definitions](https://testflowkit.dreamsfollowers.me/sentences)
 - [Variables System](https://testflowkit.dreamsfollowers.me/variables)
+
 - [FAQ & Troubleshooting](https://testflowkit.dreamsfollowers.me/troubleshooting)
 - [Test Execution Design (TED)](https://testflowkit.dreamsfollowers.me/docs/category/test-execution-design-ted)
 
@@ -248,9 +250,12 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 
 ### Backend Configuration
 
-- **API Endpoints**: REST API definitions with methods and paths
+- **REST API Endpoints**: REST API definitions with methods and paths
+
 - **Default Headers**: Common HTTP headers for API requests
 - **Authentication**: API authentication configuration
+
+- **Variable Parsing**: Intelligent parsing of JSON objects, arrays, and primitive types
 
 ### File Configuration
 
@@ -368,20 +373,21 @@ files:
 
 ### API Testing
 
+#### REST API Testing
+
 Full REST API testing with request/response validation:
 
 ```gherkin
-# API Requests
+# REST API Requests
 Given I prepare a request for the "get_user" endpoint
-When I set the following path params:
+When I set the following path parameters:
   | id | 1 |
 And I send the request
 
-
 # Response Validation
 Then the response status code should be 200
-And the response body should contain "userId"
-And the response body path "id" should exist
+And the response should have field "userId"
+And the response should have field "id"
 ```
 
 ### Variables System
@@ -431,7 +437,7 @@ Variables can be used in complex scenarios for data-driven testing:
 ```gherkin
 Scenario: End-to-end data flow with variables
   Given I prepare a request for the "get_user" endpoint
-  And I set the following path params:
+  And I set the following path parameters:
     | id | 123 |
   When I send the request
   And I store the JSON path "data.name" from the response into "api_user_name" variable
