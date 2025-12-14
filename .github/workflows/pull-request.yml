@@ -11,7 +11,6 @@ permissions:
 env:
   BRANCH_NAME_REGEX: "^(docs|feat|fix|perf|refactor|revert|style|test|chore|releases)/"
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  GO_VERSION: "1.24.0"
 jobs:
   quality_check:
     name: code_quality
@@ -38,7 +37,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: ${{ vars.GO_VERSION }}
 
       - name: Golangci-lint
         uses: golangci/golangci-lint-action@v9.2.0

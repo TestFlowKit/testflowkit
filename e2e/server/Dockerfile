@@ -1,4 +1,4 @@
-FROM golang:1.24.0-alpine
+FROM golang:1.25.0-alpine
 
 LABEL authors="marckent04"
 
