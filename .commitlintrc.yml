@@ -16,7 +16,7 @@ rules:
   ]]
 
   # Sévérité 2 (erreur), le message doit commencer par un type suivi d'un sujet
-  'header-max-length': [2, 'always', 72]
+  'header-max-length': [2, 'always', 100]
 
   # Le scope est facultatif
   'scope-empty': [0]
