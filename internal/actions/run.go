@@ -69,7 +69,7 @@ func run(appConfig *config.Config, errCfg error) {
 	os.Exit(1)
 }
 
-func prepareTestSuite(appConfig *config.Config) (reporters.Report, godog.TestSuite) {
+func prepareTestSuite(appConfig *config.Config) (*reporters.Report, godog.TestSuite) {
 	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
 	features := make([]godog.Feature, len(parsedFeatures))
 	for i, f := range parsedFeatures {
@@ -92,8 +92,8 @@ func prepareTestSuite(appConfig *config.Config) (reporters.Report, godog.TestSui
 	testSuite := godog.TestSuite{
 		Name:                 "Test Suite",
 		Options:              &opts,
-		TestSuiteInitializer: testSuiteInitializer(&testReport),
-		ScenarioInitializer:  scenarioInitializer(appConfig, &testReport),
+		TestSuiteInitializer: testSuiteInitializer(testReport),
+		ScenarioInitializer:  scenarioInitializer(appConfig, testReport),
 	}
 	return testReport, testSuite
 }

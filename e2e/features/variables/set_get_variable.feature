@@ -3,8 +3,8 @@ Feature: variables testing
 
 
     Scenario: Write API response field into another field
-        Given I prepare a request for the "get_post_by_id" endpoint
-        And I set the following path params:
+        Given I prepare a request to "get_post_by_id"
+        And I set the following path parameters:
             | id | 1 |
         And I send the request
         And I store the JSON path "title" from the response into "postTitle" variable

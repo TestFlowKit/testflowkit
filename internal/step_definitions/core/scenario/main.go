@@ -10,13 +10,17 @@ import (
 
 type Context struct {
 	frontend  *frontend
-	http      *RESTAPIContext
+	backend   *BackendContext
 	config    *config.Config
 	variables map[string]any
 }
 
 func (c *Context) GetConfig() *config.Config {
 	return c.config
+}
+
+func (c *Context) GetBackendContext() *BackendContext {
+	return c.backend
 }
 
 func (c *Context) GetHTMLElementByLabel(label string) (browser.Element, error) {
@@ -43,10 +47,8 @@ func (c *Context) SetVariable(name string, value any) {
 
 func NewContext(cfg *config.Config) *Context {
 	return &Context{
-		frontend: newFrontCtx(cfg),
-		http: &RESTAPIContext{
-			RequestHeaders: make(map[string]string),
-		},
+		frontend:  newFrontCtx(cfg),
+		backend:   NewBackendContext(),
 		config:    cfg,
 		variables: make(map[string]any),
 	}

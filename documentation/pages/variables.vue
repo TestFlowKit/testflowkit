@@ -168,7 +168,7 @@ And the user enters "{{user_id}}" into the "id" field
 const jsonPathExample = `
 # Extract data from API response
 Given I prepare a request for the "get_user" endpoint
-And I set the following path params:
+And I set the following path parameters:
   | id | 123 |
 When I send the request
 And I store the JSON path "data.name" from the response into "user_name" variable
@@ -236,7 +236,7 @@ Scenario: Transfer data between pages
 const apiToFrontendPattern = `
 # Pattern: Extract API data and use in frontend
 Given I prepare a request for the "get_user" endpoint
-And I set the following path params:
+And I set the following path parameters:
   | id | 123 |
 When I send the request
 And I store the JSON path "data.name" from the response into "api_user_name" variable

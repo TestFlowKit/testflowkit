@@ -52,9 +52,9 @@ func (r *Report) HasScenarios() bool {
 	return len(r.scenarios) > 0
 }
 
-func New(formatType string) Report {
+func New(formatType string) *Report {
 	reportFormatter := getFormatter(formatType)
-	return Report{
+	return &Report{
 		formatter:         reportFormatter,
 		AreAllTestsPassed: true,
 	}

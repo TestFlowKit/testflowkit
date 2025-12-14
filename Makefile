@@ -33,7 +33,7 @@ test:
 
 .PHONY: run_e2e
 run_e2e:
-	${RUN_CMD} -f e2e/frontend.yml -c e2e/cli.yml
+	${RUN_CMD} -c e2e/config.yml
 
 .PHONY: run_e2e_server
 run_e2e_server:
