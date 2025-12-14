@@ -4,6 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     groups:
       go-dependencies:
         patterns:
@@ -14,6 +17,9 @@ updates:
     directory: "/documentation"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     groups:
       node-dependencies:
         patterns:
