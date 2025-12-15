@@ -85,6 +85,7 @@ type FrontendConfig struct {
 type BackendConfig struct {
 	DefaultHeaders map[string]string   `yaml:"default_headers"`
 	Endpoints      map[string]Endpoint `yaml:"endpoints"`
+	GraphQL        *GraphQLConfig      `yaml:"graphql"`
 }
 
 type Endpoint struct {
@@ -98,4 +99,16 @@ type Endpoint struct {
 type FileConfig struct {
 	Definitions   map[string]string `yaml:"definitions"`
 	BaseDirectory string            `yaml:"base_directory"`
+}
+
+type GraphQLConfig struct {
+	Endpoint       string                      `yaml:"endpoint" validate:"required"`
+	DefaultHeaders map[string]string           `yaml:"default_headers"`
+	Operations     map[string]GraphQLOperation `yaml:"operations" validate:"required,min=1"`
+}
+
+type GraphQLOperation struct {
+	Type        string `yaml:"type" validate:"required,oneof=query mutation"`
+	Operation   string `yaml:"operation" validate:"required"`
+	Description string `yaml:"description"`
 }

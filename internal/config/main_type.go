@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"maps"
 	"net/url"
 	"path/filepath"
 	"strings"
@@ -86,6 +87,64 @@ func (c *Config) GetBackendBaseURL() string {
 	return env.APIBaseURL
 }
 
+func (c *Config) GetGraphQLEndpoint() (string, error) {
+	if c.Backend.GraphQL == nil {
+		return "", errors.New("GraphQL configuration not found")
+	}
+
+	parsedURL, err := url.Parse(c.Backend.GraphQL.Endpoint)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse GraphQL endpoint: %w", err)
+	}
+
+	if parsedURL.Scheme != "" {
+		return parsedURL.String(), nil
+	}
+
+	baseURL := c.GetBackendBaseURL()
+	if baseURL == "" {
+		return "", errors.New("backend base URL not configured")
+	}
+
+	// Ensure proper URL joining
+	if !strings.HasSuffix(baseURL, "/") {
+		baseURL += "/"
+	}
+	if strings.HasPrefix(c.Backend.GraphQL.Endpoint, "/") {
+		return baseURL + strings.TrimPrefix(c.Backend.GraphQL.Endpoint, "/"), nil
+	}
+	return baseURL + c.Backend.GraphQL.Endpoint, nil
+}
+
+func (c *Config) GetGraphQLOperation(operationName string) (GraphQLOperation, error) {
+	if c.Backend.GraphQL == nil {
+		return GraphQLOperation{}, errors.New("GraphQL configuration not found")
+	}
+
+	operation, exists := c.Backend.GraphQL.Operations[operationName]
+	if !exists {
+		return GraphQLOperation{}, fmt.Errorf("GraphQL operation '%s' not found in configuration", operationName)
+	}
+
+	return operation, nil
+}
+
+func (c *Config) GetGraphQLHeaders() map[string]string {
+	headers := make(map[string]string)
+
+	maps.Copy(headers, c.Backend.DefaultHeaders)
+
+	if c.Backend.GraphQL != nil {
+		maps.Copy(headers, c.Backend.GraphQL.DefaultHeaders)
+	}
+
+	return headers
+}
+
+func (c *Config) IsGraphQLConfigured() bool {
+	return c.Backend.GraphQL != nil
+}
+
 func (c *Config) GetFileBaseDirectory() string {
 	return c.Files.BaseDirectory
 }
@@ -123,6 +182,10 @@ func (c *Config) ValidateConfiguration() error {
 	}
 
 	if err := c.validateFrontend(); err != nil {
+		return err
+	}
+
+	if err := c.validateGraphQL(); err != nil {
 		return err
 	}
 
@@ -196,4 +259,43 @@ func (c *Config) GetVersion() string {
 		return "unknown"
 	}
 	return c.appVersion
+}
+
+func (c *Config) validateGraphQL() error {
+	if c.Backend.GraphQL == nil {
+		logger.Info("GraphQL config is not defined")
+		return nil
+	}
+
+	if c.Backend.GraphQL.Endpoint == "" {
+		return errors.New("GraphQL endpoint is required when GraphQL config is defined")
+	}
+
+	if len(c.Backend.GraphQL.Operations) == 0 {
+		return errors.New("at least one GraphQL operation must be defined when GraphQL config is present")
+	}
+
+	// Validate each operation
+	for operationName, operation := range c.Backend.GraphQL.Operations {
+		if operation.Type == "" {
+			return fmt.Errorf("GraphQL operation '%s' must have a type", operationName)
+		}
+
+		if operation.Type != "query" && operation.Type != "mutation" {
+			const msg = "GraphQL operation '%s' type must be 'query' or 'mutation', got '%s'"
+			return fmt.Errorf(msg, operationName, operation.Type)
+		}
+
+		if operation.Operation == "" {
+			const msg = "GraphQL operation '%s' must have an operation definition"
+			return fmt.Errorf(msg, operationName)
+		}
+
+		if operation.Description == "" {
+			const msg = "GraphQL operation '%s' should have a description"
+			logger.Warn(fmt.Sprintf(msg, operationName), nil)
+		}
+	}
+
+	return nil
 }

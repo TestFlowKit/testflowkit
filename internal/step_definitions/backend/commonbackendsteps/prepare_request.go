@@ -3,29 +3,27 @@ package commonbackendsteps
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"testflowkit/internal/step_definitions/api/protocol"
-	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
 )
 
 func (steps) prepareRequest() stepbuilder.Step {
-	return stepbuilder.NewWithOneVariable(
+	return stepbuilder.NewWithTwoVariables(
 		[]string{
-			`I prepare a request to {string}`,
+			`I prepare a (?i)(graphql|rest) request to {string}`,
 		},
-		func(ctx context.Context, name string) (context.Context, error) {
-			scenarioCtx := scenario.MustFromContext(ctx)
-			backend := scenarioCtx.GetBackendContext()
-
-			// Auto-detect protocol based on step text or use existing protocol
-			var adapter scenario.APIProtocol
-			if backend.GetProtocol() != nil {
-				adapter = backend.GetProtocol()
-			} else {
+		func(ctx context.Context, protocolType string, name string) (context.Context, error) {
+			var adapter protocol.APIProtocol
+			switch strings.ToLower(protocolType) {
+			case "graphql":
+				adapter = protocol.NewGraphQLAdapter()
+			case "rest":
 				adapter = protocol.NewRESTAPIAdapter()
-				logger.InfoFf("Using REST API protocol for endpoint: %s", name)
+			default:
+				return ctx, fmt.Errorf("unsupported protocol type: %s", protocolType)
 			}
 
 			// Prepare the request using the protocol adapter
@@ -41,10 +39,11 @@ func (steps) prepareRequest() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Prepares a request",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The name of the endpoint (REST)", Type: stepbuilder.VarTypeString},
+				{Name: "protocolType", Description: "The API protocol type (graphql or REST)", Type: stepbuilder.VarTypeString},
+				{Name: "name", Description: "The name of the operation or endpoint", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Given I prepare a request to "getUser"`,
-			Category: stepbuilder.RESTAPI,
+			Example:  `Given I prepare a REST request to "getUser"`,
+			Category: stepbuilder.Backend,
 		},
 	)
 }

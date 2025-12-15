@@ -3,7 +3,7 @@ Feature: variables testing
 
 
     Scenario: Write API response field into another field
-        Given I prepare a request to "get_post_by_id"
+        Given I prepare a REST request to "get_post_by_id"
         And I set the following path parameters:
             | id | 1 |
         And I send the request
