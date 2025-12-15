@@ -53,6 +53,11 @@
       <CodeBlock :code="backendSection" language="yaml" />
     </AccordionItem>
 
+    <AccordionItem title="GraphQL Configuration">
+      <p class="text-sm md:text-base">Configure GraphQL endpoints, operations, and headers for GraphQL API testing.</p>
+      <CodeBlock :code="graphqlSection" language="yaml" />
+    </AccordionItem>
+
     <AccordionItem title="Complete Test Configuration Example">
       <CodeBlock :code="testConfigExample" language="yaml" />
     </AccordionItem>
@@ -190,6 +195,57 @@ backend:
       description: "Delete a user"
 `.trim();
 
+const graphqlSection = `
+backend:
+  graphql:
+    endpoint: "/graphql"
+    default_headers:
+      Content-Type: "application/json"
+      Authorization: "Bearer {token}"
+    operations:
+      get_user_profile:
+        type: "query"
+        operation: |
+          query GetUserProfile($userId: ID!) {
+            user(id: $userId) {
+              id
+              name
+              email
+              profile {
+                avatar
+                bio
+              }
+            }
+          }
+        description: "Fetch user profile with nested data"
+      
+      update_user:
+        type: "mutation"
+        operation: |
+          mutation UpdateUser($id: ID!, $input: UserInput!) {
+            updateUser(id: $id, input: $input) {
+              id
+              name
+              email
+              updatedAt
+            }
+          }
+        description: "Update user information"
+      
+      search_users:
+        type: "query"
+        operation: |
+          query SearchUsers($tags: [String!]!, $limit: Int) {
+            users(tags: $tags, limit: $limit) {
+              id
+              name
+              email
+              tags
+            }
+          }
+        description: "Search users with array parameters"
+`.trim();
+
 const testConfigExample = `
 active_environment: "local"
 
@@ -251,6 +307,23 @@ backend:
     Content-Type: "application/json"
     Accept: "application/json"
     User-Agent: "TestFlowKit/1.0"
+  
+  graphql:
+    endpoint: "/graphql"
+    default_headers:
+      Content-Type: "application/json"
+    operations:
+      get_user_profile:
+        type: "query"
+        operation: |
+          query GetUserProfile($userId: ID!) {
+            user(id: $userId) {
+              id
+              name
+              email
+            }
+          }
+        description: "Fetch user profile"
   
   endpoints:
     get_user:

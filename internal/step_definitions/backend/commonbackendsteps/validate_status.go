@@ -39,7 +39,7 @@ func (steps) validateStatusCode() stepbuilder.Step {
 				{Name: "statusCode", Description: "Expected HTTP status code", Type: stepbuilder.VarTypeInt},
 			},
 			Example:  `Then the response status code should be 200`,
-			Category: stepbuilder.RESTAPI,
+			Category: stepbuilder.Backend,
 		},
 	)
 }

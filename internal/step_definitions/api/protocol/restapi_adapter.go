@@ -13,15 +13,12 @@ import (
 	"time"
 )
 
-// RESTAPIAdapter implements the APIProtocol interface for REST API requests.
 type RESTAPIAdapter struct{}
 
-// NewRESTAPIAdapter creates a new REST API protocol adapter.
 func NewRESTAPIAdapter() *RESTAPIAdapter {
 	return &RESTAPIAdapter{}
 }
 
-// PrepareRequest prepares a REST API request by looking up the endpoint in config.
 func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, endpointName string) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	cfg := scenarioCtx.GetConfig()
@@ -40,7 +37,6 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, endpointName string
 	return ctx, nil
 }
 
-// SendRequest executes the prepared REST API request.
 func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	const defaultDuration = 2
@@ -77,7 +73,6 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	return ctx, nil
 }
 
-// createRequest creates an HTTP request from the scenario context.
 func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenario.Context) (*http.Request, error) {
 	endpoint := scenarioCtx.GetEndpoint()
 	bodyReader := a.getBodyReader(scenarioCtx)
@@ -107,7 +102,6 @@ func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenari
 	return req, nil
 }
 
-// getBodyReader returns an io.Reader for the request body.
 func (a *RESTAPIAdapter) getBodyReader(scenarioCtx *scenario.Context) io.Reader {
 	requestBody := scenarioCtx.GetRequestBody()
 	if requestBody != nil {
@@ -118,7 +112,6 @@ func (a *RESTAPIAdapter) getBodyReader(scenarioCtx *scenario.Context) io.Reader 
 	return nil
 }
 
-// detectContentType attempts to detect the content type from the request body.
 func (a *RESTAPIAdapter) detectContentType(body []byte) string {
 	if len(body) == 0 {
 		return ""
@@ -137,7 +130,6 @@ func (a *RESTAPIAdapter) detectContentType(body []byte) string {
 	return "text/plain"
 }
 
-// GetResponseBody returns the raw REST API response body.
 func (a *RESTAPIAdapter) GetResponseBody(ctx context.Context) ([]byte, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	backend := scenarioCtx.GetBackendContext()
@@ -149,7 +141,6 @@ func (a *RESTAPIAdapter) GetResponseBody(ctx context.Context) ([]byte, error) {
 	return backend.GetResponseBody(), nil
 }
 
-// GetStatusCode returns the HTTP status code of the REST API response.
 func (a *RESTAPIAdapter) GetStatusCode(ctx context.Context) (int, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	backend := scenarioCtx.GetBackendContext()
@@ -161,7 +152,6 @@ func (a *RESTAPIAdapter) GetStatusCode(ctx context.Context) (int, error) {
 	return backend.GetStatusCode(), nil
 }
 
-// HasErrors checks if the REST API response indicates an error.
 func (a *RESTAPIAdapter) HasErrors(ctx context.Context) bool {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	backend := scenarioCtx.GetBackendContext()
@@ -175,7 +165,6 @@ func (a *RESTAPIAdapter) HasErrors(ctx context.Context) bool {
 	return backend.GetStatusCode() >= minErrorStatus
 }
 
-// GetProtocolName returns "REST".
 func (a *RESTAPIAdapter) GetProtocolName() string {
-	return "REST"
+	return string(ProtocolRESTAPI)
 }

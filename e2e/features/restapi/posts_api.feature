@@ -7,7 +7,7 @@ Feature: Posts API Testing
         this macro was created for test a bug in macro application
         the macro did not include the docstring
 
-        Given I prepare a request to "create_post"
+        Given I prepare a REST request to "create_post"
         When I set the request body to:
             """
             {
@@ -19,7 +19,7 @@ Feature: Posts API Testing
         And I send the request
 
     Scenario: Retrieve all posts successfully
-        Given I prepare a request to "get_posts"
+        Given I prepare a REST request to "get_posts"
         When I send the request
         Then the response status code should be 200
         And the response should have field "0.userId"
@@ -27,7 +27,7 @@ Feature: Posts API Testing
         And the response should have field "0.title"
 
     Scenario: Retrieve a specific post by ID
-        Given I prepare a request to "get_post_by_id"
+        Given I prepare a REST request to "get_post_by_id"
         When I set the following path parameters:
             | id | 1 |
         And I send the request
@@ -46,14 +46,14 @@ Feature: Posts API Testing
 
 
     Scenario: Delete a post
-        Given I prepare a request to "delete_post"
+        Given I prepare a REST request to "delete_post"
         When I set the following path parameters:
             | id | 1 |
         And I send the request
         Then the response status code should be 200
 
     Scenario: Retrieve posts with query parameters
-        Given I prepare a request to "get_posts"
+        Given I prepare a REST request to "get_posts"
         When I set the following query parameters:
             | _limit | 5 |
         And I send the request
@@ -63,7 +63,7 @@ Feature: Posts API Testing
         And the response should have field "0.title"
 
     Scenario: Retrieve posts for specific user
-        Given I prepare a request to "get_posts"
+        Given I prepare a REST request to "get_posts"
         When I set the following query parameters:
             | userId | 1 |
         And I send the request

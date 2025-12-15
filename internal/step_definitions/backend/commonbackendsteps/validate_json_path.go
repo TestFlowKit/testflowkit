@@ -45,7 +45,7 @@ func (steps) validateJSONPathExists() stepbuilder.Step {
 				{Name: "path", Description: "JSON path to check", Type: stepbuilder.VarTypeString},
 			},
 			Example:  `Then the response should have field "user.name"`,
-			Category: stepbuilder.RESTAPI,
+			Category: stepbuilder.Backend,
 		},
 	)
 }

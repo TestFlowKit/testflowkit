@@ -44,7 +44,7 @@ func (steps) sendRequest() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Sends the prepared request",
 			Example:     `When I send the request`,
-			Category:    stepbuilder.RESTAPI,
+			Category:    stepbuilder.Backend,
 		},
 	)
 }

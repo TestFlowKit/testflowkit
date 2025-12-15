@@ -102,6 +102,43 @@ backend:
     User-Agent: "TestFlowKit/1.0"
     X-Requested-With: "TestFlowKit"
 
+  graphql:
+    endpoint: "https://graphqlzero.almansi.me/api"
+    default_headers:
+      Content-Type: "application/json"
+    operations:
+      getUser:
+        type: "query"
+        operation: |
+          query GetUser($id: ID!) {
+            user(id: $id) {
+              id
+              username
+              email
+            }
+          }
+        description: "Fetch user by ID"
+      
+      createPost:
+        type: "mutation"
+        operation: |
+          mutation CreatePost($input: CreatePostInput!) {
+            createPost(input: $input) {
+              id
+              title
+              body
+            }
+          }
+        description: "Create a new post"
+        
+      deletePost:
+        type: "mutation"
+        operation: |
+          mutation DeletePost($id: ID!) {
+            deletePost(id: $id)
+          }
+        description: "Delete a post"
+
   endpoints:
     get_posts:
       method: "GET"
