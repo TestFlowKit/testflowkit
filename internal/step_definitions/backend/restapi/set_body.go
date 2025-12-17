@@ -6,8 +6,10 @@ import (
 	"os"
 	"strings"
 
+	"testflowkit/internal/step_definitions/api/jsonhelpers"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/logger"
 )
 
@@ -60,9 +62,18 @@ func (steps) setRequestBodyFromFile() stepbuilder.Step {
 				return ctx, fmt.Errorf("only JSON files are supported for request body: %s", filePath)
 			}
 
+			errPath := fileutils.ValidatePath(filePath)
+			if errPath != nil {
+				return ctx, errPath
+			}
+
 			content, err := os.ReadFile(filePath)
 			if err != nil {
 				return ctx, fmt.Errorf("failed to read request body file '%s': %w", filePath, err)
+			}
+
+			if !jsonhelpers.IsValid(content) {
+				return ctx, fmt.Errorf("invalid JSON in request body file '%s'", filePath)
 			}
 
 			backend.SetRequestBody(content)
