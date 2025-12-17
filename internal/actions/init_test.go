@@ -133,54 +133,6 @@ func TestInitializationStateCleanup(t *testing.T) {
 	assert.True(t, os.IsNotExist(statErr), "Test directory should be removed after cleanup")
 }
 
-func TestValidatePath(t *testing.T) {
-	tests := []struct {
-		name            string
-		path            string
-		allowedPrefixes []string
-		expectError     bool
-	}{
-		{
-			name:        "valid simple path",
-			path:        featuresDir,
-			expectError: false,
-		},
-		{
-			name:        "directory traversal attempt",
-			path:        "../etc/passwd",
-			expectError: true,
-		},
-		{
-			name:        "nested directory traversal",
-			path:        featuresDir + "/../../../etc/passwd",
-			expectError: true,
-		},
-		{
-			name:            "valid path with allowed prefix",
-			path:            filepath.Join(featuresDir, "sample.feature"),
-			allowedPrefixes: []string{featuresDir},
-			expectError:     false,
-		},
-		{
-			name:            "invalid path outside allowed prefix",
-			path:            configFile,
-			allowedPrefixes: []string{featuresDir},
-			expectError:     true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := validatePath(tt.path, tt.allowedPrefixes...)
-			if tt.expectError {
-				require.Error(t, err, "Expected error for path %s", tt.path)
-			} else {
-				require.NoError(t, err, "Expected no error for path %s", tt.path)
-			}
-		})
-	}
-}
-
 func TestCreateConfigFile(t *testing.T) {
 	defer os.Remove(configFile)
 	os.Remove(configFile)

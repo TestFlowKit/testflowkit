@@ -71,3 +71,11 @@ Feature: Posts API Testing
         And the response should have field "0.userId"
         And the response should have field "0.id"
         And the response should have field "0.title"
+
+
+    @from_file
+    Scenario: Create a new post with json file
+        Given I prepare a REST request to "create_post"
+        When I set the request body from file "features/restapi/new_post.json"
+        And I send the request
+        Then the response status code should be 201

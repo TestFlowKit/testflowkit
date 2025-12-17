@@ -47,7 +47,9 @@ func getFeaturesPaths(featureFilesLocation string) ([]string, error) {
 			return nil
 		}
 
-		featuresPaths = append(featuresPaths, path)
+		if filepath.Ext(path) == ".feature" {
+			featuresPaths = append(featuresPaths, path)
+		}
 		return nil
 	})
 	return featuresPaths, getFeaturesErr

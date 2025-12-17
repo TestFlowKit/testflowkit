@@ -12,6 +12,7 @@ func GetSteps() []stepbuilder.Step {
 		s.setQueryParams(),
 		s.setPathParams(),
 		s.setRequestBody(),
+		s.setRequestBodyFromFile(),
 		s.setJSONBody(),
 		s.debugRequest(),
 	}

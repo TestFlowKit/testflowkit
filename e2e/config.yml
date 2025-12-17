@@ -121,14 +121,7 @@ backend:
       
       createPost:
         type: "mutation"
-        operation: |
-          mutation CreatePost($input: CreatePostInput!) {
-            createPost(input: $input) {
-              id
-              title
-              body
-            }
-          }
+        operation: "graphql_queries/create_post.graphql"
         description: "Create a new post"
         
       deletePost:

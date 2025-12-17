@@ -73,3 +73,8 @@ func PrettyPrint(data []byte) (string, error) {
 
 	return string(pretty), nil
 }
+
+func IsValid(data []byte) bool {
+	var js any
+	return json.Unmarshal(data, &js) == nil
+}

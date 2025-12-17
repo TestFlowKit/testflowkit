@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"testflowkit/internal/config"
 	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/logger"
 )
+
+var validatePath = fileutils.ValidatePath
 
 const (
 	featuresDir = "features"
@@ -87,26 +88,6 @@ func (state *InitializationState) cleanup() {
 			logger.Warn(fmt.Sprintf("Failed to cleanup file %s: %v", file, err), nil)
 		}
 	}
-}
-
-func validatePath(path string, allowedPrefixes ...string) error {
-	cleanPath := filepath.Clean(path)
-
-	if strings.Contains(cleanPath, "..") {
-		return fmt.Errorf("invalid path contains directory traversal: %s", path)
-	}
-
-	if len(allowedPrefixes) == 0 {
-		return nil
-	}
-
-	for _, prefix := range allowedPrefixes {
-		if cleanPath == prefix || strings.HasPrefix(cleanPath, prefix+string(filepath.Separator)) {
-			return nil
-		}
-	}
-
-	return fmt.Errorf("path %s is not within allowed locations: %v", path, allowedPrefixes)
 }
 
 func validateFilePermissions(dir string) error {
