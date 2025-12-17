@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"maps"
+	"os"
+	"strings"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/pkg/graphql"
 	"testflowkit/pkg/logger"
@@ -21,13 +23,18 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, operationName strin
 	scenarioCtx := scenario.MustFromContext(ctx)
 	cfg := scenarioCtx.GetConfig()
 
-	operation, err := cfg.GetGraphQLOperation(operationName)
+	op, err := cfg.GetGraphQLOperation(operationName)
+	if err != nil {
+		return ctx, err
+	}
+
+	query, err := a.getQuery(op.Operation)
 	if err != nil {
 		return ctx, err
 	}
 
 	req := &graphql.Request{
-		Query:     operation.Operation,
+		Query:     query,
 		Variables: scenarioCtx.GetGraphQLVariables(),
 	}
 
@@ -36,6 +43,21 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, operationName strin
 	scenarioCtx.GetBackendContext().SetProtocol(a)
 
 	return ctx, nil
+}
+
+func (*GraphQLAdapter) getQuery(operation string) (string, error) {
+	isGqlFilePath := strings.HasSuffix(operation, ".graphql") || strings.HasSuffix(operation, ".gql")
+	if isGqlFilePath {
+		content, err := os.ReadFile(operation)
+		if err != nil {
+			return "", fmt.Errorf("failed to read GraphQL query file '%s': %w", operation, err)
+		}
+
+		logger.InfoFf("GraphQL query loaded from file: %s", operation)
+		return string(content), nil
+	}
+
+	return operation, nil
 }
 
 func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, error) {
