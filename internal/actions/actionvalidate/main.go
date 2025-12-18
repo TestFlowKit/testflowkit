@@ -1,9 +1,10 @@
-package actions
+package actionvalidate
 
 import (
 	"context"
 	"os"
 	"strings"
+	"testflowkit/internal/actions/actionutils"
 	"testflowkit/internal/config"
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
@@ -14,12 +15,12 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
-func validate(appConfig *config.Config, cfgErr error) {
+func Execute(appConfig *config.Config, cfgErr error) {
 	if cfgErr != nil {
 		logger.Fatal("VALIDATE", cfgErr)
 	}
 
-	displayConfigSummary(appConfig)
+	actionutils.DisplayConfigSummary(appConfig)
 
 	logger.Info("Validate gherkin files ...")
 
@@ -66,7 +67,7 @@ func registerValidationStepDefinitions(ctx *godog.ScenarioContext, vCtx *stepbui
 	for _, step := range stepdefinitions.GetAll() {
 		handler := step.Validate(vCtx)
 		for _, sentence := range step.GetSentences() {
-			ctx.Step(formatStep(sentence), handler)
+			ctx.Step(actionutils.FormatStep(sentence), handler)
 		}
 	}
 }

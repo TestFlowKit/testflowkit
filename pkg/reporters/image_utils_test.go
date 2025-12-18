@@ -13,8 +13,8 @@ import (
 func createTestImage(width, height int) []byte {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	// Fill with some color
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
+	for y := range height {
+		for x := range width {
 			img.Set(x, y, color.RGBA{R: 100, G: 150, B: 200, A: 255})
 		}
 	}

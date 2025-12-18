@@ -1,4 +1,4 @@
-package actions
+package actioninit
 
 import (
 	_ "embed"
@@ -24,7 +24,7 @@ var configTemplate string
 //go:embed boilerplate/sample.boilerplate.feature
 var sampleFeatureTemplate string
 
-func initMode(_ *config.Config, _ error) {
+func Execute(_ *config.Config, _ error) {
 	logger.Info("Initializing TestFlowKit project...")
 
 	state := &InitializationState{
