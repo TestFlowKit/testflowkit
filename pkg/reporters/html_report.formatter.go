@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"log"
 	"os"
-	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg"
 	"testflowkit/pkg/logger"
 )
@@ -16,7 +15,11 @@ var reportTemplate string
 type htmlReportFormatter struct{}
 
 func (r htmlReportFormatter) format(ts htmlTestSuiteDetails) string {
-	tmpl, err := template.New("report").Parse(reportTemplate)
+	tmpl, err := template.New("report").Funcs(template.FuncMap{
+		"safeURL": func(s string) template.URL {
+			return template.URL(s) //nolint:gosec // Trusting base64 encoded image data
+		},
+	}).Parse(reportTemplate)
 	if err != nil {
 		logger.Fatal("cannot parse report template", err)
 	}
@@ -33,11 +36,7 @@ func (r htmlReportFormatter) format(ts htmlTestSuiteDetails) string {
 func (r htmlReportFormatter) WriteReport(details testSuiteDetails) {
 	content := r.formatContent(details)
 
-	if err := os.MkdirAll("report", fileutils.DirPermission); err != nil {
-		log.Panicf("cannot create report directory ( %s )\n", err)
-	}
-
-	file, err := os.Create("report/report.html")
+	file, err := os.Create("report.html")
 	if err != nil {
 		log.Panicf("cannot create reporters file in this folder ( %s )\n", err)
 	}

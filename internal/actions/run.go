@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"testflowkit/internal/config"
@@ -160,45 +159,41 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 			return ctx, nil
 		}
 
-		screenshotPath := ""
+		screenshotBase64 := ""
 		if config.IsScreenshotOnFailureEnabled() {
 			currentPage, errPage := scenarioCtx.GetCurrentPageOnly()
 			if errPage == nil && currentPage != nil {
-				screenshotPath = takeScreenshot(st, currentPage)
+				screenshotBase64 = takeScreenshot(st, currentPage)
 			}
 		}
 
 		myCtx.addStep(stepText, status, stepError{
-			error:          err,
-			screenshotPath: screenshotPath,
+			error:            err,
+			screenshotBase64: screenshotBase64,
 		})
 		return ctx, err
 	}
 }
 
 func takeScreenshot(st *godog.Step, currentPage browser.Page) string {
-	safeStepName := sanitizeFilename(st.Text)
-	timestamp := time.Now().Format("20060102_150405_000")
-	screenshotPath := filepath.Join(screenshotDir, safeStepName+"_"+timestamp+".png")
-
 	screenshotData, screenshotErr := currentPage.Screenshot()
 	if screenshotErr != nil {
 		logger.Warn("Failed to take screenshot on step failure", []string{
 			"step: " + st.Text,
 			"error: " + screenshotErr.Error(),
 		})
-		screenshotPath = ""
-	} else {
-		if writeErr := os.WriteFile(screenshotPath, screenshotData, fileutils.FilePermission); writeErr != nil {
-			logger.Warn("Failed to save screenshot file", []string{
-				"step: " + st.Text,
-				"path: " + screenshotPath,
-				"error: " + writeErr.Error(),
-			})
-			screenshotPath = ""
-		}
+		return ""
 	}
-	return screenshotPath
+
+	base64Str, err := reporters.OptimizeAndEncodeScreenshot(screenshotData)
+	if err != nil {
+		logger.Warn("Failed to optimize and encode screenshot", []string{
+			"step: " + st.Text,
+			"error: " + err.Error(),
+		})
+		return ""
+	}
+	return base64Str
 }
 
 func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
@@ -256,11 +251,11 @@ func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err
 
 type stepError struct {
 	error
-	screenshotPath string
+	screenshotBase64 string
 }
 
-func (se stepError) ScreenshotPath() string {
-	return se.screenshotPath
+func (se stepError) ScreenshotBase64() string {
+	return se.screenshotBase64
 }
 
 func sanitizeFilename(input string) string {
