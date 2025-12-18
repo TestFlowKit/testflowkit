@@ -2,7 +2,6 @@ package reporters
 
 import (
 	"fmt"
-	"path/filepath"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -38,12 +37,9 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 		return "gray"
 	}
 
-	screenshotPath := ""
-	if stepErr, ok := err.(interface{ ScreenshotPath() string }); ok {
-		fullPath := stepErr.ScreenshotPath()
-		if fullPath != "" {
-			screenshotPath = filepath.Base(fullPath)
-		}
+	screenshotBase64 := ""
+	if stepErr, ok := err.(interface{ ScreenshotBase64() string }); ok {
+		screenshotBase64 = stepErr.ScreenshotBase64()
 	}
 
 	s.Steps = append(s.Steps, Step{
@@ -52,7 +48,7 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 		HTMLStatusColorClass: fmt.Sprintf("text-%s-500", getColor(status)),
 		Duration:             duration,
 		FmtDuration:          fmt.Sprintf("%dms", duration.Milliseconds()),
-		ScreenshotPath:       screenshotPath,
+		ScreenshotBase64:     screenshotBase64,
 	})
 }
 
@@ -79,7 +75,7 @@ type Step struct {
 	HTMLStatusColorClass string
 	Duration             time.Duration
 	FmtDuration          string
-	ScreenshotPath       string
+	ScreenshotBase64     string
 }
 
 func NewScenario() Scenario {

@@ -22,10 +22,10 @@ func (f jsonReportFormatter) WriteReport(details testSuiteDetails) {
 
 		for j, step := range sc.Steps {
 			scenariosReports[i].Steps[j] = jsonScenarioStepReport{
-				Title:          step.Title,
-				Status:         step.Status,
-				Duration:       step.Duration.String(),
-				ScreenshotPath: step.ScreenshotPath,
+				Title:            step.Title,
+				Status:           step.Status,
+				Duration:         step.Duration.String(),
+				ScreenshotBase64: step.ScreenshotBase64,
 			}
 		}
 	}
