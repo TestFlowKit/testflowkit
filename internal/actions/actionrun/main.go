@@ -1,40 +1,53 @@
-package actions
+package actionrun
 
 import (
 	"context"
 	"fmt"
 	"os"
-	"regexp"
-	"strings"
+	"testflowkit/internal/actions/actionutils"
 	"testflowkit/internal/config"
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core/scenario"
-	"testflowkit/internal/utils/fileutils"
 
 	"testflowkit/pkg/browser"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/reporters"
+	"testflowkit/pkg/variables"
 	"time"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
 )
 
-const screenshotDir = "report/screenshots"
-
-func run(appConfig *config.Config, errCfg error) {
+func Execute(appConfig *config.Config, errCfg error) {
 	if errCfg != nil {
 		logger.Fatal("RUN", errCfg)
 	}
 
-	displayConfigSummary(appConfig)
+	actionutils.DisplayConfigSummary(appConfig)
 	logger.Info("Starting tests execution ...")
 
-	testReport, testSuite := prepareTestSuite(appConfig)
+	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
+	features := make([]godog.Feature, len(parsedFeatures))
+	for i, f := range parsedFeatures {
+		features[i] = godog.Feature{
+			Name:     f.Name,
+			Contents: f.Contents,
+		}
+	}
 
-	logger.Info("Running tests ...")
-	testSuite.Run()
+	testReport := reporters.New(appConfig.Settings.ReportFormat)
+
+	runBeforeAllScenarios(appConfig, testReport, features)
+
+	runMainScenarios(appConfig, testReport, features)
+
+	runAfterAllScenarios(appConfig, testReport, features)
+
+	if testReport.HasScenarios() {
+		testReport.Write()
+	}
 
 	if !testReport.HasScenarios() {
 		logger.Warn("No scenarios executed!", []string{
@@ -68,66 +81,82 @@ func run(appConfig *config.Config, errCfg error) {
 	os.Exit(1)
 }
 
-func prepareTestSuite(appConfig *config.Config) (*reporters.Report, godog.TestSuite) {
-	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
-	features := make([]godog.Feature, len(parsedFeatures))
-	for i, f := range parsedFeatures {
-		features[i] = godog.Feature{
-			Name:     f.Name,
-			Contents: f.Contents,
-		}
-	}
+func runAfterAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []godog.Feature) {
+	afterAllSuite := createTestSuite(createTestSuiteParams{
+		appConfig:   appConfig,
+		testReport:  testReport,
+		features:    features,
+		tags:        "@AfterAll",
+		concurrency: 1,
+	})
+	afterAllSuite.Run()
+}
 
-	testReport := reporters.New(appConfig.Settings.ReportFormat)
+func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, features []godog.Feature) {
+	mainTags := getTagsExludingMacros(appConfig.Settings.Tags)
+	// Exclude BeforeAll and AfterAll from main run
+	mainTags = fmt.Sprintf("%s && ~@BeforeAll && ~@AfterAll", mainTags)
+
+	mainSuite := createTestSuite(createTestSuiteParams{
+		appConfig:   appConfig,
+		testReport:  testReport,
+		features:    features,
+		tags:        mainTags,
+		concurrency: appConfig.GetConcurrency(),
+	})
+	mainSuite.Run()
+}
+
+func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []godog.Feature) {
+	beforeAllSuite := createTestSuite(createTestSuiteParams{
+		appConfig:   appConfig,
+		testReport:  testReport,
+		features:    features,
+		tags:        "@BeforeAll",
+		concurrency: 1,
+	})
+	if status := beforeAllSuite.Run(); status != 0 {
+		logger.Error("BeforeAll hooks failed", []string{
+			"Setup scenarios failed",
+		}, []string{
+			"Check the report for details",
+		})
+		testReport.Write()
+		os.Exit(1)
+	}
+}
+
+func createTestSuite(params createTestSuiteParams) godog.TestSuite {
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
-		Concurrency:         appConfig.GetConcurrency(),
+		Concurrency:         params.concurrency,
 		Format:              "pretty",
 		ShowStepDefinitions: false,
-		Tags:                getTagsExludingMacros(appConfig.Settings.Tags),
-		FeatureContents:     features,
+		Tags:                params.tags,
+		FeatureContents:     params.features,
 	}
 
-	testSuite := godog.TestSuite{
+	return godog.TestSuite{
 		Name:                 "Test Suite",
 		Options:              &opts,
-		TestSuiteInitializer: testSuiteInitializer(testReport),
-		ScenarioInitializer:  scenarioInitializer(appConfig, testReport),
+		TestSuiteInitializer: testSuiteInitializer(params.testReport),
+		ScenarioInitializer:  scenarioInitializer(params.appConfig, params.testReport),
 	}
-	return testReport, testSuite
+}
+
+type createTestSuiteParams struct {
+	appConfig   *config.Config
+	testReport  *reporters.Report
+	features    []godog.Feature
+	tags        string
+	concurrency int
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
 	return func(suiteContext *godog.TestSuiteContext) {
 		suiteContext.BeforeSuite(func() {
-			err := os.RemoveAll(screenshotDir)
-			if err != nil {
-				logger.Error("Failed to remove screenshot directory: "+err.Error(), []string{
-					"please check the permissions of the directory",
-					"please check the directory path",
-				}, []string{
-					"please see logs for more details",
-					"please see the test report for more details",
-				})
-				os.Exit(1)
-			}
-			mkdirErr := os.MkdirAll(screenshotDir, fileutils.DirPermission)
-			if mkdirErr != nil {
-				logger.Error("Failed to create screenshot directory", []string{
-					"please check the permissions of the directory",
-					"please check the directory path",
-				}, []string{
-					"please see logs for more details",
-					"please see the test report for more details",
-				})
-				os.Exit(1)
-			}
-			testReport.Start()
-		})
-
-		suiteContext.AfterSuite(func() {
-			if testReport.HasScenarios() {
-				testReport.Write()
+			if !testReport.IsStarted() {
+				testReport.Start()
 			}
 		})
 	}
@@ -135,7 +164,8 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 
 func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
-		scenarioCtx := scenario.NewContext(config)
+		// Inject global variables here
+		scenarioCtx := scenario.NewContext(config, variables.GetGlobalVariables())
 		registerTestRunnerStepDefinitions(sc)
 		myCtx := newScenarioCtx()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
@@ -226,7 +256,7 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 	for _, step := range stepdefinitions.GetAll() {
 		handler := step.GetDefinition()
 		for _, sentence := range step.GetSentences() {
-			ctx.Step(formatStep(sentence), handler)
+			ctx.Step(actionutils.FormatStep(sentence), handler)
 		}
 	}
 }
@@ -256,23 +286,4 @@ type stepError struct {
 
 func (se stepError) ScreenshotBase64() string {
 	return se.screenshotBase64
-}
-
-func sanitizeFilename(input string) string {
-	re := regexp.MustCompile(`[^\w\s-]`)
-	cleaned := re.ReplaceAllString(input, "_")
-
-	cleaned = strings.ReplaceAll(cleaned, " ", "_")
-
-	re = regexp.MustCompile(`_+`)
-	cleaned = re.ReplaceAllString(cleaned, "_")
-
-	re = regexp.MustCompile(`^_+|_+$`)
-	cleaned = re.ReplaceAllString(cleaned, "")
-	const maxLength = 100
-	if len(cleaned) > maxLength {
-		cleaned = cleaned[:maxLength]
-	}
-
-	return cleaned
 }

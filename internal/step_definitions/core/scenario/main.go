@@ -4,6 +4,7 @@ import (
 	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/browser"
+	"testflowkit/pkg/variables"
 
 	"time"
 )
@@ -45,12 +46,12 @@ func (c *Context) SetVariable(name string, value any) {
 	c.variables[name] = value
 }
 
-func NewContext(cfg *config.Config) *Context {
+func NewContext(cfg *config.Config, initialVariables map[string]any) *Context {
 	return &Context{
 		frontend:  newFrontCtx(cfg),
-		backend:   NewBackendContext(),
+		backend:   newBackendCtx(),
 		config:    cfg,
-		variables: make(map[string]any),
+		variables: initialVariables,
 	}
 }
 
@@ -71,6 +72,15 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		headlessMode: cfg.IsHeadlessModeEnabled(),
 		thinkTime:    thinkTime,
 	}
+}
+
+func newBackendCtx() *BackendContext {
+	bc := &BackendContext{
+		Headers:   make(map[string]string),
+		Variables: make(map[string]any),
+	}
+	bc.parser = variables.NewParser(bc)
+	return bc
 }
 
 type frontend struct {

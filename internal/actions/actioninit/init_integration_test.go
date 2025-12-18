@@ -1,4 +1,4 @@
-package actions
+package actioninit
 
 import (
 	"fmt"
@@ -32,7 +32,7 @@ func TestCompleteInitializationFlow(t *testing.T) {
 	cleanup := setupTestDir(t)
 	defer cleanup()
 
-	initMode(&config.Config{}, nil)
+	Execute(&config.Config{}, nil)
 
 	t.Run("VerifyConfigFileCreation", verifyConfigFileCreation)
 	t.Run("VerifyDirectoryStructure", verifyDirectoryStructure)
@@ -220,7 +220,7 @@ func TestGeneratedFilesStructure(t *testing.T) {
 	cleanup := setupTestDir(t)
 	defer cleanup()
 
-	initMode(&config.Config{}, nil)
+	Execute(&config.Config{}, nil)
 
 	t.Run("ConfigFileStructure", testConfigFileStructure)
 	t.Run("SampleFeatureStructure", testSampleFeatureStructure)
@@ -307,7 +307,7 @@ func TestSampleFeatureRunnability(t *testing.T) {
 	cleanup := setupTestDir(t)
 	defer cleanup()
 
-	initMode(&config.Config{}, nil)
+	Execute(&config.Config{}, nil)
 
 	t.Run("FeatureFileValidGherkin", testFeatureFileValidGherkin)
 	t.Run("ConfigurationCompatibility", testConfigurationCompatibility)

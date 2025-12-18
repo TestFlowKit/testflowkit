@@ -10,7 +10,7 @@ import (
 
 func TestTableVariableParsing_MapData(t *testing.T) {
 	// Create a scenario context with variables
-	ctx := NewContext(&config.Config{})
+	ctx := NewContext(&config.Config{}, make(map[string]any))
 	ctx.SetVariable("userName", "John Doe")
 	ctx.SetVariable("userAge", "30")
 
@@ -31,7 +31,7 @@ func TestTableVariableParsing_MapData(t *testing.T) {
 
 func TestTableVariableParsing_ArrayData(t *testing.T) {
 	// Create a scenario context with variables
-	ctx := NewContext(&config.Config{})
+	ctx := NewContext(&config.Config{}, make(map[string]any))
 	ctx.SetVariable("userName", "Jane Smith")
 	ctx.SetVariable("userAge", "25")
 
@@ -56,7 +56,7 @@ func TestTableVariableParsing_ArrayData(t *testing.T) {
 
 func TestTableVariableParsing_UndefinedVariables(t *testing.T) {
 	// Create a scenario context without variables
-	ctx := NewContext(&config.Config{})
+	ctx := NewContext(&config.Config{}, make(map[string]any))
 
 	// Create test data with undefined variables
 	data := map[string]any{
@@ -75,7 +75,7 @@ func TestTableVariableParsing_UndefinedVariables(t *testing.T) {
 
 func TestTableVariableParsing_MixedData(t *testing.T) {
 	// Create a scenario context with variables
-	ctx := NewContext(&config.Config{})
+	ctx := NewContext(&config.Config{}, make(map[string]any))
 	ctx.SetVariable("userName", "Alice")
 	ctx.SetVariable("userAge", "28")
 
@@ -99,7 +99,7 @@ func TestTableVariableParsing_MixedData(t *testing.T) {
 }
 
 func TestShouldReplaceVariableOccurenceByThisValue(t *testing.T) {
-	ctx := NewContext(&config.Config{})
+	ctx := NewContext(&config.Config{}, make(map[string]any))
 	ctx.SetVariable("testVar", "testValue")
 	ctx.SetVariable("anotherVar", "anotherValue")
 
@@ -109,7 +109,7 @@ func TestShouldReplaceVariableOccurenceByThisValue(t *testing.T) {
 }
 
 func TestShouldNotReplaceUndefinedVariable(t *testing.T) {
-	ctx := NewContext(&config.Config{})
+	ctx := NewContext(&config.Config{}, make(map[string]any))
 	ctx.SetVariable("anotherVar", "anotherValue")
 
 	expectedSentence := "This is a test sentence with a variable: {{ testVar }} and another one: anotherValue."
@@ -119,7 +119,7 @@ func TestShouldNotReplaceUndefinedVariable(t *testing.T) {
 }
 
 func TestVariableSubstitutionDecorator_ReplaceVariableInATrueSentence(t *testing.T) {
-	scCtx := NewContext(&config.Config{})
+	scCtx := NewContext(&config.Config{}, make(map[string]any))
 	const key, value = "postTitle", "My Post Title"
 	const key2, value2 = "postField", "My Post Field"
 	scCtx.SetVariable(key, value)

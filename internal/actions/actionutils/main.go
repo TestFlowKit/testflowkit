@@ -1,4 +1,4 @@
-package actions
+package actionutils
 
 import (
 	"strings"
@@ -8,7 +8,7 @@ import (
 	"testflowkit/pkg/logger"
 )
 
-func formatStep(sentence string) string {
+func FormatStep(sentence string) string {
 	cleanedSentence := strings.TrimPrefix(sentence, "^")
 	cleanedSentence = strings.TrimSuffix(cleanedSentence, "$")
 
@@ -16,7 +16,7 @@ func formatStep(sentence string) string {
 	return pattern
 }
 
-func displayConfigSummary(cfg *config.Config) {
+func DisplayConfigSummary(cfg *config.Config) {
 	if cfg == nil {
 		return
 	}

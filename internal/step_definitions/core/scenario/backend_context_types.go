@@ -27,11 +27,10 @@ type APIProtocol interface {
 // BackendContext is the unified context for both GraphQL and REST API testing.
 type BackendContext struct {
 	// Shared fields
-	Headers   map[string]string
-	Variables map[string]any
-	Response  *UnifiedResponse
-	Protocol  APIProtocol
-	parser    *variables.Parser
+	Headers  map[string]string
+	Response *UnifiedResponse
+	Protocol APIProtocol
+	parser   *variables.Parser
 
 	// REST-specific fields (used when Protocol is RESTAPIAdapter)
 	Endpoint    *EndpointEnricher
@@ -39,6 +38,7 @@ type BackendContext struct {
 
 	// GraphQL-specific fields (used when Protocol is GraphQLAdapter)
 	GraphQLRequest *graphql.Request
+	Variables      map[string]any
 }
 
 type UnifiedResponse struct {
@@ -46,14 +46,4 @@ type UnifiedResponse struct {
 	Body          []byte
 	Headers       map[string]string
 	GraphQLErrors []graphql.Error
-}
-
-func NewBackendContext() *BackendContext {
-	ctx := &BackendContext{
-		Headers:   make(map[string]string),
-		Variables: make(map[string]any),
-		Response:  nil,
-	}
-	ctx.parser = variables.NewParser(ctx)
-	return ctx
 }
