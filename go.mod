@@ -3,10 +3,10 @@ module testflowkit
 go 1.25
 
 require (
-	github.com/alexflint/go-arg v1.6.0
+	github.com/alexflint/go-arg v1.6.1
 	github.com/cucumber/godog v0.15.1
 	github.com/go-rod/rod v0.116.2
-	github.com/goccy/go-yaml v1.19.0
+	github.com/goccy/go-yaml v1.19.1
 	github.com/stretchr/testify v1.11.1
 	github.com/tdewolff/parse v2.3.4+incompatible
 )
