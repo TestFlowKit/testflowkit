@@ -37,17 +37,17 @@ func (c *Context) GetEndpoint() EndpointEnricher {
 func (c *Context) AddPathParam(param string, s string) {
 	param = ReplaceVariablesInString(c, param)
 	s = ReplaceVariablesInString(c, s)
-	c.backend.AddPathParam(param, s)
+	c.backend.AddRESTPathParam(param, s)
 }
 
 func (c *Context) AddQueryParam(key, value string) {
 	key = ReplaceVariablesInString(c, key)
 	value = ReplaceVariablesInString(c, value)
-	c.backend.AddQueryParam(key, value)
+	c.backend.AddRESTQueryParam(key, value)
 }
 
 func (c *Context) SetRequestBody(body []byte) error {
-	c.backend.SetRequestBody(body)
+	c.backend.SetRESTRequestBody(body)
 	return nil
 }
 
@@ -56,7 +56,7 @@ func (c *Context) SetRequestBodyAsJSON(body []byte) error {
 	if err := json.Unmarshal(body, &jsonTest); err != nil {
 		return fmt.Errorf("invalid JSON in request body: %w", err)
 	}
-	c.backend.SetRequestBody(body)
+	c.backend.SetRESTRequestBody(body)
 	return nil
 }
 
@@ -66,8 +66,8 @@ func (c *Context) AddHeader(key, value string) {
 	c.backend.SetHeader(key, value)
 }
 
-func (c *Context) GetRequestBody() []byte {
-	return c.backend.GetRequestBody()
+func (c *Context) GetRESTRequestBody() []byte {
+	return c.backend.GetRESTRequestBody()
 }
 
 func (c *Context) GetRequestHeaders() map[string]string {

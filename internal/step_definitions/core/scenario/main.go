@@ -1,9 +1,11 @@
 package scenario
 
 import (
+	"maps"
 	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/browser"
+	"testflowkit/pkg/variables"
 
 	"time"
 )
@@ -45,12 +47,17 @@ func (c *Context) SetVariable(name string, value any) {
 	c.variables[name] = value
 }
 
-func NewContext(cfg *config.Config) *Context {
+func NewContext(cfg *config.Config, initialVariables map[string]any) *Context {
+	initVars := make(map[string]any)
+	if initialVariables != nil {
+		maps.Copy(initVars, initialVariables)
+	}
+
 	return &Context{
 		frontend:  newFrontCtx(cfg),
-		backend:   NewBackendContext(),
+		backend:   newBackendCtx(),
 		config:    cfg,
-		variables: make(map[string]any),
+		variables: initVars,
 	}
 }
 
@@ -71,6 +78,17 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		headlessMode: cfg.IsHeadlessModeEnabled(),
 		thinkTime:    thinkTime,
 	}
+}
+
+func newBackendCtx() *BackendContext {
+	bc := &BackendContext{
+		Headers: make(map[string]string),
+		GraphQL: GraphQLContext{
+			Variables: make(map[string]any),
+		},
+	}
+	bc.parser = variables.NewParser(bc)
+	return bc
 }
 
 type frontend struct {

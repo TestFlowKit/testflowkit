@@ -9,40 +9,39 @@ import (
 )
 
 func (bc *BackendContext) SetEndpoint(endpoint *EndpointEnricher) {
-	bc.Endpoint = endpoint
+	bc.Rest.Endpoint = endpoint
 }
 
 func (bc *BackendContext) GetEndpoint() *EndpointEnricher {
-	return bc.Endpoint
+	return bc.Rest.Endpoint
 }
 
-// SetRequestBody sets the REST request body.
-func (bc *BackendContext) SetRequestBody(body []byte) {
-	bc.RequestBody = body
+func (bc *BackendContext) SetRESTRequestBody(body []byte) {
+	bc.Rest.RequestBody = body
 }
 
-func (bc *BackendContext) GetRequestBody() []byte {
-	return bc.RequestBody
+func (bc *BackendContext) GetRESTRequestBody() []byte {
+	return bc.Rest.RequestBody
 }
 
-func (bc *BackendContext) AddPathParam(param, value string) {
-	if bc.Endpoint == nil {
-		bc.Endpoint = &EndpointEnricher{
+func (bc *BackendContext) AddRESTPathParam(param, value string) {
+	if bc.Rest.Endpoint == nil {
+		bc.Rest.Endpoint = &EndpointEnricher{
 			QueryParams: make(map[string]string),
 			PathParams:  make(map[string]string),
 		}
 	}
-	bc.Endpoint.PathParams[param] = value
+	bc.Rest.Endpoint.PathParams[param] = value
 }
 
-func (bc *BackendContext) AddQueryParam(key, value string) {
-	if bc.Endpoint == nil {
-		bc.Endpoint = &EndpointEnricher{
+func (bc *BackendContext) AddRESTQueryParam(key, value string) {
+	if bc.Rest.Endpoint == nil {
+		bc.Rest.Endpoint = &EndpointEnricher{
 			QueryParams: make(map[string]string),
 			PathParams:  make(map[string]string),
 		}
 	}
-	bc.Endpoint.QueryParams[key] = value
+	bc.Rest.Endpoint.QueryParams[key] = value
 }
 
 type EndpointEnricher struct {

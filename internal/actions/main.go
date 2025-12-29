@@ -2,15 +2,18 @@ package actions
 
 import (
 	"fmt"
+	"testflowkit/internal/actions/actioninit"
+	"testflowkit/internal/actions/actionrun"
+	"testflowkit/internal/actions/actionvalidate"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/logger"
 )
 
 func Execute(cfg *config.Config, cfgErr error, mode config.Mode) {
 	modes := map[config.Mode]func(*config.Config, error){
-		config.RunMode:        run,
-		config.InitMode:       initMode,
-		config.ValidationMode: validate,
+		config.RunMode:        actionrun.Execute,
+		config.InitMode:       actioninit.Execute,
+		config.ValidationMode: actionvalidate.Execute,
 		config.VersionMode:    version,
 	}
 

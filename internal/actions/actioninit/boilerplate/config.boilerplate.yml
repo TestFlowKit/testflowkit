@@ -1,0 +1,29 @@
+active_environment: "local"
+
+settings:
+  concurrency: 1
+  think_time: 1000
+  report_format: "html"
+  gherkin_location: "./features"
+
+environments:
+  local:
+    frontend_base_url: "https://testflowkit.dreamsfollowers.me"
+
+frontend:
+  default_timeout: 10000
+  headless: false
+  screenshot_on_failure: true
+
+  elements:
+    common:
+      get_started_button:
+        - "xpath://a[contains(text(), 'Get Started Now')]"
+
+      sentence_filter_field:
+        - "input[placeholder*='Search step definitions...']"
+
+  pages:
+    home: "/"
+    get_started: "/get-started"
+    sentences: "/sentences"

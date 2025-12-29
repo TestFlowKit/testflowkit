@@ -30,7 +30,7 @@ func (steps) debugRequest() stepbuilder.Step {
 				logger.InfoFf("No headers set")
 			}
 
-			body := scenarioCtx.GetRequestBody()
+			body := scenarioCtx.GetRESTRequestBody()
 			if body != nil {
 				logger.InfoFf("Body: %s (%d bytes)", string(body), len(body))
 			} else {

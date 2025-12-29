@@ -28,7 +28,7 @@ func (steps) storeGraphQLError() stepbuilder.Step {
 			errors := backend.GetGraphQLErrors()
 
 			// Store the entire error array
-			backend.SetVariable(variableName, errors)
+			backend.SetGraphQLVariable(variableName, errors)
 			scenarioCtx.SetVariable(variableName, errors)
 
 			logger.InfoFf("Stored GraphQL errors as '%s': %d error(s)", variableName, len(errors))
@@ -73,7 +73,7 @@ func (steps) storeGraphQLErrorMessage() stepbuilder.Step {
 
 			// Store the first error message
 			errorMessage := gqlErrors[0].Message
-			backend.SetVariable(variableName, errorMessage)
+			backend.SetGraphQLVariable(variableName, errorMessage)
 			scenarioCtx.SetVariable(variableName, errorMessage)
 
 			logger.InfoFf("Stored GraphQL error message as '%s': %s", variableName, errorMessage)
