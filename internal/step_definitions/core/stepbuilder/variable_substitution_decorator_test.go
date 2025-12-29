@@ -33,7 +33,7 @@ func TestVariableSubstitutionDecorator_ReplaceStringVariable(t *testing.T) {
 	definition, ok := decorator.GetDefinition().(func(context.Context, string) (context.Context, error))
 	require.True(t, ok, "Failed to cast definition to definitionType")
 
-	scCtx := scenario.NewContext(&config.Config{})
+	scCtx := scenario.NewContext(&config.Config{}, make(map[string]any))
 	const value = "setted variable"
 
 	const key = "key"
@@ -60,7 +60,7 @@ func TestVariableSubstitutionDecorator_ReplaceMultipleStringVariables(t *testing
 	definition, ok := decorator.GetDefinition().(func(context.Context, string, string) (context.Context, error))
 	require.True(t, ok, "Failed to cast definition to definitionType")
 
-	scCtx := scenario.NewContext(&config.Config{})
+	scCtx := scenario.NewContext(&config.Config{}, make(map[string]any))
 	const value = "setted variable"
 	const value2 = "setted variable 2"
 	const key1 = "key1"
@@ -89,7 +89,7 @@ func TestVariableSubstitutionDecorator_RemovesQuotes(t *testing.T) {
 	definition, ok := decorator.GetDefinition().(func(context.Context, string) (context.Context, error))
 	require.True(t, ok, "Failed to cast definition to definitionType")
 
-	scCtx := scenario.NewContext(&config.Config{})
+	scCtx := scenario.NewContext(&config.Config{}, make(map[string]any))
 	const value = "setted variable"
 
 	const key = "key"
@@ -115,7 +115,7 @@ func TestVariableSubstitutionDecorator_ReplaceJSONVariable(t *testing.T) {
 	definition, ok := decorator.GetDefinition().(func(context.Context, string) (context.Context, error))
 	require.True(t, ok, "Failed to cast definition to definitionType")
 
-	scCtx := scenario.NewContext(&config.Config{})
+	scCtx := scenario.NewContext(&config.Config{}, make(map[string]any))
 	const value = "setted variable"
 	const key1 = "name"
 	const key2 = "age"

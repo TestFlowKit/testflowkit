@@ -16,7 +16,7 @@ func (steps) setJSONBody() stepbuilder.Step {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			backend := scenarioCtx.GetBackendContext()
 
-			backend.SetRequestBody([]byte(jsonBody))
+			backend.SetRESTRequestBody([]byte(jsonBody))
 			logger.InfoFf("JSON request body set and validated (%d bytes)", len(jsonBody))
 			return ctx, nil
 		},

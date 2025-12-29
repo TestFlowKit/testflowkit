@@ -30,7 +30,7 @@ func (steps) setGraphQLVariables() stepbuilder.Step {
 				return ctx, fmt.Errorf("failed to set GraphQL variables: %w", errSetVars)
 			}
 
-			logger.InfoFf("GraphQL variables set: %v", backend.GetVariables())
+			logger.InfoFf("GraphQL variables set: %v", backend.GetGraphQLVariables())
 			return ctx, nil
 		},
 		nil,

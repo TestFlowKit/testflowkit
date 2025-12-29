@@ -39,6 +39,10 @@ func (r *Report) Start() {
 	r.startDate = time.Now()
 }
 
+func (r *Report) IsStarted() bool {
+	return !r.startDate.IsZero()
+}
+
 func (r *Report) Write() {
 	ts := newTestSuiteDetails(
 		r.startDate,

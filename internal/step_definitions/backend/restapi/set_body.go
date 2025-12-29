@@ -25,7 +25,7 @@ func (steps) setRequestBody() stepbuilder.Step {
 			// Check if it looks like a file path (second sentence pattern)
 			// File paths would be passed directly, multiline strings would have newlines
 
-			backend.SetRequestBody([]byte(body))
+			backend.SetRESTRequestBody([]byte(body))
 			logger.InfoFf("Request body set (%d bytes)", len(body))
 			return ctx, nil
 		},
@@ -76,7 +76,7 @@ func (steps) setRequestBodyFromFile() stepbuilder.Step {
 				return ctx, fmt.Errorf("invalid JSON in request body file '%s'", filePath)
 			}
 
-			backend.SetRequestBody(content)
+			backend.SetRESTRequestBody(content)
 			logger.InfoFf("Request body set from file: %s (%d bytes)", filePath, len(content))
 			return ctx, nil
 		},

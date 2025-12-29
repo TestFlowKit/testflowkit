@@ -174,7 +174,7 @@ type mockStore struct {
 	variables map[string]any
 }
 
-func (ms *mockStore) GetVariable(name string) (any, bool) {
+func (ms *mockStore) GetGraphQLVariable(name string) (any, bool) {
 	value, exists := ms.variables[name]
 	return value, exists
 }

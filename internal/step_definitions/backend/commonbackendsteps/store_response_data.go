@@ -34,7 +34,7 @@ func (steps) storeResponseData() stepbuilder.Step {
 			}
 
 			// Store in both backend context and global context
-			backend.SetVariable(variableName, value)
+			backend.SetGraphQLVariable(variableName, value)
 			scenarioCtx.SetVariable(variableName, value)
 
 			logger.InfoFf("Stored value from '%s' as '%s': %v", jsonPath, variableName, value)

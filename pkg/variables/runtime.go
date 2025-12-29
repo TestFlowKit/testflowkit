@@ -15,7 +15,7 @@ func (p *Parser) ReplaceInString(input string) string {
 		varName := strings.TrimSpace(match[2 : len(match)-2])
 
 		// Get variable value from context
-		value, exists := p.store.GetVariable(varName)
+		value, exists := p.store.GetGraphQLVariable(varName)
 		if !exists {
 			return match // Return original if variable not found
 		}
@@ -46,5 +46,5 @@ func (p *Parser) ReplaceInMap(input map[string]string) map[string]string {
 }
 
 type Store interface {
-	GetVariable(name string) (any, bool)
+	GetGraphQLVariable(name string) (any, bool)
 }

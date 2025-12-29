@@ -5,11 +5,11 @@ import (
 )
 
 func (bc *BackendContext) SetGraphQLRequest(request *graphql.Request) {
-	bc.GraphQLRequest = request
+	bc.GraphQL.Request = request
 }
 
 func (bc *BackendContext) GetGraphQLRequest() *graphql.Request {
-	return bc.GraphQLRequest
+	return bc.GraphQL.Request
 }
 
 func (bc *BackendContext) GetGraphQLErrors() []graphql.Error {

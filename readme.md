@@ -17,6 +17,7 @@
 - **Backend API Testing**: Full REST API testing capabilities with request/response validation
 - **GraphQL Support**: Complete GraphQL testing with queries, mutations, schema validation
 - **Macro System**: Reusable test scenarios to reduce code duplication
+- **Global Hooks**: Setup and teardown logic with `@BeforeAll` and `@AfterAll` tags
 - **Parallel Execution**: Run tests concurrently for faster execution
 - **Rich Reporting**: HTML and JSON report formats with detailed test results
 - **XPath Support**: Full XPath 1.0 support alongside CSS selectors for flexible element selection
@@ -641,6 +642,32 @@ Scenario: Test login with different credentials
     | admin   | secret   |
   Then the user should be logged in successfully
 ```
+
+### Global Hooks and Variables
+
+TestFlowKit supports global setup and teardown hooks using `@BeforeAll` and `@AfterAll` tags. These hooks run sequentially before and after the main test suite, allowing you to perform environment setup, data seeding, and cleanup.
+
+#### Global Setup and Teardown 
+
+```gherkin
+@BeforeAll
+Scenario: Global Setup
+  Given I call the API "POST" "/auth/login"
+  Then I save the response path "token" as global variable "AUTH_TOKEN"
+
+@AfterAll
+Scenario: Global Teardown
+  Given I call the API "DELETE" "/cleanup"
+  
+```
+
+#### Global Variables
+
+Global variables are shared across all scenarios and can be set in the `config.yml` or dynamically during the `@BeforeAll` phase.
+
+**In Scenarios:**
+
+You can access global variables just like local variables using the `{{VARIABLE_NAME}}` syntax.
 
 #### Complex Workflow Macros
 

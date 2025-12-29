@@ -33,7 +33,7 @@ func (c *Context) GetGraphQLResponse() *graphql.Response {
 }
 
 func (c *Context) GetGraphQLVariable(name string) (any, bool) {
-	return c.backend.GetVariable(name)
+	return c.backend.GetGraphQLVariable(name)
 }
 
 func (c *Context) SetGraphQLVariablesFromStrings(variables map[string]string) error {
@@ -42,7 +42,7 @@ func (c *Context) SetGraphQLVariablesFromStrings(variables map[string]string) er
 }
 
 func (c *Context) GetGraphQLVariables() map[string]any {
-	return c.backend.GetVariables()
+	return c.backend.GetGraphQLVariables()
 }
 
 func (c *Context) SetGraphQLHeaders(headers map[string]string) {

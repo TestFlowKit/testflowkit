@@ -91,8 +91,8 @@ func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenari
 	}
 
 	// Auto-detect and set Content-Type if not already set
-	if req.Header.Get("Content-Type") == "" && scenarioCtx.GetRequestBody() != nil {
-		body := scenarioCtx.GetRequestBody()
+	body := scenarioCtx.GetRESTRequestBody()
+	if req.Header.Get("Content-Type") == "" && body != nil {
 		contentType := a.detectContentType(body)
 		if contentType != "" {
 			req.Header.Set("Content-Type", contentType)
@@ -103,7 +103,7 @@ func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenari
 }
 
 func (a *RESTAPIAdapter) getBodyReader(scenarioCtx *scenario.Context) io.Reader {
-	requestBody := scenarioCtx.GetRequestBody()
+	requestBody := scenarioCtx.GetRESTRequestBody()
 	if requestBody != nil {
 		logger.InfoFf("Request body found: %d bytes", len(requestBody))
 		return bytes.NewReader(requestBody)
