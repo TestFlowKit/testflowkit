@@ -111,7 +111,7 @@ func TestSubstituteVariables(t *testing.T) {
 	}{
 		{
 			name: "substitutes single variable",
-			text: "the user fills the username field with |username|",
+			text: "the user fills the username field with ${username}",
 			variables: map[string]string{
 				"username": "oki",
 			},
@@ -119,7 +119,7 @@ func TestSubstituteVariables(t *testing.T) {
 		},
 		{
 			name: "substitutes multiple variables",
-			text: "the user fills the |field| field with |value|",
+			text: "the user fills the ${field} field with ${value}",
 			variables: map[string]string{
 				"field": "username",
 				"value": "oki",
@@ -134,11 +134,11 @@ func TestSubstituteVariables(t *testing.T) {
 		},
 		{
 			name: "handles variable not in map",
-			text: "the user fills the |username| field with |password|",
+			text: "the user fills the ${username} field with ${password}",
 			variables: map[string]string{
 				"username": "oki",
 			},
-			expected: "the user fills the oki field with |password|",
+			expected: "the user fills the oki field with ${password}",
 		},
 	}
 

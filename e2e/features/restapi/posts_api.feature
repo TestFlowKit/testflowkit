@@ -11,9 +11,9 @@ Feature: Posts API Testing
         When I set the request body to:
             """
             {
-            "title": "|title|",
-            "body": "|body|",
-            "userId": |userId|
+            "title": "${title}",
+            "body": "${body}",
+            "userId": ${userId}
             }
             """
         And I send the request

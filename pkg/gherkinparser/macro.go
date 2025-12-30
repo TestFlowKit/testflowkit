@@ -13,6 +13,8 @@ import (
 
 const MacroTag = "@macro"
 
+var macroVarPattern = regexp.MustCompile(`\$\{([^}]+)\}`)
+
 type MacroVariable struct {
 	Name  string
 	Value string
@@ -43,13 +45,15 @@ func getMacroVariables(table *messages.DataTable) MacroVariables {
 }
 
 func substituteVariables(stepContent string, variables MacroVariables) string {
-	result := stepContent
-	for varName, varValue := range variables {
-		placeholder := fmt.Sprintf("|%s|", varName)
-		result = strings.ReplaceAll(result, placeholder, varValue)
-	}
+	return macroVarPattern.ReplaceAllStringFunc(stepContent, func(match string) string {
+		varName := strings.TrimSpace(match[2 : len(match)-1])
+		if value, exists := variables[varName]; exists {
+			return value
+		}
 
-	return result
+		logger.Warn("Macro variable not found: "+varName, nil)
+		return match
+	})
 }
 
 // TODO: refactor for better understanding.

@@ -608,8 +608,8 @@ Create reusable, parameterized test scenarios to reduce code duplication and imp
 @macro
 Scenario: user login with credentials
   Given the user is on the login page
-  When the user fills the "username" field with |username|
-  And the user fills the "password" field with |password|
+  When the user fills the "username" field with ${username}
+  And the user fills the "password" field with ${password}
   And the user clicks the "login" button
   Then the user should be logged in successfully
 
@@ -622,7 +622,7 @@ Scenario: user logout
 
 **Key Features:**
 
-- Use `|variable_name|` syntax to define variable placeholders
+- Use `${variable_name}` syntax to define variable placeholders
 - Variables are automatically substituted during macro expansion
 - Support for multiple variables in a single macro
 
@@ -675,12 +675,12 @@ You can access global variables just like local variables using the `{{VARIABLE_
 @macro
 Scenario: complete user workflow
   Given the user is on the login page
-  When the user fills the "username" field with |username|
-  And the user fills the "password" field with |password|
+  When the user fills the "username" field with ${username}
+  And the user fills the "password" field with ${password}
   And the user clicks the "login" button
   Then the user should be logged in successfully
-  When the user navigates to the |page| page
-  Then the user should see the |page| page
+  When the user navigates to the ${page} page
+  Then the user should see the ${page} page
 
 # Usage
 Scenario: Test complete workflow
@@ -715,12 +715,12 @@ e2e/features/
 
 #### Variable Substitution
 
-The system automatically replaces `|variable_name|` placeholders with actual values from the data table:
+The system automatically replaces `${variable_name}` placeholders with actual values from the data table:
 
 **Macro definition:**
 
 ```gherkin
-When the user fills the "username" field with |username|
+When the user fills the "username" field with ${username}
 ```
 
 **Macro invocation:**

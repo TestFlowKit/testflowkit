@@ -9,4 +9,4 @@ Feature: macro
   @macro
   Scenario: the user is on page
     Given the user opens a new browser tab
-    When the user goes to the |page_name| page
+    When the user goes to the ${page_name} page
