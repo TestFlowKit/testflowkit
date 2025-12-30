@@ -24,14 +24,10 @@ export default function useSidebar() {
     window.removeEventListener("resize", handleResize);
   });
 
-  const handleResize = () => {
-    if (window.innerWidth >= breakpoint) {
-      // Desktop: always keep sidebar open
-      isOpen.value = true;
-    } else {
-      // Mobile: close sidebar when switching to mobile view
-      isOpen.value = false;
-    }
+
+  function handleResize() {
+    const isDesktop = window.innerWidth >= breakpoint;
+    isOpen.value = isDesktop;
   };
 
   provide(useSidebarKey, {

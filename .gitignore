@@ -29,13 +29,12 @@ dist/
 .DS_Store
 **/.idea/*
 
-documentation/content
+documentation/content/sentences
 
 
 tkit*
 
 **/report.json
-report/screenshots/
 
 config.yml
 

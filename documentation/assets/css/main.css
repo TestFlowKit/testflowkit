@@ -4,16 +4,17 @@
 
 :root {
   --color-primary: #007bff;
-  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
   color-scheme: light dark;
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; */
+/* Base dark mode styling */
+html.dark {
+  color-scheme: dark;
+}
+
+/* Smooth transitions for dark mode */
+html {
+  transition: background-color 0.2s ease-in-out;
 }
 
 .heading-2 {
@@ -22,4 +23,63 @@
 
 .primary-button-bg {
   @apply bg-blue-500 hover:bg-blue-700;
+}
+
+/* Global Highlight.js syntax colors for atom-one-dark theme */
+pre code.hljs {
+  background: #282c34 !important;
+  color: #abb2bf !important;
+}
+
+/* Keywords: Feature, Scenario, Given, When, Then, And */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link {
+  color: #c678dd !important;
+}
+
+/* Strings and titles */
+.hljs-string,
+.hljs-title,
+.hljs-name,
+.hljs-type,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: #98c379 !important;
+}
+
+/* Comments */
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion {
+  color: #5c6370 !important;
+}
+
+/* Gherkin tags (@tag) - orange like in IDEs */
+.hljs-meta,
+.hljs-tag {
+  color: #e5c07b !important;
+}
+
+/* Numbers */
+.hljs-number {
+  color: #d19a66 !important;
+}
+
+/* Attributes */
+.hljs-attr {
+  color: #d19a66 !important;
+}
+
+/* Built-in functions */
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #e6c07b !important;
 }
