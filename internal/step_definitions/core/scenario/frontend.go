@@ -26,6 +26,7 @@ func (c *Context) InitBrowser(incognitoMode bool) {
 func (c *Context) OpenNewPage(url string) {
 	c.EnsureBrowserInitialized()
 	c.frontend.page = c.frontend.browser.NewPage(url)
+	c.frontend.page.WaitLoading()
 }
 
 func (c *Context) EnsureBrowserInitialized() {
