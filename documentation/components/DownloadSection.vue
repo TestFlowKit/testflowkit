@@ -71,7 +71,7 @@
 
         <div class="text-center">
             <p class="text-sm text-gray-600 mb-2">Or download from:</p>
-            <a href="https://github.com/TestFlowKit/testflowkit/releases" target="_blank"
+            <a :href="GITHUB_RELEASES_URL" target="_blank"
                 class="text-blue-600 hover:underline font-medium">
                 GitHub Releases
             </a>
@@ -81,6 +81,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { GITHUB_RELEASES_URL, GITHUB_RELEASES_LATEST_API_URL, GITHUB_RELEASES_LATEST_DOWNLOAD_BASE } from '~/constants/links';
 
 const selectedPlatform = ref('');
 const selectedArchitecture = ref('');
@@ -183,7 +184,7 @@ const selectArchitecture = (arch: string) => {
 
 const fetchLatestVersion = async () => {
     try {
-        const response = await fetch('https://api.github.com/repos/TestFlowKit/testflowkit/releases/latest');
+        const response = await fetch(GITHUB_RELEASES_LATEST_API_URL);
         const data = await response.json();
         latestVersion.value = data.tag_name || 'v1.0.0';
     } catch (error) {
@@ -199,7 +200,7 @@ const downloadBinary = async () => {
 
     try {
         const filename = `tkit-${selectedPlatform.value}-${selectedArchitecture.value}.zip`;
-        const downloadUrl = `https://github.com/TestFlowKit/testflowkit/releases/latest/download/${filename}`;
+        const downloadUrl = `${GITHUB_RELEASES_LATEST_DOWNLOAD_BASE}/${filename}`;
 
         // Create a temporary link element to trigger download
         const link = document.createElement('a');
@@ -219,7 +220,7 @@ const downloadBinary = async () => {
         isDownloading.value = false;
 
         const filename = `tkit-${selectedPlatform.value}-${selectedArchitecture.value}`;
-        const downloadUrl = `https://github.com/TestFlowKit/testflowkit/releases/latest/download/${filename}`;
+        const downloadUrl = `${GITHUB_RELEASES_LATEST_DOWNLOAD_BASE}/${filename}`;
         window.open(downloadUrl, '_blank');
     }
 };

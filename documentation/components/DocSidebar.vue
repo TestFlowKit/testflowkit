@@ -1,19 +1,16 @@
 <template>
   <div class="flex min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <!-- Mobile overlay -->
     <div 
       v-if="isOpen" 
-      class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+      class="mobile-overlay"
       @click="toggleSidebar"
     ></div>
 
-    <!-- Sidebar -->
     <aside 
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out pt-16 overflow-y-auto lg:translate-x-0"
+      class="sidebar"
       :class="{ '-translate-x-full': !isOpen, 'translate-x-0': isOpen }"
     >
       <nav class="px-4 py-6">
-        <!-- Navigation Groups -->
         <template v-for="group in navigation" :key="group.title">
           <div class="mb-6">
             <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
@@ -54,7 +51,7 @@
             </li>
             <li>
               <a
-                href="https://github.com/TestFlowKit/testflowkit"
+                :href="GITHUB_REPO_URL"
                 target="_blank"
                 class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
@@ -66,7 +63,7 @@
             </li>
             <li>
               <a
-                href="https://github.com/TestFlowKit/testflowkit/releases"
+                :href="GITHUB_RELEASES_URL"
                 target="_blank"
                 class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
@@ -81,8 +78,7 @@
       </nav>
     </aside>
 
-    <!-- Content Area -->
-    <main class="flex-1 w-full lg:ml-64 transition-all duration-300">
+    <main class="content-area">
       <slot />
     </main>
   </div>
@@ -90,31 +86,26 @@
 
 <script setup lang="ts">
 import { h } from 'vue';
+import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '~/constants/links';
 import { useSidebarKey, type UseSidebar } from '~/composables/useSidebar';
 
 const sidebar = inject<UseSidebar>(useSidebarKey);
 
-// Get values from injected sidebar, with safe fallbacks
 const isOpen = computed(() => sidebar?.isOpen.value ?? false);
 
 
-watch(isOpen, (newVal) => {
-  console.log(`Sidebar isOpen changed to: ${newVal}`);
-});
 function toggleSidebar() {
   sidebar?.toggleSidebar();
 }
 
 const route = useRoute();
 
-// Close sidebar on mobile when navigating
 function closeSidebarOnMobile() {
   if (typeof window !== 'undefined' && window.innerWidth < 1024 && isOpen.value) {
     toggleSidebar();
   }
 }
 
-// Define navigation structure
 const navigation = [
   {
     title: 'Getting Started',
@@ -207,3 +198,17 @@ function getIcon(sectionTitle: string) {
   return icons[sectionTitle] || icons['Getting Started'];
 }
 </script>
+
+<style scoped> 
+  .mobile-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden;
+  }
+
+  .sidebar {
+    @apply fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out pt-16 overflow-y-auto lg:translate-x-0;
+  }
+
+  .content-area {
+    @apply flex-1 w-full lg:ml-64 transition-all duration-300;
+  }
+</style>

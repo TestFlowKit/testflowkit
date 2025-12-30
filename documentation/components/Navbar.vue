@@ -1,9 +1,7 @@
 <template>
     <nav class="fixed top-0 left-0 right-0 z-[60] bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-200">
         <div class="flex items-center justify-between h-16 px-4 lg:px-6">
-            <!-- Left side - Logo and mobile menu button -->
             <div class="flex items-center space-x-4">
-                <!-- Mobile menu button - only show on docs pages -->
                 <button 
                     v-if="showMenuButton" 
                     @click="handleToggle" 
@@ -58,7 +56,7 @@
                 </button>
 
                 <!-- Download button -->
-                <a href="https://github.com/TestFlowKit/testflowkit/releases" target="_blank"
+                <a :href="GITHUB_RELEASES_URL" target="_blank"
                     class="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -67,8 +65,7 @@
                     Download
                 </a>
 
-                <!-- GitHub link -->
-                <a href="https://github.com/TestFlowKit/testflowkit" target="_blank"
+                <a :href="GITHUB_REPO_URL" target="_blank"
                     class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -84,8 +81,9 @@
 import { useSidebarKey, type UseSidebar } from '~/composables/useSidebar';
 import { useDarkModeKey, type UseDarkMode } from '~/composables/useDarkMode';
 
-const route = useRoute();
+import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '~/constants/links';
 
+const route = useRoute();
 const showMenuButton = computed(() => route.path.startsWith('/docs'));
 
 const sidebar = inject<UseSidebar>(useSidebarKey);
