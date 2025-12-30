@@ -1,18 +1,19 @@
 <template>
-    <div class="min-h-screen">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <Navbar />
-        <Sidebar>
-            <div class="p-6 lg:p-8">
-                <slot />
-            </div>
-        </Sidebar>
+        <div class="pt-16">
+            <slot />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import Sidebar from '../components/Sidebar.vue';
-import Navbar from '../components/Navbar.vue';
-import useSidebar from '../composables/useSidebar';
+import Navbar from '~/components/Navbar.vue';
+import useSidebar from '~/composables/useSidebar';
+import useDarkMode from '~/composables/useDarkMode';
 
 useSidebar();
+useDarkMode();
 </script>
+
+

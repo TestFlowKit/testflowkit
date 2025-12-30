@@ -30,8 +30,9 @@ const archLabel = computed(() => {
     }
 });
 
+import { GITHUB_RELEASES_LATEST_DOWNLOAD_BASE } from '~/constants/links';
+
 const downloadLink = computed(() => {
-    const baseUrl = "https://github.com/TestFlowKit/testflowkit/releases/latest/download/tkit";
-    return `${baseUrl}-${props.os}-${props.arch}`;
+    return `${GITHUB_RELEASES_LATEST_DOWNLOAD_BASE}/tkit-${props.os}-${props.arch}`;
 });
 </script>
