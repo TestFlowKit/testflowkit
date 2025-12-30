@@ -25,5 +25,4 @@ frontend:
 
   pages:
     home: "/"
-    get_started: "/get-started"
     sentences: "/sentences"

@@ -14,8 +14,8 @@ Feature: TestFlowKit Documentation Site Sample Test
   Scenario: Navigate to Get Started page and verify content
     Given the user goes to the "home" page
     When the user clicks the "get started" button
-    Then the current URL should contain "get-started"
-    And the user should see "Getting Started" on the page
+    Then the current URL should contain "getting-started"
+    And the page title should be "Introduction | TestFlowKit"
 
   Scenario: Explore the Sentences documentation
     When the user goes to the "sentences" page
