@@ -1,0 +1,10 @@
+# Don't include the actual binaries in the npm package
+# They are downloaded during postinstall
+bin/tkit
+bin/tkit.exe
+bin/temp.zip
+
+# Development files
+*.log
+.DS_Store
+node_modules/

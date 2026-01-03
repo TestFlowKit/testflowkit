@@ -40,6 +40,28 @@
 
 ## 🛠️ Installation
 
+### Using npm (Recommended)
+
+The easiest way to install TestFlowKit is via npm:
+
+```bash
+# Global installation
+npm install -g @testflowkit/cli
+
+# Verify installation
+tkit --version
+```
+
+Or use it directly with npx:
+
+```bash
+npx @testflowkit/cli --version
+```
+
+### From Pre-built Binaries
+
+Download the latest release from [GitHub Releases](https://github.com/TestFlowKit/testflowkit/releases) for your platform.
+
 ### From Source
 
 ```bash
@@ -53,10 +75,6 @@ go mod tidy
 # Build the application
 make build GOOS=linux GOARCH=amd64  # or your target platform
 ```
-
-### From Pre-built Binaries
-
-Download the latest release from [GitHub Releases](https://github.com/TestFlowKit/testflowkit/releases) for your platform.
 
 ## 🚀 Quick Start
 

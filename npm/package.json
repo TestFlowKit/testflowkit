@@ -1,0 +1,55 @@
+{
+  "name": "@testflowkit/cli",
+  "version": "0.0.0-development",
+
+  "description": "TestFlowKit CLI - A powerful end-to-end testing framework using Gherkin syntax",
+  "main": "lib/index.js",
+  "bin": {
+    "tkit": "./bin/tkit"
+  },
+  "scripts": {
+    "postinstall": "node ./lib/install.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TestFlowKit/testflowkit.git"
+  },
+  "keywords": [
+    "testflowkit",
+    "testing",
+    "e2e",
+    "end-to-end",
+    "gherkin",
+    "cucumber",
+    "bdd",
+    "cli",
+    "automation"
+  ],
+  "author": "TestFlowKit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TestFlowKit/testflowkit/issues"
+  },
+  "homepage": "https://github.com/TestFlowKit/testflowkit#readme",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10"
+  },
+  "files": [
+    "bin",
+    "lib/install.js",
+    "lib/index.js",
+    "README.md"
+  ]
+}
