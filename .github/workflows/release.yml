@@ -122,6 +122,26 @@ jobs:
               gh release upload "$LATEST_TAG" "$file" --clobber
             fi
           done
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Get the latest tag (without 'v' prefix for npm)
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          NPM_VERSION="${LATEST_TAG#v}"
+          echo "Publishing version: $NPM_VERSION"
+          
+          # Update package.json version
+          cd npm
+          npm version "$NPM_VERSION" --no-git-tag-version --allow-same-version
+          
+          # Configure npm for publishing
+          npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
+          
+          # Publish to npm
+          npm publish --access public
+
   deploy_doc:
     needs:
       - release

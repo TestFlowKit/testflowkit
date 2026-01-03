@@ -69,8 +69,12 @@
             </button>
         </div>
 
-        <div class="text-center">
-            <p class="text-sm text-gray-600 mb-2">Or download from:</p>
+        <div class="text-center space-y-4">
+            <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">💡 Quick Install via npm:</p>
+                <code class="bg-gray-100 dark:bg-gray-900 px-3 py-2 rounded text-sm font-mono text-gray-800 dark:text-gray-200">npm install -g @testflowkit/cli</code>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Or download the binary from:</p>
             <a :href="GITHUB_RELEASES_URL" target="_blank"
                 class="text-blue-600 hover:underline font-medium">
                 GitHub Releases
