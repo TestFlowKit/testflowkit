@@ -11,15 +11,18 @@ settings:
 environments:
   local:
     frontend_base_url: "http://0.0.0.0:3000"
-    api_base_url: "http://localhost:3001"
+    rest_api_base_url: "http://localhost:3001"
+    graphql_endpoint: "https://graphqlzero.almansi.me/api"
 
   local_windows:
     frontend_base_url: "http://localhost:3000"
-    api_base_url: "http://localhost:3001"
+    rest_api_base_url: "http://localhost:3001"
+    graphql_endpoint: "https://graphqlzero.almansi.me/api"
 
   ci:
     frontend_base_url: "http://server:3000"
-    api_base_url: "http://mock-server:3001"
+    rest_api_base_url: "http://mock-server:3001"
+    graphql_endpoint: "https://graphqlzero.almansi.me/api"
 
 frontend:
   default_timeout: 1000
@@ -103,7 +106,6 @@ backend:
     X-Requested-With: "TestFlowKit"
 
   graphql:
-    endpoint: "https://graphqlzero.almansi.me/api"
     default_headers:
       Content-Type: "application/json"
     operations:

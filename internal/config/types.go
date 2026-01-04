@@ -62,7 +62,9 @@ type GlobalSettings struct {
 type Environment struct {
 	FrontendBaseURL string `yaml:"frontend_base_url" validate:"url"`
 
-	APIBaseURL string `yaml:"api_base_url" validate:"url"`
+	RestAPIBaseURL string `yaml:"rest_api_base_url" validate:"url"`
+
+	GraphQLEndpoint string `yaml:"graphql_endpoint" validate:"omitempty,url"`
 }
 
 type FrontendElements = map[string]map[string][]string
@@ -102,7 +104,6 @@ type FileConfig struct {
 }
 
 type GraphQLConfig struct {
-	Endpoint       string                      `yaml:"endpoint" validate:"required"`
 	DefaultHeaders map[string]string           `yaml:"default_headers"`
 	Operations     map[string]GraphQLOperation `yaml:"operations" validate:"required,min=1"`
 }

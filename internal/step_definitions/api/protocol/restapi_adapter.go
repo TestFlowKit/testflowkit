@@ -28,7 +28,7 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, endpointName string
 		return ctx, fmt.Errorf("endpoint '%s' not found in configuration", endpointName)
 	}
 
-	baseURL := cfg.GetBackendBaseURL()
+	baseURL := cfg.GetRestAPIBaseURL()
 	scenarioCtx.SetEndpoint(baseURL, endpoint)
 
 	// Store this adapter as the protocol
