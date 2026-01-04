@@ -38,7 +38,9 @@ func DisplayConfigSummary(cfg *config.Config) {
 	}
 
 	env, _ := cfg.GetCurrentEnvironment()
-	logger.InfoFf("API Base URL: %s", env.APIBaseURL)
+
+	logger.InfoFf("API Base URL: %s", env.RestAPIBaseURL)
+	logger.InfoFf("API GraphQL Endpoint: %s", env.GraphQLEndpoint)
 	logger.InfoFf("API Endpoints: %d endpoints", len(cfg.Backend.Endpoints))
 
 	logger.Info("--- Configuration Summary End ---\n")

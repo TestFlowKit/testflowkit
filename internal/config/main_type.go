@@ -51,7 +51,7 @@ func (c *Config) GetAPIEndpoint(endpointName string) (string, Endpoint, error) {
 		return parsedURL.String(), endpoint, nil
 	}
 
-	fullURL := filepath.Join(c.GetBackendBaseURL(), parsedURL.Path)
+	fullURL := filepath.Join(c.GetRestAPIBaseURL(), parsedURL.Path)
 	return fullURL, endpoint, nil
 }
 
@@ -79,12 +79,12 @@ func (c *Config) GetConcurrency() int {
 	return c.Settings.Concurrency
 }
 
-func (c *Config) GetBackendBaseURL() string {
+func (c *Config) GetRestAPIBaseURL() string {
 	env, err := c.GetCurrentEnvironment()
 	if err != nil {
 		return ""
 	}
-	return env.APIBaseURL
+	return env.RestAPIBaseURL
 }
 
 func (c *Config) GetGraphQLEndpoint() (string, error) {
@@ -92,28 +92,11 @@ func (c *Config) GetGraphQLEndpoint() (string, error) {
 		return "", errors.New("GraphQL configuration not found")
 	}
 
-	parsedURL, err := url.Parse(c.Backend.GraphQL.Endpoint)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse GraphQL endpoint: %w", err)
+	if env, err := c.GetCurrentEnvironment(); err == nil && env.GraphQLEndpoint != "" {
+		return env.GraphQLEndpoint, nil
 	}
 
-	if parsedURL.Scheme != "" {
-		return parsedURL.String(), nil
-	}
-
-	baseURL := c.GetBackendBaseURL()
-	if baseURL == "" {
-		return "", errors.New("backend base URL not configured")
-	}
-
-	// Ensure proper URL joining
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
-	}
-	if strings.HasPrefix(c.Backend.GraphQL.Endpoint, "/") {
-		return baseURL + strings.TrimPrefix(c.Backend.GraphQL.Endpoint, "/"), nil
-	}
-	return baseURL + c.Backend.GraphQL.Endpoint, nil
+	return "", errors.New("GraphQL endpoint not defined in environment configuration")
 }
 
 func (c *Config) GetGraphQLOperation(operationName string) (GraphQLOperation, error) {
@@ -267,10 +250,13 @@ func (c *Config) validateGraphQL() error {
 		return nil
 	}
 
-	if c.Backend.GraphQL.Endpoint == "" {
-		return errors.New("GraphQL endpoint is required when GraphQL config is defined")
-	}
+	// Check if endpoint is defined in environment
+	env, err := c.GetCurrentEnvironment()
+	hasEnvEndpoint := err == nil && env.GraphQLEndpoint != ""
 
+	if !hasEnvEndpoint {
+		return errors.New("GraphQL endpoint must be defined in the environment configuration")
+	}
 	if len(c.Backend.GraphQL.Operations) == 0 {
 		return errors.New("at least one GraphQL operation must be defined when GraphQL config is present")
 	}
