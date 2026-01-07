@@ -55,7 +55,7 @@ func verifyConfigFileCreation(t *testing.T) {
 	configStr := string(content)
 
 	expectedElements := []string{
-		"frontend_base_url: \"https://testflowkit.dreamsfollowers.me\"",
+		"frontend_base_url: \"https://testflowkit.github.io\"",
 		"gherkin_location: \"./features\"",
 		"default_timeout: 10000",
 		"pages:",

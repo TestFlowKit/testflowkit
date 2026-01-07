@@ -132,5 +132,5 @@ jobs:
   deploy_doc:
     needs:
       - release
-    uses: "./.github/workflows/deploy-docs.yml"
+    uses: "./.github/workflows/deploy-pages.yml"
 
