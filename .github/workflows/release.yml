@@ -10,6 +10,8 @@ permissions:
   issues: write
   checks: write
   id-token: write
+  pages: write
+
 
 jobs:
   validate_release_branch:

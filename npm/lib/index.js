@@ -17,7 +17,7 @@ const path = require("path");
 const fs = require("fs");
 
 const BINARY_NAME = process.platform === "win32" ? "tkit.exe" : "tkit";
-const binaryPath = path.join(__dirname, "..", "bin", BINARY_NAME);
+const binaryPath = path.join(__dirname, "..", "cli", BINARY_NAME);
 
 /**
  * Get the path to the tkit binary

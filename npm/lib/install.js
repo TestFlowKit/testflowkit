@@ -115,7 +115,7 @@ function makeExecutable(filePath) {
  * Main installation function
  */
 async function install() {
-  const binDir = path.join(__dirname, "..", "bin");
+  const binDir = path.join(__dirname, "..", "cli");
   const binaryName = getBinaryName();
   const binaryPath = path.join(binDir, binaryName);
 

@@ -7,7 +7,7 @@
   "description": "TestFlowKit CLI - A powerful end-to-end testing framework using Gherkin syntax",
   "main": "lib/index.js",
   "bin": {
-    "tkit": "./bin/tkit"
+    "tkit": "bin/cli.js"
   },
   "scripts": {
     "postinstall": "node ./lib/install.js"
@@ -49,7 +49,8 @@
     "adm-zip": "^0.5.10"
   },
   "files": [
-    "bin",
+    "bin/cli.js",
+    "cli",
     "lib/install.js",
     "lib/index.js",
     "README.md"
