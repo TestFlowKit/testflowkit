@@ -55,16 +55,6 @@
                     </svg>
                 </button>
 
-                <!-- Download button -->
-                <a :href="GITHUB_RELEASES_URL" target="_blank"
-                    class="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                    Download
-                </a>
-
                 <a :href="GITHUB_REPO_URL" target="_blank"
                     class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -81,7 +71,7 @@
 import { useSidebarKey, type UseSidebar } from '~/composables/useSidebar';
 import { useDarkModeKey, type UseDarkMode } from '~/composables/useDarkMode';
 
-import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '~/constants/links';
+import { GITHUB_REPO_URL } from '~/constants/links';
 
 const route = useRoute();
 const showMenuButton = computed(() => route.path.startsWith('/docs'));
