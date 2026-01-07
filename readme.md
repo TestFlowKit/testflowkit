@@ -224,16 +224,16 @@ Feature: Dynamic User Testing
 
 ## 📚 Documentation
 
-For comprehensive documentation, visit the [official TestFlowKit documentation](https://testflowkit.dreamsfollowers.me/).
+For comprehensive documentation, visit the [official TestFlowKit documentation](https://testflowkit.github.io/testflowkit/).
 
 ### Key Documentation Sections
 
-- [Getting Started](https://testflowkit.dreamsfollowers.me/get-started)
-- [Configuration Guide](https://testflowkit.dreamsfollowers.me/configuration)
-- [Step Definitions](https://testflowkit.dreamsfollowers.me/sentences)
-- [Variables System](https://testflowkit.dreamsfollowers.me/variables)
-- [FAQ & Troubleshooting](https://testflowkit.dreamsfollowers.me/troubleshooting)
-- [Test Execution Design (TED)](https://testflowkit.dreamsfollowers.me/docs/category/test-execution-design-ted)
+- [Getting Started](https://testflowkit.github.io/testflowkit/get-started)
+- [Configuration Guide](https://testflowkit.github.io/testflowkit/configuration)
+- [Step Definitions](https://testflowkit.github.io/testflowkit/sentences)
+- [Variables System](https://testflowkit.github.io/testflowkit/variables)
+- [FAQ & Troubleshooting](https://testflowkit.github.io/testflowkit/troubleshooting)
+- [Test Execution Design (TED)](https://testflowkit.github.io/testflowkit/docs/category/test-execution-design-ted)
 
 ## 🏗️ Project Structure
 
@@ -876,7 +876,7 @@ type(scope): description
 
 ## 🐛 Bug Reports & Troubleshooting
 
-If you encounter issues with TestFlowKit, please check our [Troubleshooting Guide](https://testflowkit.dreamsfollowers.me/troubleshooting) first for common solutions.
+If you encounter issues with TestFlowKit, please check our [Troubleshooting Guide](https://testflowkit.github.io/testflowkit/troubleshooting) first for common solutions.
 
 For bugs not covered in the troubleshooting guide, please [create a GitHub issue](https://github.com/TestFlowKit/testflowkit/issues) with:
 
@@ -921,7 +921,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **Documentation**: [https://testflowkit.dreamsfollowers.me/](https://testflowkit.dreamsfollowers.me/)
+- **Documentation**: [https://testflowkit.github.io/testflowkit/](https://testflowkit.github.io/testflowkit/)
 - **GitHub**: [https://github.com/TestFlowKit/testflowkit](https://github.com/TestFlowKit/testflowkit)
 - **Issues**: [https://github.com/TestFlowKit/testflowkit/issues](https://github.com/TestFlowKit/testflowkit/issues)
 - **Releases**: [https://github.com/TestFlowKit/testflowkit/releases](https://github.com/TestFlowKit/testflowkit/releases)

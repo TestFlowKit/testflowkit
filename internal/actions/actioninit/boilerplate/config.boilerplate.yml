@@ -8,7 +8,7 @@ settings:
 
 environments:
   local:
-    frontend_base_url: "https://testflowkit.dreamsfollowers.me"
+    frontend_base_url: "https://testflowkit.github.io"
 
 frontend:
   default_timeout: 10000

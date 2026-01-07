@@ -217,9 +217,9 @@ func displayGuidance() {
 	logger.Info("")
 
 	logger.Info("📚 Learn more:")
-	logger.Info("   • TestFlowKit Documentation: https://testflowkit.dreamsfollowers.me")
-	logger.Info("   • Available Test Sentences: https://testflowkit.dreamsfollowers.me/sentences")
-	logger.Info("   • Configuration Guide: https://testflowkit.dreamsfollowers.me/configuration")
+	logger.Info("   • TestFlowKit Documentation: https://testflowkit.github.io")
+	logger.Info("   • Available Test Sentences: https://testflowkit.github.io/testflowkit/sentences")
+	logger.Info("   • Configuration Guide: https://testflowkit.github.io/testflowkit/configuration")
 	logger.Info("")
 
 	logger.Info("✨ Welcome to TestFlowKit! Your sample test is ready to run against our documentation site.")

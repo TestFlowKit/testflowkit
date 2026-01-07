@@ -1,5 +1,9 @@
 export default defineNuxtConfig({
+  nitro: {
+    preset: 'github_pages'
+  },
   app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       title: "TestFlowKit - Behavior-Driven Testing Framework"
     }

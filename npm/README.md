@@ -56,7 +56,7 @@ features:
 
 ## Documentation
 
-For full documentation, visit [TestFlowKit Documentation](https://testflowkit.github.io/testflowkit/).
+For full documentation, visit [TestFlowKit Documentation](https://testflowkit.github.io/testflowkit/testflowkit/).
 
 ## Supported Platforms
 

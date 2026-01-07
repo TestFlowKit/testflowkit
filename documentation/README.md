@@ -1,75 +1,15 @@
-# Nuxt Minimal Starter
+# TestFlowKit - Documentation
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Welcome to the TestFlowKit documentation! This directory contains comprehensive guides and references for using TestFlowKit.
 
-## Setup
 
-Make sure to install dependencies:
+## 📖 What is TestFlowKit?
 
-```bash
-# npm
-npm install
+TestFlowKit is a comprehensive testing framework that provides powerful tools for writing, organizing, and executing tests with an intuitive API and rich feature set.
 
-# pnpm
-pnpm install
 
-# yarn
-yarn install
+## 🔗 Resources
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- [GitHub Repository](https://github.com/TestFlowKit/testflowkit)
+- [Report Issues](https://github.com/TestFlowKit/testflowkit/issues)
+- [Main Project Documentation](../README.md)
