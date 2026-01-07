@@ -1,7 +1,9 @@
 {
   "name": "@testflowkit/cli",
   "version": "0.0.0-development",
-
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "TestFlowKit CLI - A powerful end-to-end testing framework using Gherkin syntax",
   "main": "lib/index.js",
   "bin": {
