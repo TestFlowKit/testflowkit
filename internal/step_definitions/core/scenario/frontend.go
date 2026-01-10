@@ -16,7 +16,7 @@ var errNoCurrentPageAvailable = errors.New("no current page available")
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
 	frontCtx.browser = internalbrowser.CreateInstance(internalbrowser.Config{
-		DriverType:    internalbrowser.DriverRod,
+		DriverType:    internalbrowser.DriverPlaywright,
 		HeadlessMode:  frontCtx.headlessMode,
 		ThinkTime:     frontCtx.thinkTime,
 		IncognitoMode: incognitoMode,

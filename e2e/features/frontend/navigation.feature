@@ -1,4 +1,4 @@
-@NAVIGATION
+@NAVIGATION @FRONTEND
 Feature: navigation e2e tests
 
   Scenario: a user can navigate between pages

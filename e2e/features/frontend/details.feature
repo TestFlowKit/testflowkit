@@ -1,4 +1,4 @@
-@ELEMENT_DETAILS
+@ELEMENT_DETAILS @FRONTEND
 Feature: product details e2e tests
 
   Scenario: a user must see computer details
