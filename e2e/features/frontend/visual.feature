@@ -6,7 +6,6 @@ Feature: visual e2e tests
       | page_name  |
       | visual e2e |
   
-  @TEST
   Scenario: User should see certain things on page
     Given the user should not see "L'élément a été caché." on the page
     And the user should see "Cet élément va disparaître quand vous cliquerez sur le bouton." on the page
