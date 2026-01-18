@@ -6,7 +6,7 @@ require (
 	github.com/alexflint/go-arg v1.6.1
 	github.com/cucumber/godog v0.15.1
 	github.com/go-rod/rod v0.116.2
-	github.com/goccy/go-yaml v1.19.1
+	github.com/goccy/go-yaml v1.19.2
 	github.com/stretchr/testify v1.11.1
 	github.com/tdewolff/parse v2.3.4+incompatible
 )
@@ -24,7 +24,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/image v0.34.0
+	golang.org/x/image v0.35.0
 	golang.org/x/sys v0.25.0 // indirect
 )
 
