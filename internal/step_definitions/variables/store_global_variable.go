@@ -28,7 +28,8 @@ func (steps) storeValueIntoGlobalVariable() stepbuilder.Step {
 				{Name: "value", Description: "The value to store", Type: stepbuilder.VarTypeString},
 				{Name: "varName", Description: "The name of the global variable", Type: stepbuilder.VarTypeString},
 			},
-			Example: `When I store the value "admin_token" into global variable "AUTH_TOKEN"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},
+			Example:    `When I store the value "admin_token" into global variable "AUTH_TOKEN"`,
 		},
 	)
 }
@@ -63,7 +64,8 @@ func (steps) storeJSONPathIntoGlobalVariable() stepbuilder.Step {
 				{Name: "jsonPath", Description: "The JSON path to extract", Type: stepbuilder.VarTypeString},
 				{Name: "varName", Description: "The name of the global variable", Type: stepbuilder.VarTypeString},
 			},
-			Example: `Then I save the response path "token" as global variable "AUTH_TOKEN"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},
+			Example:    `Then I save the response path "token" as global variable "AUTH_TOKEN"`,
 		},
 	)
 }

@@ -53,8 +53,7 @@ func (steps) setPathParams() stepbuilder.Step {
 			Example: `Given I set the following path parameters:
   | userId | {{userId}} |
   | postId | 123        |`,
-			Category: stepbuilder.RESTAPI,
-		},
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
 	)
 }
 

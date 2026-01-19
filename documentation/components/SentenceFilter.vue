@@ -40,28 +40,37 @@ interface Props {
 }
 
 interface Emits {
-    (e: 'update:searchQuery', value: string): void;
-    (e: 'update:selectedCategory', value: string): void;
     (e: 'filtered', sentences: Sentence[]): void;
 }
 
-const { sentences, searchQuery, selectedCategory } = defineProps<Props>();
+const [selectedCategory] = defineModel<string>("selectedCategory", {
+    default: '',
+});
+const [searchQuery] = defineModel<string>("searchQuery", {
+    default: '',
+});
+
+const { sentences } = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const availableCategories = computed(() => {
-    const categories = new Set(sentences.map(s => s.category));
-    return Array.from(categories).sort();
+    const allCategories = new Set<string>();
+        for (const {categories} of sentences) {
+            categories?.forEach(c => allCategories.add(c));
+        }
+        
+    return Array.from(allCategories).sort();
 });
 
 const filteredSentences = computed(() => {
     let filtered = sentences;
 
-    if (selectedCategory) {
-        filtered = filtered.filter(s => s.category === selectedCategory);
+    if (selectedCategory.value) {
+        filtered = filtered.filter(s => s.categories.includes(selectedCategory.value));
     }
 
-    if (searchQuery.trim()) {
-        const searchTerm = searchQuery.toUpperCase();
+    if (searchQuery.value.trim()) {
+        const searchTerm = searchQuery.value.toUpperCase();
         filtered = filtered.filter(s => {
             const upperCaseTexts = [s.sentence, s.description].map(t => t.toUpperCase());
             return upperCaseTexts.some(upperText => upperText.includes(searchTerm));
@@ -80,17 +89,17 @@ const totalCount = computed(() => sentences.length);
 
 function handleSearch(e: Event) {
     const value = (e.target as HTMLInputElement).value;
-    emit('update:searchQuery', value);
+    searchQuery.value = value;
 }
 
 function handleCategoryChange(e: Event) {
     const value = (e.target as HTMLSelectElement).value;
-    emit('update:selectedCategory', value);
+    selectedCategory.value = value;
 }
 
 function clearFilters() {
-    emit('update:searchQuery', '');
-    emit('update:selectedCategory', '');
+    searchQuery.value = '';
+    selectedCategory.value = '';
 }
 
 function formatCategoryName(category: string): string {

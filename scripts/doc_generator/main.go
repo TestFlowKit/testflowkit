@@ -42,7 +42,12 @@ func generateDocs(stepDocumentations []stepbuilder.Documentation, outputDir stri
 		}
 
 		filename := formatFilename(documentation.Sentence)
-		filePath := path.Join(outputDir, documentation.Category, filename)
+		categoryDir := "uncategorized"
+		if len(documentation.Categories) > 0 {
+			categoryDir = documentation.Categories[0]
+		}
+
+		filePath := path.Join(outputDir, categoryDir, filename)
 
 		fileCreationErr := createFileWithDirectories(filePath, jsonData)
 		if fileCreationErr != nil {
@@ -55,10 +60,15 @@ func formatSentencesDocs(sentences []stepbuilder.Documentation) (docs []doc) {
 	re := regexp.MustCompile(`[$^]`)
 
 	for _, step := range sentences {
+		var categories []string
+		for _, c := range step.Categories {
+			categories = append(categories, string(c))
+		}
+
 		curr := doc{
 			Sentence:    re.ReplaceAllString(step.Sentence, ""),
 			Description: step.Description,
-			Category:    string(step.Category),
+			Categories:  categories,
 			Example:     step.Example,
 		}
 
@@ -103,7 +113,7 @@ func createFileWithDirectories(filePath string, data []byte) error {
 type doc struct {
 	Sentence    string   `json:"sentence"`
 	Description string   `json:"description"`
-	Category    string   `json:"category"`
+	Categories  []string `json:"categories"`
 	Variables   []docVar `json:"variables"`
 	Example     string   `json:"gherkinExample"`
 }

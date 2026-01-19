@@ -32,8 +32,8 @@ func (steps) shouldSeeOnPage() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "word", Description: "The word to check.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the user should see \"Submit\" on the page",
-			Category: stepbuilder.Visual,
+			Example:    "Then the user should see \"Submit\" on the page",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
 		},
 	)
 }

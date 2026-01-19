@@ -32,8 +32,8 @@ func (steps) elementShouldNotExist() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the submit button should not exist",
-			Category: stepbuilder.Visual,
+			Example:    "Then the submit button should not exist",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
 		},
 	)
 }

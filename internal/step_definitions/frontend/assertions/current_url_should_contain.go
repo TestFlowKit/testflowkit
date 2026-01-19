@@ -32,8 +32,8 @@ func (steps) currentURLShouldContain() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "expectedURLPart", Description: description, Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the current URL should contain "dashboard"`,
-			Category: stepbuilder.Assertions,
+			Example:    `Then the current URL should contain "dashboard"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
 		},
 	)
 }

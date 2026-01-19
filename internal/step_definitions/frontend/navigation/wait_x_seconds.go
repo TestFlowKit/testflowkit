@@ -26,8 +26,8 @@ func (steps) userWait() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "seconds", Description: "The number of seconds to wait.", Type: stepbuilder.VarTypeInt},
 			},
-			Example:  "When the user waits for 3 seconds",
-			Category: stepbuilder.Navigation,
+			Example:    "When the user waits for 3 seconds",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation},
 		},
 	)
 }

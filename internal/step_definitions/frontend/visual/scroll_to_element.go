@@ -30,8 +30,8 @@ func (steps) scrollToElement() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "elementName", Description: "The name of the element to scroll to.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user scrolls to the submit button element",
-			Category: stepbuilder.Visual,
+			Example:    "When the user scrolls to the submit button element",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
 		},
 	)
 }

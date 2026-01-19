@@ -51,8 +51,8 @@ func (steps) validateErrorMessage() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example:  `Then the GraphQL error message should contain "User not found"`,
-			Category: stepbuilder.GraphQL,
+			Example:    `Then the GraphQL error message should contain "User not found"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.GraphQL},
 		},
 	)
 }

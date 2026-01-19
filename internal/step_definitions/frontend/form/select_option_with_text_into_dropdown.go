@@ -40,8 +40,8 @@ func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
 				{Name: "text", Description: "The text of the option to select.", Type: stepbuilder.VarTypeString},
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user selects the option with text \"United States\" from the \"Country\" dropdown",
-			Category: stepbuilder.Form,
+			Example:    "When the user selects the option with text \"United States\" from the \"Country\" dropdown",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 		},
 	)
 }

@@ -41,7 +41,7 @@ func (steps) setHeaders() stepbuilder.Step {
   | Authorization | Bearer {{token}}      |
   | Content-Type  | application/json      |
   | X-Request-ID  | {{requestId}}         |`,
-			Category: stepbuilder.Backend,
+			Categories: stepbuilder.Backend,
 		},
 	)
 }

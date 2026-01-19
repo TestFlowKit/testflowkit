@@ -44,8 +44,7 @@ func (steps) setRequestBody() stepbuilder.Step {
 {"name": "John", "email": "john@example.com"}
 """
 `,
-			Category: stepbuilder.RESTAPI,
-		},
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
 	)
 }
 
@@ -90,8 +89,7 @@ func (steps) setRequestBodyFromFile() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example:  `Given I set the request body from file "data/request.json"`,
-			Category: stepbuilder.RESTAPI,
-		},
+			Example:    `Given I set the request body from file "data/request.json"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
 	)
 }

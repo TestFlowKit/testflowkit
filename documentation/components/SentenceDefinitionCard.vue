@@ -2,9 +2,12 @@
     <div class="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md space-y-2 border border-gray-100 dark:border-gray-700">
         <div class="flex items-start justify-between">
             <h2 class="font-bold text-xl text-gray-800 dark:text-white flex-1" v-text="sentence"></h2>
-            <span class="ml-2 px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full capitalize">
-                {{ category }}
-            </span>
+            <div class="ml-2 flex flex-wrap gap-1 justify-end">
+                <span v-for="cat in categories" :key="cat"
+                    class="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 rounded-full capitalize">
+                    {{ cat }}
+                </span>
+            </div>
         </div>
         <div class="description">
             <h3 class="font-bold text-gray-700 dark:text-gray-300 inline">Description: </h3>

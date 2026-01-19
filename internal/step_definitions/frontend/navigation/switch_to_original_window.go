@@ -42,7 +42,7 @@ func (steps) switchToOriginalWindow() stepbuilder.Step {
 			Description: "switches back to the original browser window (usually the first window).",
 			Variables:   []stepbuilder.DocVariable{},
 			Example:     "When the user switches back to the original window",
-			Category:    stepbuilder.Navigation,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation},
 		},
 	)
 }

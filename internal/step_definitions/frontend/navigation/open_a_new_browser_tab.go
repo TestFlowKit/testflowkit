@@ -19,7 +19,6 @@ func (steps) openANewBrowserTab() stepbuilder.Step {
 			Description: "opens a new browser tab.",
 			Variables:   nil,
 			Example:     "Given the user opens a new browser tab",
-			Category:    stepbuilder.Navigation,
-		},
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation}},
 	)
 }

@@ -52,8 +52,8 @@ func (steps) shouldSeeRowContainingTheFollowingElements() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "table", Description: "The table containing the elements to check.", Type: stepbuilder.VarTypeTable},
 			},
-			Example:  example,
-			Category: stepbuilder.Visual,
+			Example:    example,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
 		},
 	)
 }

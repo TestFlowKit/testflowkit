@@ -26,8 +26,8 @@ func (steps) doubleClickOn() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: docDescription, Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user double clicks on \"File item\"",
-			Category: stepbuilder.Mouse,
+			Example:    "When the user double clicks on \"File item\"",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
 		},
 	)
 }

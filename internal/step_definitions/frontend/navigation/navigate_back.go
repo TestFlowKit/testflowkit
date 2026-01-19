@@ -22,7 +22,6 @@ func (steps) navigateBack() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "navigates back to the previous page in browser history.",
 			Example:     "When the user navigates back",
-			Category:    stepbuilder.Navigation,
-		},
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation}},
 	)
 }

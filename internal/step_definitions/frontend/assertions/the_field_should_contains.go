@@ -42,8 +42,8 @@ func (steps) theFieldShouldContain() stepbuilder.Step {
 				{Name: "fieldId", Description: "The id of the field.", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the value of the "Username" field should be "myUsername".`,
-			Category: stepbuilder.Form,
+			Example:    `Then the value of the "Username" field should be "myUsername".`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 		},
 	)
 }

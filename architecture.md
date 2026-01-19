@@ -373,7 +373,7 @@ func (steps) elementShouldBeVisible() stepbuilder.Step {
                 {Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
             },
             Example:  "Then the submit button should be visible",
-            Category: stepbuilder.Visual,
+            Categories: []stepbuilder.StepCategory{stepbuilder.Visual}
         },
     )
 }
@@ -410,7 +410,7 @@ func (steps) prepareGraphQLRequest() stepbuilder.Step {
                 },
             },
             Example:  `Given I prepare a GraphQL request to "get_user_profile"`,
-            Category: stepbuilder.GraphQL,
+            Categories: []stepbuilder.StepCategory{stepbuilder.GraphQL}
         },
     )
 }
@@ -632,7 +632,7 @@ func (steps) customStep() stepbuilder.Step {
                 {Name: "param", Description: "Parameter description", Type: stepbuilder.VarTypeString},
             },
             Example:  "When custom step with \"value\"",
-            Category: stepbuilder.Custom,
+            Categories: []stepbuilder.StepCategory{stepbuilder.Custom}
         },
     )
 }

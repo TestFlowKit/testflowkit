@@ -54,8 +54,8 @@ func (steps) radioButtonShouldBeSelectedOrNot() stepbuilder.Step {
 				{Name: "radio button", Description: "The name of the radio button.", Type: stepbuilder.VarTypeString},
 				{Name: "status", Description: "The status of the radio button.", Type: statusType},
 			},
-			Example:  `Then the "terms" radio button should be selected`,
-			Category: stepbuilder.Form,
+			Example:    `Then the "terms" radio button should be selected`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 		},
 	)
 }

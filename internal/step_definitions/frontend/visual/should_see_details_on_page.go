@@ -60,8 +60,8 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "table", Description: "The table containing the details to check.", Type: stepbuilder.VarTypeTable},
 			},
-			Example:  "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
-			Category: stepbuilder.Visual,
+			Example:    "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
 		},
 	)
 }
