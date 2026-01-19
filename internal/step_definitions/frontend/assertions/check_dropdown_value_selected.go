@@ -20,8 +20,8 @@ func (steps) dropdownHasValuesSelected() stepbuilder.Step {
 			{Name: "dropdownId", Description: "The id of the dropdown.", Type: stepbuilder.VarTypeString},
 			{Name: "optionLabels", Description: "The labels of the options to check.", Type: stepbuilder.VarTypeString},
 		},
-		Example:  `Then the "country" dropdown should have "USA,Canada" selected`,
-		Category: stepbuilder.Form,
+		Example:    `Then the "country" dropdown should have "USA,Canada" selected`,
+		Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 	}
 
 	return stepbuilder.NewWithTwoVariables(

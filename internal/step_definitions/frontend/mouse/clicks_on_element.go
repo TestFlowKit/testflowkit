@@ -19,8 +19,8 @@ func (s steps) userClicksOnElement() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of element to click on.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user clicks the \"Main Logo\" element",
-			Category: stepbuilder.Mouse,
+			Example:    "When the user clicks the \"Main Logo\" element",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
 		},
 	)
 }

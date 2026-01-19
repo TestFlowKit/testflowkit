@@ -39,7 +39,7 @@ func (steps) setJSONBody() stepbuilder.Step {
   "tags": ["developer", "golang"]
 }
 """`,
-			Category: stepbuilder.RESTAPI,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)
 }

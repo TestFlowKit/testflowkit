@@ -40,8 +40,8 @@ func (steps) elementShouldContainsExactText() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "expectedText", Description: "The exact text that should be contained.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the text of the "Welcome Message" element should be exactly "Hello John".`,
-			Category: stepbuilder.Visual,
+			Example:    `Then the text of the "Welcome Message" element should be exactly "Hello John".`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
 		},
 	)
 }

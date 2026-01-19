@@ -24,8 +24,8 @@ func (steps) rightClickOn() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of element to right click on.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user right clicks on \"Submit button\"",
-			Category: stepbuilder.Mouse,
+			Example:    "When the user right clicks on \"Submit button\"",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
 		},
 	)
 }

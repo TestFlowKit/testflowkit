@@ -43,8 +43,8 @@ func (steps) elementShouldContainsText() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "expectedText", Description: "The text that should be contained.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the welcome card should contain the text "Hello John"`,
-			Category: stepbuilder.Visual,
+			Example:    `Then the welcome card should contain the text "Hello John"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
 		},
 	)
 }

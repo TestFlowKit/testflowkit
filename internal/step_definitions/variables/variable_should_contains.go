@@ -40,8 +40,8 @@ func (steps) variableShouldContains() stepbuilder.Step {
 				{Name: "varName", Description: "The name of the variable to check", Type: stepbuilder.VarTypeString},
 				{Name: "content", Description: contentDesc, Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the variable "user_name_label" should contain "John Doe"`,
-			Category: stepbuilder.Variable,
+			Example:    `Then the variable "user_name_label" should contain "John Doe"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},
 		},
 	)
 }

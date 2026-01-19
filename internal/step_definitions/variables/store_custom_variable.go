@@ -27,8 +27,8 @@ func (steps) storeCustomVariable() stepbuilder.Step {
 				{Name: "value", Description: "The value to store in the variable", Type: stepbuilder.VarTypeString},
 				{Name: "varName", Description: "The name of the variable to store the value in", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `When I store the value "John Doe" into "displayed_name" variable`,
-			Category: stepbuilder.Variable,
+			Example:    `When I store the value "John Doe" into "displayed_name" variable`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},
 		},
 	)
 }

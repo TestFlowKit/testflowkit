@@ -3,7 +3,7 @@ import { z } from "@nuxt/content";
 export const sentenceValidationSchema = z.object({
   sentence: z.string(),
   description: z.string(),
-  category: z.string(),
+  categories: z.array(z.string()),
   gherkinExample: z.string(),
   variables: z.array(
     z.object({
@@ -16,7 +16,7 @@ export const sentenceValidationSchema = z.object({
 export type Sentence = {
   sentence: string;
   description: string;
-  category: string;
+  categories: string[];
   gherkinExample: string;
   variables: Array<{
     name: string;

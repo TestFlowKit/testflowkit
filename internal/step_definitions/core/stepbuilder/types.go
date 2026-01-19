@@ -13,5 +13,5 @@ type DocParams struct {
 	Description string
 	Variables   []DocVariable
 	Example     string
-	Category    StepCategory
+	Categories  []StepCategory
 }

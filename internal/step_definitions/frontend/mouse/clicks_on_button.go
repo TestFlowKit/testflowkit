@@ -22,8 +22,8 @@ func (steps) userClicksOnButton() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of button to click on.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user clicks the \"Submit Order\" button",
-			Category: stepbuilder.Mouse,
+			Example:    "When the user clicks the \"Submit Order\" button",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
 		},
 	)
 }

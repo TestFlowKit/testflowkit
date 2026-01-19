@@ -49,7 +49,6 @@ func (steps) switchToNewOpenedWindow() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "switches to the newly opened browser window.",
 			Example:     "When the user switches to the newly opened window",
-			Category:    stepbuilder.Navigation,
-		},
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation}},
 	)
 }

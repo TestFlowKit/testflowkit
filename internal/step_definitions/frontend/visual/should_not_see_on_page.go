@@ -33,8 +33,8 @@ func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "text", Description: "The text that should not be visible on the page.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the user should not see \"Error\" on the page",
-			Category: stepbuilder.Visual,
+			Example:    "Then the user should not see \"Error\" on the page",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
 		},
 	)
 }

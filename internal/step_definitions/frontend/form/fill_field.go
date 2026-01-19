@@ -40,8 +40,8 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 				{Name: "text", Description: "The text to type.", Type: stepbuilder.VarTypeString},
 				{Name: "name", Description: "The logical name of the input field.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `When the user enters "myUsername" into the "Username" field`,
-			Category: stepbuilder.Form,
+			Example:    `When the user enters "myUsername" into the "Username" field`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 		},
 	)
 }

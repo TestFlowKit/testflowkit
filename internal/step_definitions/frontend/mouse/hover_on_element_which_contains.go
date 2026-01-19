@@ -29,8 +29,8 @@ func (s steps) hoverOnElementWhichContains() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to hover on.", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user hovers on \"Submit button\" which contains \"Submit\"",
-			Category: stepbuilder.Mouse,
+			Example:    "When the user hovers on \"Submit button\" which contains \"Submit\"",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
 		},
 	)
 }

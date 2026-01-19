@@ -49,7 +49,7 @@ func (steps) storeResponseData() stepbuilder.Step {
 			},
 			Example: `And I store the value from "data.user.id" as "userId"
 And I store the value from "token" as "authToken"`,
-			Category: stepbuilder.Backend,
+			Categories: stepbuilder.Backend,
 		},
 	)
 }

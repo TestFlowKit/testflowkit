@@ -24,8 +24,8 @@ func (steps) hoverOnElement() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of element to hover on.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user hovers on \"Submit button\"",
-			Category: stepbuilder.Mouse,
+			Example:    "When the user hovers on \"Submit button\"",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
 		},
 	)
 }

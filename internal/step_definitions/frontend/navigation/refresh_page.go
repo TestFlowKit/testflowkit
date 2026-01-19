@@ -22,7 +22,7 @@ func (steps) refreshPage() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "refreshes the current page.",
 			Example:     "When the user refreshes the page",
-			Category:    stepbuilder.Navigation,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation},
 		},
 	)
 }

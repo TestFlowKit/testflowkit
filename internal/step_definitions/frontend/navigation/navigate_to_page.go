@@ -37,8 +37,7 @@ func (steps) userNavigateToPage() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "page", Description: "The name of the page to navigate to.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user goes to the \"Login\" page",
-			Category: stepbuilder.Navigation,
-		},
+			Example:    "When the user goes to the \"Login\" page",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation}},
 	)
 }

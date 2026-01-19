@@ -42,8 +42,8 @@ func (steps) checkCheckbox() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "checkbox logical name", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "When the user checks the \"Terms\" checkbox",
-			Category: stepbuilder.Form,
+			Example:    "When the user checks the \"Terms\" checkbox",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 		},
 	)
 }

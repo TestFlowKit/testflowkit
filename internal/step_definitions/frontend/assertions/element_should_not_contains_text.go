@@ -43,8 +43,8 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "unexpectedText", Description: "The text that should not be contained.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the "Welcome Message" element should not contain the text "Hello John"`,
-			Category: stepbuilder.Visual,
+			Example:    `Then the "Welcome Message" element should not contain the text "Hello John"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
 		},
 	)
 }

@@ -48,7 +48,7 @@ func (steps) setGraphQLVariables() stepbuilder.Step {
   | userId  | 123                             |
   | tags    | ["go", "testing"]               |
   | filter  | {"status": "active", "limit": 5}|`,
-			Category: stepbuilder.GraphQL,
+			Categories: []stepbuilder.StepCategory{stepbuilder.GraphQL},
 		},
 	)
 }

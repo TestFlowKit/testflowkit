@@ -32,7 +32,7 @@ func (steps) validateHaveErrors() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Validates that the GraphQL response contains at least one error.",
 			Example:     `Then the GraphQL response should have errors`,
-			Category:    stepbuilder.GraphQL,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.GraphQL},
 		},
 	)
 }
@@ -60,7 +60,7 @@ func (steps) validateNoErrors() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Validates that the GraphQL response contains no errors.",
 			Example:     `Then the GraphQL response should not have errors`,
-			Category:    stepbuilder.GraphQL,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.GraphQL},
 		},
 	)
 }

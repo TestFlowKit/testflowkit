@@ -44,8 +44,8 @@ func (steps) validateJSONPathExists() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "path", Description: "JSON path to check", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the response should have field "user.name"`,
-			Category: stepbuilder.Backend,
+			Example:    `Then the response should have field "user.name"`,
+			Categories: stepbuilder.Backend,
 		},
 	)
 }
@@ -84,8 +84,8 @@ func (steps) validateJSONPathValue() stepbuilder.Step {
 				{Name: "path", Description: "JSON path to validate", Type: stepbuilder.VarTypeString},
 				{Name: "value", Description: "Expected value at the path", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the response field "user.name" should be "John Doe"`,
-			Category: stepbuilder.RESTAPI,
+			Example:    `Then the response field "user.name" should be "John Doe"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)
 }
@@ -134,8 +134,8 @@ func (steps) validateJSONPathContains() stepbuilder.Step {
 				{Name: "path", Description: "JSON path to the field to validate", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "Text that should be contained in the field value", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the response field "user.email" should contain "@example.com"`,
-			Category: stepbuilder.RESTAPI,
+			Example:    `Then the response field "user.email" should contain "@example.com"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)
 }
@@ -176,7 +176,7 @@ func (steps) validateJSONBodyEquals() stepbuilder.Step {
 """
 {"status":"success","data":{"id":1}}
 """`,
-			Category: stepbuilder.RESTAPI,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)
 }
@@ -210,8 +210,8 @@ func (steps) validateJSONBodyContains() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "text", Description: "Text that should be present in the response", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Then the response should contain "success"`,
-			Category: stepbuilder.RESTAPI,
+			Example:    `Then the response should contain "success"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)
 }

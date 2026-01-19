@@ -30,7 +30,7 @@ func (steps) switchToMostOpenedWindow() stepbuilder.Step {
 			Description: "switches to the most recently opened browser window.",
 			Variables:   []stepbuilder.DocVariable{},
 			Example:     "When the user switches to the most recently window opened",
-			Category:    stepbuilder.Navigation,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation},
 		},
 	)
 }

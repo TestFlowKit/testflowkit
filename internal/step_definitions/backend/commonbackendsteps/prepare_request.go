@@ -42,8 +42,8 @@ func (steps) prepareRequest() stepbuilder.Step {
 				{Name: "protocolType", Description: "The API protocol type (graphql or REST)", Type: stepbuilder.VarTypeString},
 				{Name: "name", Description: "The name of the operation or endpoint", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `Given I prepare a REST request to "getUser"`,
-			Category: stepbuilder.Backend,
+			Example:    `Given I prepare a REST request to "getUser"`,
+			Categories: stepbuilder.Backend,
 		},
 	)
 }

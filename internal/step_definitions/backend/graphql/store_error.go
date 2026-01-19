@@ -44,8 +44,8 @@ func (steps) storeGraphQLError() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example:  `And I store the GraphQL error as "lastError"`,
-			Category: stepbuilder.GraphQL,
+			Example:    `And I store the GraphQL error as "lastError"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.GraphQL},
 		},
 	)
 }
@@ -89,8 +89,8 @@ func (steps) storeGraphQLErrorMessage() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example:  `And I store the GraphQL error message as "errorMsg"`,
-			Category: stepbuilder.GraphQL,
+			Example:    `And I store the GraphQL error message as "errorMsg"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.GraphQL},
 		},
 	)
 }

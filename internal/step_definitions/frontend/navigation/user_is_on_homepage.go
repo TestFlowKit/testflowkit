@@ -29,7 +29,7 @@ func (steps) userIsOnHomepage() stepbuilder.Step {
 			Description: fmt.Sprintf("establishes the initial context, %s %s", descriptionContext, moreDetails),
 			Variables:   nil,
 			Example:     "Given the user is on the homepage",
-			Category:    stepbuilder.Navigation,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation},
 		},
 	)
 }

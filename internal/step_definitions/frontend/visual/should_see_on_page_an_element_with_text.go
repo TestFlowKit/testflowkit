@@ -43,8 +43,8 @@ func (steps) shouldSeeElementWhichContains() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  "Then the user should see a button which contains \"Submit\"",
-			Category: stepbuilder.Visual,
+			Example:    "Then the user should see a button which contains \"Submit\"",
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
 		},
 	)
 }

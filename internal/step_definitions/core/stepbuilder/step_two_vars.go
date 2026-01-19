@@ -16,7 +16,7 @@ func (s stepTwoVars[T, U]) GetDocumentation() Documentation {
 		Sentence:    s.sentences[0],
 		Description: s.doc.Description,
 		Example:     s.doc.Example,
-		Category:    s.doc.Category,
+		Categories:  mergeCategories(s.doc),
 		Variables:   s.doc.Variables,
 	}
 }

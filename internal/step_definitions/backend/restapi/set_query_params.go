@@ -55,7 +55,6 @@ func (steps) setQueryParams() stepbuilder.Step {
   | page   | 1            |
   | limit  | 10           |
   | filter | {{category}} |`,
-			Category: stepbuilder.RESTAPI,
-		},
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
 	)
 }

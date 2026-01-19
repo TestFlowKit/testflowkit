@@ -38,8 +38,8 @@ func (steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
 				{Name: "options", Description: "Comma-separated list of option texts to select.", Type: stepbuilder.VarTypeString},
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
-			Example:  `When the user selects the options with text "Konoha,Hidden Leaf Village" from the "Country" dropdown`,
-			Category: stepbuilder.Form,
+			Example:    `When the user selects the options with text "Konoha,Hidden Leaf Village" from the "Country" dropdown`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
 		},
 	)
 }
