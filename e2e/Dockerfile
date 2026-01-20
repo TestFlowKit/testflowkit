@@ -9,7 +9,8 @@ WORKDIR /app/cmd/testflowkit
 RUN go build -o tkit
 
 
-FROM node:24-alpine3.22
+# FROM node:24-alpine3.22
+FROM golang:1.25.0-alpine
 
 LABEL authors="marckent04"
 
@@ -19,6 +20,6 @@ COPY ./e2e .
 
 COPY --from=build /app/cmd/testflowkit .
 
-RUN apk add --no-cache chromium
+# RUN apk add --no-cache chromium
 
 ENTRYPOINT /app/tkit run --location="./features" --timeout="10s" --env-file="./env.ci.yml"

@@ -98,7 +98,9 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 			return pagePath, nil
 		}
 
-		fullURL, errURLJoin := url.JoinPath(env.FrontendBaseURL, pagePath)
+		baseURL := c.GetFrontendBaseURL()
+
+		fullURL, errURLJoin := url.JoinPath(baseURL, pagePath)
 		if errURLJoin != nil {
 			return "", errURLJoin
 		}

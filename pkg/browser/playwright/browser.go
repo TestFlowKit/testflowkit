@@ -3,7 +3,6 @@ package playwright
 import (
 	"sync"
 	"testflowkit/pkg/browser"
-	"testflowkit/pkg/logger"
 	"time"
 
 	pw "github.com/playwright-community/playwright-go"
@@ -85,19 +84,18 @@ func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser
 
 func initPlaywright() {
 	installOnce.Do(func() {
-		inst, errFirstRun := pw.Run()
-		if errFirstRun == nil {
-			pwInstance = inst
-			return
-		}
-
-		logger.Info("Playwright browsers not found, installing...")
-		errInstall := pw.Install()
+		errInstall := pw.Install(&pw.RunOptions{
+			Browsers: []string{
+				"chromium",
+			},
+		})
 		if errInstall != nil {
 			panic(errInstall)
 		}
 
-		instance, errRun := pw.Run()
+		instance, errRun := pw.Run(&pw.RunOptions{
+			SkipInstallBrowsers: true,
+		})
 		if errRun != nil {
 			panic(errRun)
 		}
