@@ -3,7 +3,6 @@ package actionrun
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"testflowkit/internal/actions/actionutils"
 	"testflowkit/internal/config"
@@ -98,7 +97,6 @@ func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, fe
 	// Exclude BeforeAll and AfterAll from main run
 	mainTags = fmt.Sprintf("%s && ~@BeforeAll && ~@AfterAll", mainTags)
 
-	log.Println("tags", mainTags)
 	mainSuite := createTestSuite(createTestSuiteParams{
 		appConfig:   appConfig,
 		testReport:  testReport,
@@ -129,6 +127,7 @@ func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Repor
 }
 
 func createTestSuite(params createTestSuiteParams) godog.TestSuite {
+
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         params.concurrency,

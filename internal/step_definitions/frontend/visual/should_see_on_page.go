@@ -10,29 +10,28 @@ import (
 func (steps) shouldSeeOnPage() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`the user should see "{string}" on the page`},
-		func(ctx context.Context, word string) (context.Context, error) {
+		func(ctx context.Context, text string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			currentPage, pageErr := scenarioCtx.GetCurrentPageOnly()
 			if pageErr != nil {
 				return ctx, pageErr
 			}
-
-			elt, err := currentPage.GetOneByTextContent(word)
-			if err != nil {
-				return ctx, err
+			elt, errGetOne := currentPage.GetOneByTextContent(text)
+			if errGetOne != nil {
+				return ctx, errGetOne
 			}
 
 			if !elt.IsVisible() {
-				return ctx, fmt.Errorf("%s should be visible", word)
+				return ctx, fmt.Errorf("%s is not visible", text)
 			}
 
 			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "checks if a word is visible on the page.",
+			Description: "checks if a text is visible on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "word", Description: "The word to check.", Type: stepbuilder.VarTypeString},
+				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the user should see \"Submit\" on the page",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},

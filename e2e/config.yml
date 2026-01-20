@@ -161,7 +161,7 @@ backend:
       description: "Retrieve photos for a specific album"
 
 files:
-  base_directory: "./test-files"
+  base_directory: "./e2e/test-files"
   definitions:
     avatar_image: "images/avatar.png"
     gallery_image1: "images/gallery/image1.jpg"
