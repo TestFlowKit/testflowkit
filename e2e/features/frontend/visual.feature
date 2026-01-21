@@ -1,11 +1,12 @@
-@VISUAL
+@VISUAL @FRONTEND
 Feature: visual e2e tests
 
   Background:
     Given the user is on page
       | page_name  |
       | visual e2e |
-
+  
+  @TEST
   Scenario: User should see certain things on page
     Given the user should not see "L'élément a été caché." on the page
     And the user should see "Cet élément va disparaître quand vous cliquerez sur le bouton." on the page
@@ -13,13 +14,13 @@ Feature: visual e2e tests
     Then the user should not see "Cet élément va disparaître quand vous cliquerez sur le bouton." on the page
     And the user should see "L'élément a été caché." on the page
 
-  @doubleClick
+  @doubleClick @TEST
   Scenario: double click on element which contains
     Given the user should not see "Vous avez double cliqué sur le bouton." on the page
     When the user double clicks on the button which contains "double click"
     Then the user should see "Vous avez double cliqué sur le bouton." on the page
 
-  @doubleClick
+  @doubleClick @TEST
   Scenario: double click on element
     Given the user should not see "Vous avez double cliqué sur le bouton." on the page
     When the user double clicks on double click button

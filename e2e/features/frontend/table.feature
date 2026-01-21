@@ -1,4 +1,4 @@
-@TABLE
+@TABLE @FRONTEND
 Feature: Table e2e tests
 
   Background:
@@ -16,6 +16,7 @@ Feature: Table e2e tests
       | name      | description                        | price   |
       | Produit 1 | Description détaillée du produit 0 | 19.99 € |
 
+@TEST
   Scenario: User should click a specific table row
     When the user clicks on the row containing the following elements
       | name      | description                        | price   |
