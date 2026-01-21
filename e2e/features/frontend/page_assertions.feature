@@ -1,4 +1,4 @@
-@PAGE_ASSERTIONS
+@PAGE_ASSERTIONS @FRONTEND
 Feature: Page Title and URL Assertions
 
     Scenario: Verify that the page title matches exactly
