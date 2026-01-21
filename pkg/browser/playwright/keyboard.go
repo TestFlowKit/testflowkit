@@ -33,7 +33,6 @@ func (k *playwrightKeyboard) Press(key browser.Key) error {
 	}
 
 	return &UnknownKeyError{Key: key}
-
 }
 
 func newPlaywrightKeyboard(page pw.Page) browser.Keyboard {

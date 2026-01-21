@@ -28,7 +28,7 @@ func (p *playwrightPage) GetAllBySelector(selector string) ([]browser.Element, e
 	}
 
 	var elts []browser.Element
-	for i := 0; i < count; i++ {
+	for i := range count {
 		locator := locators.Nth(i)
 		elts = append(elts, newPlaywrightElement(locator))
 	}
@@ -83,8 +83,12 @@ func (p *playwrightPage) handleLocator(el pw.Locator, warningMsg string) (browse
 		return nil, notFoundError
 	}
 
+	warnTips := []string{
+		"Please ensure that the elements are unique on the page.",
+		"retrieving the first matching element.",
+	}
 	if count > 1 {
-		logger.Warn(warningMsg, []string{"Please ensure that the elements are unique on the page.", "retrieving the first matching element."})
+		logger.Warn(warningMsg, warnTips)
 	}
 
 	return newPlaywrightElement(el.First()), nil

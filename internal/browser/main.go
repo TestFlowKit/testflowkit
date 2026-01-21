@@ -36,7 +36,8 @@ func getElementBySelectors(page browser.Page, potentialSelectors []config.Select
 		return nil
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	const timeoutSeconds = 30
+	ctx, cancel := context.WithTimeout(context.Background(), timeoutSeconds*time.Second)
 	defer cancel()
 
 	ch := make(chan browser.Element, 1)

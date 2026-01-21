@@ -6,7 +6,6 @@ import (
 	"testflowkit/pkg/logger"
 	"time"
 
-	"github.com/playwright-community/playwright-go"
 	pw "github.com/playwright-community/playwright-go"
 )
 
@@ -65,7 +64,7 @@ func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser
 	initPlaywright()
 
 	chromium := pwInstance.Chromium
-	opts := playwright.BrowserTypeLaunchOptions{
+	opts := pw.BrowserTypeLaunchOptions{
 		Headless: &headlessMode,
 	}
 
@@ -104,5 +103,4 @@ func initPlaywright() {
 		}
 		pwInstance = instance
 	})
-
 }
