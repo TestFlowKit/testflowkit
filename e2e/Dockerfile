@@ -9,7 +9,7 @@ WORKDIR /app/cmd/testflowkit
 RUN go build -o tkit
 
 
-FROM alpine:3.21
+FROM node:24-alpine3.22
 
 LABEL authors="marckent04"
 
