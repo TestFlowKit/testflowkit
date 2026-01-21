@@ -5,19 +5,16 @@ import (
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
-	"testflowkit/internal/utils/stringutils"
+	"testflowkit/internal/utils/label"
 )
 
 func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
-	formatLabel := func(label string) string {
-		return stringutils.SuffixWithUnderscore(label, "dropdown")
-	}
 
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`the user selects the option with text {string} from the {string} dropdown`},
 		func(ctx context.Context, optionText, dropdownName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			dropdown, err := scenarioCtx.GetHTMLElementByLabel(formatLabel(dropdownName))
+			dropdown, err := scenarioCtx.GetHTMLElementByLabel(label.Dropdown(dropdownName))
 			if err != nil {
 				return ctx, err
 			}
@@ -27,9 +24,9 @@ func (steps) selectOptionWithTextIntoDropdown() stepbuilder.Step {
 		},
 		func(_, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
-			label := formatLabel(dropdownName)
-			if !config.IsElementDefined(label) {
-				vc.AddMissingElement(label)
+			fLabel := label.Dropdown(dropdownName)
+			if !config.IsElementDefined(fLabel) {
+				vc.AddMissingElement(fLabel)
 			}
 
 			return vc

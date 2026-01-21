@@ -21,7 +21,9 @@ func (steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
 			if err != nil {
 				return ctx, err
 			}
-			return ctx, input.SelectByText(stringutils.SplitAndTrim(optionLabels, ","))
+
+			labels := stringutils.SplitAndTrim(optionLabels, ",")
+			return ctx, input.SelectByText(labels)
 		},
 		func(_, dropdownName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
