@@ -3,6 +3,7 @@ package form
 import (
 	"context"
 	"fmt"
+	"log"
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
@@ -22,6 +23,7 @@ func (steps) userUploadsFileIntoField() stepbuilder.Step {
 			cfg := scenarioCtx.GetConfig()
 
 			filePaths, getFPErr := cfg.GetFilesPaths([]string{fileName})
+			log.Println(filePaths)
 			if getFPErr != nil {
 				return ctx, fmt.Errorf("failed to get file path for '%s': %w", fileName, getFPErr)
 			}

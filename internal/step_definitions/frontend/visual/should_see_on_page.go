@@ -3,7 +3,6 @@ package visual
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 )
@@ -17,13 +16,16 @@ func (steps) shouldSeeOnPage() stepbuilder.Step {
 			if pageErr != nil {
 				return ctx, pageErr
 			}
-			elt, err := currentPage.GetOneBySelector("body")
+
+			elt, err := currentPage.GetOneByTextContent(word)
 			if err != nil {
 				return ctx, err
 			}
-			if !strings.Contains(elt.TextContent(), word) {
+
+			if !elt.IsVisible() {
 				return ctx, fmt.Errorf("%s should be visible", word)
 			}
+
 			return ctx, nil
 		},
 		nil,

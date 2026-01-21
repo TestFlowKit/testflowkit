@@ -1,7 +1,7 @@
 package config
 
 import (
-	"path/filepath"
+	"net/url"
 	"strings"
 	"testflowkit/internal/utils/stringutils"
 	"testflowkit/pkg/variables"
@@ -98,7 +98,10 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 			return pagePath, nil
 		}
 
-		fullURL := filepath.Join(c.GetFrontendBaseURL(), pagePath)
+		fullURL, errURLJoin := url.JoinPath(env.FrontendBaseURL, pagePath)
+		if errURLJoin != nil {
+			return "", errURLJoin
+		}
 		return fullURL, nil
 	}
 

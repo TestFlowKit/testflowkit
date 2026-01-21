@@ -18,7 +18,6 @@ func (steps) currentURLShouldContain() stepbuilder.Step {
 			if pageErr != nil {
 				return ctx, pageErr
 			}
-			page.WaitLoading()
 
 			pageInfo := page.GetInfo()
 			if !strings.Contains(pageInfo.URL, expectedURLPart) {
