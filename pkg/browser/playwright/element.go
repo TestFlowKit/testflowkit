@@ -87,10 +87,10 @@ func (e *playwrightElement) SelectByValue(values []string) error {
 	}
 
 	var dropdownsTexts []string
-	for i := 0; i < count; i++ {
+	for i := range count {
 		optionLocator := optionsLocator.Nth(i)
-		attrValue, err := optionLocator.GetAttribute("value")
-		if err != nil {
+		attrValue, errGetAttr := optionLocator.GetAttribute("value")
+		if errGetAttr != nil {
 			continue
 		}
 
@@ -103,8 +103,8 @@ func (e *playwrightElement) SelectByValue(values []string) error {
 			continue
 		}
 
-		textContent, err := optionLocator.TextContent()
-		if err != nil {
+		textContent, errGetAttr := optionLocator.TextContent()
+		if errGetAttr != nil {
 			continue
 		}
 
