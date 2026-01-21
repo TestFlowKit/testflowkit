@@ -35,6 +35,8 @@ frontend:
         - "#product-description"
       scroll_target_element:
         - "#target-element"
+      computer_details:
+        - "#computer-details"
 
     form_e2e:
       page_title:
