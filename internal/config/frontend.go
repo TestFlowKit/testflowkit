@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testflowkit/internal/utils/stringutils"
+	"testflowkit/pkg/variables"
 	"time"
 )
 
@@ -62,7 +63,8 @@ func (c *Config) IsScreenshotOnFailureEnabled() bool {
 }
 
 func (c *Config) GetFrontendBaseURL() string {
-	return c.Environments[c.ActiveEnvironment].FrontendBaseURL
+	val, _ := variables.GetEnvVariable("frontend_base_url")
+	return val
 }
 
 func (c *Config) IsFrontendDefined() bool {
@@ -91,19 +93,14 @@ func (c *Config) GetFrontendTimeout() time.Duration {
 }
 
 func (c *Config) GetFrontendURL(page string) (string, error) {
-	env, err := c.GetCurrentEnvironment()
-	if err != nil {
-		return "", err
-	}
-
 	if pagePath, ok := c.GetFrontendPages()[stringutils.SnakeCase(page)]; ok {
 		if strings.HasPrefix(pagePath, "http://") || strings.HasPrefix(pagePath, "https://") {
 			return pagePath, nil
 		}
 
-		fullURL := filepath.Join(env.FrontendBaseURL, pagePath)
+		fullURL := filepath.Join(c.GetFrontendBaseURL(), pagePath)
 		return fullURL, nil
 	}
 
-	return env.FrontendBaseURL, nil
+	return c.GetFrontendBaseURL(), nil
 }

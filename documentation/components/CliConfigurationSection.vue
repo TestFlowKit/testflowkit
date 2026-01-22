@@ -93,13 +93,14 @@
             </div>
         </AccordionItem>
 
-        <AccordionItem title="Environments">
-            <p class="text-sm md:text-base">Define different environments with their base URLs for frontend and API
-                testing.</p>
+        <AccordionItem title="Environment Variables">
+            <p class="text-sm md:text-base">Define environment variables for your base URLs and configuration values. Can be inline or in external files.</p>
             <ul class="list-disc list-inside mb-4 text-sm md:text-base">
-                <li><code>active_environment</code>: The currently active environment.</li>
+                <li><code>env</code>: Inline environment variables block.</li>
+                <li><code>env_file</code>: Path to external environment file.</li>
                 <li><code>frontend_base_url</code>: Base URL for frontend testing.</li>
-                <li><code>api_base_url</code>: Base URL for API testing.</li>
+                <li><code>rest_api_base_url</code>: Base URL for REST API testing.</li>
+                <li><code>graphql_endpoint</code>: Endpoint for GraphQL operations.</li>
             </ul>
         </AccordionItem>
 
@@ -132,8 +133,6 @@ import AccordionItem from '@/components/AccordionItem.vue';
 import CodeBlock from '@/components/global/CodeBlock.vue';
 
 const cliConfigExample = `
-active_environment: "local"
-
 settings:
   # Element search timeout in milliseconds (1-300000ms)
   # Maximum time to wait when searching for elements by CSS selectors or XPath
@@ -145,15 +144,13 @@ settings:
   report_format: "html"
   gherkin_location: "./e2e/features"
   tags: "@smoke"
+  env_file: ".env.local.yml"  # Optional: default env file
 
-environments:
-  local:
-    frontend_base_url: "http://localhost:3000"
-    api_base_url: "http://localhost:8080"
-  
-  staging:
-    frontend_base_url: "https://staging.example.com"
-    api_base_url: "https://api-staging.example.com"
+# Inline environment variables (or use external file)
+env:
+  frontend_base_url: "http://localhost:3000"
+  rest_api_base_url: "http://localhost:8080"
+  graphql_endpoint: "http://localhost:8080/graphql"
 
 frontend:
   elements:

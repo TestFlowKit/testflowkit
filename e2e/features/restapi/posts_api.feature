@@ -32,7 +32,7 @@ Feature: Posts API Testing
             | id | 1 |
         And I send the request
         Then the response status code should be 200
-        And the response should contain "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
+        And the response should contain "{{ env.post_content }}"
         And the response should have field "id"
         And the response should have field "userId"
         And the response should have field "title"

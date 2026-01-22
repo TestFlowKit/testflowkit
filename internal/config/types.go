@@ -57,14 +57,8 @@ type GlobalSettings struct {
 	GherkinLocation string `yaml:"gherkin_location" validate:"required"`
 
 	Tags string `yaml:"tags"`
-}
 
-type Environment struct {
-	FrontendBaseURL string `yaml:"frontend_base_url" validate:"url"`
-
-	RestAPIBaseURL string `yaml:"rest_api_base_url" validate:"url"`
-
-	GraphQLEndpoint string `yaml:"graphql_endpoint" validate:"omitempty,url"`
+	EnvFile string `yaml:"env_file"`
 }
 
 type FrontendElements = map[string]map[string][]string

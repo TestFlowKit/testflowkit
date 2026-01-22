@@ -3,10 +3,11 @@ package config
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"os"
 	"sync"
-
 	"testflowkit/pkg/logger"
+	"testflowkit/pkg/variables"
 
 	"github.com/goccy/go-yaml"
 )
@@ -19,55 +20,92 @@ var (
 
 func Load(configFilePath string, overrides Overrides) error {
 	cfgOnce.Do(func() {
-		config, shouldReturn := loadFile(configFilePath)
-		if shouldReturn {
+		logger.InfoFf("Loading configuration from: %s", configFilePath)
+
+		// 1. Read file raw content
+		configFileContent, err := os.ReadFile(configFilePath)
+		if err != nil {
+			errCfg = fmt.Errorf("failed to read config file '%s': %w", configFilePath, err)
 			return
 		}
 
-		applyOverrides(config, overrides)
+		// 2. Pre-parse to get Env settings
+		var preCfg struct {
+			Settings GlobalSettings `yaml:"settings"`
+			Env      map[string]any `yaml:"env"`
+		}
+		if yamlErr := yaml.Unmarshal(configFileContent, &preCfg); yamlErr != nil {
+			errCfg = fmt.Errorf("failed to parse YAML configuration (pre-load): %w", yamlErr)
+			return
+		}
+
+		// 3. Determine EnvFile (CLI overrides Config)
+		envFile := preCfg.Settings.EnvFile
+		if overrides.Settings.EnvFile != "" {
+			envFile = overrides.Settings.EnvFile
+		}
+
+		// 4. Load & Merge Environment Variables
+		envVars := FlattenMap(preCfg.Env, "")
+
+		if envFile != "" {
+			logger.InfoFf("Loading environment variables from: %s", envFile)
+			fileVars, errLoadEnv := LoadEnvFile(envFile)
+			if errLoadEnv != nil {
+				errCfg = fmt.Errorf("failed to load env file '%s': %w", envFile, errLoadEnv)
+				return
+			}
+			// File vars override inline vars
+			maps.Copy(envVars, fileVars)
+			logger.InfoFf("Loaded %d environment variables from file", len(fileVars))
+		}
+
+		variables.SetEnvVariables(envVars)
+		logger.InfoFf("Environment variables initialized: %d total", len(envVars))
+
+		// 5. Substitute variables in config content
+		dataStr := variables.ReplaceEnvVariables(string(configFileContent))
+
+		// 6. Unmarshal final config
+		var config Config
+		if yamlErr := yaml.Unmarshal([]byte(dataStr), &config); yamlErr != nil {
+			errCfg = fmt.Errorf("failed to parse YAML configuration: %w", yamlErr)
+			return
+		}
+
+		applyOverrides(&config, overrides)
 
 		if validateErr := config.ValidateConfiguration(); validateErr != nil {
 			errCfg = fmt.Errorf("invalid configuration: %w", validateErr)
 			return
 		}
 
-		logger.InfoFf("Configuration loaded successfully for environment: %s", config.ActiveEnvironment)
-		cfg = config
+		logger.Info("Configuration loaded successfully")
+		config.SetConfigPath(configFilePath)
+		cfg = &config
 	})
 
 	return errCfg
 }
 
-func loadFile(configFilePath string) (*Config, bool) {
-	logger.InfoFf("Loading configuration from: %s", configFilePath)
-
-	data, err := os.ReadFile(configFilePath)
-	if err != nil {
-		errCfg = fmt.Errorf("failed to read config file '%s': %w", configFilePath, err)
-		return &Config{}, true
+func Get() (*Config, error) {
+	if cfg == nil {
+		return nil, errors.New("configuration not loaded - call Load first")
 	}
-
-	var config Config
-	if yamlErr := yaml.Unmarshal(data, &config); yamlErr != nil {
-		errCfg = fmt.Errorf("failed to parse YAML configuration: %w", err)
-		return &Config{}, true
-	}
-
-	logger.Info("Configuration parsed successfully")
-	return &config, false
+	return cfg, nil
 }
 
 func applyOverrides(config *Config, overrides Overrides) {
-	if overrides.ActiveEnvironment != "" {
-		config.ActiveEnvironment = overrides.ActiveEnvironment
-	}
-
 	if overrides.Settings.GherkinLocation != "" {
 		config.Settings.GherkinLocation = overrides.Settings.GherkinLocation
 	}
 
 	if overrides.Settings.Tags != "" {
 		config.Settings.Tags = overrides.Settings.Tags
+	}
+
+	if overrides.Settings.EnvFile != "" {
+		config.Settings.EnvFile = overrides.Settings.EnvFile
 	}
 
 	if config.IsFrontendDefined() {
@@ -78,15 +116,7 @@ func applyOverrides(config *Config, overrides Overrides) {
 	}
 }
 
-func Get() (*Config, error) {
-	if cfg == nil {
-		return nil, errors.New("configuration not loaded - call Load first")
-	}
-	return cfg, nil
-}
-
 type Overrides struct {
-	ActiveEnvironment string
-	Settings          GlobalSettings
-	Frontend          FrontendConfig
+	Settings GlobalSettings
+	Frontend FrontendConfig
 }

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"testflowkit/internal/step_definitions/core"
+	"testflowkit/pkg/variables"
 )
 
 func (c *Context) GetVariable(name string) (any, bool) {
@@ -49,6 +50,14 @@ func ReplaceVariablesInString(ctx *Context, sentence string) string {
 		}
 
 		varDef, varName := v[0], strings.TrimSpace(v[1])
+
+		if envKey, ok := strings.CutPrefix(varName, "env."); ok {
+			if val, exists := variables.GetEnvVariable(envKey); exists {
+				replacedSentence = strings.ReplaceAll(replacedSentence, varDef, val)
+				continue
+			}
+		}
+
 		if value, exists := ctx.variables[varName]; exists {
 			replacedSentence = strings.ReplaceAll(replacedSentence, varDef, fmt.Sprintf("%v", value))
 		} else {

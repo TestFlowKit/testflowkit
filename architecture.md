@@ -101,17 +101,18 @@ Centralized configuration management with environment-specific settings and vali
 **Configuration Structure:**
 
 ```yaml
-active_environment: "local"
 settings:
   concurrency: 1
   think_time: 1000
   report_format: "html"
   gherkin_location: "./e2e/features"
+  env_file: ".env.local.yml"  # Optional: default env file
 
-environments:
-  local:
-    frontend_base_url: "http://localhost:3000"
-    api_base_url: "http://localhost:8080/api"
+# Inline environment variables (or use external file)
+env:
+  frontend_base_url: "http://localhost:3000"
+  rest_api_base_url: "http://localhost:8080/api"
+  graphql_endpoint: "http://localhost:8080/graphql"
 
 frontend:
   default_timeout: 10000
@@ -134,7 +135,6 @@ backend:
       description: "Endpoint description"
 
   graphql:
-    endpoint: "/graphql"
     default_headers:
       Content-Type: "application/json"
     operations:
@@ -168,6 +168,8 @@ backend:
           }
         description: "Search users by tags and statuses with array parameters"
 ```
+
+**Note:** The GraphQL endpoint URL is defined in environment variables as `graphql_endpoint`, not in the backend section.
 
 **Selector Configuration Examples:**
 
