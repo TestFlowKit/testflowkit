@@ -1,5 +1,3 @@
-active_environment: "local"
-
 settings:
   page_load_timeout: 30000
   think_time: 10000
@@ -8,21 +6,6 @@ settings:
   report_format: "html"
   gherkin_location: "e2e/features"
 
-environments:
-  local:
-    frontend_base_url: "http://0.0.0.0:3000"
-    rest_api_base_url: "http://localhost:3001"
-    graphql_endpoint: "https://graphqlzero.almansi.me/api"
-
-  local_windows:
-    frontend_base_url: "http://localhost:3000"
-    rest_api_base_url: "http://localhost:3001"
-    graphql_endpoint: "https://graphqlzero.almansi.me/api"
-
-  ci:
-    frontend_base_url: "http://server:3000"
-    rest_api_base_url: "http://mock-server:3001"
-    graphql_endpoint: "https://graphqlzero.almansi.me/api"
 
 frontend:
   default_timeout: 1000
@@ -92,7 +75,7 @@ frontend:
   pages:
     form_e2e: "form"
     file_upload_e2e: "file-upload"
-    google: "https://www.google.com"
+    google: "{{ env.google_url }}"
     visual_e2e: "visual"
     table_e2e: "/table"
     details_e2e: "/details"

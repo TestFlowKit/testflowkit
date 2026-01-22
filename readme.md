@@ -12,7 +12,7 @@
 ### Core Capabilities
 
 - **Gherkin Syntax**: Write tests using clear, readable BDD syntax
-- **Multi-Environment Support**: Configure and switch between different environments (local, staging, production)
+- **Environment Variables**: Flexible environment configuration using env variables and external .env files
 - **Frontend Testing**: Comprehensive web UI automation with smart element detection
 - **Backend API Testing**: Full REST API testing capabilities with request/response validation
 - **GraphQL Support**: Complete GraphQL testing with queries, mutations, schema validation
@@ -90,18 +90,16 @@ make build GOOS=linux GOARCH=amd64  # or your target platform
 Edit the generated `config.yml` file with your application details:
 
 ```yaml
-active_environment: "local"
-
 settings:
   concurrency: 1
   think_time: 1000
   report_format: "html"
   gherkin_location: "./e2e/features"
+  env_file: ".env.yml"
 
-environments:
-  local:
-    frontend_base_url: "http://localhost:3000"
-    api_base_url: "http://localhost:8080/api"
+env:
+  frontend_base_url: "http://localhost:3000"
+  api_base_url: "http://localhost:8080/api"
 
 frontend:
   # Element search timeout in milliseconds (1-300000ms)
@@ -276,11 +274,12 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 - **Execution**: Concurrency, headless mode, screenshot settings
 - **Reporting**: Output formats and locations
 
-### Environments
+### Environment Variables
 
-- **Frontend URLs**: Base URLs for different environments
-- **API URLs**: Backend service endpoints
-- **Environment-specific settings**
+- **env block**: Define environment variables directly in config.yml
+- **env_file**: Load variables from external .env.yml file
+- **Variable Access**: Use `{{ env.VARIABLE_NAME }}` syntax in tests and configuration
+- **CLI Override**: Override variables using `--env-file` option
 
 ### Frontend Configuration
 
@@ -551,6 +550,31 @@ Then the GraphQL response should not contain errors
 
 TestFlowKit provides a powerful variable system for dynamic data management:
 
+#### Environment Variables
+
+Access environment variables defined in config.yml or external .env files using `{{ env.VARIABLE_NAME }}` syntax:
+
+```gherkin
+# Access environment variables in tests
+Given I prepare a request for the "get_user" endpoint with base URL "{{ env.API_BASE_URL }}"
+When the user goes to "{{ env.FRONTEND_BASE_URL }}/login"
+And the user enters "{{ env.TEST_USERNAME }}" into the "email" field
+```
+
+**Configuration:**
+
+```yaml
+# In config.yml
+env:
+  API_BASE_URL: "http://localhost:8080/api"
+  FRONTEND_BASE_URL: "http://localhost:3000"
+  TEST_USERNAME: "test@example.com"
+
+# Or reference external file
+settings:
+  env_file: ".env.yml"
+```
+
 #### Variable Syntax
 
 Variables use the `{{variable_name}}` syntax and are automatically substituted in all step parameters:
@@ -566,6 +590,12 @@ And the user enters "{{user_email}}" into the "email" field
 ```
 
 #### Variable Types
+
+**Environment Variables**: Access configuration values using `{{ env.VARIABLE_NAME }}`
+
+```gherkin
+When the user enters "{{ env.TEST_EMAIL }}" into the "email" field
+```
 
 **Custom Variables**: Store any custom value for reuse
 
@@ -773,8 +803,11 @@ When the user fills the "username" field with oki
 ### Environment-Specific Execution
 
 ```bash
-# Run tests against staging environment
-./tkit run --env=staging
+# Run tests with specific environment file
+./tkit run --env-file .env.staging.yml
+
+# Override environment variables from CLI
+./tkit run --env-file .env.yml
 ```
 
 ### Custom Configuration

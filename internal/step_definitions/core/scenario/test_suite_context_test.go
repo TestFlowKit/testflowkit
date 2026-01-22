@@ -3,6 +3,7 @@ package scenario
 import (
 	"testflowkit/internal/config"
 	"testflowkit/pkg/browser"
+	"testflowkit/pkg/variables"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,13 +29,12 @@ func TestShouldInstanciateCorrectlyNewFrontendContext(t *testing.T) {
 }
 
 func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "http://localhost:3000",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "http://localhost:3000",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
@@ -60,14 +60,12 @@ func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
 }
 
 func TestShouldReturnErrorIfPageNameNotFound(t *testing.T) {
-	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://localhost:3000",
-			},
-		},
-	}
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://localhost:3000",
+	})
+
+	cfg := config.Config{}
 
 	ctx := NewContext(&cfg, nil)
 
@@ -77,13 +75,12 @@ func TestShouldReturnErrorIfPageNameNotFound(t *testing.T) {
 }
 
 func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://localhost:3000",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://localhost:3000",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
@@ -109,13 +106,12 @@ func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
 }
 
 func TestShouldGetPageNameByURLForInternalPageWithBaseURLContainingPath(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://localhost:3000",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://localhost:3000",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
@@ -139,13 +135,12 @@ func TestShouldGetPageNameByURLForInternalPageWithBaseURLContainingPath(t *testi
 }
 
 func TestShouldGetPageNameByURLExternalWithBaseURLContainingPath(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://testflowkit.com/path",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://testflowkit.com/path",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
@@ -171,13 +166,12 @@ func TestShouldGetPageNameByURLExternalWithBaseURLContainingPath(t *testing.T) {
 }
 
 func TestShouldGetPageNameByURLInternalWithBaseURLContainingPath(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://localhost:3000/path",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://localhost:3000/path",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
@@ -202,13 +196,12 @@ func TestShouldGetPageNameByURLInternalWithBaseURLContainingPath(t *testing.T) {
 }
 
 func TestShouldGetPageNameByURLWithVariableForInternalPage(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://localhost:3000",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://localhost:3000",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},
@@ -233,13 +226,12 @@ func TestShouldGetPageNameByURLWithVariableForInternalPage(t *testing.T) {
 }
 
 func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testing.T) {
+	// Initialize env vars before creating context
+	variables.SetEnvVariables(map[string]string{
+		"frontend_base_url": "https://localhost:3000",
+	})
+
 	cfg := config.Config{
-		ActiveEnvironment: "local",
-		Environments: map[string]config.Environment{
-			"local": {
-				FrontendBaseURL: "https://localhost:3000",
-			},
-		},
 		Settings: config.GlobalSettings{
 			ThinkTime: 10000,
 		},

@@ -35,10 +35,8 @@
       <CodeBlock :code="pagesSection" language="yaml" />
     </AccordionItem>
 
-    <AccordionItem title="Environment Configuration">
-      <p class="text-sm md:text-base">Define different environments with their base URLs. The
-        <code>active_environment</code> determines which
-        environment to use.</p>
+    <AccordionItem title="Environment Variables">
+      <p class="text-sm md:text-base">Define environment variables for your base URLs and configuration values. These can be inline or in external files.</p>
       <CodeBlock :code="environmentSection" language="yaml" />
     </AccordionItem>
 
@@ -124,20 +122,25 @@ frontend:
 `.trim();
 
 const environmentSection = `
-active_environment: "local"
+settings:
+  env_file: ".env.local.yml"  # Optional: default env file
 
-environments:
-  local:
-    frontend_base_url: "http://localhost:3000"
-    api_base_url: "http://localhost:8080"
-  
-  staging:
-    frontend_base_url: "https://staging.example.com"
-    api_base_url: "https://api-staging.example.com"
-  
-  production:
-    frontend_base_url: "https://example.com"
-    api_base_url: "https://api.example.com"
+# Inline environment variables
+env:
+  frontend_base_url: "http://localhost:3000"
+  rest_api_base_url: "http://localhost:8080"
+  graphql_endpoint: "http://localhost:8080/graphql"
+
+# Or use external files:
+# .env.local.yml
+# frontend_base_url: "http://localhost:3000"
+# rest_api_base_url: "http://localhost:8080"
+#
+# .env.staging.yml
+# frontend_base_url: "https://staging.example.com"
+# rest_api_base_url: "https://api-staging.example.com"
+#
+# Override at runtime: tkit run --env-file .env.staging.yml
 `.trim();
 
 const settingsSection = `
@@ -247,8 +250,6 @@ backend:
 `.trim();
 
 const testConfigExample = `
-active_environment: "local"
-
 settings:
   default_timeout: 30000
   concurrency: 5
@@ -257,15 +258,13 @@ settings:
   screenshot_on_failure: true
   report_format: "html"
   gherkin_location: "./e2e/features"
+  env_file: ".env.local.yml"  # Optional
 
-environments:
-  local:
-    frontend_base_url: "http://localhost:3000"
-    api_base_url: "http://localhost:8080"
-  
-  staging:
-    frontend_base_url: "https://staging.example.com"
-    api_base_url: "https://api-staging.example.com"
+# Inline environment variables (or use external file)
+env:
+  frontend_base_url: "http://localhost:3000"
+  rest_api_base_url: "http://localhost:8080"
+  graphql_endpoint: "http://localhost:8080/graphql"
 
 frontend:
   elements:

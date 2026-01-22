@@ -21,4 +21,4 @@ COPY --from=build /app/cmd/testflowkit .
 
 RUN apk add --no-cache chromium
 
-ENTRYPOINT /app/tkit run --location="./features" --timeout="10s" --env="ci"
+ENTRYPOINT /app/tkit run --location="./features" --timeout="10s" --env-file="./env.ci.yml"

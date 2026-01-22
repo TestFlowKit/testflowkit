@@ -188,9 +188,8 @@ func testConfigFileStructure(t *testing.T) {
 	configStr := string(content)
 
 	requiredSections := []string{
-		"active_environment:",
 		"settings:",
-		"environments:",
+		"env:",
 		"frontend:",
 	}
 
@@ -201,6 +200,7 @@ func testConfigFileStructure(t *testing.T) {
 	assert.Contains(t, configStr, "concurrency: 1", "Config should have concurrency set to 1")
 	assert.Contains(t, configStr, "report_format: \"html\"", "Config should have HTML report format")
 	assert.Contains(t, configStr, "headless: false", "Config should have headless set to false for demo purposes")
+	assert.Contains(t, configStr, "frontend_base_url:", "Config should have frontend_base_url in env section")
 }
 
 func testSampleFeatureStructure(t *testing.T) {

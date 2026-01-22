@@ -48,13 +48,13 @@
                     </tr>
                     <tr>
                         <td class="border px-2 md:px-4 py-2 whitespace-nowrap">
-                            <code class="text-xs md:text-sm">--env &lt;environment&gt;</code>
+                            <code class="text-xs md:text-sm">--env-file &lt;path&gt;</code>
                         </td>
                         <td class="border px-2 md:px-4 py-2 text-xs md:text-sm">
-                            Specifies the environment to use (overrides active_environment).
+                            Specifies the environment variables file to use (overrides settings.env_file).
                         </td>
                         <td class="border px-2 md:px-4 py-2 whitespace-nowrap">
-                            <code class="text-xs md:text-sm">--env staging</code>
+                            <code class="text-xs md:text-sm">--env-file .env.staging.yml</code>
                         </td>
                     </tr>
                     <tr>
