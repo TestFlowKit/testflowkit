@@ -42,3 +42,8 @@ config.yml
 #IDEs
 .kiro/
 .cursorrules/
+
+
+# BMAD ignore
+
+_bmad/
