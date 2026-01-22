@@ -1,0 +1,147 @@
+# Workflow Status Template
+
+# This tracks progress through BMM methodology Analysis, Planning, and Solutioning phases.
+# Implementation phase is tracked separately in sprint-status.yaml
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2026-01-22T12:00:00Z"
+project: "testflowkit"
+project_type: "brownfield"
+selected_track: "bmad-method"
+field_type: "brownfield"
+workflow_path: "_bmad/bmm/workflows/workflow-status/paths/method-brownfield.yaml"
+
+workflow_status:
+  # Phase 0: Documentation (Prerequisite for brownfield)
+  phase_0_documentation:
+    document-project:
+      status: "_bmad-output/planning-artifacts/project-documentation.md"
+      agent: "analyst"
+      completion_date: "2026-01-22"
+  
+  # Phase 2: Planning (PRD)
+  phase_2_planning:
+    create-prd:
+      status: "_bmad-output/planning-artifacts/prd.md"
+      agent: "product-manager"
+      completion_date: "2026-01-22"
+      features_count: 72
+      sprints_planned: 7
+  
+  # Phase 4: Epic & Story Planning
+  phase_4_epic_story:
+    create-epics-stories:
+      status: "_bmad-output/planning-artifacts/epics-and-stories.md"
+      agent: "product-manager"
+      completion_date: "2026-01-22"
+      epics_count: 17
+      stories_count: 40
+      story_points_total: 140
+      command: "/bmad:bmm:workflows:document-project"
+      output: "Comprehensive project documentation"
+      purpose: "Understand existing codebase before planning"
+      notes: "✅ Completed - Documentation created"
+      completed_date: "2026-01-22"
+      files_generated:
+        - "_bmad-output/planning-artifacts/index.md"
+        - "_bmad-output/planning-artifacts/project-documentation.md"
+
+  # Phase 1: Analysis (Optional - skipped by user choice)
+  phase_1_analysis:
+    brainstorm-project:
+      status: "skipped"
+      reason: "User chose direct path to PRD"
+    research:
+      status: "skipped"
+      reason: "User chose direct path to PRD"
+    product-brief:
+      status: "skipped"
+      reason: "Not applicable for brownfield"
+
+  # Phase 2: Planning (Required)
+  phase_2_planning:
+    prd:
+      status: "required"
+      agent: "pm"
+      command: "/bmad:bmm:workflows:create-prd"
+      output: "Product Requirements Document with FRs and NFRs"
+      notes: "Create PRD based on existing code + enterprise features"
+      user_requirements: |
+        Enterprise-ready features to include:
+        - Authentication & Security Module
+        - JUnit XML Reporting
+        - Secret Management Integration
+        - Retry Mechanism & Flaky Test Management
+        - Video Recording & Enhanced Debugging
+        - API Mocking & Service Virtualization
+        - Cross-Browser Support
+        - Scenario-Level Hooks (@BeforeEach, @AfterEach)
+        - Custom Step Definition Plugin System
+        - Test History & Trends
+        - AI-Powered Test Generation
+    create-ux-design:
+      status: "conditional"
+      condition: "if_has_ui"
+      agent: "ux-designer"
+      command: "/bmad:bmm:workflows:create-ux-design"
+      notes: "Determine after PRD if UI components needed"
+
+  # Phase 3: Solutioning (Required)
+  phase_3_solutioning:
+    create-architecture:
+      status: "_bmad-output/planning-artifacts/architecture.md"
+      notes: "Architecture already exists - will be updated/validated during solutioning"
+      found_at: "architecture.md (root)"
+    create-epics-and-stories:
+      status: "required"
+      agent: "pm"
+      command: "/bmad:bmm:workflows:create-epics-and-stories"
+      notes: "Break down PRD into implementable epics and stories with full context"
+      dependencies: ["prd", "create-architecture"]
+    test-design:
+      status: "optional"
+      agent: "tea"
+      command: "/bmad:bmm:workflows:test-design"
+      output: "System-level testability review"
+      notes: "Recommended for enterprise-ready features"
+    implementation-readiness:
+      status: "required"
+      agent: "architect"
+      command: "/bmad:bmm:workflows:implementation-readiness"
+      notes: "Validates PRD + Architecture + Epics before implementation"
+      dependencies: ["prd", "create-architecture", "create-epics-and-stories"]
+
+  # Phase 4: Implementation (Required)
+  phase_4_implementation:
+    sprint-planning:
+      status: "required"
+      agent: "sm"
+      command: "/bmad:bmm:workflows:sprint-planning"
+      notes: "Creates sprint-status.yaml - subsequent work tracked there"
+      dependencies: ["implementation-readiness"]
+
+next_steps: |
+  Two paths available:
+  
+  PATH 1 (Recommended): Document codebase first
+  1. Run document-project workflow to analyze existing code
+  2. Then create PRD with both existing features + new enterprise features
+  
+  PATH 2 (Direct): Skip to PRD
+  1. Create PRD directly based on architecture.md + user requirements
+  2. Include enterprise features listed above
+
+current_phase: "phase_0_documentation"
+next_workflow: "document-project"
+next_agent: "analyst"
