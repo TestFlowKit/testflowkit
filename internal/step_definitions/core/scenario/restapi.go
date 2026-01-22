@@ -76,10 +76,10 @@ func (c *Context) GetRequestHeaders() map[string]string {
 	return headers
 }
 
-func (c *Context) SetResponse(statusCode int, body []byte) {
+func (c *Context) SetResponse(statusCode int, body []byte, headers map[string]string) {
 	c.backend.SetResponse(&UnifiedResponse{
 		StatusCode: statusCode,
 		Body:       body,
-		Headers:    make(map[string]string),
+		Headers:    headers,
 	})
 }

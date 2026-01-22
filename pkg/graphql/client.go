@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -153,6 +154,11 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 	graphqlResp, err := parseResponse(responseBody, httpResp.StatusCode)
 	if err != nil {
 		return nil, err
+	}
+
+	graphqlResp.Headers = make(map[string]string)
+	for key, values := range httpResp.Header {
+		graphqlResp.Headers[key] = strings.Join(values, ", ")
 	}
 
 	return graphqlResp, nil

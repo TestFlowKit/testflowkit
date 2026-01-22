@@ -17,7 +17,11 @@ func GetSteps() []stepbuilder.Step {
 		s.validateJSONPathExists(),
 		s.validateJSONPathValue(),
 		s.validateJSONPathContains(),
+		s.validateJSONPathType(),
+		s.validateJSONPathPattern(),
 		s.validateJSONBodyEquals(),
 		s.validateJSONBodyContains(),
+		s.validateResponseHeaderEquals(),
+		s.validateResponseHeaderPattern(),
 	}
 }

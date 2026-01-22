@@ -43,6 +43,9 @@ Feature: Posts API Testing
             | title           | body                                     | userId |
             | Test Post Title | This is a test post body for API testing | 1      |
         Then the response status code should be 201
+        And the response header "test" should equal "micro"
+        And the response header "Location" should match pattern "/posts/\d+"
+
 
 
     Scenario: Delete a post
@@ -79,3 +82,16 @@ Feature: Posts API Testing
         When I set the request body from file "features/restapi/new_post.json"
         And I send the request
         Then the response status code should be 201
+        
+
+    Scenario: Validate response field types and patterns
+        Given I prepare a REST request to "get_post_by_id"
+        When I set the following path parameters:
+            | id | 1 |
+        And I send the request
+        Then the response status code should be 200
+        And the response field "id" should have type "integer"
+        And the response field "userId" should have type "integer"
+        And the response field "body" should have type "string"
+        And the response field "title" should match pattern "\w+"
+

@@ -39,7 +39,7 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, endpointName string
 
 func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
-	const defaultDuration = 2
+	const defaultDuration = 10
 
 	client := &http.Client{
 		// TODO: make timeout configurable
@@ -64,8 +64,13 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 		return ctx, fmt.Errorf("failed to read response body: %w", err)
 	}
 
+	headers := make(map[string]string)
+	for key, values := range resp.Header {
+		headers[key] = strings.Join(values, ", ")
+	}
+
 	// Store response in unified format
-	scenarioCtx.SetResponse(resp.StatusCode, responseBody)
+	scenarioCtx.SetResponse(resp.StatusCode, responseBody, headers)
 
 	logger.InfoFf("REST request completed - Status: %d, Duration: %v, Response size: %d bytes",
 		resp.StatusCode, duration, len(responseBody))

@@ -53,6 +53,8 @@ server.post("/posts", (req: Request, res: Response) => {
     ...req.body,
   };
 
+  res.header("Location", `/posts/${newPost.id}`);
+  res.setHeader("test", `micro`);
   res.status(201).json(newPost);
 });
 
