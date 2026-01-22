@@ -1,14 +1,16 @@
-active_environment: "local"
-
 settings:
   concurrency: 1
   think_time: 1000
   report_format: "html"
   gherkin_location: "./features"
+  # env_file: ".env.yml"  # Optional: path to external env file
 
-environments:
-  local:
-    frontend_base_url: "https://testflowkit.github.io"
+# Environment Variables
+# Access these in Gherkin files and config using {{ env.variable_name }}
+env:
+  frontend_base_url: "https://testflowkit.github.io"
+  # rest_api_base_url: "https://api.example.com"
+  # graphql_endpoint: "https://api.example.com/graphql"
 
 frontend:
   default_timeout: 10000

@@ -6,6 +6,7 @@ import (
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core"
 	"testflowkit/pkg/logger"
+	"testflowkit/pkg/variables"
 )
 
 func FormatStep(sentence string) string {
@@ -26,33 +27,33 @@ func DisplayConfigSummary(cfg *config.Config) {
 
 	logger.InfoFf("Available Steps: %d", len(stepdefinitions.GetAll()))
 
-	logger.InfoFf("Active Environment: %s", cfg.ActiveEnvironment)
 	logger.InfoFf("Concurrency: %d", cfg.Settings.Concurrency)
 	logger.InfoFf("Report Format: %s", cfg.Settings.ReportFormat)
 	logger.InfoFf("Gherkin Location: %s", cfg.Settings.GherkinLocation)
 	logger.InfoFf("Think Time: %v", cfg.Settings.ThinkTime)
 	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
+	logger.InfoFf("Environment Variables: %d defined", len(cfg.Env))
 
 	if cfg.IsFrontendDefined() {
 		displayFrontSummary(cfg)
 	}
 
-	env, _ := cfg.GetCurrentEnvironment()
+	restAPIURL, _ := variables.GetEnvVariable("rest_api_base_url")
+	graphqlEndpoint, _ := variables.GetEnvVariable("graphql_endpoint")
 
-	logger.InfoFf("API Base URL: %s", env.RestAPIBaseURL)
-	logger.InfoFf("API GraphQL Endpoint: %s", env.GraphQLEndpoint)
+	logger.InfoFf("API Base URL: %s", restAPIURL)
+	logger.InfoFf("API GraphQL Endpoint: %s", graphqlEndpoint)
 	logger.InfoFf("API Endpoints: %d endpoints", len(cfg.Backend.Endpoints))
 
 	logger.Info("--- Configuration Summary End ---\n")
 }
 
 func displayFrontSummary(conf *config.Config) {
-	env, _ := conf.GetCurrentEnvironment()
-
 	frontConf := conf.Frontend
+	frontendURL, _ := variables.GetEnvVariable("frontend_base_url")
 	logger.InfoFf("Headless Mode: %t", frontConf.Headless)
 	logger.InfoFf("Default Timeout: %dms", frontConf.DefaultTimeout)
-	logger.InfoFf("Frontend Base URL: %s", env.FrontendBaseURL)
+	logger.InfoFf("Frontend Base URL: %s", frontendURL)
 	logger.InfoFf("Screenshot on Failure: %t", frontConf.ScreenshotOnFailure)
 	logger.InfoFf("Elements Configured: %d page groups", len(frontConf.Elements))
 }

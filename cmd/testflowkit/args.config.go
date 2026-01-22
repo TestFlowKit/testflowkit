@@ -31,10 +31,10 @@ func (a *argsConfig) getConfigPath() (string, error) {
 func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 	if a.Run != nil {
 		return config.Overrides{
-			ActiveEnvironment: a.Run.Env,
 			Settings: config.GlobalSettings{
 				GherkinLocation: a.Run.GherkinLocation,
 				Tags:            a.Run.Tags,
+				EnvFile:         a.Run.EnvFile,
 			},
 			Frontend: config.FrontendConfig{
 				DefaultTimeout: a.GetTimeout(),
@@ -48,6 +48,7 @@ func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 			Settings: config.GlobalSettings{
 				GherkinLocation: a.Validate.GherkinLocation,
 				Tags:            a.Validate.Tags,
+				EnvFile:         a.Validate.EnvFile,
 			},
 		}
 	}
@@ -91,7 +92,6 @@ type runCmd struct {
 	commonCmd
 	Headless bool   `arg:"--headless" help:"headless mode" default:"true"`
 	Timeout  string `arg:"--timeout" help:"timeout duration (e.g. 10s, 1m, 2h)"`
-	Env      string `arg:"--env" help:"environment"`
 }
 
 type initCmd struct {
@@ -109,6 +109,7 @@ type commonCmd struct {
 	GherkinLocation string `arg:"-l,--location" help:"path to gherkin files"`
 	ConfigPath      string `arg:"-c,--config" help:"app config path" default:"config.yml"`
 	Tags            string `arg:"-t,--tags" help:"tags"`
+	EnvFile         string `arg:"--env-file" help:"path to env file"`
 }
 
 func getAppArgs() argsConfig {

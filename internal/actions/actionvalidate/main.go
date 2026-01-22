@@ -10,6 +10,7 @@ import (
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
+	"testflowkit/pkg/variables"
 
 	"github.com/cucumber/godog"
 	"github.com/tdewolff/parse/buffer"
@@ -25,6 +26,27 @@ func Execute(appConfig *config.Config, cfgErr error) {
 	logger.Info("Validate gherkin files ...")
 
 	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
+
+	// Validate Environment Variables
+	undefinedEnvs := make(map[string]bool)
+	for _, f := range parsedFeatures {
+		missing := variables.FindUndefinedEnvReferences(string(f.Contents))
+		for _, m := range missing {
+			undefinedEnvs[m] = true
+		}
+	}
+
+	if len(undefinedEnvs) > 0 {
+		logger.Info("⚠️  The following environment variables are referenced but not defined:")
+		for k := range undefinedEnvs {
+			logger.InfoFf("  - env.%s", k)
+		}
+		logger.Info("\nDefine these variables in:")
+		logger.Info("  1. config.yml under 'env:' block, or")
+		logger.Info("  2. A separate YAML file referenced by 'settings.env_file' or --env-file")
+		os.Exit(1)
+	}
+
 	features := make([]godog.Feature, len(parsedFeatures))
 	for i, f := range parsedFeatures {
 		features[i] = godog.Feature{

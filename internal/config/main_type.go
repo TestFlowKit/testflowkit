@@ -9,15 +9,14 @@ import (
 	"path/filepath"
 	"strings"
 	"testflowkit/pkg/logger"
+	"testflowkit/pkg/variables"
 	"time"
 )
 
 type Config struct {
-	ActiveEnvironment string `yaml:"active_environment" validate:"required"`
+	Env map[string]any `yaml:"env"`
 
 	Settings GlobalSettings `yaml:"settings" validate:"required"`
-
-	Environments map[string]Environment `yaml:"environments" validate:"required,min=1"`
 
 	Frontend *FrontendConfig `yaml:"frontend"`
 
@@ -26,14 +25,6 @@ type Config struct {
 	Files FileConfig `yaml:"files"`
 
 	appVersion string
-}
-
-func (c *Config) GetCurrentEnvironment() (Environment, error) {
-	env, exists := c.Environments[c.ActiveEnvironment]
-	if !exists {
-		return Environment{}, fmt.Errorf("active environment '%s' not found in configuration", c.ActiveEnvironment)
-	}
-	return env, nil
 }
 
 func (c *Config) GetAPIEndpoint(endpointName string) (string, Endpoint, error) {
@@ -80,11 +71,8 @@ func (c *Config) GetConcurrency() int {
 }
 
 func (c *Config) GetRestAPIBaseURL() string {
-	env, err := c.GetCurrentEnvironment()
-	if err != nil {
-		return ""
-	}
-	return env.RestAPIBaseURL
+	val, _ := variables.GetEnvVariable("rest_api_base_url")
+	return val
 }
 
 func (c *Config) GetGraphQLEndpoint() (string, error) {
@@ -92,8 +80,8 @@ func (c *Config) GetGraphQLEndpoint() (string, error) {
 		return "", errors.New("GraphQL configuration not found")
 	}
 
-	if env, err := c.GetCurrentEnvironment(); err == nil && env.GraphQLEndpoint != "" {
-		return env.GraphQLEndpoint, nil
+	if val, exists := variables.GetEnvVariable("graphql_endpoint"); exists && val != "" {
+		return val, nil
 	}
 
 	return "", errors.New("GraphQL endpoint not defined in environment configuration")
@@ -199,18 +187,6 @@ func (c *Config) validateFrontend() error {
 }
 
 func (c *Config) validateGlobalSettings() error {
-	if c.ActiveEnvironment == "" {
-		return errors.New("active_environment is required")
-	}
-
-	if _, exists := c.Environments[c.ActiveEnvironment]; !exists {
-		return fmt.Errorf("active environment '%s' not found in environments", c.ActiveEnvironment)
-	}
-
-	if len(c.Environments) == 0 {
-		return errors.New("at least one environment must be defined")
-	}
-
 	if c.Settings.Concurrency < 1 || c.Settings.Concurrency > 20 {
 		return errors.New("concurrency must be between 1 and 20")
 	}
@@ -250,12 +226,10 @@ func (c *Config) validateGraphQL() error {
 		return nil
 	}
 
-	// Check if endpoint is defined in environment
-	env, err := c.GetCurrentEnvironment()
-	hasEnvEndpoint := err == nil && env.GraphQLEndpoint != ""
-
-	if !hasEnvEndpoint {
-		return errors.New("GraphQL endpoint must be defined in the environment configuration")
+	// Check if endpoint is defined in environment variables
+	graphqlEndpoint, exists := variables.GetEnvVariable("graphql_endpoint")
+	if !exists || graphqlEndpoint == "" {
+		return errors.New("GraphQL endpoint must be defined (env.graphql_endpoint)")
 	}
 	if len(c.Backend.GraphQL.Operations) == 0 {
 		return errors.New("at least one GraphQL operation must be defined when GraphQL config is present")
