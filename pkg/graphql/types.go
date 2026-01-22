@@ -14,6 +14,7 @@ type Request struct {
 type Response struct {
 	Data       json.RawMessage        `json:"data,omitempty"`
 	Errors     []Error                `json:"errors,omitempty"`
+	Headers    map[string]string      `json:"headers,omitempty"`
 	Extensions map[string]interface{} `json:"extensions,omitempty"`
 	StatusCode int                    `json:"-"` // HTTP status code (not part of GraphQL spec)
 }
