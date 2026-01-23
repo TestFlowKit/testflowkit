@@ -10,6 +10,21 @@ func (c *Context) GetGraphQLRequest() *graphql.Request {
 	return c.backend.GetGraphQLRequest()
 }
 
+func (c *Context) SetGraphQLEndpoint(endpoint string) {
+	endpoint = ReplaceVariablesInString(c, endpoint)
+	c.backend.SetGraphQLEndpoint(endpoint)
+}
+
+func (c *Context) GetGraphQLEndpoint() string {
+	return c.backend.GetGraphQLEndpoint()
+}
+
+func (c *Context) SetGraphQLHeader(key, value string) {
+	key = ReplaceVariablesInString(c, key)
+	value = ReplaceVariablesInString(c, value)
+	c.backend.SetGraphQLHeader(key, value)
+}
+
 func (c *Context) SetGraphQLResponse(response *graphql.Response) {
 	unifiedResp := &UnifiedResponse{
 		StatusCode:    response.StatusCode,
@@ -53,7 +68,7 @@ func (c *Context) SetGraphQLHeaders(headers map[string]string) {
 }
 
 func (c *Context) GetGraphQLHeaders() map[string]string {
-	return c.backend.GetHeaders()
+	return c.backend.GetGraphQLHeaders()
 }
 
 func (c *Context) replaceVariablesInMap(input map[string]string) map[string]string {

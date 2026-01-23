@@ -9,7 +9,7 @@ import (
 // APIProtocol defines the interface for different API protocol implementations
 // This is defined here to avoid import cycles with the protocol package.
 type APIProtocol interface {
-	PrepareRequest(ctx context.Context, name string) (context.Context, error)
+	PrepareRequest(ctx context.Context, apiName string, requestName string) (context.Context, error)
 
 	// SendRequest executes the prepared request and stores the response
 	SendRequest(ctx context.Context) (context.Context, error)
@@ -22,6 +22,12 @@ type APIProtocol interface {
 	HasErrors(ctx context.Context) bool
 
 	GetProtocolName() string
+}
+
+type PrepareRequestParams struct {
+	Ctx         context.Context
+	APIName     string
+	RequestName string
 }
 
 // BackendContext is the unified context for both GraphQL and REST API testing.
@@ -44,6 +50,8 @@ type RestContext struct {
 type GraphQLContext struct {
 	Request   *graphql.Request
 	Variables map[string]any
+	Endpoint  string
+	Headers   map[string]string
 }
 
 type UnifiedResponse struct {

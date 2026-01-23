@@ -4,12 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"maps"
-	"net/url"
 	"path/filepath"
 	"strings"
 	"testflowkit/pkg/logger"
-	"testflowkit/pkg/variables"
 	"time"
 )
 
@@ -20,7 +17,7 @@ type Config struct {
 
 	Frontend *FrontendConfig `yaml:"frontend"`
 
-	Backend BackendConfig `yaml:"backend"`
+	APIs *APIsConfig `yaml:"apis"`
 
 	Files FileConfig `yaml:"files"`
 
@@ -28,23 +25,46 @@ type Config struct {
 	appVersion string
 }
 
-func (c *Config) GetAPIEndpoint(endpointName string) (string, Endpoint, error) {
-	endpoint, exists := c.Backend.Endpoints[endpointName]
+func (c *Config) GetAPI(apiName string) (*APIDefinition, error) {
+	if c.APIs == nil || c.APIs.Definitions == nil {
+		return nil, errors.New("no APIs configured")
+	}
+
+	apiDef, exists := c.APIs.Definitions[apiName]
 	if !exists {
-		return "", Endpoint{}, fmt.Errorf("endpoint '%s' not found in configuration", endpointName)
+		return nil, fmt.Errorf("API '%s' not found in configuration", apiName)
 	}
 
-	parsedURL, err := url.Parse(endpoint.Path)
+	return &apiDef, nil
+}
+
+func (c *Config) GetAPITimeout(apiName string) int {
+	const defaultTimeoutInMS = 30000
+	if c.APIs == nil {
+		return defaultTimeoutInMS
+	}
+
+	apiDef, err := c.GetAPI(apiName)
 	if err != nil {
-		return "", Endpoint{}, fmt.Errorf("failed to parse endpoint path: %w", err)
+		if c.APIs.DefaultTimeout > 0 {
+			return c.APIs.DefaultTimeout
+		}
+		return defaultTimeoutInMS
 	}
 
-	if parsedURL.Scheme != "" {
-		return parsedURL.String(), endpoint, nil
+	if apiDef.Timeout != nil {
+		return *apiDef.Timeout
 	}
 
-	fullURL := filepath.Join(c.GetRestAPIBaseURL(), parsedURL.Path)
-	return fullURL, endpoint, nil
+	if c.APIs.DefaultTimeout > 0 {
+		return c.APIs.DefaultTimeout
+	}
+
+	return defaultTimeoutInMS
+}
+
+func (c *Config) IsAPIsConfigured() bool {
+	return c.APIs != nil && len(c.APIs.Definitions) > 0
 }
 
 func (c *Config) GetFileDefinitions() map[string]string {
@@ -69,52 +89,6 @@ func (c *Config) GetConcurrency() int {
 		return 1
 	}
 	return c.Settings.Concurrency
-}
-
-func (c *Config) GetRestAPIBaseURL() string {
-	val, _ := variables.GetEnvVariable("rest_api_base_url")
-	return val
-}
-
-func (c *Config) GetGraphQLEndpoint() (string, error) {
-	if c.Backend.GraphQL == nil {
-		return "", errors.New("GraphQL configuration not found")
-	}
-
-	if val, exists := variables.GetEnvVariable("graphql_endpoint"); exists && val != "" {
-		return val, nil
-	}
-
-	return "", errors.New("GraphQL endpoint not defined in environment configuration")
-}
-
-func (c *Config) GetGraphQLOperation(operationName string) (GraphQLOperation, error) {
-	if c.Backend.GraphQL == nil {
-		return GraphQLOperation{}, errors.New("GraphQL configuration not found")
-	}
-
-	operation, exists := c.Backend.GraphQL.Operations[operationName]
-	if !exists {
-		return GraphQLOperation{}, fmt.Errorf("GraphQL operation '%s' not found in configuration", operationName)
-	}
-
-	return operation, nil
-}
-
-func (c *Config) GetGraphQLHeaders() map[string]string {
-	headers := make(map[string]string)
-
-	maps.Copy(headers, c.Backend.DefaultHeaders)
-
-	if c.Backend.GraphQL != nil {
-		maps.Copy(headers, c.Backend.GraphQL.DefaultHeaders)
-	}
-
-	return headers
-}
-
-func (c *Config) IsGraphQLConfigured() bool {
-	return c.Backend.GraphQL != nil
 }
 
 func (c *Config) GetFileBaseDirectory() string {
@@ -157,7 +131,7 @@ func (c *Config) ValidateConfiguration() error {
 		return err
 	}
 
-	if err := c.validateGraphQL(); err != nil {
+	if err := c.validateAPIs(); err != nil {
 		return err
 	}
 
@@ -229,41 +203,70 @@ func (c *Config) GetVersion() string {
 	return c.appVersion
 }
 
-func (c *Config) validateGraphQL() error {
-	if c.Backend.GraphQL == nil {
-		logger.Info("GraphQL config is not defined")
+func (c *Config) validateAPIs() error {
+	if c.APIs == nil || len(c.APIs.Definitions) == 0 {
+		logger.Info("APIs config is not defined")
 		return nil
 	}
 
-	graphqlEndpoint, exists := variables.GetEnvVariable("graphql_endpoint")
-	if !exists || graphqlEndpoint == "" {
-		return errors.New("GraphQL endpoint must be defined (env.graphql_endpoint)")
-	}
-	if len(c.Backend.GraphQL.Operations) == 0 {
-		return errors.New("at least one GraphQL operation must be defined when GraphQL config is present")
-	}
-
-	// Validate each operation
-	for operationName, operation := range c.Backend.GraphQL.Operations {
-		if operation.Type == "" {
-			return fmt.Errorf("GraphQL operation '%s' must have a type", operationName)
+	for apiName, apiDef := range c.APIs.Definitions {
+		if apiDef.Type != APITypeREST && apiDef.Type != APITypeGraphQL {
+			return fmt.Errorf("API '%s' has invalid type '%s', must be 'rest' or 'graphql'", apiName, apiDef.Type)
 		}
 
+		if apiDef.Type == APITypeREST {
+			err := c.validateRestAPI(apiDef, apiName)
+			if err != nil {
+				return err
+			}
+		}
+
+		if apiDef.Type == APITypeGraphQL {
+			err := c.validateGraphQLApi(apiDef, apiName)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (*Config) validateGraphQLApi(apiDef APIDefinition, apiName string) error {
+	if apiDef.Endpoint == "" {
+		return fmt.Errorf("GraphQL API '%s' must have an endpoint", apiName)
+	}
+	if len(apiDef.Operations) == 0 {
+		return fmt.Errorf("GraphQL API '%s' must have at least one operation", apiName)
+	}
+	for operationName, operation := range apiDef.Operations {
 		if operation.Type != "query" && operation.Type != "mutation" {
-			const msg = "GraphQL operation '%s' type must be 'query' or 'mutation', got '%s'"
-			return fmt.Errorf(msg, operationName, operation.Type)
+			return fmt.Errorf("GraphQL operation '%s.%s' type must be 'query' or 'mutation'", apiName, operationName)
 		}
-
 		if operation.Operation == "" {
-			const msg = "GraphQL operation '%s' must have an operation definition"
-			return fmt.Errorf(msg, operationName)
+			return fmt.Errorf("GraphQL operation '%s.%s' must have an operation definition", apiName, operationName)
 		}
-
 		if operation.Description == "" {
-			const msg = "GraphQL operation '%s' should have a description"
-			logger.Warn(fmt.Sprintf(msg, operationName), nil)
+			logger.Warn(fmt.Sprintf("GraphQL operation '%s.%s' should have a description", apiName, operationName), nil)
 		}
 	}
+	return nil
+}
 
+func (*Config) validateRestAPI(apiDef APIDefinition, apiName string) error {
+	if apiDef.BaseURL == "" {
+		return fmt.Errorf("REST API '%s' must have a base_url", apiName)
+	}
+	if len(apiDef.Endpoints) == 0 {
+		return fmt.Errorf("REST API '%s' must have at least one endpoint", apiName)
+	}
+	for endpointName, endpoint := range apiDef.Endpoints {
+		if endpoint.Method == "" {
+			return fmt.Errorf("endpoint '%s.%s' must have a method", apiName, endpointName)
+		}
+		if endpoint.Path == "" {
+			return fmt.Errorf("endpoint '%s.%s' must have a path", apiName, endpointName)
+		}
+	}
 	return nil
 }

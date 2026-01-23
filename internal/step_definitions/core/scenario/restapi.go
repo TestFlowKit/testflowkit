@@ -3,7 +3,6 @@ package scenario
 import (
 	"encoding/json"
 	"fmt"
-	"maps"
 	"testflowkit/internal/config"
 )
 
@@ -71,9 +70,7 @@ func (c *Context) GetRESTRequestBody() []byte {
 }
 
 func (c *Context) GetRequestHeaders() map[string]string {
-	headers := c.config.Backend.DefaultHeaders
-	maps.Copy(headers, c.backend.GetHeaders())
-	return headers
+	return c.backend.GetHeaders()
 }
 
 func (c *Context) SetResponse(statusCode int, body []byte, headers map[string]string) {

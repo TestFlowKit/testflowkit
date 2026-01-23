@@ -38,12 +38,12 @@ func DisplayConfigSummary(cfg *config.Config) {
 		displayFrontSummary(cfg)
 	}
 
-	restAPIURL, _ := variables.GetEnvVariable("rest_api_base_url")
-	graphqlEndpoint, _ := variables.GetEnvVariable("graphql_endpoint")
-
-	logger.InfoFf("API Base URL: %s", restAPIURL)
-	logger.InfoFf("API GraphQL Endpoint: %s", graphqlEndpoint)
-	logger.InfoFf("API Endpoints: %d endpoints", len(cfg.Backend.Endpoints))
+	if cfg.APIs != nil && cfg.APIs.Definitions != nil {
+		logger.InfoFf("APIs configured: %d", len(cfg.APIs.Definitions))
+		for apiName, apiDef := range cfg.APIs.Definitions {
+			logger.InfoFf("  - %s (%s)", apiName, apiDef.Type)
+		}
+	}
 
 	logger.Info("--- Configuration Summary End ---\n")
 }

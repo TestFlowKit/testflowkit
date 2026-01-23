@@ -46,14 +46,9 @@
       <CodeBlock :code="settingsSection" language="yaml" />
     </AccordionItem>
 
-    <AccordionItem title="Backend Configuration">
-      <p class="text-sm md:text-base">Configure API endpoints and default headers for backend testing.</p>
-      <CodeBlock :code="backendSection" language="yaml" />
-    </AccordionItem>
-
-    <AccordionItem title="GraphQL Configuration">
-      <p class="text-sm md:text-base">Configure GraphQL endpoints, operations, and headers for GraphQL API testing.</p>
-      <CodeBlock :code="graphqlSection" language="yaml" />
+    <AccordionItem title="APIs Configuration">
+      <p class="text-sm md:text-base">Configure multiple REST and GraphQL APIs with unified configuration. Each API can have its own base URL, headers, timeout, and endpoints/operations.</p>
+      <CodeBlock :code="apisSection" language="yaml" />
     </AccordionItem>
 
     <AccordionItem title="Complete Test Configuration Example">
@@ -128,17 +123,17 @@ settings:
 # Inline environment variables
 env:
   frontend_base_url: "http://localhost:3000"
-  rest_api_base_url: "http://localhost:8080"
-  graphql_endpoint: "http://localhost:8080/graphql"
+  jsonplaceholder_base_url: "http://localhost:8080"
+  my_graphql_endpoint: "http://localhost:8080/graphql"
 
 # Or use external files:
 # .env.local.yml
 # frontend_base_url: "http://localhost:3000"
-# rest_api_base_url: "http://localhost:8080"
+# jsonplaceholder_base_url: "http://localhost:8080"
 #
 # .env.staging.yml
 # frontend_base_url: "https://staging.example.com"
-# rest_api_base_url: "https://api-staging.example.com"
+# jsonplaceholder_base_url: "https://api-staging.example.com"
 #
 # Override at runtime: tkit run --env-file .env.staging.yml
 `.trim();
@@ -171,82 +166,70 @@ settings:
   tags: "@smoke"
 `.trim();
 
-const backendSection = `
-backend:
-  default_headers:
-    Content-Type: "application/json"
-    Accept: "application/json"
-    User-Agent: "TestFlowKit/1.0"
-    Authorization: "Bearer {token}"
+const apisSection = `
+apis:
+  default_timeout: 30000  # Default timeout for all APIs (ms)
   
-  endpoints:
-    get_user:
-      method: "GET"
-      path: "/users/{id}"
-      description: "Retrieve user information by ID"
-    create_user:
-      method: "POST"
-      path: "/users"
-      description: "Create a new user"
-    update_user:
-      method: "PUT"
-      path: "/users/{id}"
-      description: "Update user information"
-    delete_user:
-      method: "DELETE"
-      path: "/users/{id}"
-      description: "Delete a user"
-`.trim();
-
-const graphqlSection = `
-backend:
-  graphql:
-    endpoint: "/graphql"
-    default_headers:
-      Content-Type: "application/json"
-      Authorization: "Bearer {token}"
-    operations:
-      get_user_profile:
-        type: "query"
-        operation: |
-          query GetUserProfile($userId: ID!) {
-            user(id: $userId) {
-              id
-              name
-              email
-              profile {
-                avatar
-                bio
+  definitions:
+    # REST API example
+    jsonplaceholder:
+      type: rest
+      base_url: "{{ env.jsonplaceholder_base_url }}"
+      default_headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        User-Agent: "TestFlowKit/1.0"
+      timeout: 5000  # Optional: override default timeout
+      endpoints:
+        get_user:
+          method: "GET"
+          path: "/users/{id}"
+          description: "Retrieve user information by ID"
+        create_user:
+          method: "POST"
+          path: "/users"
+          description: "Create a new user"
+        update_user:
+          method: "PUT"
+          path: "/users/{id}"
+          description: "Update user information"
+    
+    # GraphQL API example
+    my_graphql:
+      type: graphql
+      endpoint: "{{ env.my_graphql_endpoint }}"
+      default_headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ env.api_token }}"
+      operations:
+        get_user_profile:
+          type: "query"
+          operation: |
+            query GetUserProfile($userId: ID!) {
+              user(id: $userId) {
+                id
+                name
+                email
+                profile {
+                  avatar
+                  bio
+                }
               }
             }
-          }
-        description: "Fetch user profile with nested data"
-      
-      update_user:
-        type: "mutation"
-        operation: |
-          mutation UpdateUser($id: ID!, $input: UserInput!) {
-            updateUser(id: $id, input: $input) {
-              id
-              name
-              email
-              updatedAt
+          description: "Fetch user profile with nested data"
+        
+        update_user:
+          type: "mutation"
+          operation: |
+            mutation UpdateUser($id: ID!, $input: UserInput!) {
+              updateUser(id: $id, input: $input) {
+                id
+                name
+                email
+                updatedAt
+              }
             }
-          }
-        description: "Update user information"
-      
-      search_users:
-        type: "query"
-        operation: |
-          query SearchUsers($tags: [String!]!, $limit: Int) {
-            users(tags: $tags, limit: $limit) {
-              id
-              name
-              email
-              tags
-            }
-          }
-        description: "Search users with array parameters"
+          description: "Update user information"
 `.trim();
 
 const testConfigExample = `
@@ -263,8 +246,9 @@ settings:
 # Inline environment variables (or use external file)
 env:
   frontend_base_url: "http://localhost:3000"
-  rest_api_base_url: "http://localhost:8080"
-  graphql_endpoint: "http://localhost:8080/graphql"
+  jsonplaceholder_base_url: "http://localhost:8080"
+  my_graphql_endpoint: "http://localhost:8080/graphql"
+  api_token: "your-api-token"
 
 frontend:
   elements:
@@ -301,37 +285,42 @@ frontend:
     dashboard: "/dashboard"
     profile: "/profile"
 
-backend:
-  default_headers:
-    Content-Type: "application/json"
-    Accept: "application/json"
-    User-Agent: "TestFlowKit/1.0"
+apis:
+  default_timeout: 30000
   
-  graphql:
-    endpoint: "/graphql"
-    default_headers:
-      Content-Type: "application/json"
-    operations:
-      get_user_profile:
-        type: "query"
-        operation: |
-          query GetUserProfile($userId: ID!) {
-            user(id: $userId) {
-              id
-              name
-              email
+  definitions:
+    jsonplaceholder:
+      type: rest
+      base_url: "{{ env.jsonplaceholder_base_url }}"
+      default_headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+      endpoints:
+        get_user:
+          method: "GET"
+          path: "/users/{id}"
+          description: "Retrieve user information by ID"
+        create_user:
+          method: "POST"
+          path: "/users"
+          description: "Create a new user"
+    
+    my_graphql:
+      type: graphql
+      endpoint: "{{ env.my_graphql_endpoint }}"
+      default_headers:
+        Content-Type: "application/json"
+      operations:
+        get_user_profile:
+          type: "query"
+          operation: |
+            query GetUserProfile($userId: ID!) {
+              user(id: $userId) {
+                id
+                name
+                email
+              }
             }
-          }
-        description: "Fetch user profile"
-  
-  endpoints:
-    get_user:
-      method: "GET"
-      path: "/users/{id}"
-      description: "Retrieve user information by ID"
-    create_user:
-      method: "POST"
-      path: "/users"
-      description: "Create a new user"
+          description: "Fetch user profile"
 `.trim();
 </script>
