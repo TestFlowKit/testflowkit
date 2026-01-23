@@ -81,82 +81,89 @@ frontend:
     details_e2e: "/details"
     scroll_e2e: "/scroll"
 
-backend:
-  default_headers:
-    Content-Type: "application/json"
-    Accept: "application/json"
-    User-Agent: "TestFlowKit/1.0"
-    X-Requested-With: "TestFlowKit"
+apis:
+  default_timeout: 30000
 
-  graphql:
-    default_headers:
-      Content-Type: "application/json"
-    operations:
-      getUser:
-        type: "query"
-        operation: |
-          query GetUser($id: ID!) {
-            user(id: $id) {
-              id
-              username
-              email
+  definitions:
+    jsonplaceholder:
+      type: rest
+      base_url: "{{ env.jsonplaceholder_base_url }}"
+      default_headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        User-Agent: "TestFlowKit/1.0"
+        X-Requested-With: "TestFlowKit"
+      endpoints:
+        get_posts:
+          method: "GET"
+          path: "/posts"
+          description: "Retrieve all posts"
+
+        get_post_by_id:
+          method: "GET"
+          path: "/posts/{id}"
+          description: "Retrieve a specific post by ID"
+
+        create_post:
+          method: "POST"
+          path: "/posts"
+          description: "Create a new post"
+
+        delete_post:
+          method: "DELETE"
+          path: "/posts/{id}"
+          description: "Delete a post"
+
+        get_albums:
+          method: "GET"
+          path: "/albums"
+          description: "Retrieve all albums"
+
+        get_album_by_id:
+          method: "GET"
+          path: "/albums/{id}"
+          description: "Retrieve a specific album by ID"
+
+        get_photos:
+          method: "GET"
+          path: "/photos"
+          description: "Retrieve all photos"
+
+        get_photos_by_album:
+          method: "GET"
+          path: "/albums/{id}/photos"
+          description: "Retrieve photos for a specific album"
+
+    almansi_graphql:
+      type: graphql
+      endpoint: "{{ env.almansi_graphql_endpoint }}"
+      default_headers:
+        Content-Type: "application/json"
+      operations:
+        getUser:
+          type: "query"
+          operation: |
+            query GetUser($id: ID!) {
+              user(id: $id) {
+                id
+                username
+                email
+              }
             }
-          }
-        description: "Fetch user by ID"
-      
-      createPost:
-        type: "mutation"
-        operation: "graphql_queries/create_post.graphql"
-        description: "Create a new post"
+          description: "Fetch user by ID"
         
-      deletePost:
-        type: "mutation"
-        operation: |
-          mutation DeletePost($id: ID!) {
-            deletePost(id: $id)
-          }
-        description: "Delete a post"
-
-  endpoints:
-    get_posts:
-      method: "GET"
-      path: "/posts"
-      description: "Retrieve all posts"
-
-    get_post_by_id:
-      method: "GET"
-      path: "/posts/{id}"
-      description: "Retrieve a specific post by ID"
-
-    create_post:
-      method: "POST"
-      path: "/posts"
-      description: "Create a new post"
-
-    delete_post:
-      method: "DELETE"
-      path: "/posts/{id}"
-      description: "Delete a post"
-
-    get_albums:
-      method: "GET"
-      path: "/albums"
-      description: "Retrieve all albums"
-
-    get_album_by_id:
-      method: "GET"
-      path: "/albums/{id}"
-      description: "Retrieve a specific album by ID"
-
-    get_photos:
-      method: "GET"
-      path: "/photos"
-      description: "Retrieve all photos"
-
-    get_photos_by_album:
-      method: "GET"
-      path: "/albums/{id}/photos"
-      description: "Retrieve photos for a specific album"
+        createPost:
+          type: "mutation"
+          operation: "graphql_queries/create_post.graphql"
+          description: "Create a new post"
+          
+        deletePost:
+          type: "mutation"
+          operation: |
+            mutation DeletePost($id: ID!) {
+              deletePost(id: $id)
+            }
+          description: "Delete a post"
 
 files:
   base_directory: "./test-files"

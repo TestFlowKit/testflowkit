@@ -124,33 +124,49 @@ frontend:
     login: "/login"
     dashboard: "/dashboard"
 
-backend:
-  # REST API endpoints
-  endpoints:
-    get_user:
-      method: "GET"
-      path: "/users/{id}"
-      description: "Retrieve user by ID"
+apis:
+  default_timeout: 30000  # Default timeout for all APIs (ms)
   
-  # GraphQL configuration
-  graphql:
-    endpoint: "/graphql"
-    operations:
-      get_user_profile:
-        type: "query"
-        operation: |
-          query GetUserProfile($userId: ID!) {
-            user(id: $userId) {
-              id
-              name
-              email
-              profile {
-                avatar
-                bio
+  definitions:
+    # REST API example
+    users_api:
+      type: rest
+      base_url: "{{ env.users_api_base_url }}"
+      default_headers:
+        Content-Type: "application/json"
+        Authorization: "Bearer {{ env.api_token }}"
+      endpoints:
+        get_user:
+          method: "GET"
+          path: "/users/{id}"
+          description: "Retrieve user by ID"
+        create_user:
+          method: "POST"
+          path: "/users"
+          description: "Create a new user"
+    
+    # GraphQL API example
+    content_api:
+      type: graphql
+      endpoint: "{{ env.graphql_endpoint }}"
+      default_headers:
+        Content-Type: "application/json"
+      operations:
+        get_user_profile:
+          type: "query"
+          operation: |
+            query GetUserProfile($userId: ID!) {
+              user(id: $userId) {
+                id
+                name
+                email
+                profile {
+                  avatar
+                  bio
+                }
               }
             }
-          }
-        description: "Fetch user profile with nested data"
+          description: "Fetch user profile with nested data"
 
 files:
   base_directory: "./"
@@ -160,7 +176,18 @@ files:
     sample_csv: "data/sample.csv"
 ```
 
-### 3. Write Your First Test
+### 3. Configure Environment Variables
+
+Create a `.env.yml` file for environment-specific settings:
+
+```yaml
+frontend_base_url: "http://localhost:3000"
+users_api_base_url: "http://localhost:8080/api"
+graphql_endpoint: "http://localhost:8080/graphql"
+api_token: "your-api-token-here"
+```
+
+### 4. Write Your First Test
 
 Create a feature file at `e2e/features/login.feature`:
 
@@ -180,7 +207,7 @@ Feature: User Authentication
     And the "welcome_message" should be visible
 ```
 
-### 4. Using Variables for Dynamic Testing
+### 5. Using Variables for Dynamic Testing
 
 TestFlowKit provides powerful variable support for dynamic test data:
 
@@ -191,7 +218,7 @@ Feature: Dynamic User Testing
   So that my tests are more flexible
 
   Scenario: Test with API data and variables
-    Given I prepare a request for the "get_user" endpoint
+    Given I prepare a request to "users_api.get_user"
     And I set the following path parameters:
       | id | 123 |
     When I send the request
@@ -419,7 +446,7 @@ Full REST API testing with request/response validation:
 
 ```gherkin
 # REST API Requests
-Given I prepare a request for the "get_user" endpoint
+Given I prepare a request to "users_api.get_user"
 When I set the following path parameters:
   | id | 1 |
 And I send the request
@@ -436,56 +463,56 @@ Comprehensive GraphQL testing with queries, mutations, array variables, and sche
 
 ```gherkin
 # GraphQL Query with Variables
-Given I prepare a GraphQL request to "get_user_profile"
+Given I prepare a request to "content_api.get_user_profile"
 And I set the following GraphQL variables:
   | userId | 123 |
 When I send the request
-Then the GraphQL response should not contain errors
+Then the response should not contain errors
 And the response should have field "user.name"
 And I store the GraphQL data at path "user.id" into "userId" variable
 
 # GraphQL with Array Variables
-Given I prepare a GraphQL request to "search_users"
+Given I prepare a request to "api.search_users"
 And I set the following GraphQL variables:
   | tags     | ["frontend", "testing", "automation"] |
   | statuses | ["active", "verified"]               |
   | limit    | 10                                   |
 When I send the request
-Then the GraphQL response should not contain errors
+Then the response should not contain errors
 And I store the GraphQL array at path "users" into "foundUsers" variable
 
 # GraphQL with Individual Array Variables
-Given I prepare a GraphQL request to "update_user_tags"
+Given I prepare a request to "update_user_tags"
 And I set the GraphQL variable "userId" to "123"
 And I set the GraphQL variable "tags" to array ["frontend", "backend", "testing"]
 When I send the request
-Then the GraphQL response should not contain errors
+Then the response should not contain errors
 And the response should have field "updateUser.tags"
 
 # GraphQL Mutations with Complex Input
-Given I prepare a GraphQL request to "create_post"
+Given I prepare a request to "create_post"
 And I set the following GraphQL variables:
   | input | {"title": "New Post", "content": "Post content", "tags": ["tech", "tutorial"]} |
 When I send the request
-Then the GraphQL response should not contain errors
+Then the response should not contain errors
 And the response should have field "createPost.post.id"
 
 # GraphQL Error Handling
-Given I prepare a GraphQL request to "get_user_profile"
+Given I prepare a request to "get_user_profile"
 And I set the following GraphQL variables:
   | userId | invalid_id |
 When I send the request
-Then the GraphQL response should contain errors
+Then the response should contain errors
 
 # GraphQL with Custom Headers
-Given I prepare a GraphQL request to "get_user_profile"
+Given I prepare a request to "get_user_profile"
 And I set the following GraphQL headers:
   | Authorization | Bearer token123 |
   | X-Client-ID   | test-client     |
 And I set the following GraphQL variables:
   | userId | 123 |
 When I send the request
-Then the GraphQL response should not contain errors
+Then the response should not contain errors
 ```
 
 #### GraphQL Testing
@@ -494,56 +521,56 @@ Comprehensive GraphQL testing with queries, mutations, array variables, and sche
 
 ```gherkin
 # GraphQL Query with Variables
-Given I prepare a GraphQL request for the "get_user_profile" operation
+Given I prepare a request for the "get_user_profile" operation
 And I set the following GraphQL variables:
   | userId | 123 |
-When I send the GraphQL request
-Then the GraphQL response should not contain errors
-And the GraphQL response should contain data at path "user.name"
+When I send the request
+Then the response should not contain errors
+And the response should contain data at path "user.name"
 And I store the GraphQL data at path "user.id" into "userId" variable
 
 # GraphQL with Array Variables
-Given I prepare a GraphQL request for the "search_users" operation
+Given I prepare a request for the "search_users" operation
 And I set the following GraphQL variables:
   | tags     | ["frontend", "testing", "automation"] |
   | statuses | ["active", "verified"]               |
   | limit    | 10                                   |
-When I send the GraphQL request
-Then the GraphQL response should not contain errors
+When I send the request
+Then the response should not contain errors
 And I store the GraphQL array at path "users" into "foundUsers" variable
 
 # GraphQL with Individual Array Variables
-Given I prepare a GraphQL request for the "update_user_tags" operation
+Given I prepare a request for the "update_user_tags" operation
 And I set the GraphQL variable "userId" to "123"
 And I set the GraphQL variable "tags" to array ["frontend", "backend", "testing"]
-When I send the GraphQL request
-Then the GraphQL response should not contain errors
-And the GraphQL response should contain data at path "updateUser.tags"
+When I send the request
+Then the response should not contain errors
+And the response should contain data at path "updateUser.tags"
 
 # GraphQL Mutations with Complex Input
-Given I prepare a GraphQL request for the "create_post" operation
+Given I prepare a request for the "create_post" operation
 And I set the following GraphQL variables:
   | input | {"title": "New Post", "content": "Post content", "tags": ["tech", "tutorial"]} |
-When I send the GraphQL request
-Then the GraphQL response should not contain errors
-And the GraphQL response should contain data at path "createPost.post.id"
+When I send the request
+Then the response should not contain errors
+And the response should contain data at path "createPost.post.id"
 
 # GraphQL Error Handling
-Given I prepare a GraphQL request for the "get_user_profile" operation
+Given I prepare a request for the "get_user_profile" operation
 And I set the following GraphQL variables:
   | userId | invalid_id |
-When I send the GraphQL request
-Then the GraphQL response should contain errors
+When I send the request
+Then the response should contain errors
 
 # GraphQL with Custom Headers
-Given I prepare a GraphQL request for the "get_user_profile" operation
+Given I prepare a request for the "get_user_profile" operation
 And I set the following GraphQL headers:
   | Authorization | Bearer token123 |
   | X-Client-ID   | test-client     |
 And I set the following GraphQL variables:
   | userId | 123 |
-When I send the GraphQL request
-Then the GraphQL response should not contain errors
+When I send the request
+Then the response should not contain errors
 ```
 
 ### Variables System

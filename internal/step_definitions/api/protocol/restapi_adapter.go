@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/pkg/logger"
 	"time"
@@ -19,17 +20,32 @@ func NewRESTAPIAdapter() *RESTAPIAdapter {
 	return &RESTAPIAdapter{}
 }
 
-func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, endpointName string) (context.Context, error) {
+func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, api string, reqName string) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	cfg := scenarioCtx.GetConfig()
 
-	endpoint, exists := cfg.Backend.Endpoints[endpointName]
-	if !exists {
-		return ctx, fmt.Errorf("endpoint '%s' not found in configuration", endpointName)
+	apiDef, errGetAPI := cfg.GetAPI(api)
+	if errGetAPI != nil {
+		return ctx, fmt.Errorf("API '%s' not found: %w", api, errGetAPI)
 	}
 
-	baseURL := cfg.GetRestAPIBaseURL()
-	scenarioCtx.SetEndpoint(baseURL, endpoint)
+	if apiDef.Type != config.APITypeREST {
+		err := fmt.Errorf("API '%s' is not a REST API, got type '%s'", api, apiDef.Type)
+		logger.Fatal("rest adapter", err)
+	}
+
+	endpoint, exists := apiDef.Endpoints[reqName]
+	if !exists {
+		return ctx, fmt.Errorf("endpoint '%s' not found in API '%s'", reqName, api)
+	}
+
+	scenarioCtx.SetEndpoint(apiDef.BaseURL, endpoint)
+
+	if len(apiDef.DefaultHeaders) > 0 {
+		for key, value := range apiDef.DefaultHeaders {
+			scenarioCtx.AddHeader(key, value)
+		}
+	}
 
 	// Store this adapter as the protocol
 	scenarioCtx.GetBackendContext().SetProtocol(a)

@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"maps"
 	"os"
 	"strings"
+	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/graphql"
@@ -20,18 +20,28 @@ func NewGraphQLAdapter() *GraphQLAdapter {
 	return &GraphQLAdapter{}
 }
 
-func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, operationName string) (context.Context, error) {
+func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, apiName string, reqName string) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	cfg := scenarioCtx.GetConfig()
 
-	operation, err := cfg.GetGraphQLOperation(operationName)
-	if err != nil {
-		return ctx, err
+	apiDef, errGetAPI := cfg.GetAPI(apiName)
+	if errGetAPI != nil {
+		return ctx, fmt.Errorf("API '%s' not found: %w", apiName, errGetAPI)
 	}
 
-	query, err := a.getQuery(operation.Operation)
-	if err != nil {
-		return ctx, err
+	if apiDef.Type != config.APITypeGraphQL {
+		err := fmt.Errorf("API '%s' is not a GraphQL API, got type '%s'", apiName, apiDef.Type)
+		logger.Fatal("graphql adapter", err)
+	}
+
+	operation, exists := apiDef.Operations[reqName]
+	if !exists {
+		return ctx, fmt.Errorf("operation '%s' not found in API '%s'", reqName, apiName)
+	}
+
+	query, errGetQuery := a.getQuery(operation.Operation)
+	if errGetQuery != nil {
+		return ctx, errGetQuery
 	}
 
 	req := &graphql.Request{
@@ -40,6 +50,14 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, operationName strin
 	}
 
 	scenarioCtx.SetGraphQLRequest(req)
+
+	scenarioCtx.SetGraphQLEndpoint(apiDef.Endpoint)
+
+	if len(apiDef.DefaultHeaders) > 0 {
+		for key, value := range apiDef.DefaultHeaders {
+			scenarioCtx.SetGraphQLHeader(key, value)
+		}
+	}
 
 	scenarioCtx.GetBackendContext().SetProtocol(a)
 
@@ -67,20 +85,18 @@ func (*GraphQLAdapter) getQuery(operation string) (string, error) {
 
 func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
-	cfg := scenarioCtx.GetConfig()
 
 	request := scenarioCtx.GetGraphQLRequest()
 	if request == nil {
 		return ctx, errors.New("no GraphQL request is prepared to send")
 	}
 
-	endpoint, err := cfg.GetGraphQLEndpoint()
-	if err != nil {
-		return ctx, fmt.Errorf("failed to get GraphQL endpoint: %w", err)
+	endpoint := scenarioCtx.GetGraphQLEndpoint()
+	if endpoint == "" {
+		return ctx, errors.New("no GraphQL endpoint configured")
 	}
 
-	headers := cfg.GetGraphQLHeaders()
-	maps.Copy(headers, scenarioCtx.GetGraphQLHeaders())
+	headers := scenarioCtx.GetGraphQLHeaders()
 
 	var options []graphql.ClientOption
 	if len(headers) > 0 {
