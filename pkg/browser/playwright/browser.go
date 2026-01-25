@@ -84,6 +84,15 @@ func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser
 
 func initPlaywright() {
 	installOnce.Do(func() {
+		runOpts := &pw.RunOptions{
+			SkipInstallBrowsers: true,
+		}
+		inst, errFirstRun := pw.Run(runOpts)
+		if errFirstRun == nil {
+			pwInstance = inst
+			return
+		}
+
 		errInstall := pw.Install(&pw.RunOptions{
 			Browsers: []string{
 				"chromium",
@@ -93,9 +102,7 @@ func initPlaywright() {
 			panic(errInstall)
 		}
 
-		instance, errRun := pw.Run(&pw.RunOptions{
-			SkipInstallBrowsers: true,
-		})
+		instance, errRun := pw.Run(runOpts)
 		if errRun != nil {
 			panic(errRun)
 		}

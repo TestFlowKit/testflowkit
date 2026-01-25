@@ -10,11 +10,24 @@ RUN go build -o tkit
 
 
 # FROM node:24-alpine3.22
-FROM golang:1.25.0-alpine
+FROM ubuntu:24.04
 
 LABEL authors="marckent04"
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npx playwright install --with-deps
 
 COPY ./e2e .
 
