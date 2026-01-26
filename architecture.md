@@ -386,7 +386,7 @@ func (steps) elementShouldBeVisible() stepbuilder.Step {
 ```go
 func (steps) prepareGraphQLRequest() stepbuilder.Step {
     return stepbuilder.NewWithOneVariable(
-        []string{`I prepare a GraphQL request for the {string} operation`},
+        []string{`I prepare a request for the {string} operation`},
         func(ctx context.Context, operationName string) (context.Context, error) {
             scenarioCtx := scenario.MustFromContext(ctx)
             cfg := scenarioCtx.GetConfig()
@@ -411,7 +411,7 @@ func (steps) prepareGraphQLRequest() stepbuilder.Step {
                     Type:        stepbuilder.VarTypeString,
                 },
             },
-            Example:  `Given I prepare a GraphQL request to "get_user_profile"`,
+            Example:  `Given I prepare a request to "get_user_profile"`,
             Categories: []stepbuilder.StepCategory{stepbuilder.GraphQL}
         },
     )

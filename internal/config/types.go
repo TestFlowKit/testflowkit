@@ -78,10 +78,26 @@ type FrontendConfig struct {
 	Pages FrontendPages `yaml:"pages"`
 }
 
-type BackendConfig struct {
-	DefaultHeaders map[string]string   `yaml:"default_headers"`
-	Endpoints      map[string]Endpoint `yaml:"endpoints"`
-	GraphQL        *GraphQLConfig      `yaml:"graphql"`
+type APIType string
+
+const (
+	APITypeREST    APIType = "rest"
+	APITypeGraphQL APIType = "graphql"
+)
+
+type APIsConfig struct {
+	DefaultTimeout int                      `yaml:"default_timeout" validate:"omitempty,min=1000,max=300000"`
+	Definitions    map[string]APIDefinition `yaml:"definitions" validate:"required,min=1"`
+}
+
+type APIDefinition struct {
+	Type           APIType                     `yaml:"type" validate:"required,oneof=rest graphql"`
+	BaseURL        string                      `yaml:"base_url" validate:"required_if=Type rest"`
+	Endpoint       string                      `yaml:"endpoint" validate:"required_if=Type graphql"`
+	DefaultHeaders map[string]string           `yaml:"default_headers"`
+	Timeout        *int                        `yaml:"timeout" validate:"omitempty,min=1000,max=300000"`
+	Endpoints      map[string]Endpoint         `yaml:"endpoints" validate:"required_if=Type rest,min=1"`
+	Operations     map[string]GraphQLOperation `yaml:"operations" validate:"required_if=Type graphql,min=1"`
 }
 
 type Endpoint struct {
@@ -95,11 +111,6 @@ type Endpoint struct {
 type FileConfig struct {
 	Definitions   map[string]string `yaml:"definitions"`
 	BaseDirectory string            `yaml:"base_directory"`
-}
-
-type GraphQLConfig struct {
-	DefaultHeaders map[string]string           `yaml:"default_headers"`
-	Operations     map[string]GraphQLOperation `yaml:"operations" validate:"required,min=1"`
 }
 
 type GraphQLOperation struct {

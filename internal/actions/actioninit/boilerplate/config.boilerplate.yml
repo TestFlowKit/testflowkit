@@ -9,9 +9,6 @@ settings:
 # Access these in Gherkin files and config using {{ env.variable_name }}
 env:
   frontend_base_url: "https://testflowkit.github.io"
-  # rest_api_base_url: "https://api.example.com"
-  # graphql_endpoint: "https://api.example.com/graphql"
-
 frontend:
   default_timeout: 10000
   headless: false
@@ -28,3 +25,42 @@ frontend:
   pages:
     home: "/"
     sentences: "/sentences"
+
+# APIs configuration
+# Define multiple REST and GraphQL APIs
+# apis:
+#   default_timeout: 30000  # Default timeout for all APIs (ms)
+#   
+#   definitions:
+#     jsonplaceholder:
+#       type: rest
+#       base_url: "{{ env.jsonplaceholder_base_url }}"
+#       default_headers:
+#         Content-Type: "application/json"
+#       endpoints:
+#         get_posts:
+#           method: "GET"
+#           path: "/posts"
+#           description: "Retrieve all posts"
+#         create_post:
+#           method: "POST"
+#           path: "/posts"
+#           description: "Create a new post"
+#
+#     my_graphql:
+#       type: graphql
+#       endpoint: "{{ env.my_graphql_endpoint }}"
+#       default_headers:
+#         Content-Type: "application/json"
+#       operations:
+#         getUser:
+#           type: "query"
+#           operation: |
+#             query GetUser($id: ID!) {
+#               user(id: $id) {
+#                 id
+#                 username
+#                 email
+#               }
+#             }
+#           description: "Fetch user by ID"

@@ -5,7 +5,7 @@ import (
 )
 
 type APIProtocol interface {
-	PrepareRequest(ctx context.Context, name string) (context.Context, error)
+	PrepareRequest(ctx context.Context, apiName string, reqName string) (context.Context, error)
 
 	SendRequest(ctx context.Context) (context.Context, error)
 
