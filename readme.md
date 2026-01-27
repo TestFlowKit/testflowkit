@@ -34,6 +34,13 @@
 
 ## 📋 Prerequisites
 
+### For Users (Running Tests)
+
+- **Chrome or Edge browser**: For frontend testing with Rod driver (default)
+- **Go 1.19+** *(optional)*: Required only if using the Playwright driver. [Download Go](https://golang.org/dl/)
+
+### For Developers (Building from Source)
+
 - **Go 1.23+**: [Download and install Go](https://golang.org/dl/)
 - **Git**: For cloning the repository
 - **Make**: For build automation (optional but recommended)
@@ -76,6 +83,17 @@ go mod tidy
 make build GOOS=linux GOARCH=amd64  # or your target platform
 ```
 
+### Optional: Install Playwright Driver
+
+If you want to use the Playwright driver instead of the default Rod driver:
+
+```bash
+# Requires Go 1.19+ to be installed
+go run github.com/playwright-community/playwright-go/cmd/playwright@latest install --with-deps
+```
+
+> 💡 **Note:** The Rod driver (default) doesn't require this step - it auto-downloads Chrome when needed.
+
 ## 🚀 Quick Start
 
 ### 1. Initialize Project
@@ -102,6 +120,9 @@ env:
   api_base_url: "http://localhost:8080/api"
 
 frontend:
+  # Browser driver to use (required when frontend block is defined)
+  driver: "rod"  # Options: "rod" or "playwright"
+  
   # Element search timeout in milliseconds (1-300000ms)
   # Maximum time to wait when searching for elements by CSS selectors or XPath
   default_timeout: 10000

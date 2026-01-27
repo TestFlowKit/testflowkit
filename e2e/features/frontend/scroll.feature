@@ -1,3 +1,4 @@
+@SCROLL @FRONTEND
 Feature: scroll e2e tests
 
   Background:

@@ -65,6 +65,9 @@ type FrontendElements = map[string]map[string][]string
 
 type FrontendPages = map[string]string
 type FrontendConfig struct {
+	// Driver specifies the browser driver to use ("rod" or "playwright")
+	Driver string `yaml:"driver" validate:"required,oneof=rod playwright"`
+
 	// DefaultTimeout is the maximum time (in milliseconds)
 	// to wait for an element to be found during element search operations.
 	DefaultTimeout int `yaml:"default_timeout" validate:"min=1000,max=300000"`

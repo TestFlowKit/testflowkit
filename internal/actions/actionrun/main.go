@@ -127,6 +127,7 @@ func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Repor
 }
 
 func createTestSuite(params createTestSuiteParams) godog.TestSuite {
+
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         params.concurrency,

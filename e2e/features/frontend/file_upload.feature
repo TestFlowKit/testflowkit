@@ -1,10 +1,10 @@
-@FILE_UPLOAD @FORM
+@FILE_UPLOAD @FORM @FRONTEND 
 Feature: File Upload e2e tests
 
     Background:
         Given the user goes to the "file upload e2e" page
 
-    @SINGLE_FILE_UPLOAD
+    @SINGLE_FILE_UPLOAD 
     Scenario: a user can upload a single file successfully
         When the user uploads the "avatar_image" file into the "Avatar" field
         Then the "files uploaded block" should contain the text "avatar.png"

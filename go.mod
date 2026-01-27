@@ -16,7 +16,14 @@ require github.com/cucumber/messages/go/v21 v21.0.1
 require (
 	github.com/fatih/color v1.18.0
 	github.com/gofrs/uuid/v5 v5.4.0
+	github.com/playwright-community/playwright-go v0.5200.1
 	github.com/tidwall/gjson v1.18.0
+)
+
+require (
+	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
+	github.com/go-stack/stack v1.8.1 // indirect
 )
 
 require (

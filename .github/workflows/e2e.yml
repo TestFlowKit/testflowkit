@@ -3,8 +3,28 @@ on:
 
 jobs:
   e2e_tests:
-    name: e2e tests running
+    name: E2E Tests - ${{ matrix.test-type }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-type: "NO_FRONTEND"
+            config: "config.api.yml"
+            tags: "~@FRONTEND"
+            dockerfile: "Dockerfile"
+            
+          - test-type: "Frontend_Rod"
+            config: "config.frontend.yml"
+            tags: "@FRONTEND"
+            dockerfile: "Dockerfile"
+            driver: "rod"
+            
+          - test-type: "Frontend_Playwright"
+            config: "config.frontend.yml"
+            tags: "@FRONTEND"
+            dockerfile: "Dockerfile"
+            driver: "playwright"
 
     steps:
       - uses: actions/checkout@v4
@@ -18,19 +38,36 @@ jobs:
           docker compose -f e2e/compose.yml logs server
           echo "Server container started!"
 
-      - name: Launch e2e tests
-        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e --build
+      - name: Build e2e test image
+        run: |
+          docker buildx build -f e2e/${{ matrix.dockerfile }} -t e2e-tests:${{ github.run_id }}-${{ matrix.test-type }} .
 
-      - name: Get test results
-        if: failure()
-        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
+      - name: Create env file with driver
+        if: matrix.driver != ''
+        run: |
+          cat e2e/env.ci.yml > e2e/env.test.yml
+          echo "driver: \"${{ matrix.driver }}\"" >> e2e/env.test.yml
+
+      - name: Use default env file
+        if: matrix.driver == ''
+        run: |
+          cp e2e/env.ci.yml e2e/env.test.yml
+
+      - name: Run ${{ matrix.test-type }}
+        run: |
+          docker run --rm \
+            --network e2e_default \
+            -v ${{ github.workspace }}/e2e:/app \
+            -w /app \
+            e2e-tests:${{ github.run_id }}-${{ matrix.test-type }} \
+            /app/tkit run --config="/app/${{ matrix.config }}" --location="./features" --timeout="10s" --env-file="./env.test.yml" --tags="${{ matrix.tags }}"
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: report.html
+          name: test-results-${{ matrix.test-type }}
+          path: e2e/report.html
 
       - name: Clean up containers
         if: always()

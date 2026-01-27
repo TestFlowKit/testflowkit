@@ -30,6 +30,15 @@
             "program": "${workspaceFolder}/cmd/testflowkit",
             "args": ["run", "-c", "e2e/config.yml", "--tags", "@TEST"],
             "cwd": "${workspaceFolder}"
+        },
+         {
+            "name": "Debug testflowkit E2E Tests by test tag on WINDOWS",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/testflowkit",
+            "args": ["run", "-c", "e2e/config.yml", "--env", "local_windows", "--tags", "@TEST2"],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

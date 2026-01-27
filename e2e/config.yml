@@ -8,6 +8,7 @@ settings:
 
 
 frontend:
+  driver: "playwright"
   default_timeout: 1000
   headless: true
   screenshot_on_failure: true
@@ -35,6 +36,8 @@ frontend:
         - "#product-description"
       scroll_target_element:
         - "#target-element"
+      computer_details:
+        - "#computer-details"
 
     form_e2e:
       page_title:
@@ -166,7 +169,7 @@ apis:
           description: "Delete a post"
 
 files:
-  base_directory: "./test-files"
+  base_directory: "./e2e/test-files"
   definitions:
     avatar_image: "images/avatar.png"
     gallery_image1: "images/gallery/image1.jpg"

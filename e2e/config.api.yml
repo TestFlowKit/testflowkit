@@ -1,0 +1,122 @@
+settings:
+  concurrency: 1
+  report_format: "html"
+  gherkin_location: "e2e/features"
+
+apis:
+  default_timeout: 30000
+
+  definitions:
+    jsonplaceholder:
+      type: rest
+      base_url: "{{ env.jsonplaceholder_base_url }}"
+      default_headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        User-Agent: "TestFlowKit/1.0"
+        X-Requested-With: "TestFlowKit"
+      endpoints:
+        get_posts:
+          method: "GET"
+          path: "/posts"
+          description: "List all posts"
+        get_post:
+          method: "GET"
+          path: "/posts/{id}"
+          description: "Get a specific post"
+        create_post:
+          method: "POST"
+          path: "/posts"
+          description: "Create a new post"
+        update_post:
+          method: "PUT"
+          path: "/posts/{id}"
+          description: "Update a post"
+        delete_post:
+          method: "DELETE"
+          path: "/posts/{id}"
+          description: "Delete a post"
+        get_post_comments:
+          method: "GET"
+          path: "/posts/{id}/comments"
+          description: "Get comments for a post"
+        get_albums:
+          method: "GET"
+          path: "/albums"
+          description: "List all albums"
+        get_album_photos:
+          method: "GET"
+          path: "/albums/{id}/photos"
+          description: "Get photos in an album"
+    almansi:
+      type: graphql
+      endpoint: "{{ env.almansi_graphql_endpoint }}"
+      default_headers:
+        Content-Type: "application/json"
+      operations:
+        get_all_posts:
+          type: "query"
+          operation: |
+            query GetAllPosts {
+              posts {
+                data {
+                  id
+                  title
+                  body
+                }
+              }
+            }
+          description: "Get all posts"
+        get_post:
+          type: "query"
+          operation: |
+            query GetPost($id: ID!) {
+              post(id: $id) {
+                id
+                title
+                body
+                user {
+                  id
+                  username
+                  email
+                }
+              }
+            }
+          description: "Get a specific post with user"
+        create_post:
+          type: "mutation"
+          operation: |
+            mutation CreatePost($input: CreatePostInput!) {
+              createPost(input: $input) {
+                id
+                title
+                body
+              }
+            }
+          description: "Create a new post"
+        update_post:
+          type: "mutation"
+          operation: |
+            mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
+              updatePost(id: $id, input: $input) {
+                id
+                title
+                body
+              }
+            }
+          description: "Update a post"
+        delete_post:
+          type: "mutation"
+          operation: |
+            mutation DeletePost($id: ID!) {
+              deletePost(id: $id)
+            }
+          description: "Delete a post"
+
+files:
+  base_directory: "./test-files"
+  definitions:
+    profile_image: "images/profile.jpg"
+    test_document: "documents/test.pdf"
+    sample_csv: "data/sample.csv"
+    gallery_image: "images/gallery/IMG_1000.jpeg"

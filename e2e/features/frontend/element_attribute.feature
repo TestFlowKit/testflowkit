@@ -1,4 +1,4 @@
-@ELEMENT_ATTRIBUTE_ASSERTIONS
+@ELEMENT_ATTRIBUTE_ASSERTIONS @FRONTEND
 Feature: Element Attribute Assertions
 
     Scenario: Verify that an element attribute matches expected value
