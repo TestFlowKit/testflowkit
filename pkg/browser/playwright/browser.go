@@ -13,22 +13,18 @@ type playwrightBrowser struct {
 }
 
 func (pb *playwrightBrowser) NewPage(url string) browser.Page {
-	context, err := pb.browser.NewContext()
-	if err != nil {
-		panic(err)
-	}
-
-	page, err := context.NewPage()
-	if err != nil {
-		panic(err)
+	page, errPage := pb.browser.NewPage(pw.BrowserNewPageOptions{})
+	if errPage != nil {
+		panic(errPage)
 	}
 
 	waitUntil := pw.WaitUntilStateLoad
-	_, err = page.Goto(url, pw.PageGotoOptions{
+	_, errGo := page.Goto(url, pw.PageGotoOptions{
 		WaitUntil: waitUntil,
 	})
-	if err != nil {
-		panic(err)
+
+	if errGo != nil {
+		panic(errGo)
 	}
 
 	return newPlaywrightPage(page)
@@ -75,6 +71,14 @@ func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser
 	browser, err := chromium.Launch(opts)
 	if err != nil {
 		panic(err)
+	}
+
+	if incognitoMode {
+		context, err := browser.NewContext(pw.BrowserNewContextOptions{})
+		if err != nil {
+			panic(err)
+		}
+		browser = context.Browser()
 	}
 
 	return &playwrightBrowser{

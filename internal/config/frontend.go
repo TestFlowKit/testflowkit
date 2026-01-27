@@ -109,3 +109,10 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 
 	return c.GetFrontendBaseURL(), nil
 }
+
+func (c *Config) GetDriver() string {
+	if c.IsFrontendDefined() {
+		return c.Frontend.Driver
+	}
+	return ""
+}

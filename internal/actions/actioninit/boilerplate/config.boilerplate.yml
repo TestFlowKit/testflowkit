@@ -10,6 +10,7 @@ settings:
 env:
   frontend_base_url: "https://testflowkit.github.io"
 frontend:
+  driver: "rod"
   default_timeout: 10000
   headless: false
   screenshot_on_failure: true

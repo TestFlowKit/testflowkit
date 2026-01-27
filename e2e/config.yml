@@ -8,6 +8,7 @@ settings:
 
 
 frontend:
+  driver: "playwright"
   default_timeout: 1000
   headless: true
   screenshot_on_failure: true
