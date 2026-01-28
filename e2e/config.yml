@@ -1,7 +1,5 @@
 settings:
   page_load_timeout: 30000
-  think_time: 10000
-  video_recording: false
   concurrency: 1
   report_format: "html"
   gherkin_location: "e2e/features"
@@ -11,6 +9,7 @@ frontend:
   default_timeout: 1000
   headless: true
   screenshot_on_failure: true
+  think_time: 10000
   elements:
     common:
       visual_test_button:

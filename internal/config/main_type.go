@@ -3,11 +3,9 @@ package config
 import (
 	"errors"
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 	"testflowkit/pkg/logger"
-	"time"
 )
 
 type Config struct {
@@ -69,19 +67,6 @@ func (c *Config) IsAPIsConfigured() bool {
 
 func (c *Config) GetFileDefinitions() map[string]string {
 	return c.Files.Definitions
-}
-
-func (c *Config) GetThinkTime() time.Duration {
-	if c.Settings.ThinkTime == 0 {
-		return 0
-	}
-
-	duration, err := time.ParseDuration(fmt.Sprintf("%dms", c.Settings.ThinkTime))
-	if err != nil {
-		log.Printf("Invalid think time duration: %d, using 0", c.Settings.ThinkTime)
-		return 0
-	}
-	return duration
 }
 
 func (c *Config) GetConcurrency() int {

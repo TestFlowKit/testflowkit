@@ -11,12 +11,11 @@ import (
 
 func TestShouldInstanciateCorrectlyNewFrontendContext(t *testing.T) {
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 		},
 	}
 	ctx := NewContext(&cfg, nil)
@@ -35,12 +34,11 @@ func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"home":     "/",
 				"internal": "/internal",
@@ -81,12 +79,11 @@ func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"home":     "/",
 				"internal": "/internal",
@@ -112,12 +109,11 @@ func TestShouldGetPageNameByURLForInternalPageWithBaseURLContainingPath(t *testi
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"internal_with_base_url_containing_path": "https://localhost:3000/internal",
 			},
@@ -141,12 +137,11 @@ func TestShouldGetPageNameByURLExternalWithBaseURLContainingPath(t *testing.T) {
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"home":     "/",
 				"internal": "/internal",
@@ -172,12 +167,11 @@ func TestShouldGetPageNameByURLInternalWithBaseURLContainingPath(t *testing.T) {
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"home":     "/",
 				"internal": "/internal",
@@ -202,12 +196,11 @@ func TestShouldGetPageNameByURLWithVariableForInternalPage(t *testing.T) {
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"home":    "/",
 				"details": "/product/:id",
@@ -232,12 +225,11 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 	})
 
 	cfg := config.Config{
-		Settings: config.GlobalSettings{
-			ThinkTime: 10000,
-		},
+		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
 			DefaultTimeout: 15000,
 			Headless:       false,
+			ThinkTime:      10000,
 			Pages: map[string]string{
 				"home":             "/",
 				"sentence-details": "sentences/:id",
