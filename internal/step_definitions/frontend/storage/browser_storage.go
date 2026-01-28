@@ -104,7 +104,10 @@ func (storageSteps) storeLocalStorageItemIntoVariable() stepbuilder.Step {
 			key = scenario.ReplaceVariablesInString(scenarioCtx, key)
 
 			script := fmt.Sprintf(`localStorage.getItem('%s')`, escapeJSString(key))
-			result := page.ExecuteJS(script)
+			result, errExJS := page.ExecuteJS(script)
+			if errExJS != nil {
+				return ctx, errExJS
+			}
 
 			var value string
 			if result != "" {
@@ -141,7 +144,10 @@ func (storageSteps) storeSessionStorageItemIntoVariable() stepbuilder.Step {
 			key = scenario.ReplaceVariablesInString(scenarioCtx, key)
 
 			script := fmt.Sprintf(`sessionStorage.getItem('%s')`, escapeJSString(key))
-			result := page.ExecuteJS(script)
+			result, errExJS := page.ExecuteJS(script)
+			if errExJS != nil {
+				return ctx, errExJS
+			}
 
 			var value string
 			if result != "" {

@@ -18,6 +18,7 @@ func main() {
 		"details",
 		"scroll",
 		"file-upload",
+		"login",
 	}
 
 	_, filename, _, _ := runtime.Caller(0)

@@ -71,6 +71,20 @@ frontend:
       files_uploaded_block:
         - "#file-items"
 
+    login_e2e:
+      page_title:
+        - "#page-title"
+      email_field:
+        - "#email"
+      password_field:
+        - "#password"
+      login_button:
+        - "#login-button"
+      auth_token_display:
+        - "#auth-token-display"
+      success_message:
+        - "#success-message"
+
   pages:
     form_e2e: "form"
     file_upload_e2e: "file-upload"
@@ -79,6 +93,7 @@ frontend:
     table_e2e: "/table"
     details_e2e: "/details"
     scroll_e2e: "/scroll"
+    login_e2e: "login"
 
 apis:
   default_timeout: 30000
