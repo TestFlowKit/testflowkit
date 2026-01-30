@@ -23,5 +23,6 @@ func GetSteps() []stepbuilder.Step {
 		s.validateJSONBodyContains(),
 		s.validateResponseHeaderEquals(),
 		s.validateResponseHeaderPattern(),
+		s.debugAPIResponse(),
 	}
 }

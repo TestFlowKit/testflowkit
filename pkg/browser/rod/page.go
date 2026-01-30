@@ -121,10 +121,13 @@ func (p *rodPage) WaitLoading() {
 	p.page = p.page.MustWaitIdle()
 }
 
-func (p *rodPage) ExecuteJS(js string, args ...any) string {
-	return p.page.MustEval(js, args...).String()
+func (p *rodPage) ExecuteJS(js string, args ...any) (string, error) {
+	v, err := p.page.Eval(js, args...)
+	if err != nil {
+		return "", err
+	}
+	return v.Value.String(), nil
 }
-
 func (p *rodPage) Back() {
 	p.page = p.page.MustNavigateBack()
 }

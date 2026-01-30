@@ -42,7 +42,7 @@ type Page interface {
 	Screenshot() ([]byte, error)
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool
-	ExecuteJS(js string, args ...any) string
+	ExecuteJS(js string, args ...any) (string, error)
 	SetTimeout(timeout time.Duration)
 }
 
@@ -75,4 +75,13 @@ type Element interface {
 // Keyboard represents a keyboard input handler.
 type Keyboard interface {
 	Press(key Key) error
+}
+
+type BrowserArgs struct {
+	HeadlessMode  bool
+	ThinkTime     time.Duration
+	IncognitoMode bool
+	UserAgent     string
+	Locale        string
+	TimezoneId    string
 }

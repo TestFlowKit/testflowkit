@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"context"
 	"testflowkit/pkg/browser"
 	"time"
 
@@ -35,7 +36,7 @@ func (rb *rodBrowser) Close() {
 }
 
 // New creates a new rod browser client instance.
-func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser.Client {
+func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool, userAgent, locale, timezoneId string) browser.Client {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).
 		Headless(headlessMode).
@@ -44,6 +45,31 @@ func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser
 	newBrowser := rod.New().ControlURL(u).SlowMotion(thinkTime).MustConnect()
 	if incognitoMode {
 		newBrowser = newBrowser.MustIncognito()
+	}
+
+	hasSpecificBrowserSetup := userAgent != "" || locale != "" || timezoneId != ""
+	if !hasSpecificBrowserSetup {
+		return &rodBrowser{
+			browser: newBrowser,
+		}
+	}
+
+	// Set user agent and locale using DevTools Protocol
+	if userAgent != "" || locale != "" {
+		emulationParams := map[string]any{
+			"userAgent": userAgent,
+		}
+		if locale != "" {
+			emulationParams["acceptLanguage"] = locale
+		}
+		_, _ = newBrowser.Call(context.TODO(), "", "Emulation.setUserAgentOverride", emulationParams)
+	}
+
+	// Set timezone if provided
+	if timezoneId != "" {
+		_, _ = newBrowser.Call(context.TODO(), "", "Emulation.setTimezoneOverride", map[string]string{
+			"timezoneId": timezoneId,
+		})
 	}
 
 	return &rodBrowser{

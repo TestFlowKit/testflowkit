@@ -1,6 +1,7 @@
 package scenario
 
 import (
+	"fmt"
 	"maps"
 	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -66,9 +67,13 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		return &frontend{}
 	}
 
-	var thinkTime = cfg.GetThinkTime()
-	if cfg.IsHeadlessModeEnabled() {
-		thinkTime = 0
+	var thinkTime time.Duration
+	if cfg.Frontend.ThinkTime > 0 {
+		var err error
+		thinkTime, err = time.ParseDuration(fmt.Sprintf("%dms", cfg.Frontend.ThinkTime))
+		if err != nil {
+			thinkTime = 0
+		}
 	}
 
 	return &frontend{
@@ -77,6 +82,9 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		timeout:      cfg.GetFrontendTimeout(),
 		headlessMode: cfg.IsHeadlessModeEnabled(),
 		thinkTime:    thinkTime,
+		userAgent:    cfg.Frontend.UserAgent,
+		locale:       cfg.Frontend.Locale,
+		timezoneId:   cfg.Frontend.TimezoneId,
 	}
 }
 
@@ -97,6 +105,9 @@ type frontend struct {
 	timeout, thinkTime time.Duration
 	currentPageName    string
 	headlessMode       bool
+	userAgent          string
+	locale             string
+	timezoneId         string
 }
 
 type HTTPResponse struct {

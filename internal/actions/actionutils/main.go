@@ -30,7 +30,6 @@ func DisplayConfigSummary(cfg *config.Config) {
 	logger.InfoFf("Concurrency: %d", cfg.Settings.Concurrency)
 	logger.InfoFf("Report Format: %s", cfg.Settings.ReportFormat)
 	logger.InfoFf("Gherkin Location: %s", cfg.Settings.GherkinLocation)
-	logger.InfoFf("Think Time: %v", cfg.Settings.ThinkTime)
 	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
 	logger.InfoFf("Environment Variables: %d defined", len(cfg.Env))
 
