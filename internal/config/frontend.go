@@ -4,7 +4,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testflowkit/internal/utils/stringutils"
-	"testflowkit/pkg/variables"
 	"time"
 )
 
@@ -63,8 +62,10 @@ func (c *Config) IsScreenshotOnFailureEnabled() bool {
 }
 
 func (c *Config) GetFrontendBaseURL() string {
-	val, _ := variables.GetEnvVariable("frontend_base_url")
-	return val
+	if c.IsFrontendDefined() {
+		return c.Frontend.BaseURL
+	}
+	return ""
 }
 
 func (c *Config) IsFrontendDefined() bool {

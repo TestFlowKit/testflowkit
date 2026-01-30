@@ -20,6 +20,9 @@ func (c *Context) InitBrowser(incognitoMode bool) {
 		HeadlessMode:  frontCtx.headlessMode,
 		ThinkTime:     frontCtx.thinkTime,
 		IncognitoMode: incognitoMode,
+		UserAgent:     frontCtx.userAgent,
+		Locale:        frontCtx.locale,
+		TimezoneID:    frontCtx.timezoneID,
 	})
 }
 

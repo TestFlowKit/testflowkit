@@ -39,10 +39,14 @@ func (steps) dropdownHasValuesSelected() stepbuilder.Step {
 
 			labels := stringutils.SplitAndTrim(optionLabels, ",")
 
-			result := currentPage.ExecuteJS(`(selector, labels) => {
+			result, errExJS := currentPage.ExecuteJS(`(selector, labels) => {
 				const selectedOpts = Array.from(document.querySelector(selector).selectedOptions).map(opt => opt.label)
 				return labels.every(label => selectedOpts.includes(label))
 			}`, selector, labels)
+
+			if errExJS != nil {
+				return ctx, errExJS
+			}
 
 			if result == "true" {
 				return ctx, nil

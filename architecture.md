@@ -110,11 +110,12 @@ settings:
 
 # Inline environment variables (or use external file)
 env:
-  frontend_base_url: "http://localhost:3000"
+  base_url: "http://localhost:3000"
   rest_api_base_url: "http://localhost:8080/api"
   graphql_endpoint: "http://localhost:8080/graphql"
 
 frontend:
+  base_url: "{{ env.base_url }}"
   default_timeout: 10000
   headless: false
   screenshot_on_failure: true
