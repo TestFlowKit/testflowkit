@@ -6,11 +6,13 @@ settings:
 
 
 frontend:
+  base_url: "{{ env.frontend_base_url }}"
   default_timeout: 1000
   headless: true
   screenshot_on_failure: true
   think_time: 10000
 
+  # user_agent: "testflowkit-e2e-bot/1.0"
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
   locale: "en-US"  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
   timezone_id: "America/New_York"  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")

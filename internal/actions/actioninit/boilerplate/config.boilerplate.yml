@@ -7,8 +7,9 @@ settings:
 # Environment Variables
 # Access these in Gherkin files and config using {{ env.variable_name }}
 env:
-  frontend_base_url: "https://testflowkit.github.io"
+  base_url: "https://testflowkit.github.io"
 frontend:
+  base_url: "{{ env.base_url }}"
   default_timeout: 10000
   headless: false
   screenshot_on_failure: true

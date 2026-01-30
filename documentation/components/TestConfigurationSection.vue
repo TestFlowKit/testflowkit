@@ -122,17 +122,20 @@ settings:
 
 # Inline environment variables
 env:
-  frontend_base_url: "http://localhost:3000"
+  base_url: "http://localhost:3000"
   jsonplaceholder_base_url: "http://localhost:8080"
   my_graphql_endpoint: "http://localhost:8080/graphql"
 
+frontend:
+  base_url: "{{ env.base_url }}"
+
 # Or use external files:
 # .env.local.yml
-# frontend_base_url: "http://localhost:3000"
+# base_url: "http://localhost:3000"
 # jsonplaceholder_base_url: "http://localhost:8080"
 #
 # .env.staging.yml
-# frontend_base_url: "https://staging.example.com"
+# base_url: "https://staging.example.com"
 # jsonplaceholder_base_url: "https://api-staging.example.com"
 #
 # Override at runtime: tkit run --env-file .env.staging.yml
@@ -245,12 +248,13 @@ settings:
 
 # Inline environment variables (or use external file)
 env:
-  frontend_base_url: "http://localhost:3000"
+  base_url: "http://localhost:3000"
   jsonplaceholder_base_url: "http://localhost:8080"
   my_graphql_endpoint: "http://localhost:8080/graphql"
   api_token: "your-api-token"
 
 frontend:
+  base_url: "{{ env.base_url }}"
   elements:
     common:
       loading_spinner:

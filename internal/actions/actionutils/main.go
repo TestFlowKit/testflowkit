@@ -6,7 +6,6 @@ import (
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core"
 	"testflowkit/pkg/logger"
-	"testflowkit/pkg/variables"
 )
 
 func FormatStep(sentence string) string {
@@ -49,10 +48,9 @@ func DisplayConfigSummary(cfg *config.Config) {
 
 func displayFrontSummary(conf *config.Config) {
 	frontConf := conf.Frontend
-	frontendURL, _ := variables.GetEnvVariable("frontend_base_url")
 	logger.InfoFf("Headless Mode: %t", frontConf.Headless)
 	logger.InfoFf("Default Timeout: %dms", frontConf.DefaultTimeout)
-	logger.InfoFf("Frontend Base URL: %s", frontendURL)
+	logger.InfoFf("Frontend Base URL: %s", conf.GetFrontendBaseURL())
 	logger.InfoFf("Screenshot on Failure: %t", frontConf.ScreenshotOnFailure)
 	logger.InfoFf("Elements Configured: %d page groups", len(frontConf.Elements))
 }

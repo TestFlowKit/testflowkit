@@ -63,9 +63,9 @@ type FrontendElements = map[string]map[string][]string
 
 type FrontendPages = map[string]string
 type FrontendConfig struct {
-	// BaseUrl is the base URL for the frontend application
+	// BaseURL is the base URL for the frontend application
 	// Supports variable interpolation (e.g., "{{ env.HOST }}:3000")
-	BaseUrl string `yaml:"base_url" validate:"required"`
+	BaseURL string `yaml:"base_url" validate:"required"`
 
 	// DefaultTimeout is the maximum time (in milliseconds)
 	// to wait for an element to be found during element search operations.
@@ -84,8 +84,8 @@ type FrontendConfig struct {
 	// Locale sets the browser locale (e.g., "en-US", "fr-FR")
 	Locale string `yaml:"locale"`
 
-	// TimezoneId sets the browser timezone using IANA format (e.g., "America/New_York", "Europe/Paris")
-	TimezoneId string `yaml:"timezone_id" validate:"omitempty,timezone_id"`
+	// TimezoneID sets the browser timezone using IANA format (e.g., "America/New_York", "Europe/Paris")
+	TimezoneID string `yaml:"timezone_id" validate:"omitempty,timezone_id"`
 
 	Elements FrontendElements `yaml:"elements"`
 

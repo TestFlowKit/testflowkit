@@ -84,7 +84,7 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		thinkTime:    thinkTime,
 		userAgent:    cfg.Frontend.UserAgent,
 		locale:       cfg.Frontend.Locale,
-		timezoneId:   cfg.Frontend.TimezoneId,
+		timezoneID:   cfg.Frontend.TimezoneID,
 	}
 }
 
@@ -107,7 +107,7 @@ type frontend struct {
 	headlessMode       bool
 	userAgent          string
 	locale             string
-	timezoneId         string
+	timezoneID         string
 }
 
 type HTTPResponse struct {

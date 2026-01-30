@@ -63,7 +63,7 @@ func (c *Config) IsScreenshotOnFailureEnabled() bool {
 
 func (c *Config) GetFrontendBaseURL() string {
 	if c.IsFrontendDefined() {
-		return c.Frontend.BaseUrl
+		return c.Frontend.BaseURL
 	}
 	return ""
 }

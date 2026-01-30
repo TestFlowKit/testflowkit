@@ -30,7 +30,7 @@ func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "http://localhost:3000",
+			BaseURL:        "http://localhost:3000",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,
@@ -55,7 +55,7 @@ func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
 func TestShouldReturnErrorIfPageNameNotFound(t *testing.T) {
 	cfg := config.Config{
 		Frontend: &config.FrontendConfig{
-			BaseUrl: "https://localhost:3000",
+			BaseURL: "https://localhost:3000",
 		},
 	}
 
@@ -70,7 +70,7 @@ func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "https://localhost:3000",
+			BaseURL:        "https://localhost:3000",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,
@@ -96,7 +96,7 @@ func TestShouldGetPageNameByURLForInternalPageWithBaseURLContainingPath(t *testi
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "https://localhost:3000",
+			BaseURL:        "https://localhost:3000",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,
@@ -120,7 +120,7 @@ func TestShouldGetPageNameByURLExternalWithBaseURLContainingPath(t *testing.T) {
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "https://testflowkit.com/path",
+			BaseURL:        "https://testflowkit.com/path",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,
@@ -146,7 +146,7 @@ func TestShouldGetPageNameByURLInternalWithBaseURLContainingPath(t *testing.T) {
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "https://localhost:3000/path",
+			BaseURL:        "https://localhost:3000/path",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,
@@ -171,7 +171,7 @@ func TestShouldGetPageNameByURLWithVariableForInternalPage(t *testing.T) {
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "https://localhost:3000",
+			BaseURL:        "https://localhost:3000",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,
@@ -196,7 +196,7 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 	cfg := config.Config{
 		Settings: config.GlobalSettings{},
 		Frontend: &config.FrontendConfig{
-			BaseUrl:        "https://localhost:3000",
+			BaseURL:        "https://localhost:3000",
 			DefaultTimeout: 15000,
 			Headless:       false,
 			ThinkTime:      10000,

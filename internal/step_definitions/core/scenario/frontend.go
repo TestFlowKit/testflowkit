@@ -22,7 +22,7 @@ func (c *Context) InitBrowser(incognitoMode bool) {
 		IncognitoMode: incognitoMode,
 		UserAgent:     frontCtx.userAgent,
 		Locale:        frontCtx.locale,
-		TimezoneId:    frontCtx.timezoneId,
+		TimezoneID:    frontCtx.timezoneID,
 	})
 }
 

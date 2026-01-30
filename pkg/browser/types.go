@@ -77,11 +77,11 @@ type Keyboard interface {
 	Press(key Key) error
 }
 
-type BrowserArgs struct {
+type CreationArgs struct {
 	HeadlessMode  bool
 	ThinkTime     time.Duration
 	IncognitoMode bool
 	UserAgent     string
 	Locale        string
-	TimezoneId    string
+	TimezoneID    string
 }

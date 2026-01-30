@@ -23,7 +23,7 @@ type Config struct {
 	IncognitoMode bool
 	UserAgent     string
 	Locale        string
-	TimezoneId    string
+	TimezoneID    string
 }
 
 // CreateInstance creates a new browser client instance using the specified configuration.
@@ -33,13 +33,22 @@ func CreateInstance(cfg Config) browser.Client {
 		cfg.DriverType = DriverRod
 	}
 
+	args := browser.CreationArgs{
+		HeadlessMode:  cfg.HeadlessMode,
+		ThinkTime:     cfg.ThinkTime,
+		IncognitoMode: cfg.IncognitoMode,
+		UserAgent:     cfg.UserAgent,
+		Locale:        cfg.Locale,
+		TimezoneID:    cfg.TimezoneID,
+	}
+
 	switch cfg.DriverType {
 	case DriverRod:
-		return rod.New(cfg.HeadlessMode, cfg.ThinkTime, cfg.IncognitoMode, cfg.UserAgent, cfg.Locale, cfg.TimezoneId)
+		return rod.New(args)
 	// Future: case DriverPlaywright:
 	//     return playwright.New(cfg.HeadlessMode, cfg.ThinkTime, cfg.IncognitoMode)
 	default:
 		// Default to Rod driver
-		return rod.New(cfg.HeadlessMode, cfg.ThinkTime, cfg.IncognitoMode, cfg.UserAgent, cfg.Locale, cfg.TimezoneId)
+		return rod.New(args)
 	}
 }
