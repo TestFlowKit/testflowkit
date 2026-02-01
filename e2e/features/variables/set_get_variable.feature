@@ -1,4 +1,4 @@
-@TEST_VARIABLES
+@TEST_VARIABLES @API
 Feature: variables testing
 
 

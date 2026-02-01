@@ -1,4 +1,4 @@
-@TABLE
+@TABLE @FRONTEND
 Feature: Table e2e tests
 
   Background:
