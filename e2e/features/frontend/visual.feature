@@ -1,4 +1,4 @@
-@VISUAL
+@VISUAL @FRONTEND
 Feature: visual e2e tests
 
   Background:

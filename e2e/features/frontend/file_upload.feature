@@ -1,4 +1,4 @@
-@FILE_UPLOAD @FORM
+@FILE_UPLOAD @FORM @FRONTEND
 Feature: File Upload e2e tests
 
     Background:
