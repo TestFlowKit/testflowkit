@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/cmd/testflowkit",
-            "args": ["run", "-c", "e2e/config.yml"],
+            "args": ["run", "-c", "e2e/config.yml", "--env-file", "e2e/env.local.yml"],
             "cwd": "${workspaceFolder}"
         },
          {
@@ -19,7 +19,16 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/cmd/testflowkit",
-            "args": ["run", "-c", "e2e/config.yml", "--tags", "@API"],
+            "args": ["run", "-c", "e2e/config.yml", "--tags", "@API", "--env-file", "e2e/env.local.yml"],
+            "cwd": "${workspaceFolder}"
+        },
+         {
+            "name": "Debug testflowkit frontend E2E Tests",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/testflowkit",
+            "args": ["run", "-c", "e2e/config.yml", "--tags", "@FRONTEND", "--env-file", "e2e/env.local.yml"],
             "cwd": "${workspaceFolder}"
         },
         {
@@ -28,7 +37,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/cmd/testflowkit",
-            "args": ["run", "-c", "e2e/config.yml", "--tags", "@TEST"],
+            "args": ["run", "-c", "e2e/config.yml", "--tags", "@TEST", "--env-file", "e2e/env.local.yml"],
             "cwd": "${workspaceFolder}"
         }
     ]

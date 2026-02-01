@@ -1,4 +1,4 @@
-@FORM
+@FORM @FRONTEND
 Feature: Form e2e tests
 
   Background:

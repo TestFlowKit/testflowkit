@@ -1,3 +1,4 @@
+@API
 Feature: GraphQL Zero API Testing
 
   Scenario: Fetch a user successfully

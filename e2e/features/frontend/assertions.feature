@@ -1,4 +1,4 @@
-@ASSERTIONS
+@ASSERTIONS @FRONTEND
 Feature: Text Assertions
 
   Background:
