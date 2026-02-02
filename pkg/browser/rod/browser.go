@@ -2,18 +2,34 @@ package rod
 
 import (
 	"testflowkit/pkg/browser"
-	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+	"github.com/go-rod/rod/lib/proto"
 )
 
 type rodBrowser struct {
-	browser *rod.Browser
+	browser    *rod.Browser
+	userAgent  string
+	locale     string
+	timezoneID string
 }
 
 func (rb *rodBrowser) NewPage(url string) browser.Page {
-	page := rb.browser.MustPage(url)
+	page := rb.browser.MustPage()
+
+	if rb.timezoneID != "" {
+		_ = proto.EmulationSetTimezoneOverride{TimezoneID: rb.timezoneID}.Call(page)
+	}
+
+	if rb.userAgent != "" || rb.locale != "" {
+		_ = proto.EmulationSetUserAgentOverride{
+			UserAgent:      rb.userAgent,
+			AcceptLanguage: rb.locale,
+		}.Call(page)
+	}
+
+	page = page.MustNavigate(url)
 
 	page.MustWaitNavigation()
 	page = page.MustWaitIdle()
@@ -35,18 +51,21 @@ func (rb *rodBrowser) Close() {
 }
 
 // New creates a new rod browser client instance.
-func New(headlessMode bool, thinkTime time.Duration, incognitoMode bool) browser.Client {
+func New(args browser.CreationArgs) browser.Client {
 	path, _ := launcher.LookPath()
-	u := launcher.New().Bin(path).
-		Headless(headlessMode).
-		MustLaunch()
+	launcher := launcher.New().Bin(path).Headless(args.HeadlessMode)
 
-	newBrowser := rod.New().ControlURL(u).SlowMotion(thinkTime).MustConnect()
-	if incognitoMode {
+	u := launcher.MustLaunch()
+
+	newBrowser := rod.New().ControlURL(u).SlowMotion(args.ThinkTime).MustConnect()
+	if args.IncognitoMode {
 		newBrowser = newBrowser.MustIncognito()
 	}
 
 	return &rodBrowser{
-		browser: newBrowser,
+		browser:    newBrowser,
+		userAgent:  args.UserAgent,
+		locale:     args.Locale,
+		timezoneID: args.TimezoneID,
 	}
 }

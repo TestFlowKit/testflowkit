@@ -37,7 +37,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/cmd/testflowkit",
-            "args": ["run", "-c", "e2e/config.yml", "--tags", "@TEST", "--env-file", "e2e/env.local.yml"],
+            "args": ["run", "-c", "e2e/config.yml", "--tags", "@TEST", "--env-file", "e2e/env.local.yml" ],
             "cwd": "${workspaceFolder}"
         }
     ]

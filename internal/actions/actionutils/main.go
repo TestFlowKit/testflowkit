@@ -6,7 +6,6 @@ import (
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core"
 	"testflowkit/pkg/logger"
-	"testflowkit/pkg/variables"
 )
 
 func FormatStep(sentence string) string {
@@ -30,7 +29,6 @@ func DisplayConfigSummary(cfg *config.Config) {
 	logger.InfoFf("Concurrency: %d", cfg.Settings.Concurrency)
 	logger.InfoFf("Report Format: %s", cfg.Settings.ReportFormat)
 	logger.InfoFf("Gherkin Location: %s", cfg.Settings.GherkinLocation)
-	logger.InfoFf("Think Time: %v", cfg.Settings.ThinkTime)
 	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
 	logger.InfoFf("Environment Variables: %d defined", len(cfg.Env))
 
@@ -50,10 +48,11 @@ func DisplayConfigSummary(cfg *config.Config) {
 
 func displayFrontSummary(conf *config.Config) {
 	frontConf := conf.Frontend
-	frontendURL, _ := variables.GetEnvVariable("frontend_base_url")
 	logger.InfoFf("Headless Mode: %t", frontConf.Headless)
 	logger.InfoFf("Default Timeout: %dms", frontConf.DefaultTimeout)
-	logger.InfoFf("Frontend Base URL: %s", frontendURL)
+	logger.InfoFf("Frontend Base URL: %s", conf.GetFrontendBaseURL())
+	logger.InfoFf("Pages Configured: %d", len(frontConf.Pages))
+	logger.InfoFf("Think Time Between Actions: %dms", frontConf.ThinkTime)
 	logger.InfoFf("Screenshot on Failure: %t", frontConf.ScreenshotOnFailure)
 	logger.InfoFf("Elements Configured: %d page groups", len(frontConf.Elements))
 }
