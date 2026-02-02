@@ -6,6 +6,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
+	"testflowkit/pkg/logger"
 )
 
 func (steps) userEntersTextIntoField() stepbuilder.Step {
@@ -22,6 +23,11 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 			if err != nil {
 				return ctx, err
 			}
+
+			if input.IsVisible() {
+				logger.Info("Entering text into field '" + inputLabel + "': " + text)
+			}
+
 			err = input.Input(text)
 			return ctx, err
 		},

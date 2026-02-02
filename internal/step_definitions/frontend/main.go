@@ -8,6 +8,7 @@ import (
 	"testflowkit/internal/step_definitions/frontend/keyboard"
 	"testflowkit/internal/step_definitions/frontend/mouse"
 	"testflowkit/internal/step_definitions/frontend/navigation"
+	"testflowkit/internal/step_definitions/frontend/storage"
 	"testflowkit/internal/step_definitions/frontend/visual"
 )
 
@@ -19,6 +20,7 @@ func GetAllSteps() []stepbuilder.Step {
 		visual.GetSteps(),
 		mouse.GetSteps(),
 		assertions.GetSteps(),
+		storage.GetSteps(),
 	)
 }
 

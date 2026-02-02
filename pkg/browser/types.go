@@ -42,7 +42,7 @@ type Page interface {
 	Screenshot() ([]byte, error)
 	GetKeyboard() Keyboard
 	HasSelector(selector string) bool
-	ExecuteJS(js string, args ...any) string
+	ExecuteJS(js string, args ...any) (string, error)
 	SetTimeout(timeout time.Duration)
 }
 

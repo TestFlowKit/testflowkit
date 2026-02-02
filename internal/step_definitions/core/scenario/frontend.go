@@ -30,6 +30,8 @@ func (c *Context) OpenNewPage(url string) {
 	c.EnsureBrowserInitialized()
 	c.frontend.page = c.frontend.browser.NewPage(url)
 	c.frontend.page.WaitLoading()
+
+	logger.Info("Opened new page with URL: " + url)
 }
 
 func (c *Context) EnsureBrowserInitialized() {
