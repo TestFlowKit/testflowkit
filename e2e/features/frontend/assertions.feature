@@ -20,7 +20,7 @@ Feature: Text Assertions
     Given the user goes to the details e2e page
     Then the product name element should not contain the text "Nintendo switch 2"
 
-  @TEXT_FIELD
+  @TEXT_FIELD @FORM
   Scenario Outline: a user can type into <type> field
     Given the user goes to the "form e2e" page
     When the user enters "<value>" into the "<type>" field

@@ -76,3 +76,12 @@ type Element interface {
 type Keyboard interface {
 	Press(key Key) error
 }
+
+type CreationArgs struct {
+	HeadlessMode  bool
+	ThinkTime     time.Duration
+	IncognitoMode bool
+	UserAgent     string
+	Locale        string
+	TimezoneID    string
+}
