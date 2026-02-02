@@ -2,6 +2,7 @@
 Feature: variables testing
 
 
+    @FORM
     Scenario: Write API response field into another field
         Given I prepare a request to "jsonplaceholder.get_post_by_id"
         And I set the following path parameters:

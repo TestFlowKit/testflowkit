@@ -55,8 +55,9 @@ func verifyConfigFileCreation(t *testing.T) {
 	configStr := string(content)
 
 	expectedElements := []string{
-		"frontend_base_url: \"https://testflowkit.github.io\"",
+		"base_url: \"https://testflowkit.github.io\"",
 		"gherkin_location: \"./features\"",
+		"base_url: \"{{ env.base_url }}\"",
 		"default_timeout: 10000",
 		"pages:",
 		"home: \"/\"",
@@ -200,7 +201,8 @@ func testConfigFileStructure(t *testing.T) {
 	assert.Contains(t, configStr, "concurrency: 1", "Config should have concurrency set to 1")
 	assert.Contains(t, configStr, "report_format: \"html\"", "Config should have HTML report format")
 	assert.Contains(t, configStr, "headless: false", "Config should have headless set to false for demo purposes")
-	assert.Contains(t, configStr, "frontend_base_url:", "Config should have frontend_base_url in env section")
+	assert.Contains(t, configStr, "base_url:", "Config should have base_url in env section")
+	assert.Contains(t, configStr, "base_url: \"{{ env.base_url }}\"", "Config should have base_url in frontend section")
 }
 
 func testSampleFeatureStructure(t *testing.T) {

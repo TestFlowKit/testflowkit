@@ -1,6 +1,5 @@
 settings:
   concurrency: 1
-  think_time: 1000
   report_format: "html"
   gherkin_location: "./features"
   # env_file: ".env.yml"  # Optional: path to external env file
@@ -8,11 +7,18 @@ settings:
 # Environment Variables
 # Access these in Gherkin files and config using {{ env.variable_name }}
 env:
-  frontend_base_url: "https://testflowkit.github.io"
+  base_url: "https://testflowkit.github.io"
 frontend:
+  base_url: "{{ env.base_url }}"
   default_timeout: 10000
   headless: false
   screenshot_on_failure: true
+  think_time: 500  # Delay in milliseconds between browser actions (0 in headless mode)
+  
+  # Browser Configuration (optional)
+  # user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  # locale: "en-US"  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
+  # timezone_id: "America/New_York"  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")
 
   elements:
     common:

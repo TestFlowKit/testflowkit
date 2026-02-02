@@ -50,8 +50,6 @@ type GlobalSettings struct {
 
 	Concurrency int `yaml:"concurrency" validate:"min=1,max=20"`
 
-	ThinkTime int `yaml:"think_time" validate:"omitempty" `
-
 	ReportFormat string `yaml:"report_format" validate:"oneof=html json junit"`
 
 	GherkinLocation string `yaml:"gherkin_location" validate:"required"`
@@ -65,6 +63,10 @@ type FrontendElements = map[string]map[string][]string
 
 type FrontendPages = map[string]string
 type FrontendConfig struct {
+	// BaseURL is the base URL for the frontend application
+	// Supports variable interpolation (e.g., "{{ env.HOST }}:3000")
+	BaseURL string `yaml:"base_url" validate:"required"`
+
 	// DefaultTimeout is the maximum time (in milliseconds)
 	// to wait for an element to be found during element search operations.
 	DefaultTimeout int `yaml:"default_timeout" validate:"min=1000,max=300000"`
@@ -72,6 +74,18 @@ type FrontendConfig struct {
 	ScreenshotOnFailure bool `yaml:"screenshot_on_failure"`
 
 	Headless bool `yaml:"headless"`
+
+	// ThinkTime is the delay (in milliseconds) between browser actions to simulate human behavior
+	ThinkTime int `yaml:"think_time" validate:"omitempty"`
+
+	// UserAgent sets a custom user agent string for the browser
+	UserAgent string `yaml:"user_agent"`
+
+	// Locale sets the browser locale (e.g., "en-US", "fr-FR")
+	Locale string `yaml:"locale"`
+
+	// TimezoneID sets the browser timezone using IANA format (e.g., "America/New_York", "Europe/Paris")
+	TimezoneID string `yaml:"timezone_id" validate:"omitempty,timezone_id"`
 
 	Elements FrontendElements `yaml:"elements"`
 

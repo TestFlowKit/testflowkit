@@ -1,16 +1,23 @@
 settings:
   page_load_timeout: 30000
-  think_time: 10000
-  video_recording: false
   concurrency: 1
   report_format: "html"
   gherkin_location: "e2e/features"
 
 
 frontend:
+  base_url: "{{ env.frontend_base_url }}"
   default_timeout: 1000
   headless: true
   screenshot_on_failure: true
+  think_time: 500
+
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  locale: "en-US"  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
+  timezone_id: "America/New_York"  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")
+
+
+
   elements:
     common:
       visual_test_button:
@@ -72,6 +79,20 @@ frontend:
       files_uploaded_block:
         - "#file-items"
 
+    login_e2e:
+      page_title:
+        - "#page-title"
+      email_field:
+        - "#email"
+      password_field:
+        - "#password"
+      login_button:
+        - "#login-button"
+      auth_token_display:
+        - "#auth-token-display"
+      success_message:
+        - "#success-message"
+
   pages:
     form_e2e: "form"
     file_upload_e2e: "file-upload"
@@ -80,6 +101,7 @@ frontend:
     table_e2e: "/table"
     details_e2e: "/details"
     scroll_e2e: "/scroll"
+    login_e2e: "login"
 
 apis:
   default_timeout: 30000

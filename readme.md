@@ -98,10 +98,11 @@ settings:
   env_file: ".env.yml"
 
 env:
-  frontend_base_url: "http://localhost:3000"
+  base_url: "http://localhost:3000"
   api_base_url: "http://localhost:8080/api"
 
 frontend:
+  base_url: "{{ env.base_url }}"
   # Element search timeout in milliseconds (1-300000ms)
   # Maximum time to wait when searching for elements by CSS selectors or XPath
   default_timeout: 10000
@@ -181,7 +182,7 @@ files:
 Create a `.env.yml` file for environment-specific settings:
 
 ```yaml
-frontend_base_url: "http://localhost:3000"
+base_url: "http://localhost:3000"
 users_api_base_url: "http://localhost:8080/api"
 graphql_endpoint: "http://localhost:8080/graphql"
 api_token: "your-api-token-here"
@@ -584,7 +585,7 @@ Access environment variables defined in config.yml or external .env files using 
 ```gherkin
 # Access environment variables in tests
 Given I prepare a request for the "get_user" endpoint with base URL "{{ env.API_BASE_URL }}"
-When the user goes to "{{ env.FRONTEND_BASE_URL }}/login"
+When the user goes to "{{ env.BASE_URL }}/login"
 And the user enters "{{ env.TEST_USERNAME }}" into the "email" field
 ```
 
@@ -594,8 +595,11 @@ And the user enters "{{ env.TEST_USERNAME }}" into the "email" field
 # In config.yml
 env:
   API_BASE_URL: "http://localhost:8080/api"
-  FRONTEND_BASE_URL: "http://localhost:3000"
+  BASE_URL: "http://localhost:3000"
   TEST_USERNAME: "test@example.com"
+
+frontend:
+  base_url: "{{ env.BASE_URL }}"
 
 # Or reference external file
 settings:
