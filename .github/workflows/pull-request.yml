@@ -25,15 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      - name: Install commitlint
-        run: |
-          yarn init --yes
-          yarn add @commitlint/config-conventional commitlint@latest  validate-branch-name
-
-      - name: Validate PR commits with commitlint
-        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
-
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -45,6 +36,15 @@ jobs:
 
       - name: Run unit tests
         run: go test ./...
+
+      - name: Install commitlint
+        run: |
+          yarn init --yes
+          yarn add @commitlint/config-conventional commitlint@latest  validate-branch-name
+
+      - name: Validate PR commits with commitlint
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
 
   e2e_tests:
     uses: "./.github/workflows/e2e.yml"

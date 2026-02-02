@@ -18,6 +18,7 @@ func main() {
 		"details",
 		"scroll",
 		"file-upload",
+		"login",
 	}
 
 	_, filename, _, _ := runtime.Caller(0)
@@ -30,7 +31,6 @@ func main() {
 
 	for _, file := range files {
 		http.HandleFunc("/"+file, func(w http.ResponseWriter, r *http.Request) {
-			log.Println(r.URL.Path, "requested")
 			filePath := path.Join(currDir, file+".html")
 			http.ServeFile(w, r, filePath)
 		})
