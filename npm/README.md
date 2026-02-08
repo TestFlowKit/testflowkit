@@ -48,15 +48,23 @@ Create a `config.yml` file in your project root:
 ```yaml
 mode: frontend
 browser:
-  type: chromium
   headless: true
 features:
   - path: ./features
 ```
 
-## Documentation
+## 📚 Documentation
 
-For full documentation, visit [TestFlowKit Documentation](https://testflowkit.github.io/testflowkit/testflowkit/).
+For comprehensive documentation, guides, examples, and best practices, please visit the **[TestFlowKit Web Documentation](https://testflowkit.github.io/testflowkit/)** on GitHub Pages.
+
+The documentation includes:
+- Getting Started Guide
+- Configuration Options
+- Step Definitions & Sentences
+- Variable System
+- API Testing
+- Advanced Features
+- FAQ & Troubleshooting
 
 ## Supported Platforms
 

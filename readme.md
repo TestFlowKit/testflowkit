@@ -44,6 +44,8 @@
 
 The easiest way to install TestFlowKit is via npm:
 
+Package: [https://www.npmjs.com/package/@testflowkit/cli](https://www.npmjs.com/package/@testflowkit/cli)
+
 ```bash
 # Global installation
 npm install -g @testflowkit/cli
@@ -250,7 +252,7 @@ Feature: Dynamic User Testing
 
 ## 📚 Documentation
 
-For comprehensive documentation, visit the [official TestFlowKit documentation](https://testflowkit.github.io/testflowkit/).
+For comprehensive documentation, visit the [official TestFlowKit documentation](https://testflowkit.github.io/testflowkit/) on GitHub Pages.
 
 ### Key Documentation Sections
 
@@ -986,6 +988,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔗 Links
 
 - **Documentation**: [https://testflowkit.github.io/testflowkit/](https://testflowkit.github.io/testflowkit/)
+- **npm Package**: [https://www.npmjs.com/package/@testflowkit/cli](https://www.npmjs.com/package/@testflowkit/cli)
 - **GitHub**: [https://github.com/TestFlowKit/testflowkit](https://github.com/TestFlowKit/testflowkit)
 - **Issues**: [https://github.com/TestFlowKit/testflowkit/issues](https://github.com/TestFlowKit/testflowkit/issues)
 - **Releases**: [https://github.com/TestFlowKit/testflowkit/releases](https://github.com/TestFlowKit/testflowkit/releases)

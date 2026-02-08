@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/TestFlowKit/testflowkit/issues"
   },
-  "homepage": "https://github.com/TestFlowKit/testflowkit#readme",
+  "homepage": "https://testflowkit.github.io/testflowkit",
   "os": [
     "darwin",
     "linux",
