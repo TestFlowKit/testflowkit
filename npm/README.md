@@ -43,15 +43,7 @@ tkit --version
 
 ## Configuration
 
-Create a `config.yml` file in your project root:
-
-```yaml
-mode: frontend
-browser:
-  headless: true
-features:
-  - path: ./features
-```
+The `tkit init` command generates a `config.yml` file in your project root. You can edit it to match your needs.
 
 ## 📚 Documentation
 

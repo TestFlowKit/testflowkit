@@ -60,7 +60,7 @@ function downloadFile(url, maxRedirects = 5) {
       return;
     }
 
-    const protocol = url.startsWith("https") ? https : require("http");
+    const protocol = url.startsWith("https") ? https : http;
 
     protocol.get(url, (response) => handleDownloadResponse(response, resolve, reject, maxRedirects)).on("error", reject);
   });
@@ -143,19 +143,6 @@ function makeExecutable(filePath) {
   }
 }
 
-/**
- * Remove existing binary
- */
-function removeExistingBinary(binaryPath) {
-  try {
-    fs.unlinkSync(binaryPath);
-  } catch (error) {
-    console.error(
-      `✗ Failed to remove existing ${BINARY_NAME} binary: ${error.message}`,
-    );
-    process.exit(1);
-  }
-}
 
 /**
  * Main installation function

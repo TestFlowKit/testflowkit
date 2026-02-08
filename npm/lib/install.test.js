@@ -70,10 +70,6 @@ test("makeExecutable", async (t) => {
       try {
         fs.writeFileSync(testFile, "test");
 
-        // Get permissions before
-        const statsBefore = fs.statSync(testFile);
-        const isExecutableBefore =
-          (statsBefore.mode & fs.constants.S_IXUSR) !== 0;
 
         // Make executable
         makeExecutable(testFile);
@@ -112,7 +108,6 @@ test("removeExistingBinary", async (t) => {
   });
 
   await t.test("should handle removal failure gracefully", async (t) => {
-    const nonExistentPath = "/nonexistent/path/to/binary";
 
     // This test demonstrates the function would exit with error
     // In a real test, we'd mock process.exit
