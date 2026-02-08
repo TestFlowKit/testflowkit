@@ -144,6 +144,20 @@ function makeExecutable(filePath) {
 }
 
 /**
+ * Remove existing binary
+ */
+function removeExistingBinary(binaryPath) {
+  try {
+    fs.unlinkSync(binaryPath);
+  } catch (error) {
+    console.error(
+      `✗ Failed to remove existing ${BINARY_NAME} binary: ${error.message}`,
+    );
+    process.exit(1);
+  }
+}
+
+/**
  * Main installation function
  */
 async function install() {
@@ -247,3 +261,15 @@ function removeExistingBinary(binaryPath) {
 
 // Run installation
 install();
+
+// Export functions for testing
+module.exports = {
+  install,
+  downloadFile,
+  extractZip,
+  makeExecutable,
+  removeExistingBinary,
+  getBinaryName,
+  getDownloadUrl,
+  handleDownloadResponse,
+};
