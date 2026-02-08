@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Dependencies
         working-directory: ./documentation
-        run: yarn
+        run: yarn install --frozen-lockfile
 
       - name: Generate Static Site
         working-directory: ./documentation

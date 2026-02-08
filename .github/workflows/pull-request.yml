@@ -46,5 +46,12 @@ jobs:
       - name: Run unit tests
         run: go test ./...
 
+      - name: Run npm package tests
+        working-directory: ./npm
+        run: |
+          yarn install --frozen-lockfile
+          yarn test
+
+
   e2e_tests:
     uses: "./.github/workflows/e2e.yml"

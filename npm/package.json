@@ -10,7 +10,10 @@
     "tkit": "bin/cli.js"
   },
   "scripts": {
-    "postinstall": "node ./lib/install.js"
+    "postinstall": "node -e \"process.env.CI || require('./lib/install.js')\"",
+    "test": "node --test ./lib/install.*.test.js",
+    "test:unit": "node --test ./lib/install.test.js",
+    "test:integration": "node ./lib/install.integration.test.js"
   },
   "repository": {
     "type": "git",
