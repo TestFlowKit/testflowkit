@@ -1,20 +1,21 @@
 settings:
   page_load_timeout: 30000
   concurrency: 1
-  report_format: "html"
-  gherkin_location: "e2e/features"
+  report_format: html
+  gherkin_location: e2e/features
 
 
 frontend:
   base_url: "{{ env.frontend_base_url }}"
+  driver: "{{ env.driver }}"
   default_timeout: 1000
   headless: true
   screenshot_on_failure: true
   think_time: 500
 
-  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  locale: "en-US"  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
-  timezone_id: "America/New_York"  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")
+  user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+  locale: en-US  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
+  timezone_id: America/New_York  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")
 
 
 
@@ -42,6 +43,8 @@ frontend:
         - "#product-description"
       scroll_target_element:
         - "#target-element"
+      computer_details:
+        - "#computer-details"
 
     form_e2e:
       page_title:
@@ -188,7 +191,7 @@ apis:
           description: "Delete a post"
 
 files:
-  base_directory: "./test-files"
+  base_directory: "./e2e/test-files"
   definitions:
     avatar_image: "images/avatar.png"
     gallery_image1: "images/gallery/image1.jpg"

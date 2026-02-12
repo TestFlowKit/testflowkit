@@ -16,7 +16,7 @@ var errNoCurrentPageAvailable = errors.New("no current page available")
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
 	frontCtx.browser = internalbrowser.CreateInstance(internalbrowser.Config{
-		DriverType:    internalbrowser.DriverRod,
+		DriverType:    frontCtx.driverType,
 		HeadlessMode:  frontCtx.headlessMode,
 		ThinkTime:     frontCtx.thinkTime,
 		IncognitoMode: incognitoMode,
@@ -29,7 +29,6 @@ func (c *Context) InitBrowser(incognitoMode bool) {
 func (c *Context) OpenNewPage(url string) {
 	c.EnsureBrowserInitialized()
 	c.frontend.page = c.frontend.browser.NewPage(url)
-	c.frontend.page.WaitLoading()
 }
 
 func (c *Context) EnsureBrowserInitialized() {
@@ -141,7 +140,6 @@ func (c *Context) SetCurrentPage(page browser.Page) error {
 	}
 
 	page.Focus()
-	page.WaitLoading()
 
 	c.frontend.page = page
 

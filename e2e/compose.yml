@@ -44,6 +44,25 @@ services:
         condition: service_healthy
       mock-server:
         condition: service_healthy
+    environment:
+      - TEST_CONFIG=${TEST_CONFIG:-config.api.yml}
+      - TEST_TAGS=${TEST_TAGS:-~@FRONTEND}
+      - RUN_ID=${RUN_ID:-local}
+    command: >
+      sh -c '
+      if grep -q "frontend:" /app/e2e/$$TEST_CONFIG; then
+        echo "Installing browser driver...";
+        /app/tkit install --config=/app/e2e/$$TEST_CONFIG || exit 1;
+      fi &&
+      /app/tkit run
+      --config=/app/e2e/$$TEST_CONFIG
+      --location=./features
+      --timeout=10s
+      --env-file=./env.test.yml
+      --tags="$$TEST_TAGS"'
+    working_dir: /app/e2e
+    volumes:
+      - ../:/app
 
 networks:
   default:

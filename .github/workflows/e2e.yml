@@ -3,34 +3,54 @@ on:
 
 jobs:
   e2e_tests:
-    name: e2e tests running
+    name: E2E Tests - ${{ matrix.test-type }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-type: "NO_FRONTEND"
+            config: "config.api.yml"
+            tags: "~@FRONTEND"
+            driver: ""
+            
+          - test-type: "Frontend_Rod"
+            config: "config.frontend.yml"
+            tags: "@FRONTEND"
+            driver: "rod"
+            
+          - test-type: "Frontend_Playwright"
+            config: "config.frontend.yml"
+            tags: "@FRONTEND"
+            driver: "playwright"
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and start server
-        run: docker compose -f e2e/compose.yml up server -d --build
-
-      - name: Wait for server to be ready
+      - name: Create env file with driver
         run: |
-          echo "Waiting for server to be ready..."
-          docker compose -f e2e/compose.yml logs server
-          echo "Server container started!"
+          cat e2e/env.ci.yml > e2e/env.test.yml
+          if [ -n "${{ matrix.driver }}" ]; then
+            echo "driver: \"${{ matrix.driver }}\"" >> e2e/env.test.yml
+          fi
 
-      - name: Launch e2e tests
-        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e --build
-
-      - name: Get test results
-        if: failure()
-        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
+      - name: Run ${{ matrix.test-type }} tests
+        run: |
+          docker compose -f e2e/compose.yml up \
+            --build \
+            --abort-on-container-exit \
+            --exit-code-from e2e
+        env:
+          TEST_CONFIG: ${{ matrix.config }}
+          TEST_TAGS: ${{ matrix.tags }}
+          RUN_ID: ${{ github.run_id }}-${{ matrix.test-type }}
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: report.html
+          name: test-results-${{ matrix.test-type }}
+          path: e2e/report.html
 
       - name: Clean up containers
         if: always()

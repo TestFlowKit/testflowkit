@@ -6,6 +6,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/utils/stringutils"
+	"testflowkit/pkg/logger"
 )
 
 func (steps) checkCheckbox() stepbuilder.Step {
@@ -22,12 +23,12 @@ func (steps) checkCheckbox() stepbuilder.Step {
 				return ctx, err
 			}
 
-			if !checkBox.IsChecked() {
-				err = checkBox.Click()
-				return ctx, err
+			if checkBox.IsChecked() {
+				logger.InfoFf("checkbox %s is already checked", checkBoxName)
+				return ctx, nil
 			}
 
-			return ctx, nil
+			return ctx, checkBox.Check()
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
 			vc := stepbuilder.ValidationErrors{}
