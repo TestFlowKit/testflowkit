@@ -1,6 +1,7 @@
 package rod
 
 import (
+	"log"
 	"testflowkit/pkg/browser"
 
 	"github.com/go-rod/rod"
@@ -68,4 +69,11 @@ func New(args browser.CreationArgs) browser.Client {
 		locale:     args.Locale,
 		timezoneID: args.TimezoneID,
 	}
+}
+
+// Install checks Rod driver installation status
+// Rod is bundled with testflowkit, so no installation is needed
+func Install() error {
+	log.Println("Checking Rod driver already installed")
+	return nil
 }

@@ -24,11 +24,10 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 			}
 
 			if checkBox.IsChecked() {
-				err = checkBox.Click()
-				return ctx, err
+				return ctx, checkBox.Uncheck()
 			}
 
-			logger.Warn(checkBoxName+" checkbox is not unchecked because it is already unchecked", []string{})
+			logger.InfoFf("checkbox %s is not unchecked because it is already unchecked", checkBoxName)
 			return ctx, nil
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {
