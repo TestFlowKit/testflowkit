@@ -9,7 +9,7 @@ import (
 
 func (steps) debugRequest() stepbuilder.Step {
 	return stepbuilder.NewWithNoVariables(
-		[]string{`I debug the current request`},
+		[]string{"I debug the API request", "I debug the current request"},
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 
@@ -45,7 +45,7 @@ func (steps) debugRequest() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Debug helper to show the current request configuration.",
 			Variables:   []stepbuilder.DocVariable{},
-			Example:     `When I debug the current request`,
+			Example:     `When I debug the API request`,
 			Categories:  []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
 	)
 }
