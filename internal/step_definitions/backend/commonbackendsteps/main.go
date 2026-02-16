@@ -12,6 +12,7 @@ func GetSteps() []stepbuilder.Step {
 		s.prepareRequest(),
 		s.sendRequest(),
 		s.setHeaders(),
+		s.setHeader(),
 		s.storeResponseData(),
 		s.validateStatusCode(),
 		s.validateJSONPathExists(),
