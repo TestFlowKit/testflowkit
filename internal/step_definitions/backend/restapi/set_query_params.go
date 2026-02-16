@@ -13,7 +13,6 @@ import (
 	"github.com/rdumont/assistdog"
 )
 
-// setQueryParams sets URL query parameters for the REST request.
 func (steps) setQueryParams() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`I set the following query parameters:`},
@@ -56,5 +55,39 @@ func (steps) setQueryParams() stepbuilder.Step {
   | limit  | 10           |
   | filter | {{category}} |`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
+	)
+}
+
+func (steps) setQueryParam() stepbuilder.Step {
+	return stepbuilder.NewWithTwoVariables(
+		[]string{
+			`I set query parameter {string} to {string}`,
+		},
+		func(ctx context.Context, name, value string) (context.Context, error) {
+			scenarioCtx := scenario.MustFromContext(ctx)
+			backend := scenarioCtx.GetBackendContext()
+
+			endpoint := backend.GetEndpoint()
+			if endpoint == nil {
+				return ctx, errors.New("no endpoint configured in backend context")
+			}
+			if endpoint.QueryParams == nil {
+				endpoint.QueryParams = make(map[string]string)
+			}
+			endpoint.QueryParams[name] = value
+
+			logger.InfoFf("Query parameter set: %s=%s", name, value)
+			return ctx, nil
+		},
+		nil,
+		stepbuilder.DocParams{
+			Description: "Sets a single URL query parameter for the REST API request.",
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The query parameter name", Type: stepbuilder.VarTypeString},
+				{Name: "value", Description: "The query parameter value", Type: stepbuilder.VarTypeString},
+			},
+			Example:    `Given I set query parameter "page" to "1"`,
+			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
+		},
 	)
 }
