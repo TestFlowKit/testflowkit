@@ -21,11 +21,9 @@ func (steps) setHeaders() stepbuilder.Step {
 				return ctx, fmt.Errorf("failed to parse headers map: %w", parseErr)
 			}
 
-			err := setHeadersHelper(ctx, headers)
-			if err == nil {
-				logger.InfoFf("Headers set: %v", headers)
-			}
-			return ctx, err
+			setHeadersHelper(ctx, headers)
+			logger.InfoFf("Headers set: %v", headers)
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{
@@ -48,11 +46,9 @@ func (steps) setHeader() stepbuilder.Step {
 			`I set the header {string} to {string}`,
 		},
 		func(ctx context.Context, name, value string) (context.Context, error) {
-			err := setHeadersHelper(ctx, map[string]string{name: value})
-			if err == nil {
-				logger.InfoFf("Header set: %s=%s", name, value)
-			}
-			return ctx, err
+			setHeadersHelper(ctx, map[string]string{name: value})
+			logger.InfoFf("Header set: %s=%s", name, value)
+			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{
@@ -67,13 +63,11 @@ func (steps) setHeader() stepbuilder.Step {
 	)
 }
 
-func setHeadersHelper(ctx context.Context, headers map[string]string) error {
+func setHeadersHelper(ctx context.Context, headers map[string]string) {
 	scenarioCtx := scenario.MustFromContext(ctx)
 	backend := scenarioCtx.GetBackendContext()
 
 	for name, value := range headers {
 		backend.SetGraphQLHeader(name, value)
 	}
-
-	return nil
 }
