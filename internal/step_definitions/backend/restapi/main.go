@@ -10,7 +10,9 @@ func GetSteps() []stepbuilder.Step {
 	s := steps{}
 	return []stepbuilder.Step{
 		s.setQueryParams(),
+		s.setQueryParam(),
 		s.setPathParams(),
+		s.setPathParam(),
 		s.setRequestBody(),
 		s.setRequestBodyFromFile(),
 		s.setJSONBody(),
