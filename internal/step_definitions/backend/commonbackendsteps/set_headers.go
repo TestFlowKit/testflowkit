@@ -16,20 +16,16 @@ func (steps) setHeaders() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`I set the following headers:`},
 		func(ctx context.Context, table *godog.Table) (context.Context, error) {
-			scenarioCtx := scenario.MustFromContext(ctx)
-			backend := scenarioCtx.GetBackendContext()
-
 			headers, parseErr := assistdog.NewDefault().ParseMap(table)
 			if parseErr != nil {
 				return ctx, fmt.Errorf("failed to parse headers map: %w", parseErr)
 			}
 
-			for name, value := range headers {
-				backend.SetHeader(name, value)
+			err := setHeadersHelper(ctx, headers)
+			if err == nil {
+				logger.InfoFf("Headers set: %v", headers)
 			}
-
-			logger.InfoFf("Headers set: %v", headers)
-			return ctx, nil
+			return ctx, err
 		},
 		nil,
 		stepbuilder.DocParams{
@@ -44,4 +40,40 @@ func (steps) setHeaders() stepbuilder.Step {
 			Categories: stepbuilder.Backend,
 		},
 	)
+}
+
+func (steps) setHeader() stepbuilder.Step {
+	return stepbuilder.NewWithTwoVariables(
+		[]string{
+			`I set the header {string} to {string}`,
+		},
+		func(ctx context.Context, name, value string) (context.Context, error) {
+			err := setHeadersHelper(ctx, map[string]string{name: value})
+			if err == nil {
+				logger.InfoFf("Header set: %s=%s", name, value)
+			}
+			return ctx, err
+		},
+		nil,
+		stepbuilder.DocParams{
+			Description: "Sets a single HTTP header for the request.",
+			Variables: []stepbuilder.DocVariable{
+				{Name: "name", Description: "The header name", Type: stepbuilder.VarTypeString},
+				{Name: "value", Description: "The header value", Type: stepbuilder.VarTypeString},
+			},
+			Example:    `And I set the header "Authorization" to "Bearer {{token}}"`,
+			Categories: stepbuilder.Backend,
+		},
+	)
+}
+
+func setHeadersHelper(ctx context.Context, headers map[string]string) error {
+	scenarioCtx := scenario.MustFromContext(ctx)
+	backend := scenarioCtx.GetBackendContext()
+
+	for name, value := range headers {
+		backend.SetGraphQLHeader(name, value)
+	}
+
+	return nil
 }
