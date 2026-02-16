@@ -28,8 +28,7 @@ Feature: Posts API Testing
 
     Scenario: Retrieve a specific post by ID
         Given I prepare a request to "jsonplaceholder.get_post_by_id"
-        When I set the following path parameters:
-            | id | 1 |
+        When I set the path parameter "id" to "1"
         And I send the request
         Then the response status code should be 200
         And the response should contain "{{ env.post_content }}"
@@ -50,15 +49,13 @@ Feature: Posts API Testing
 
     Scenario: Delete a post
         Given I prepare a request to "jsonplaceholder.delete_post"
-        When I set the following path parameters:
-            | id | 1 |
+        When I set the path parameter "id" to "1"
         And I send the request
         Then the response status code should be 200
 
     Scenario: Retrieve posts with query parameters
         Given I prepare a request to "jsonplaceholder.get_posts"
-        When I set the following query parameters:
-            | _limit | 5 |
+        When I set the query parameter "_limit" to "5"
         And I send the request
         Then the response status code should be 200
         And the response should have field "0.userId"
@@ -67,8 +64,7 @@ Feature: Posts API Testing
 
     Scenario: Retrieve posts for specific user
         Given I prepare a request to "jsonplaceholder.get_posts"
-        When I set the following query parameters:
-            | userId | 1 |
+        When I set the query parameter "userId" to "1"
         And I send the request
         Then the response status code should be 200
         And the response should have field "0.userId"

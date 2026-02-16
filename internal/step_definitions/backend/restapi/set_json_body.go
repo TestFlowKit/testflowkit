@@ -8,7 +8,6 @@ import (
 	"testflowkit/pkg/logger"
 )
 
-// setJSONBody sets a JSON request body with validation.
 func (steps) setJSONBody() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`I set the JSON request body to:`},

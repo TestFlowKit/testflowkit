@@ -3,6 +3,7 @@ package scenario
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"net/url"
 	"strings"
 	"testflowkit/internal/config"
@@ -101,4 +102,18 @@ func (e *EndpointEnricher) getSimpleURL() (string, error) {
 	}
 
 	return baseURL + path, nil
+}
+
+func (e *EndpointEnricher) SetPathParams(params map[string]string) {
+	if e.PathParams == nil {
+		e.PathParams = make(map[string]string)
+	}
+	maps.Copy(e.PathParams, params)
+}
+
+func (e *EndpointEnricher) SetQueryParams(params map[string]string) {
+	if e.QueryParams == nil {
+		e.QueryParams = make(map[string]string)
+	}
+	maps.Copy(e.QueryParams, params)
 }

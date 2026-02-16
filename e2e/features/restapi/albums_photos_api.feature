@@ -40,8 +40,7 @@ Feature: Albums and Photos API Testing
 
     Scenario: Retrieve photos for a specific album
         Given I prepare a request to "jsonplaceholder.get_photos_by_album"
-        When I set the following path parameters:
-            | id | 1 |
+        When I set the path parameter "id" to "1"
         And I send the request
         Then the response status code should be 200
         And the response should have field "0.albumId"
@@ -76,8 +75,7 @@ Feature: Albums and Photos API Testing
 
     Scenario: Verify photo URLs are valid
         Given I prepare a request to "jsonplaceholder.get_photos"
-        When I set the following query parameters:
-            | _limit | 1 |
+        And I set the query parameter "_limit" to "1"
         And I send the request
         Then the response status code should be 200
         Then the response field "0.url" should contain "https://via.placeholder.com"
