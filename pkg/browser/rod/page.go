@@ -112,10 +112,11 @@ func (p *rodPage) GetOneByTextContent(text string) (browser.Element, error) {
 
 func (p *rodPage) Focus() {
 	p.page = p.page.MustActivate()
+	p.waitLoading()
 }
 
 // TODO: be sure its work on SPA.
-func (p *rodPage) WaitLoading() {
+func (p *rodPage) waitLoading() {
 	p.page.MustWaitNavigation()
 	p.page = p.page.MustWaitDOMStable()
 	p.page = p.page.MustWaitIdle()

@@ -2,7 +2,6 @@ settings:
   concurrency: 1
   report_format: "html"
   gherkin_location: "./features"
-  # env_file: ".env.yml"  # Optional: path to external env file
 
 # Environment Variables
 # Access these in Gherkin files and config using {{ env.variable_name }}
@@ -10,6 +9,7 @@ env:
   base_url: "https://testflowkit.github.io"
 frontend:
   base_url: "{{ env.base_url }}"
+  driver: "rod"
   default_timeout: 10000
   headless: false
   screenshot_on_failure: true

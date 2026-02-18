@@ -17,13 +17,14 @@ func (steps) shouldNotSeeOnPage() stepbuilder.Step {
 			if pageErr != nil {
 				return ctx, pageErr
 			}
-			body, err := currentPage.GetOneBySelector("body")
+			elt, err := currentPage.GetOneByTextContent(text)
 			if err != nil {
-				return ctx, err
+				// TODO: create specific error for not found element
+				return ctx, nil
 			}
 
-			if strings.Contains(body.TextContent(), text) {
-				return ctx, fmt.Errorf("%s should not be visible", text)
+			if elt.IsVisible() {
+				return ctx, fmt.Errorf("the text \"%s\" is visible on the page but should not", strings.TrimSpace(text))
 			}
 			return ctx, nil
 		},

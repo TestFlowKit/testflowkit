@@ -3,6 +3,7 @@ package variables
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/logger"
@@ -23,7 +24,7 @@ func (steps) storeElementContentIntoVariable() stepbuilder.Step {
 
 			content := element.TextContent()
 
-			scenarioCtx.SetVariable(varName, content)
+			scenarioCtx.SetVariable(varName, strings.TrimSpace(content))
 			logger.InfoFf("Stored content '%s' from element '%s' into variable '%s'", content, elementName, varName)
 
 			return ctx, nil

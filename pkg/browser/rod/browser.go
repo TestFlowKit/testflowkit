@@ -69,3 +69,7 @@ func New(args browser.CreationArgs) browser.Client {
 		timezoneID: args.TimezoneID,
 	}
 }
+
+func Install() error {
+	return nil
+}

@@ -5,9 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+
 	"testflowkit/internal/config"
 	"testflowkit/pkg/browser"
 	"testflowkit/pkg/logger"
+	"time"
 )
 
 func GetElementByLabel(page browser.Page, pageName, label string) (browser.Element, error) {
@@ -31,26 +33,42 @@ func GetElementByLabel(page browser.Page, pageName, label string) (browser.Eleme
 }
 
 func getElementBySelectors(page browser.Page, potentialSelectors []config.Selector) browser.Element {
-	ctx, cancel := context.WithCancel(context.Background())
+	if len(potentialSelectors) == 0 {
+		return nil
+	}
+
+	const timeoutSeconds = 30
+	ctx, cancel := context.WithTimeout(context.Background(), timeoutSeconds*time.Second)
+	defer cancel()
 
 	ch := make(chan browser.Element, 1)
-	defer close(ch)
-
+	var wg sync.WaitGroup
 	var mu sync.RWMutex
+
 	for _, selector := range potentialSelectors {
-		go searchForSelector(searchSelectorParams{
-			ctx:      contextWrapper{Context: ctx, cancel: cancel},
-			mu:       &mu,
-			page:     page,
-			selector: selector,
-			resultCh: ch,
+		wg.Go(func() {
+			searchForSelector(searchSelectorParams{
+				ctx:      contextWrapper{Context: ctx, cancel: cancel},
+				mu:       &mu,
+				page:     page,
+				selector: selector,
+				resultCh: ch,
+			})
 		})
 	}
 
-	<-ctx.Done()
+	// Close channel when all goroutines complete
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
 
-	cancel()
-	return <-ch
+	select {
+	case elt := <-ch:
+		return elt
+	case <-ctx.Done():
+		return nil
+	}
 }
 
 // searchSelectorParams holds the parameters for searching a selector.
@@ -63,44 +81,50 @@ type searchSelectorParams struct {
 }
 
 func searchForSelector(params searchSelectorParams) {
+	elt, err := getElementBySelector(params.page, params.selector)
+	if err != nil {
+		select {
+		case <-params.ctx.Done():
+			return
+		default:
+			return
+		}
+	}
+
+	if elt == nil {
+		return
+	}
+
+	params.mu.Lock()
+	defer params.mu.Unlock()
+
+	select {
+	case <-params.ctx.Done():
+		return
+	default:
+		params.resultCh <- elt
+		params.ctx.cancel()
+	}
+}
+
+func getElementBySelector(page browser.Page, selector config.Selector) (browser.Element, error) {
 	var elt browser.Element
 	var err error
 
-	value := params.selector.String()
-	if params.selector.IsXPath() {
-		elt, err = params.page.GetOneByXPath(value)
+	value := selector.String()
+	if selector.IsXPath() {
+		elt, err = page.GetOneByXPath(value)
 	} else {
-		elt, err = params.page.GetOneBySelector(value)
+		elt, err = page.GetOneBySelector(value)
 	}
 
 	if err != nil {
-		logger.Warn(fmt.Sprintf("element not found with %s selector %s", params.selector.Type, value), []string{
+		logger.Warn(fmt.Sprintf("element not found with %s selector %s", selector.Type, value), []string{
 			"Please fix the selector in the configuration file",
 			"Please verify that page is accessible",
 		})
-
-		select {
-		case <-params.ctx.Done():
-			return
-		default:
-			params.resultCh <- nil
-			params.ctx.cancel()
-			return
-		}
 	}
-
-	if elt != nil {
-		params.mu.Lock()
-		defer params.mu.Unlock()
-
-		select {
-		case <-params.ctx.Done():
-			return
-		default:
-			params.resultCh <- elt
-			params.ctx.cancel()
-		}
-	}
+	return elt, err
 }
 
 func getActiveSelector(page browser.Page, potentialSelectors []config.Selector) config.Selector {

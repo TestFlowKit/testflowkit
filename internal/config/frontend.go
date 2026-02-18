@@ -1,7 +1,7 @@
 package config
 
 import (
-	"path/filepath"
+	"net/url"
 	"strings"
 	"testflowkit/internal/utils/stringutils"
 	"time"
@@ -99,9 +99,21 @@ func (c *Config) GetFrontendURL(page string) (string, error) {
 			return pagePath, nil
 		}
 
-		fullURL := filepath.Join(c.GetFrontendBaseURL(), pagePath)
+		baseURL := c.GetFrontendBaseURL()
+
+		fullURL, errURLJoin := url.JoinPath(baseURL, pagePath)
+		if errURLJoin != nil {
+			return "", errURLJoin
+		}
 		return fullURL, nil
 	}
 
 	return c.GetFrontendBaseURL(), nil
+}
+
+func (c *Config) GetFrontendDriver() string {
+	if c.IsFrontendDefined() {
+		return c.Frontend.Driver
+	}
+	return ""
 }

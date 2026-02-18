@@ -22,7 +22,7 @@ func (steps) theFieldShouldContain() stepbuilder.Step {
 				return ctx, err
 			}
 
-			if input.TextContent() == text {
+			if input.InputValue() == text {
 				return ctx, nil
 			}
 

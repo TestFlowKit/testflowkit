@@ -7,12 +7,16 @@ import (
 	"strings"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/utils/stringutils"
 
 	"github.com/cucumber/godog"
 	"github.com/rdumont/assistdog"
 )
 
 func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
+	formatLabel := func(label string) string {
+		return stringutils.SuffixWithUnderscore(label, "details")
+	}
 	definition := func(ctx context.Context, elementName string, table *godog.Table) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
 		data, parseErr := assistdog.NewDefault().ParseMap(table)
@@ -25,21 +29,17 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 			return ctx, fmt.Errorf("failed to parse variables in table data: %w", parseErr)
 		}
 
-		currentPage, errPage := scenarioCtx.GetCurrentPageOnly()
-		if errPage != nil {
-			return ctx, errPage
+		elementContainer, errElContainer := scenarioCtx.GetHTMLElementByLabel(formatLabel(elementName))
+		if errElContainer != nil {
+			return ctx, errElContainer
 		}
 
+		eltTextContent := stringutils.Inline(elementContainer.TextContent())
 		var errMsgs []string
 		for name, value := range parsedData {
-			elt, err := currentPage.GetOneByTextContent(value)
-			if err != nil {
+			if !strings.Contains(eltTextContent, value) {
 				errMsgs = append(errMsgs, fmt.Sprintf("%s %s not found", elementName, name))
 				continue
-			}
-
-			if !elt.IsVisible() {
-				errMsgs = append(errMsgs, fmt.Sprintf("%s %s is found but is no visible", elementName, name))
 			}
 		}
 
@@ -51,7 +51,7 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`the user should see "{string}" details on the page`},
+		[]string{`the user should see {string} details on the page`},
 		definition,
 		nil,
 		stepbuilder.DocParams{
