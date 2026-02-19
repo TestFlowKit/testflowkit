@@ -2,36 +2,71 @@ on:
   workflow_call:
 
 jobs:
-  e2e_tests:
-    name: e2e tests running
+  build_server_image:
+    name: build server image
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Build server image
+        run: docker compose -f e2e/compose.yml -p e2e build server
+
+      - name: Save server image
+        run: docker save e2e-server -o server-image.tar
+
+      - name: Upload server image
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-image
+          path: server-image.tar
+
+  e2e_tests:
+    name: e2e tests running
+    runs-on: ubuntu-latest
+    needs: build_server_image
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - e2e_api
+          - e2e_rod
+          - e2e_playwright
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download server image
+        uses: actions/download-artifact@v4
+        with:
+          name: server-image
+
+      - name: Load server image
+        run: docker load -i server-image.tar
+
       - name: Build and start server
-        run: docker compose -f e2e/compose.yml up server -d --build
+        run: docker compose -f e2e/compose.yml -p e2e up server -d
 
       - name: Wait for server to be ready
         run: |
           echo "Waiting for server to be ready..."
-          docker compose -f e2e/compose.yml logs server
+          docker compose -f e2e/compose.yml -p e2e logs server
           echo "Server container started!"
 
       - name: Launch e2e tests
-        run: docker compose -f e2e/compose.yml up e2e --exit-code-from=e2e --build
+        run: docker compose -f e2e/compose.yml -p e2e up ${{ matrix.service }} --exit-code-from=${{ matrix.service }} --build
 
       - name: Get test results
         if: failure()
-        run: docker compose -f e2e/compose.yml cp e2e:/app/report.html .
+        run: docker compose -f e2e/compose.yml -p e2e cp ${{ matrix.service }}:/app/report.html ./report-${{ matrix.service }}.html
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: report.html
+          name: test-results-${{ matrix.service }}
+          path: report-${{ matrix.service }}.html
 
       - name: Clean up containers
         if: always()
-        run: docker compose -f e2e/compose.yml down --remove-orphans
+        run: docker compose -f e2e/compose.yml -p e2e down --remove-orphans

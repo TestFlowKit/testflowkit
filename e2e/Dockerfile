@@ -1,4 +1,4 @@
-FROM golang:1.25.0-alpine AS build
+FROM golang:1.25.1-alpine AS build
 
 WORKDIR /app
 
@@ -9,16 +9,28 @@ WORKDIR /app/cmd/testflowkit
 RUN go build -o tkit
 
 
-FROM alpine:3.21
+# FROM debian:bookworm-slim
+FROM golang:1.25.1-alpine
+
+
+ARG DRIVER
+ARG INSTALL_CMD
+ARG TAGS
 
 LABEL authors="marckent04"
 
 WORKDIR /app
 
 COPY ./e2e .
+COPY --from=build /app/cmd/testflowkit/tkit .
 
-COPY --from=build /app/cmd/testflowkit .
 
-RUN apk add --no-cache chromium
+RUN echo "driver: \"$DRIVER\"" >> ./env.ci.yml
 
-ENTRYPOINT /app/tkit run --location="./features" --timeout="10s" --env-file="./env.ci.yml"
+RUN $INSTALL_CMD
+# RUN ./tkit install
+
+ENV tags=$TAGS
+
+ENTRYPOINT /app/tkit run --tags=$tags --env-file=./env.ci.yml
+
