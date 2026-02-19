@@ -45,6 +45,10 @@ func (e *rodElement) TextContent() string {
 	return e.element.MustText()
 }
 
+func (e *rodElement) InputValue() string {
+	return e.element.MustText()
+}
+
 func (e *rodElement) IsVisible() bool {
 	visible, err := e.element.Visible()
 	if err != nil {
@@ -166,6 +170,17 @@ func (e *rodElement) checkFilesExist(filePaths []string) error {
 
 func (e *rodElement) ScrollIntoView() error {
 	return e.element.ScrollIntoView()
+}
+
+func (e *rodElement) Check() error {
+	return e.Click()
+}
+
+func (e *rodElement) Uncheck() error {
+	if !e.IsChecked() {
+		return nil
+	}
+	return e.Click()
 }
 
 func newRodElement(element *rod.Element) browser.Element {

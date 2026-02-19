@@ -78,6 +78,9 @@ type FrontendConfig struct {
 	// ThinkTime is the delay (in milliseconds) between browser actions to simulate human behavior
 	ThinkTime int `yaml:"think_time" validate:"omitempty"`
 
+	// Driver specifies the browser driver to use ("rod" or "playwright")
+	Driver string `yaml:"driver" validate:"omitempty,oneof=rod playwright"`
+
 	// UserAgent sets a custom user agent string for the browser
 	UserAgent string `yaml:"user_agent"`
 

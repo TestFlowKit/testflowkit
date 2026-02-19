@@ -2,6 +2,7 @@ package browser
 
 import (
 	"testflowkit/pkg/browser"
+	"testflowkit/pkg/browser/playwright"
 	"testflowkit/pkg/browser/rod"
 	"time"
 )
@@ -10,9 +11,8 @@ import (
 type DriverType string
 
 const (
-	// DriverRod represents the Rod browser driver.
-	DriverRod DriverType = "rod"
-	// Future: DriverPlaywright DriverType = "playwright".
+	DriverRod        DriverType = "rod"
+	DriverPlaywright DriverType = "playwright"
 )
 
 // Config holds the configuration for creating a browser client instance.
@@ -45,10 +45,9 @@ func CreateInstance(cfg Config) browser.Client {
 	switch cfg.DriverType {
 	case DriverRod:
 		return rod.New(args)
-	// Future: case DriverPlaywright:
-	//     return playwright.New(cfg.HeadlessMode, cfg.ThinkTime, cfg.IncognitoMode)
+	case DriverPlaywright:
+		return playwright.New(args)
 	default:
-		// Default to Rod driver
-		return rod.New(args)
+		panic("unknown driver type: " + string(cfg.DriverType))
 	}
 }

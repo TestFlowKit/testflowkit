@@ -34,6 +34,13 @@
 
 ## 📋 Prerequisites
 
+### For Users (Running Tests)
+
+- **Chrome or Edge browser**: For frontend testing with Rod driver (default)
+- **Go 1.19+** *(optional)*: Required only if using the Playwright driver. [Download Go](https://golang.org/dl/)
+
+### For Developers (Building from Source)
+
 - **Go 1.23+**: [Download and install Go](https://golang.org/dl/)
 - **Git**: For cloning the repository
 - **Make**: For build automation (optional but recommended)
@@ -78,6 +85,42 @@ go mod tidy
 make build GOOS=linux GOARCH=amd64  # or your target platform
 ```
 
+## 🎯 Installing Browser Drivers
+
+### Install Command
+
+TestFlowKit includes an `install` command to automatically install browser drivers based on your configuration:
+
+```bash
+# Install the driver specified in your config.yml
+tkit install --config=config.yml
+```
+
+### Driver-Specific Behavior
+
+- **Rod Driver (default)**: No installation needed - bundled with TestFlowKit
+- **Playwright Driver**: Automatically installs Chromium and system dependencies
+
+> 💡 **Note:** The Playwright driver installation requires Go 1.19+ and an internet connection.
+
+### Using the Playwright Driver
+
+To use Playwright instead of the default Rod driver:
+
+1. Update your `config.yml`:
+
+```yaml
+frontend:
+  driver: "playwright"  # Use Playwright instead of Rod
+  # ... other config
+```
+
+2. Install the Playwright driver:
+
+```bash
+tkit install --config=config.yml
+```
+
 ## 🚀 Quick Start
 
 ### 1. Initialize Project
@@ -105,6 +148,8 @@ env:
 
 frontend:
   base_url: "{{ env.base_url }}"
+  # Browser driver to use (required when frontend block is defined)
+  driver: "rod"  # Options: "rod" or "playwright"
   # Element search timeout in milliseconds (1-300000ms)
   # Maximum time to wait when searching for elements by CSS selectors or XPath
   default_timeout: 10000

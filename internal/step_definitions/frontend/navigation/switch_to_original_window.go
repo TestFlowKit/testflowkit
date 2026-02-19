@@ -25,8 +25,6 @@ func (steps) switchToOriginalWindow() stepbuilder.Step {
 
 			originalPage.Focus()
 
-			originalPage.WaitLoading()
-
 			if err := scenarioCtx.SetCurrentPage(originalPage); err != nil {
 				return ctx, fmt.Errorf("failed to set current page: %w", err)
 			}

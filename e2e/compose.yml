@@ -32,18 +32,56 @@ services:
       retries: 3
       start_period: 10s
 
-  e2e:
-    container_name: e2e_tests
+  e2e_api:
     networks:
       - default
     build:
       context: ../
       dockerfile: e2e/Dockerfile
+      args:
+        - INSTALL_CMD=echo "no need to install dependencies in e2e_api image"
+        - TAGS=~@FRONTEND
+        - DRIVER=rod
+
     depends_on:
       server:
         condition: service_healthy
       mock-server:
         condition: service_healthy
+
+  e2e_rod:
+    networks:
+      - default
+    build:
+      context: ../
+      dockerfile: e2e/Dockerfile
+      args:
+          - INSTALL_CMD=apk add --no-cache chromium
+          - TAGS=@FRONTEND
+          - DRIVER=rod
+    depends_on:
+      server:
+        condition: service_healthy
+      mock-server:
+        condition: service_healthy
+
+  e2e_playwright:
+    networks:
+      - default
+    build:
+      context: ../
+      dockerfile: e2e/Dockerfile
+      args:
+            - INSTALL_CMD=/app/tkit install --env-file=./env.ci.yml
+            - TAGS=@FRONTEND
+            - DRIVER=playwright
+    depends_on:
+      server:
+        condition: service_healthy
+      mock-server:
+        condition: service_healthy
+    environment:
+      - RUN_ID=${RUN_ID:-local}
 
 networks:
   default:

@@ -3,7 +3,6 @@ package assertions
 import (
 	"context"
 	"fmt"
-	"reflect"
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	sb "testflowkit/internal/step_definitions/core/stepbuilder"
@@ -11,7 +10,7 @@ import (
 
 func (steps) checkCheckboxStatus() sb.Step {
 	formatVar := func(label string) string {
-		return label + "_checkbox"
+		return label + " checkbox"
 	}
 	definition := func(ctx context.Context, checkboxId, status string) (context.Context, error) {
 		scenarioCtx := scenario.MustFromContext(ctx)
@@ -19,9 +18,10 @@ func (steps) checkCheckboxStatus() sb.Step {
 		if err != nil {
 			return ctx, err
 		}
-		checkValue, isBoolean := input.GetAttributeValue("checked", reflect.Bool).(bool)
 
-		if isBoolean && checkValue && status == "checked" || !checkValue && status == "unchecked" {
+		isChecked := input.IsChecked()
+
+		if isChecked && status == "checked" || !isChecked && status == "unchecked" {
 			return ctx, nil
 		}
 
