@@ -1,8 +1,6 @@
 package validation
 
 import (
-	"errors"
-	"fmt"
 	"strings"
 
 	"testflowkit/internal/step_definitions/api/jsonhelpers"
@@ -12,17 +10,17 @@ import (
 // ValidateJSONPathValue validates that a JSON path contains the expected value
 // Works for both GraphQL and REST API responses.
 func ValidateJSONPathValue(jsonBody []byte, jsonPath, expectedValue string) error {
-	if jsonBody == nil {
-		return errors.New("no response available - send a request first")
-	}
-
 	actualValue, err := jsonhelpers.GetPathValueAsString(jsonBody, jsonPath)
 	if err != nil {
-		return fmt.Errorf("failed to get value at path '%s': %w", jsonPath, err)
+		return ErrPathNotFound
 	}
 
 	if actualValue != expectedValue {
-		return fmt.Errorf("expected value '%s' at path '%s', but got '%s'", expectedValue, jsonPath, actualValue)
+		return &ValueMismatchError{
+			Path:     jsonPath,
+			Expected: expectedValue,
+			Actual:   actualValue,
+		}
 	}
 
 	logger.InfoFf("response validation passed: %s = %s", jsonPath, expectedValue)
@@ -32,11 +30,11 @@ func ValidateJSONPathValue(jsonBody []byte, jsonPath, expectedValue string) erro
 // ValidateJSONPathExists validates that a JSON path exists in the response.
 func ValidateJSONPathExists(jsonBody []byte, jsonPath string) error {
 	if jsonBody == nil {
-		return errors.New("no response available - send a request first")
+		return ErrNoResponse
 	}
 
 	if !jsonhelpers.PathExists(jsonBody, jsonPath) {
-		return fmt.Errorf("path '%s' does not exist in response", jsonPath)
+		return ErrPathNotFound
 	}
 
 	logger.InfoFf("response validation passed: path '%s' exists", jsonPath)
@@ -46,12 +44,12 @@ func ValidateJSONPathExists(jsonBody []byte, jsonPath string) error {
 // ValidateBodyContains validates that the response body contains the expected substring.
 func ValidateBodyContains(body []byte, expectedSubstring string) error {
 	if body == nil {
-		return errors.New("no response available - send a request first")
+		return ErrNoResponse
 	}
 
 	bodyStr := string(body)
 	if !strings.Contains(bodyStr, expectedSubstring) {
-		return fmt.Errorf("response body does not contain expected substring '%s'", expectedSubstring)
+		return ErrBodyNotContains
 	}
 
 	logger.InfoFf("response validation passed: body contains '%s'", expectedSubstring)
@@ -61,11 +59,11 @@ func ValidateBodyContains(body []byte, expectedSubstring string) error {
 // ValidateJSONBodyEquals validates that the response body matches the expected JSON.
 func ValidateJSONBodyEquals(actual []byte, expected string) error {
 	if actual == nil {
-		return errors.New("no response available - send a request first")
+		return ErrNoResponse
 	}
 
 	if err := jsonhelpers.CompareJSON([]byte(expected), actual); err != nil {
-		return fmt.Errorf("response JSON validation failed: %w", err)
+		return ErrJSONNotEqual
 	}
 
 	logger.InfoFf("response validation passed: JSON matches expected content")

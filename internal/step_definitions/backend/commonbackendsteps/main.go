@@ -15,6 +15,7 @@ func GetSteps() []stepbuilder.Step {
 		s.storeResponseData(),
 		s.validateStatusCode(),
 		s.validateJSONPathExists(),
+		s.validateJSONPathNotExists(),
 		s.validateJSONPathValue(),
 		s.validateJSONPathContains(),
 		s.validateJSONPathType(),

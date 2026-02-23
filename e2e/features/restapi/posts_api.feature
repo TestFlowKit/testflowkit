@@ -25,6 +25,7 @@ Feature: Posts API Testing
         And the response should have field "0.userId"
         And the response should have field "0.id"
         And the response should have field "0.title"
+        And the response should not have field "0.inexistant"
 
     Scenario: Retrieve a specific post by ID
         Given I prepare a request to "jsonplaceholder.get_post_by_id"

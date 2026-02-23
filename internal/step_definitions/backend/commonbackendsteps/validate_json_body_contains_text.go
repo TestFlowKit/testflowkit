@@ -39,7 +39,7 @@ func (steps) validateJSONBodyContains() stepbuilder.Step {
 				{Name: "text", Description: "Text that should be present in the response", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the response should contain "success"`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
+			Categories: stepbuilder.Backend,
 		},
 	)
 }

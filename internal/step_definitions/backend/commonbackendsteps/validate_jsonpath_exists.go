@@ -2,10 +2,7 @@ package commonbackendsteps
 
 import (
 	"context"
-	"errors"
 
-	"testflowkit/internal/step_definitions/api/validation"
-	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 )
 
@@ -14,26 +11,8 @@ func (steps) validateJSONPathExists() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`the response should have field {string}`},
 		func(ctx context.Context, jsonPath string) (context.Context, error) {
-			scenarioCtx := scenario.MustFromContext(ctx)
-			backend := scenarioCtx.GetBackendContext()
-
-			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to validate")
-			}
-
-			jsonPath = scenario.ReplaceVariablesInString(scenarioCtx, jsonPath)
-
-			responseBody := backend.GetResponseBody()
-
-			if responseBody == nil {
-				return ctx, errors.New("response body is empty")
-			}
-
-			if err := validation.ValidateJSONPathExists(responseBody, jsonPath); err != nil {
-				return ctx, err
-			}
-
-			return ctx, nil
+			err := commonJSONPathHandler(ctx, jsonPath) // Reuse the common handler to check if the path exists
+			return ctx, err
 		},
 		nil,
 		stepbuilder.DocParams{
