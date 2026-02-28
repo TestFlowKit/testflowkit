@@ -19,10 +19,6 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 				return ctx, err
 			}
 
-			if !element.IsVisible() {
-				return ctx, fmt.Errorf("%s is not visible", name)
-			}
-
 			if strings.Contains(element.TextContent(), unexpectedText) {
 				return ctx, fmt.Errorf("%s unexpectedly contains text '%s'", name, unexpectedText)
 			}
@@ -38,7 +34,7 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 			return vc
 		},
 		stepbuilder.DocParams{
-			Description: "This assertion checks if the element's visible text does not include the specified substring.",
+			Description: "This assertion checks if the element's text does not include the specified substring.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 				{Name: "unexpectedText", Description: "The text that should not be contained.", Type: stepbuilder.VarTypeString},

@@ -3,6 +3,7 @@ package actioninit
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testflowkit/internal/config"
 	"testing"
@@ -74,10 +75,12 @@ func verifyDirectoryStructure(t *testing.T) {
 	_, statErr := os.Stat(testFeaturesDir)
 	assert.False(t, os.IsNotExist(statErr), "features directory was not created")
 
-	info, statErr := os.Stat(testFeaturesDir)
-	require.NoError(t, statErr, "Failed to get directory info")
+	if runtime.GOOS != "windows" {
+		info, errStat := os.Stat(testFeaturesDir)
+		require.NoError(t, errStat, "Failed to get directory info")
 
-	assert.Equal(t, os.FileMode(0755), info.Mode().Perm(), "Expected directory permissions 0755")
+		assert.Equal(t, os.FileMode(0755), info.Mode().Perm(), "Expected directory permissions 0755")
+	}
 }
 
 func verifySampleFeatureFile(t *testing.T) {
@@ -97,7 +100,6 @@ func verifySampleFeatureFile(t *testing.T) {
 		"the user opens a new browser tab",
 		"the user goes to the \"home\" page",
 		"the page title should be",
-		"the user should see",
 		"should be visible",
 		"the current URL should contain",
 	}
@@ -112,6 +114,10 @@ func verifySampleFeatureFile(t *testing.T) {
 
 func verifyFilePermissions(t *testing.T) {
 	t.Helper()
+
+	if runtime.GOOS == "windows" {
+		t.Skip("Skipping: Windows does not support Unix-style file permissions")
+	}
 
 	configInfo, statErr := os.Stat(testConfigFile)
 	require.NoError(t, statErr, "Failed to get config file info")
@@ -321,8 +327,8 @@ func testTestFlowKitSentenceCompatibility(t *testing.T) {
 		"the user opens a new browser tab",
 		"the user goes to the",
 		"the page title should be",
-		"the user should see",
 		"should be visible",
+		"should contain the text",
 		"the current URL should contain",
 		"the user clicks the",
 		"the user enters",

@@ -20,7 +20,8 @@ Feature: Table e2e tests
     When the user clicks on the row containing the following elements
       | name      | description                        | price   |
       | Produit 1 | Description détaillée du produit 1 | 19.99 € |
-    Then the user should see "Description détaillée du produit 1 clicked !" on the page
+    Then the "clicked element" should be visible
+    And the "clicked element" should contain the text "Description détaillée du produit 1 clicked !"
 
   Scenario: User should see a table with following headers
     Then the user should see a table with the following headers

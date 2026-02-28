@@ -30,6 +30,7 @@ func main() {
 
 	for _, file := range files {
 		http.HandleFunc("/"+file, func(w http.ResponseWriter, r *http.Request) {
+			//nolint:gosec // we want to allow insecure requests in tests
 			log.Println(r.URL.Path, "requested")
 			filePath := path.Join(currDir, file+".html")
 			http.ServeFile(w, r, filePath)

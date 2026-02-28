@@ -8,7 +8,7 @@ Feature: TestFlowKit Documentation Site Sample Test
   Scenario: Navigate to documentation site and verify homepage
     When the user goes to the "home" page
     Then the page title should be "TestFlowKit - Behavior-Driven Testing Framework"
-    And the user should see "TestFlowKit" on the page
+    And the "page body" should contain the text "TestFlowKit"
     And the "get started button" should be visible
 
   Scenario: Navigate to Get Started page and verify content
@@ -20,7 +20,7 @@ Feature: TestFlowKit Documentation Site Sample Test
   Scenario: Explore the Sentences documentation
     When the user goes to the "sentences" page
     Then the current URL should contain "sentences"
-    And the user should see "Step Definitions" on the page
+    And the "page body" should contain the text "Step Definitions"
     And the "sentence filter field" should be visible
     When the user enters "click" into the "sentence filter" field
-    Then the user should see "clicks on an element which contains a specific text." on the page
+    Then the "page body" should contain the text "clicks on an element which contains a specific text."

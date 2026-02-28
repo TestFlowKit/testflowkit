@@ -22,6 +22,8 @@ frontend:
 
   elements:
     common:
+      page_body:
+        - "body"
       get_started_button:
         - "xpath://a[contains(text(), 'Get Started Now')]"
 

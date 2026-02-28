@@ -68,6 +68,7 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	}
 
 	startTime := time.Now()
+	//nolint:gosec // we want to allow insecure requests in tests
 	resp, err := client.Do(req)
 	duration := time.Since(startTime)
 	if err != nil {
