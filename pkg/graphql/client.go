@@ -116,6 +116,7 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 	}
 
 	// Execute the HTTP request
+	//nolint:gosec // we want to allow insecure requests in tests
 	httpResp, err := c.httpClient.Do(httpReq)
 	if err != nil {
 		return nil, NewNetworkError(

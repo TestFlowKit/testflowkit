@@ -20,6 +20,10 @@ frontend:
 
   elements:
     common:
+      page_body:
+        - "body"
+      clicked_element:
+        - "#clickedElt"
       visual_test_button:
         - "button"
       textarea_field:
