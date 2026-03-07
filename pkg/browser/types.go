@@ -26,6 +26,7 @@ type Client interface {
 	NewPage(url string) Page
 	GetPages() []Page
 	Close()
+	InitEngine()
 }
 
 // Page represents a browser page.

@@ -173,7 +173,7 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 			ctx = scenario.WithContext(ctx, scenarioCtx)
 			return ctx, nil
 		})
-		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
+		sc.StepContext().Before(beforeStepHookInitializer(&myCtx, config))
 		sc.StepContext().After(afterStepHookInitializer(&myCtx, config))
 		sc.After(afterScenarioHookInitializer(testReport, &myCtx))
 	}
@@ -226,8 +226,11 @@ func takeScreenshot(st *godog.Step, currentPage browser.Page) string {
 	return base64Str
 }
 
-func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
-	return func(ctx context.Context, _ *godog.Step) (context.Context, error) {
+func beforeStepHookInitializer(myCtx *myScenarioCtx, cfg *config.Config) godog.BeforeStepHook {
+	return func(ctx context.Context, step *godog.Step) (context.Context, error) {
+		if step != nil {
+			initializeBrowserEngineIfFrontendStepExists(cfg, step.Text)
+		}
 		myCtx.currentStepStartTime = time.Now()
 		return ctx, nil
 	}
