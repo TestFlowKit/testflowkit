@@ -1,6 +1,7 @@
 package browser
 
 import (
+	"testflowkit/pkg/browser/playwright"
 	"testflowkit/pkg/browser/rod"
 	"time"
 )
@@ -28,8 +29,7 @@ func InitEngine(cfg Config) (Engine, error) {
 	case DriverRod:
 		return rod.InitEngine()
 	case DriverPlaywright:
-		// TODO: replace with actual Playwright engine initialization when implemented
-		return rod.InitEngine()
+		return playwright.InitEngine()
 	default:
 		panic("unknown driver type: " + string(cfg.DriverType))
 	}

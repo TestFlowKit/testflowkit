@@ -11,15 +11,17 @@ import (
 	"strings"
 	"sync"
 	"testflowkit/pkg/browser"
-	"time"
 
 	pw "github.com/playwright-community/playwright-go"
 )
 
-var installOnce sync.Once
-var pwInstance *pw.Playwright
-
 const playwrightModulePath = "github.com/playwright-community/playwright-go"
+
+type Engine struct {
+	mu          sync.Mutex
+	initialized bool
+	instance    *pw.Playwright
+}
 
 type playwrightBrowser struct {
 	browser    pw.Browser
@@ -85,13 +87,20 @@ func (pb *playwrightBrowser) Close() {
 	}
 }
 
-func (pb *playwrightBrowser) InitEngine() {
-	initPlaywright()
+func InitEngine() (*Engine, error) {
+	engine := &Engine{}
+	engine.mu.Lock()
+	defer engine.mu.Unlock()
+
+	if !engine.initialized {
+		engine.init()
+		engine.initialized = true
+	}
+	return engine, nil
 }
 
-// New creates a new Playwright browser client instance with Chromium.
-func New(args browser.CreationArgs) browser.Client {
-	browserInstance, err := pwInstance.Chromium.Launch(buildLaunchOptions(args))
+func (e *Engine) NewBrowser(args browser.CreationArgs) browser.Client {
+	browserInstance, err := e.instance.Chromium.Launch(buildLaunchOptions(args))
 	if err != nil {
 		panic(fmt.Errorf("failed to launch browser: %w", err))
 	}
@@ -102,6 +111,46 @@ func New(args browser.CreationArgs) browser.Client {
 		locale:     args.Locale,
 		timezoneID: args.TimezoneID,
 	}
+}
+
+// Close closes the engine and all resources.
+func (e *Engine) Close() {
+	err := e.instance.Stop()
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// init initializes the Playwright instance with lazy initialization pattern.
+func (e *Engine) init() {
+	sucessMsg := "Playwright engine initialized successfully"
+	runOpts := &pw.RunOptions{
+		SkipInstallBrowsers: true,
+	}
+	inst, errFirstRun := pw.Run(runOpts)
+	if errFirstRun == nil {
+		e.instance = inst
+		log.Println(sucessMsg)
+
+		return
+	}
+
+	errInstall := pw.Install(&pw.RunOptions{
+		Browsers: []string{
+			"chromium",
+		},
+	})
+
+	if errInstall != nil {
+		panic(errInstall)
+	}
+
+	instance, errRun := pw.Run(runOpts)
+	if errRun != nil {
+		panic(errRun)
+	}
+	e.instance = instance
+	log.Println(sucessMsg)
 }
 
 func buildLaunchOptions(args browser.CreationArgs) pw.BrowserTypeLaunchOptions {
@@ -115,38 +164,6 @@ func buildLaunchOptions(args browser.CreationArgs) pw.BrowserTypeLaunchOptions {
 	}
 
 	return opts
-}
-
-func initPlaywright() {
-	installOnce.Do(func() {
-		runOpts := &pw.RunOptions{
-			SkipInstallBrowsers: true,
-		}
-		time.Sleep(50 * time.Second) // Small delay to ensure any previous installation processes have settled
-		inst, errFirstRun := pw.Run(runOpts)
-		if errFirstRun == nil {
-			pwInstance = inst
-			return
-		}
-
-		errInstall := pw.Install(&pw.RunOptions{
-			Browsers: []string{
-				"chromium",
-			},
-		})
-
-		if errInstall != nil {
-			panic(errInstall)
-		}
-
-		instance, errRun := pw.Run(runOpts)
-		if errRun != nil {
-			panic(errRun)
-		}
-		pwInstance = instance
-		log.Println("Playwright initialized successfully after installation")
-	})
-	log.Println("Playwright is ready to use")
 }
 
 func getInstalledPlaywrightVersion(ctx context.Context) (string, error) {
