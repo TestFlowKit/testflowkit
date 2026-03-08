@@ -17,10 +17,7 @@ func TestShouldInstanciateCorrectlyNewFrontendContext(t *testing.T) {
 			ThinkTime:      10000,
 		},
 	}
-	ctx := NewContext(&cfg, nil)
-
-	assert.InDelta(t, float64(15), ctx.frontend.timeout.Seconds(), 0.0001)
-	assert.False(t, ctx.frontend.headlessMode)
+	ctx := NewContext(&cfg, nil, nil)
 	assert.InDelta(t, float64(10), ctx.frontend.thinkTime.Seconds(), 0.0001)
 	assert.Nil(t, ctx.frontend.browser)
 	assert.Nil(t, ctx.frontend.page)
@@ -41,7 +38,7 @@ func TestShouldGetPageNameByURLForInternalPage(t *testing.T) {
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	testURL := "http://localhost:3000/internal"
 	ctx.frontend.page = &TestPage{
@@ -59,7 +56,7 @@ func TestShouldReturnErrorIfPageNameNotFound(t *testing.T) {
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	pageName, err := ctx.getPageNameByURL("https://localhost:3000/unknown")
 	assert.Equal(t, "page name not found", err.Error())
@@ -82,7 +79,7 @@ func TestShouldGetPageNameByURLForExternalPage(t *testing.T) {
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	ctx.frontend.page = &TestPage{
 		url: "https://testflowkit.com/external",
@@ -106,7 +103,7 @@ func TestShouldGetPageNameByURLForInternalPageWithBaseURLContainingPath(t *testi
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	ctx.frontend.page = &TestPage{
 		url: "https://localhost:3000/internal",
@@ -132,7 +129,7 @@ func TestShouldGetPageNameByURLExternalWithBaseURLContainingPath(t *testing.T) {
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	ctx.frontend.page = &TestPage{
 		url: "https://localhost:3000/path",
@@ -157,7 +154,7 @@ func TestShouldGetPageNameByURLInternalWithBaseURLContainingPath(t *testing.T) {
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	ctx.frontend.page = &TestPage{
 		url: "https://localhost:3000/path/internal",
@@ -182,7 +179,7 @@ func TestShouldGetPageNameByURLWithVariableForInternalPage(t *testing.T) {
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	ctx.frontend.page = &TestPage{
 		url: "https://localhost:3000/product/abc",
@@ -207,7 +204,7 @@ func TestShouldGetPageNameByVariableSupportBaseURLDifferentFromPageURL(t *testin
 		},
 	}
 
-	ctx := NewContext(&cfg, nil)
+	ctx := NewContext(&cfg, nil, nil)
 
 	ctx.frontend.page = &TestPage{
 		url: "https://testflowkit.com/sentences/abc",

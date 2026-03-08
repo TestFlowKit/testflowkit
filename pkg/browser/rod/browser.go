@@ -8,6 +8,11 @@ import (
 	"github.com/go-rod/rod/lib/proto"
 )
 
+// Engine manages the shared rod launcher.
+type Engine struct {
+	browserPath string
+}
+
 type rodBrowser struct {
 	browser    *rod.Browser
 	userAgent  string
@@ -50,12 +55,20 @@ func (rb *rodBrowser) Close() {
 	rb.browser.MustClose()
 }
 
-// New creates a new rod browser client instance.
-func New(args browser.CreationArgs) browser.Client {
-	path, _ := launcher.LookPath()
-	launcher := launcher.New().Bin(path).Headless(args.HeadlessMode)
+// ========== Engine Methods ==========
 
-	u := launcher.MustLaunch()
+// InitEngine initializes the rod browser engine once.
+func InitEngine() (*Engine, error) {
+	path, _ := launcher.LookPath()
+
+	return &Engine{
+		browserPath: path,
+	}, nil
+}
+
+func (e *Engine) NewBrowser(args browser.CreationArgs) browser.Client {
+	launcherInstance := launcher.New().Bin(e.browserPath).Headless(args.HeadlessMode)
+	u := launcherInstance.MustLaunch()
 
 	newBrowser := rod.New().ControlURL(u).SlowMotion(args.ThinkTime).MustConnect()
 	if args.IncognitoMode {
@@ -70,11 +83,11 @@ func New(args browser.CreationArgs) browser.Client {
 	}
 }
 
-func (rb *rodBrowser) InitEngine() {
-	path, _ := launcher.LookPath()
-	launcher := launcher.New().Bin(path)
-	u := launcher.MustLaunch()
+// Close closes the engine and all resources.
+func (e *Engine) Close() {
+	// Nothing to do here since each browser instance manages its own lifecycle.
+}
 
-	b := rod.New().ControlURL(u).MustConnect()
-	b.MustClose()
+func Install() error {
+	return nil
 }
