@@ -16,6 +16,7 @@ type Context struct {
 	backend   *BackendContext
 	config    *config.Config
 	variables map[string]any
+	engine    internalbrowser.Engine
 }
 
 func (c *Context) GetConfig() *config.Config {
@@ -48,7 +49,7 @@ func (c *Context) SetVariable(name string, value any) {
 	c.variables[name] = value
 }
 
-func NewContext(cfg *config.Config, initialVariables map[string]any) *Context {
+func NewContext(cfg *config.Config, initialVariables map[string]any, engine internalbrowser.Engine) *Context {
 	initVars := make(map[string]any)
 	if initialVariables != nil {
 		maps.Copy(initVars, initialVariables)
@@ -59,6 +60,7 @@ func NewContext(cfg *config.Config, initialVariables map[string]any) *Context {
 		backend:   newBackendCtx(),
 		config:    cfg,
 		variables: initVars,
+		engine:    engine,
 	}
 }
 

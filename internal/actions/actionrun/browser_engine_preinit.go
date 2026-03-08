@@ -12,15 +12,24 @@ import (
 )
 
 var browserInitOnce sync.Once
+var globalBrowserEngine internalbrowser.Engine
 
-func initializeBrowserEngineIfFrontendStepExists(cfg *config.Config, features []*gherkinparser.Feature) {
-	if !shouldPreinitializeBrowserEngine(cfg, features) {
-		return
+type cBrowserEngineParams struct {
+	cfg      *config.Config
+	features []*gherkinparser.Feature
+}
+
+func configureBrowserEngineForFrontend(p cBrowserEngineParams) internalbrowser.Engine {
+	var engine internalbrowser.Engine
+	if !shouldPreinitializeBrowserEngine(p.cfg, p.features) {
+		return nil
 	}
 
 	browserInitOnce.Do(func() {
-		preinitializeBrowserEngine(cfg)
+		engine = preinitializeBrowserEngine(p.cfg)
+		globalBrowserEngine = engine
 	})
+	return globalBrowserEngine
 }
 
 func shouldPreinitializeBrowserEngine(cfg *config.Config, features []*gherkinparser.Feature) bool {
@@ -30,13 +39,13 @@ func shouldPreinitializeBrowserEngine(cfg *config.Config, features []*gherkinpar
 	return isFrontendConfigDefined && hasFrontendStep
 }
 
-func preinitializeBrowserEngine(cfg *config.Config) {
+func preinitializeBrowserEngine(cfg *config.Config) internalbrowser.Engine {
 	thinkTime, err := time.ParseDuration(fmt.Sprintf("%dms", cfg.Frontend.ThinkTime))
 	if err != nil {
 		thinkTime = 0
 	}
 
-	browserInstance := internalbrowser.CreateInstance(internalbrowser.Config{
+	engine, errInit := internalbrowser.InitEngine(internalbrowser.Config{
 		DriverType:    internalbrowser.DriverRod,
 		HeadlessMode:  cfg.IsHeadlessModeEnabled(),
 		ThinkTime:     thinkTime,
@@ -46,6 +55,11 @@ func preinitializeBrowserEngine(cfg *config.Config) {
 		TimezoneID:    cfg.Frontend.TimezoneID,
 	})
 
-	browserInstance.InitEngine()
+	if errInit != nil {
+		logger.Error("Failed to initialize browser engine", []string{errInit.Error()}, nil)
+		panic(fmt.Sprintf("failed to initialize browser engine: %v", errInit))
+	}
+
 	logger.Info("Browser engine pre-initialization completed")
+	return engine
 }

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 	"testflowkit/internal/actions/actionutils"
+	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core/scenario"
-
-	"testflowkit/pkg/browser"
+	pkgbrowser "testflowkit/pkg/browser"
 	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/reporters"
@@ -44,11 +44,35 @@ func Execute(appConfig *config.Config, errCfg error) {
 		os.Exit(0)
 	}
 
-	initializeBrowserEngineIfFrontendStepExists(appConfig, feats)
+	engine := configureBrowserEngineForFrontend(
+		cBrowserEngineParams{
+			cfg:      appConfig,
+			features: feats,
+		},
+	)
 
-	runBeforeAllScenarios(appConfig, testReport, gherkinparser.Filter(feats, BeforeAllTag))
-	runMainScenarios(appConfig, testReport, gherkinparser.Filter(feats, appConfig.Settings.Tags))
-	runAfterAllScenarios(appConfig, testReport, gherkinparser.Filter(feats, AfterAllTag))
+	runBeforeAllScenarios(RunScenariosParams{
+		appConfig:  appConfig,
+		testReport: testReport,
+		features:   gherkinparser.Filter(feats, BeforeAllTag),
+		engine:     engine,
+	})
+	runMainScenarios(RunScenariosParams{
+		appConfig:  appConfig,
+		testReport: testReport,
+		features:   gherkinparser.Filter(feats, appConfig.Settings.Tags),
+		engine:     engine,
+	})
+	runAfterAllScenarios(RunScenariosParams{
+		appConfig:  appConfig,
+		testReport: testReport,
+		features:   gherkinparser.Filter(feats, AfterAllTag),
+		engine:     engine,
+	})
+
+	if engine != nil {
+		engine.Close()
+	}
 
 	if testReport.HasScenarios() {
 		testReport.Write()
@@ -87,12 +111,13 @@ func getFeaturesToProcess(featureLoc, mainTagsExpr string) []*gherkinparser.Feat
 	return gherkinparser.ParseWithFilter(featureLoc, expr)
 }
 
-func runAfterAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
+func runAfterAllScenarios(params RunScenariosParams) {
 	afterAllSuite := createTestSuite(createTestSuiteParams{
-		appConfig:   appConfig,
-		testReport:  testReport,
-		features:    gherkinParserFeaturesToGodogFeatures(features),
+		appConfig:   params.appConfig,
+		testReport:  params.testReport,
+		features:    gherkinParserFeaturesToGodogFeatures(params.features),
 		concurrency: 1,
+		engine:      params.engine,
 	})
 
 	if afterAllSuite != nil {
@@ -100,24 +125,27 @@ func runAfterAllScenarios(appConfig *config.Config, testReport *reporters.Report
 	}
 }
 
-func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
+func runMainScenarios(params RunScenariosParams) {
 	mainSuite := createTestSuite(createTestSuiteParams{
-		appConfig:   appConfig,
-		testReport:  testReport,
-		features:    gherkinParserFeaturesToGodogFeatures(features),
-		concurrency: appConfig.GetConcurrency(),
+		appConfig:   params.appConfig,
+		testReport:  params.testReport,
+		features:    gherkinParserFeaturesToGodogFeatures(params.features),
+		concurrency: params.appConfig.GetConcurrency(),
+		engine:      params.engine,
 	})
 	if mainSuite != nil {
 		mainSuite.Run()
 	}
 }
 
-func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
+func runBeforeAllScenarios(params RunScenariosParams) {
+	feats := gherkinParserFeaturesToGodogFeatures(params.features)
 	beforeAllSuite := createTestSuite(createTestSuiteParams{
-		appConfig:   appConfig,
-		testReport:  testReport,
-		features:    gherkinParserFeaturesToGodogFeatures(features),
+		appConfig:   params.appConfig,
+		testReport:  params.testReport,
+		features:    feats,
 		concurrency: 1,
+		engine:      params.engine,
 	})
 	if beforeAllSuite == nil {
 		return
@@ -129,7 +157,7 @@ func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Repor
 		}, []string{
 			"Check the report for details",
 		})
-		testReport.Write()
+		params.testReport.Write()
 		os.Exit(1)
 	}
 }
@@ -150,7 +178,11 @@ func createTestSuite(params createTestSuiteParams) *godog.TestSuite {
 		Name:                 "Test Suite",
 		Options:              &opts,
 		TestSuiteInitializer: testSuiteInitializer(params.testReport),
-		ScenarioInitializer:  scenarioInitializer(params.appConfig, params.testReport),
+		ScenarioInitializer: scenarioInitializer(ScenarioInitializerParams{
+			config:     params.appConfig,
+			testReport: params.testReport,
+			engine:     params.engine,
+		}),
 	}
 }
 
@@ -159,6 +191,7 @@ type createTestSuiteParams struct {
 	testReport  *reporters.Report
 	features    []godog.Feature
 	concurrency int
+	engine      browser.Engine
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
@@ -171,10 +204,10 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 	}
 }
 
-func scenarioInitializer(config *config.Config, testReport *reporters.Report) func(*godog.ScenarioContext) {
+func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
-		// Inject global variables here
-		scenarioCtx := scenario.NewContext(config, variables.GetGlobalVariables())
+		// Inject global variables and engine here
+		scenarioCtx := scenario.NewContext(params.config, variables.GetGlobalVariables(), params.engine)
 		registerTestRunnerStepDefinitions(sc)
 		myCtx := newScenarioCtx()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
@@ -183,8 +216,8 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 			return ctx, nil
 		})
 		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
-		sc.StepContext().After(afterStepHookInitializer(&myCtx, config))
-		sc.After(afterScenarioHookInitializer(testReport, &myCtx))
+		sc.StepContext().After(afterStepHookInitializer(&myCtx, params.config))
+		sc.After(afterScenarioHookInitializer(params.testReport, &myCtx))
 	}
 }
 
@@ -214,7 +247,7 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 	}
 }
 
-func takeScreenshot(st *godog.Step, currentPage browser.Page) string {
+func takeScreenshot(st *godog.Step, currentPage pkgbrowser.Page) string {
 	screenshotData, screenshotErr := currentPage.Screenshot()
 	if screenshotErr != nil {
 		logger.Warn("Failed to take screenshot on step failure", []string{
@@ -297,4 +330,17 @@ func gherkinParserFeaturesToGodogFeatures(features []*gherkinparser.Feature) []g
 		}
 	}
 	return godogFeatures
+}
+
+type RunScenariosParams struct {
+	appConfig  *config.Config
+	testReport *reporters.Report
+	features   []*gherkinparser.Feature
+	engine     browser.Engine
+}
+
+type ScenarioInitializerParams struct {
+	config     *config.Config
+	testReport *reporters.Report
+	engine     browser.Engine
 }

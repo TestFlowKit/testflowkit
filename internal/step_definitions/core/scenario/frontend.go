@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"strings"
 
-	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/pkg/browser"
 )
 
@@ -14,8 +13,12 @@ var errNoCurrentPageAvailable = errors.New("no current page available")
 
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend
-	frontCtx.browser = internalbrowser.CreateInstance(internalbrowser.Config{
-		DriverType:    internalbrowser.DriverRod,
+
+	if c.engine == nil {
+		panic("browser engine is not initialized")
+	}
+
+	frontCtx.browser = c.engine.NewBrowser(browser.CreationArgs{
 		HeadlessMode:  frontCtx.headlessMode,
 		ThinkTime:     frontCtx.thinkTime,
 		IncognitoMode: incognitoMode,
