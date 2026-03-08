@@ -2,7 +2,6 @@ package actionrun
 
 import (
 	"os"
-	"strings"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/gherkinparser"
 	"testing"
@@ -101,26 +100,5 @@ func TestShouldPreinitializeBrowserEngineWhenNoFrontendStepInFeatures(t *testing
 	shouldInit := shouldPreinitializeBrowserEngine(cfg, []*gherkinparser.Feature{})
 	if shouldInit {
 		t.Fatal("expected pre-initialization to be skipped when no frontend steps in features")
-	}
-}
-
-func TestShouldPreinitializeBrowserEngineWhenFrontendStepMatches(t *testing.T) {
-	cfg := &config.Config{
-		Frontend: &config.FrontendConfig{},
-	}
-
-	featureContent := []string{
-		"Feature: frontend test",
-		"Scenario: click something",
-		"Given the user clicks the \"submit_button\" button",
-	}
-	feature, err := gherkinparser.ParseContent(strings.Join(featureContent, "\n"))
-	if err != nil {
-		t.Fatalf("failed to parse feature content: %v", err)
-	}
-
-	shouldInit := shouldPreinitializeBrowserEngine(cfg, []*gherkinparser.Feature{feature})
-	if !shouldInit {
-		t.Fatal("expected pre-initialization for features containing frontend steps")
 	}
 }

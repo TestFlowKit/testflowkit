@@ -51,12 +51,6 @@ func filterFeatureContent(f *Feature, toRemove []*scenario) (*Feature, error) {
 
 	lines := strings.Split(string(f.Contents), "\n")
 
-	// Build a set of first lines to remove.
-	removeSet := make(map[int]struct{}, len(toRemove))
-	for _, sc := range toRemove {
-		removeSet[scenarioFirstLine(sc)] = struct{}{}
-	}
-
 	// Sort removal candidates bottom-to-top so indices stay valid.
 	type removal struct{ start, end int }
 	var removals []removal
@@ -101,11 +95,6 @@ func filterFeatureContent(f *Feature, toRemove []*scenario) (*Feature, error) {
 // An empty expression returns all features unchanged.
 // An invalid expression is treated as a fatal configuration error.
 func filterFeatures(features []*Feature, expr string) []*Feature {
-	expr = strings.TrimSpace(expr)
-	if expr == "" {
-		return features
-	}
-
 	parsed, err := tagexpressions.Parse(expr)
 	if err != nil {
 		logger.Fatal("Invalid tag expression: "+expr, err)
@@ -139,8 +128,8 @@ func filterFeatures(features []*Feature, expr string) []*Feature {
 		}
 
 		// Some removed → rebuild Contents without the removed scenarios.
-		updated, err := filterFeatureContent(f, removed)
-		if err != nil {
+		updated, errFilter := filterFeatureContent(f, removed)
+		if errFilter != nil {
 			// If rebuild fails, keep the original feature to avoid data loss.
 			result = append(result, f)
 			continue

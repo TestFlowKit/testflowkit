@@ -169,6 +169,8 @@ func TestMacroVariableStruct(t *testing.T) {
 }
 
 func Test_GetStepEndLine(t *testing.T) {
+	mh := NewMacroHelpers(nil)
+
 	tests := []struct {
 		name           string
 		featureContent []string
@@ -225,7 +227,7 @@ func Test_GetStepEndLine(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := getStepEndLine(tt.stepStartLine, tt.featureContent)
+			result := mh.getStepEndLine(tt.stepStartLine, tt.featureContent)
 			assert.Equal(t, tt.expected, result)
 		})
 	}

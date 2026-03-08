@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	BeforeAllTag = "@BeforeAll"
-	AfterAllTag  = "@AfterAll"
+	BeforeAllTag string = "@BeforeAll"
+	AfterAllTag  string = "@AfterAll"
 )
 
 func Execute(appConfig *config.Config, errCfg error) {
@@ -35,8 +35,8 @@ func Execute(appConfig *config.Config, errCfg error) {
 
 	testReport := reporters.New(appConfig.Settings.ReportFormat)
 
-	f := getFeaturesToProcess(appConfig.Settings.GherkinLocation, appConfig.Settings.Tags)
-	if len(f) == 0 {
+	feats := getFeaturesToProcess(appConfig.Settings.GherkinLocation, appConfig.Settings.Tags)
+	if len(feats) == 0 {
 		logger.Warn("No scenarios executed!", []string{
 			"Make sure your tags are correct",
 			"Make sure your gherkin files directory is configured",
@@ -44,11 +44,11 @@ func Execute(appConfig *config.Config, errCfg error) {
 		os.Exit(0)
 	}
 
-	initializeBrowserEngineIfFrontendStepExists(appConfig, f)
+	initializeBrowserEngineIfFrontendStepExists(appConfig, feats)
 
-	runBeforeAllScenarios(appConfig, testReport, gherkinparser.Filter(f, BeforeAllTag))
-	runMainScenarios(appConfig, testReport, gherkinparser.Filter(f, appConfig.Settings.Tags))
-	runAfterAllScenarios(appConfig, testReport, gherkinparser.Filter(f, AfterAllTag))
+	runBeforeAllScenarios(appConfig, testReport, gherkinparser.Filter(feats, BeforeAllTag))
+	runMainScenarios(appConfig, testReport, gherkinparser.Filter(feats, appConfig.Settings.Tags))
+	runAfterAllScenarios(appConfig, testReport, gherkinparser.Filter(feats, AfterAllTag))
 
 	if testReport.HasScenarios() {
 		testReport.Write()
@@ -94,7 +94,10 @@ func runAfterAllScenarios(appConfig *config.Config, testReport *reporters.Report
 		features:    gherkinParserFeaturesToGodogFeatures(features),
 		concurrency: 1,
 	})
-	afterAllSuite.Run()
+
+	if afterAllSuite != nil {
+		afterAllSuite.Run()
+	}
 }
 
 func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
@@ -104,7 +107,9 @@ func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, fe
 		features:    gherkinParserFeaturesToGodogFeatures(features),
 		concurrency: appConfig.GetConcurrency(),
 	})
-	mainSuite.Run()
+	if mainSuite != nil {
+		mainSuite.Run()
+	}
 }
 
 func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
@@ -114,6 +119,10 @@ func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Repor
 		features:    gherkinParserFeaturesToGodogFeatures(features),
 		concurrency: 1,
 	})
+	if beforeAllSuite == nil {
+		return
+	}
+
 	if status := beforeAllSuite.Run(); status != 0 {
 		logger.Error("BeforeAll hooks failed", []string{
 			"Setup scenarios failed",
@@ -125,7 +134,10 @@ func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Repor
 	}
 }
 
-func createTestSuite(params createTestSuiteParams) godog.TestSuite {
+func createTestSuite(params createTestSuiteParams) *godog.TestSuite {
+	if len(params.features) == 0 {
+		return nil
+	}
 	var opts = godog.Options{
 		Output:              &buffer.Writer{},
 		Concurrency:         params.concurrency,
@@ -134,7 +146,7 @@ func createTestSuite(params createTestSuiteParams) godog.TestSuite {
 		FeatureContents:     params.features,
 	}
 
-	return godog.TestSuite{
+	return &godog.TestSuite{
 		Name:                 "Test Suite",
 		Options:              &opts,
 		TestSuiteInitializer: testSuiteInitializer(params.testReport),
