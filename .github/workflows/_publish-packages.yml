@@ -1,0 +1,157 @@
+name: _Publish Packages (reusable)
+
+# Internal reusable workflow — called by publish-npm-package.yml (release)
+# and publish-canary.yml. Never triggered directly.
+#
+# Inputs:
+#   version       — exact npm version string to publish
+#   artifact-name — name of the workflow artifact containing the *.zip binaries
+#   npm-tag       — npm dist-tag: 'latest' for releases, 'canary' for canaries
+#
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: "npm version to publish (e.g. 1.2.3 or 1.2.3-canary.abc1234)"
+      artifact-name:
+        required: true
+        type: string
+        description: "Name of the workflow artifact containing the *.zip binaries"
+      npm-tag:
+        required: true
+        type: string
+        description: "npm dist-tag (latest | canary)"
+    secrets:
+      NPM_TOKEN:
+        required: true
+
+jobs:
+  # ── Publish the 6 native packages in parallel (matrix) ───────────────────
+  #
+  #  fail-fast: false — if one platform fails the others still complete.
+  #  Each publish step is idempotent: registry is checked first so re-running
+  #  after a partial failure safely skips already-published packages.
+  #
+  publish_native:
+    name: "@testflowkit/${{ matrix.npm_pkg }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - npm_pkg: cli-linux-x64
+            zip: tkit-linux-amd64.zip
+            binary: tkit
+            chmod: true
+          - npm_pkg: cli-linux-arm64
+            zip: tkit-linux-arm64.zip
+            binary: tkit
+            chmod: true
+          - npm_pkg: cli-darwin-x64
+            zip: tkit-darwin-amd64.zip
+            binary: tkit
+            chmod: true
+          - npm_pkg: cli-darwin-arm64
+            zip: tkit-darwin-arm64.zip
+            binary: tkit
+            chmod: true
+          - npm_pkg: cli-win32-x64
+            zip: tkit-windows-amd64.zip
+            binary: tkit.exe
+            chmod: false
+          - npm_pkg: cli-win32-arm64
+            zip: tkit-windows-arm64.zip
+            binary: tkit.exe
+            chmod: false
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: build/
+
+      - name: Bump package version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          cd "npm/packages/${{ matrix.npm_pkg }}"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Extract binary into package
+        run: |
+          mkdir -p "npm/packages/${{ matrix.npm_pkg }}/bin"
+          unzip -o "build/${{ matrix.zip }}" -d "npm/packages/${{ matrix.npm_pkg }}/bin/"
+          if [[ "${{ matrix.chmod }}" == "true" ]]; then
+            chmod +x "npm/packages/${{ matrix.npm_pkg }}/bin/${{ matrix.binary }}"
+          fi
+
+      - name: Publish (idempotent)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          NPM_TAG: ${{ inputs.npm-tag }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
+          PKG_NAME="@testflowkit/${{ matrix.npm_pkg }}"
+          if npm view "${PKG_NAME}@${VERSION}" version 2>/dev/null | grep -qF "${VERSION}"; then
+            echo "${PKG_NAME}@${VERSION} already published, skipping."
+          else
+            (cd "npm/packages/${{ matrix.npm_pkg }}" && npm publish --access public --tag "${NPM_TAG}")
+          fi
+
+  # ── Publish the wrapper only after all native packages are on the registry ─
+  publish_wrapper:
+    name: "@testflowkit/cli (wrapper)"
+    needs: publish_native
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Bump version and pin optionalDependencies
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('npm/package.json', 'utf8'));
+            for (const dep of Object.keys(pkg.optionalDependencies)) {
+              pkg.optionalDependencies[dep] = process.env.VERSION;
+            }
+            fs.writeFileSync('npm/package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+          (cd npm && npm version "$VERSION" --no-git-tag-version --allow-same-version)
+
+      - name: Publish (idempotent)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          NPM_TAG: ${{ inputs.npm-tag }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
+          if npm view "@testflowkit/cli@${VERSION}" version 2>/dev/null | grep -qF "${VERSION}"; then
+            echo "@testflowkit/cli@${VERSION} already published, skipping."
+          else
+            (cd npm && npm publish --access public --tag "${NPM_TAG}")
+          fi

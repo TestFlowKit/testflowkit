@@ -1,0 +1,17 @@
+{
+  "name": "@testflowkit/cli-linux-x64",
+  "version": "0.0.0-development",
+  "description": "Linux x64 binary for TestFlowKit CLI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TestFlowKit/testflowkit.git"
+  },
+  "author": "TestFlowKit",
+  "license": "MIT",
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["bin/"]
+}

@@ -1,0 +1,62 @@
+name: Publish Canary
+
+# Triggers:
+#   - Every push to main → always a fresh canary available
+#   - Manual dispatch   → useful for testing from any branch
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # ── 1. Compile binaries inline (no GitHub Release exists yet) ───────────
+  #
+  #  Canary version format: {last-tag}-canary.{short-sha}
+  #  e.g.  1.2.3-canary.abc1234
+  #
+  prepare:
+    name: Build binaries & resolve canary version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.canary }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ vars.GO_VERSION }}
+
+      - name: Resolve canary version
+        id: version
+        run: |
+          BASE_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          CANARY_VERSION="${BASE_TAG}-canary.${SHORT_SHA}"
+          echo "canary=${CANARY_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Canary version: ${CANARY_VERSION}"
+
+      - name: Build Go binaries for all platforms
+        run: make releases
+
+      - name: Upload binaries as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: canary-binaries
+          path: build/*.zip
+          retention-days: 1
+
+  # ── 2. Publish all packages via the shared reusable workflow ─────────────
+  #      Published under the 'canary' dist-tag — never touches 'latest'.
+  publish:
+    name: Publish all packages
+    needs: prepare
+    uses: ./.github/workflows/_publish-packages.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+      artifact-name: canary-binaries
+      npm-tag: canary
+    secrets: inherit

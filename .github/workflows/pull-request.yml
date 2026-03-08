@@ -50,7 +50,7 @@ jobs:
       - name: Run npm package tests
         working-directory: ./npm
         run: |
-          yarn install --frozen-lockfile
+          yarn install --frozen-lockfile --ignore-optional
           yarn test
 
 

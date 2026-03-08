@@ -5,15 +5,11 @@
     "access": "public"
   },
   "description": "TestFlowKit CLI - A powerful end-to-end testing framework using Gherkin syntax",
-  "main": "lib/index.js",
   "bin": {
     "tkit": "bin/cli.js"
   },
   "scripts": {
-    "postinstall": "node -e \"process.env.CI || require('./lib/install.js')\"",
-    "test": "node --test ./lib/install.*.test.js",
-    "test:unit": "node --test ./lib/install.test.js",
-    "test:integration": "node ./lib/install.integration.test.js"
+    "test": "node --test ./lib/proxy.test.js"
   },
   "repository": {
     "type": "git",
@@ -48,14 +44,17 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "dependencies": {
-    "adm-zip": "^0.5.10"
+  "optionalDependencies": {
+    "@testflowkit/cli-linux-x64": "canary",
+    "@testflowkit/cli-linux-arm64": "canary",
+    "@testflowkit/cli-darwin-x64": "canary",
+    "@testflowkit/cli-darwin-arm64": "canary",
+    "@testflowkit/cli-win32-x64": "canary",
+    "@testflowkit/cli-win32-arm64": "canary"
   },
   "files": [
     "bin/cli.js",
-    "cli",
-    "lib/install.js",
-    "lib/index.js",
+    "lib/getBinaryPath.js",
     "README.md"
   ]
 }
