@@ -1,0 +1,17 @@
+{
+  "name": "@testflowkit/cli-win32-arm64",
+  "version": "0.0.0-development",
+  "description": "Windows arm64 binary for TestFlowKit CLI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TestFlowKit/testflowkit.git"
+  },
+  "author": "TestFlowKit",
+  "license": "MIT",
+  "os": ["win32"],
+  "cpu": ["arm64"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["bin/"]
+}

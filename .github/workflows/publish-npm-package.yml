@@ -5,9 +5,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish_npm_package:
-    name: publish_npm_package
+  # ── 1. Download the release ZIPs from GitHub Releases and cache them ─────
+  prepare:
+    name: Prepare release artifacts
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.tag }}
 
     steps:
       - uses: actions/checkout@v4
@@ -15,26 +18,38 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ vars.NODE_VERSION }}
-
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Get release version
+        id: version
         run: |
-          # Get the latest tag (without 'v' prefix for npm)
           LATEST_TAG=$(git describe --tags --abbrev=0)
-          NPM_VERSION="${LATEST_TAG}"
-          echo "Publishing version: $NPM_VERSION"
-          
-          # Update package.json version
-          cd npm
-          npm version "$NPM_VERSION" --no-git-tag-version --allow-same-version
-          
-          # Configure npm for publishing
-          npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
-          
-          # Publish to npm
-          npm publish
+          echo "tag=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
+          echo "Publishing version: ${LATEST_TAG}"
+
+      - name: Download release binaries from GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+        run: |
+          mkdir -p build
+          gh release download "${{ steps.version.outputs.tag }}" \
+            --dir build/ \
+            --pattern "*.zip"
+          echo "Downloaded artifacts:"
+          ls -1 build/
+
+      - name: Upload binaries as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-binaries
+          path: build/*.zip
+          retention-days: 1
+
+  # ── 2. Publish all packages via the shared reusable workflow ─────────────
+  publish:
+    name: Publish all packages
+    needs: prepare
+    uses: ./.github/workflows/_publish-packages.yml
+    with:
+      version: ${{ needs.prepare.outputs.version }}
+      artifact-name: release-binaries
+      npm-tag: latest
+    secrets: inherit
