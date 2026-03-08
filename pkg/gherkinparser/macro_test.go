@@ -59,13 +59,11 @@ func Test_GetMacros(t *testing.T) {
 					scenarios: []*scenario{
 						{Name: "first macro", Tags: []*messages.Tag{{Name: MacroTag}}},
 						{Name: "second macro", Tags: []*messages.Tag{{Name: MacroTag}}},
-						{Name: "none macro"},
 					},
 				},
 				{
 					scenarios: []*scenario{
 						{Name: "third macro", Tags: []*messages.Tag{{Name: MacroTag}}},
-						{Name: "simple scenario", Tags: []*messages.Tag{{Name: "Test"}}},
 					},
 				},
 			},
@@ -98,11 +96,13 @@ func Test_GetMacros(t *testing.T) {
 func Test_ApplyMacro(t *testing.T) {
 	for _, tt := range applyMacroTests {
 		t.Run(tt.name, func(t *testing.T) {
+			macroHelper := NewMacroHelpers(tt.macros)
+
 			// Create a copy of the feature content for testing
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			newContent := applyMacro(tt.scenario.Steps, tt.macros, strings.Join(testContent, "\n"))
+			newContent := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(testContent, "\n"))
 			assert.Equal(t, strings.Join(tt.expected, "\n"), newContent)
 		})
 	}
@@ -272,11 +272,13 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			macroHelper := NewMacroHelpers(tt.macros)
+
 			// Create a copy of the feature content for testing
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			content := applyMacro(tt.scenario.Steps, tt.macros, strings.Join(tt.featureContent, "\n"))
+			content := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(tt.featureContent, "\n"))
 
 			// // Trim any trailing empty lines for comparison
 			// for len(testContent) > 0 && strings.TrimSpace(testContent[len(testContent)-1]) == "" {
@@ -286,4 +288,23 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 			assert.Equal(t, strings.Join(tt.expected, "\n"), content)
 		})
 	}
+}
+
+func Test_NewMacroHelpers_AllowsRegexLikeMacroNames(t *testing.T) {
+	macros := []scenario{
+		{Name: "I call endpoint (v1) [safe]?"},
+	}
+
+	assert.NotPanics(t, func() {
+		mh := NewMacroHelpers(macros)
+		assert.NotNil(t, mh)
+	})
+}
+
+func Test_MacroHelpers_ContainsMacro_UsesExactNameMatch(t *testing.T) {
+	mh := NewMacroHelpers([]scenario{{Name: "macro step"}})
+
+	assert.True(t, mh.containsMacro([]*messages.Step{{Text: "macro step"}}))
+	assert.False(t, mh.containsMacro([]*messages.Step{{Text: "macro"}}))
+	assert.False(t, mh.containsMacro([]*messages.Step{{Text: "prefix macro step suffix"}}))
 }

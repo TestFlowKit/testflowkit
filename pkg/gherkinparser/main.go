@@ -31,13 +31,8 @@ func Filter(features []*Feature, expr string) []*Feature {
 }
 
 func ParseWithFilter(featureFilesLocation, expr string) []*Feature {
-	return Filter(Filter(Parse(featureFilesLocation), expr), excludeMacroTagExpr)
-}
-
-// ParseContent parses a single Gherkin feature document from its raw string content.
-// It is exported primarily for use in tests that need Feature values without filesystem I/O.
-func ParseContent(content string) (*Feature, error) {
-	return parseFeatureContent(content)
+	features := Parse(featureFilesLocation)
+	return Filter(features, expr)
 }
 
 func getFeatures(featureFilesLocation string) []*Feature {
