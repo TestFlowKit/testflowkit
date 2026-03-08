@@ -35,7 +35,6 @@ type Page interface {
 	GetAllBySelector(selector string) ([]Element, error)
 	GetOneByXPath(xpath string) (Element, error)
 	GetOneByTextContent(text string) (Element, error)
-	WaitLoading()
 	Refresh()
 	GetInfo() PageInfo
 	Focus()
@@ -58,6 +57,8 @@ type Element interface {
 	Click() error
 	DoubleClick() error
 	RightClick() error
+	Check() error
+	Uncheck() error
 	Hover() error
 	Input(text string) error
 	Clear() error
@@ -68,6 +69,7 @@ type Element interface {
 	SelectByIndex(int) error
 	IsVisible() bool
 	TextContent() string
+	InputValue() string
 	GetAttributeValue(attribute string, kind reflect.Kind) any
 	UploadFile(filePath string) error
 	UploadMultipleFiles(filePaths []string) error

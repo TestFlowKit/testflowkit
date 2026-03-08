@@ -1,4 +1,4 @@
-@TEST_VARIABLES @API
+@TEST_VARIABLES @FRONTEND
 Feature: variables testing
 
 
@@ -14,7 +14,7 @@ Feature: variables testing
         Then the value of the text field should be "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
 
 
-    Scenario: Write html element context into another field
+    Scenario: Write html element content into another field
         The page title is "Formulaire de test E2E"
 
         Given the user goes to the "form e2e" page

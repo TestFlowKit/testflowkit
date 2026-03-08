@@ -56,6 +56,22 @@ func (r *Report) HasScenarios() bool {
 	return len(r.scenarios) > 0
 }
 
+func (r *Report) GetSummary() ReportSummary {
+	var summary ReportSummary
+	summary.TotalScenarios = len(r.scenarios)
+	for _, sc := range r.scenarios {
+		if sc.Result == succeeded {
+			summary.PassedScenarios++
+			continue
+		}
+
+		if sc.Result == failed {
+			summary.FailedScenarios++
+		}
+	}
+	return summary
+}
+
 func New(formatType string) *Report {
 	reportFormatter := getFormatter(formatType)
 	return &Report{
@@ -74,4 +90,10 @@ func getFormatter(formatType string) formatter {
 		log.Printf("'%s' report format not supported\n", formatType)
 		return disabledFormatter{}
 	}
+}
+
+type ReportSummary struct {
+	TotalScenarios  int
+	PassedScenarios int
+	FailedScenarios int
 }

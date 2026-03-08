@@ -72,6 +72,8 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		thinkTime = 0
 	}
 
+	driver := internalbrowser.DriverType(cfg.GetFrontendDriver())
+
 	return &frontend{
 		browser:      nil,
 		page:         nil,
@@ -81,6 +83,7 @@ func newFrontCtx(cfg *config.Config) *frontend {
 		userAgent:    cfg.Frontend.UserAgent,
 		locale:       cfg.Frontend.Locale,
 		timezoneID:   cfg.Frontend.TimezoneID,
+		driverType:   driver,
 	}
 }
 
@@ -101,6 +104,7 @@ type frontend struct {
 	timeout, thinkTime time.Duration
 	currentPageName    string
 	headlessMode       bool
+	driverType         internalbrowser.DriverType
 	userAgent          string
 	locale             string
 	timezoneID         string

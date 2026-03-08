@@ -7,23 +7,23 @@ Feature: visual e2e tests
       | visual e2e |
 
   Scenario: User should see certain things on page
-    Given the "page body" should not contain the text "L'élément a été caché."
-    And the "page body" should contain the text "Cet élément va disparaître quand vous cliquerez sur le bouton."
+    Given the visual disappearing element should contain the text "Cet élément va disparaître quand vous cliquerez sur le bouton."
+    And the visual hidden message should not exist
     When the user clicks on the button which contains "Cacher l'élément"
-    Then the "page body" should not contain the text "Cet élément va disparaître quand vous cliquerez sur le bouton."
-    And the "page body" should contain the text "L'élément a été caché."
+    Then the visual disappearing element should not be visible
+    And the visual hidden message should exist
 
   @doubleClick
   Scenario: double click on element which contains
-    Given the "page body" should not contain the text "Vous avez double cliqué sur le bouton."
+    Given the visual double click message should not exist
     When the user double clicks on the button which contains "double click"
-    Then the "page body" should contain the text "Vous avez double cliqué sur le bouton."
+    Then the visual double click message should exist
 
   @doubleClick
   Scenario: double click on element
-    Given the "page body" should not contain the text "Vous avez double cliqué sur le bouton."
+    Given the visual double click message should not exist
     When the user double clicks on double click button
-    Then the "page body" should contain the text "Vous avez double cliqué sur le bouton."
+    Then the visual double click message should exist
 
   @visibility
   Scenario: element should exist but not visible
