@@ -91,3 +91,7 @@ func (e *Engine) Close() {
 func Install() error {
 	return nil
 }
+
+func Install() error {
+	return nil
+}

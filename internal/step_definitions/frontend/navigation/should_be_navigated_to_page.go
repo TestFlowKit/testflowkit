@@ -20,8 +20,6 @@ func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 				return ctx, errPage
 			}
 
-			page.WaitLoading()
-
 			var url string
 			var err error
 			var currentURL string
@@ -36,8 +34,6 @@ func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 				if strings.HasPrefix(currentURL, url) || strings.HasPrefix(url, currentURL) {
 					return ctx, nil
 				}
-
-				page.WaitLoading()
 			}
 
 			return ctx, fmt.Errorf("navigation check failed: current url is %s but %s expected", currentURL, url)

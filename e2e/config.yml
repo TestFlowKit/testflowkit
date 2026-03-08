@@ -7,21 +7,20 @@ settings:
 
 frontend:
   base_url: "{{ env.frontend_base_url }}"
+  driver: "{{ env.driver }}"
   default_timeout: 10000
   headless: true
   screenshot_on_failure: true
   think_time: 500
 
-  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  locale: "en-US"  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
-  timezone_id: "America/New_York"  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")
+  user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+  locale: en-US  # Browser locale (e.g., "en-US", "fr-FR", "de-DE")
+  timezone_id: America/New_York  # IANA timezone (e.g., "Europe/Paris", "Asia/Tokyo")
 
 
 
   elements:
     common:
-      page_body:
-        - "body"
       clicked_element:
         - "#clickedElt"
       visual_test_button:
@@ -30,6 +29,12 @@ frontend:
         - "#textarea"
       double_click_button:
         - "#dbclick-btn"
+      visual_disappearing_element:
+        - "#monElement"
+      visual_hidden_message:
+        - 'xpath://p[normalize-space(text())="L''élément a été caché."]'
+      visual_double_click_message:
+        - 'xpath://p[normalize-space(text())="Vous avez double cliqué sur le bouton."]'
       test_radio_button:
         - "#radio1"
       second_test_radio_button:
@@ -46,6 +51,8 @@ frontend:
         - "#product-description"
       scroll_target_element:
         - "#target-element"
+      computer_details:
+        - "#computer-details"
 
     form_e2e:
       page_title:
@@ -160,13 +167,13 @@ apis:
           path: "/albums/{id}/photos"
           description: "Retrieve photos for a specific album"
 
-    almansi_graphql:
+    almansi:
       type: graphql
       endpoint: "{{ env.almansi_graphql_endpoint }}"
       default_headers:
         Content-Type: "application/json"
       operations:
-        getUser:
+        get_user:
           type: "query"
           operation: |
             query GetUser($id: ID!) {
@@ -178,12 +185,12 @@ apis:
             }
           description: "Fetch user by ID"
         
-        createPost:
+        create_post:
           type: "mutation"
           operation: "graphql_queries/create_post.graphql"
           description: "Create a new post"
           
-        deletePost:
+        delete_post:
           type: "mutation"
           operation: |
             mutation DeletePost($id: ID!) {

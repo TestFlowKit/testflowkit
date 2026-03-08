@@ -31,7 +31,6 @@ func (c *Context) InitBrowser(incognitoMode bool) {
 func (c *Context) OpenNewPage(url string) {
 	c.EnsureBrowserInitialized()
 	c.frontend.page = c.frontend.browser.NewPage(url)
-	c.frontend.page.WaitLoading()
 }
 
 func (c *Context) EnsureBrowserInitialized() {
@@ -142,7 +141,6 @@ func (c *Context) SetCurrentPage(page browser.Page) error {
 	}
 
 	page.Focus()
-	page.WaitLoading()
 
 	c.frontend.page = page
 

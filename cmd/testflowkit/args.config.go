@@ -12,6 +12,7 @@ type argsConfig struct {
 	Version    bool         `arg:"--version,-v" help:"show version information"`
 	Run        *runCmd      `arg:"subcommand:run" help:"run tests"`
 	Init       *initCmd     `arg:"subcommand:init" help:"init cmd config"`
+	Install    *installCmd  `arg:"subcommand:install" help:"install browser drivers"`
 	Validate   *validateCmd `arg:"subcommand:validate" help:"validate gherkin files"`
 	VersionCmd *versionCmd  `arg:"subcommand:version" help:"show version information"`
 }
@@ -23,6 +24,10 @@ func (a *argsConfig) getConfigPath() (string, error) {
 
 	if a.Validate != nil {
 		return a.Validate.ConfigPath, nil
+	}
+
+	if a.Install != nil {
+		return a.Install.ConfigPath, nil
 	}
 
 	return "", errors.New("no config path provided")
@@ -53,6 +58,14 @@ func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 		}
 	}
 
+	if a.Install != nil {
+		return config.Overrides{
+			Settings: config.GlobalSettings{
+				EnvFile: a.Install.EnvFile,
+			},
+		}
+	}
+
 	return config.Overrides{}
 }
 
@@ -71,6 +84,10 @@ func (a *argsConfig) getMode() (config.Mode, error) {
 
 	if a.Validate != nil {
 		return config.ValidationMode, nil
+	}
+
+	if a.Install != nil {
+		return config.InstallMode, nil
 	}
 
 	return "", errors.New("no mode provided")
@@ -95,6 +112,11 @@ type runCmd struct {
 }
 
 type initCmd struct {
+}
+
+type installCmd struct {
+	ConfigPath string `arg:"-c,--config" help:"app config path" default:"config.yml"`
+	EnvFile    string `arg:"--env-file" help:"path to env file"`
 }
 
 type validateCmd struct {
