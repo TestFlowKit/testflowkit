@@ -7,6 +7,7 @@ import (
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/utils/stringutils"
 )
 
 func (steps) elementShouldNotContainsText() stepbuilder.Step {
@@ -19,7 +20,9 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 				return ctx, err
 			}
 
-			if strings.Contains(element.TextContent(), unexpectedText) {
+			textContent := stringutils.NormalizeWhitespace(element.TextContent())
+			unexpectedTextNormalized := stringutils.NormalizeWhitespace(unexpectedText)
+			if strings.Contains(textContent, unexpectedTextNormalized) {
 				return ctx, fmt.Errorf("%s unexpectedly contains text '%s'", name, unexpectedText)
 			}
 

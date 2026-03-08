@@ -46,7 +46,7 @@ func preinitializeBrowserEngine(cfg *config.Config) internalbrowser.Engine {
 	}
 
 	engine, errInit := internalbrowser.InitEngine(internalbrowser.Config{
-		DriverType:    internalbrowser.DriverRod,
+		DriverType:    internalbrowser.DriverType(cfg.GetFrontendDriver()),
 		HeadlessMode:  cfg.IsHeadlessModeEnabled(),
 		ThinkTime:     thinkTime,
 		IncognitoMode: false,

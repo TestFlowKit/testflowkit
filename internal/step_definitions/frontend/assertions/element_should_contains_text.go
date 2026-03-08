@@ -7,6 +7,7 @@ import (
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/utils/stringutils"
 )
 
 func (steps) elementShouldContainsText() stepbuilder.Step {
@@ -14,12 +15,13 @@ func (steps) elementShouldContainsText() stepbuilder.Step {
 		[]string{`the {string} should contain the text {string}`},
 		func(ctx context.Context, name, expectedText string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
-			element, err := scenarioCtx.GetHTMLElementByLabel(name)
+			el, err := scenarioCtx.GetHTMLElementByLabel(name)
 			if err != nil {
 				return ctx, err
 			}
 
-			if !strings.Contains(element.TextContent(), expectedText) {
+			text := stringutils.NormalizeWhitespace(expectedText)
+			if !strings.Contains(stringutils.NormalizeWhitespace(el.TextContent()), text) {
 				return ctx, fmt.Errorf("%s does not contain text '%s'", name, expectedText)
 			}
 
