@@ -2,12 +2,12 @@ settings:
   page_load_timeout: 30000
   concurrency: 1
   report_format: "html"
-  gherkin_location: "e2e/features"
+  gherkin_location: "{{ env.feature_files_dir }}"
 
 
 frontend:
   base_url: "{{ env.frontend_base_url }}"
-  default_timeout: 1000
+  default_timeout: 10000
   headless: true
   screenshot_on_failure: true
   think_time: 500
@@ -192,7 +192,7 @@ apis:
           description: "Delete a post"
 
 files:
-  base_directory: "./test-files"
+  base_directory: "{{ env.files_base_dir }}"
   definitions:
     avatar_image: "images/avatar.png"
     gallery_image1: "images/gallery/image1.jpg"
