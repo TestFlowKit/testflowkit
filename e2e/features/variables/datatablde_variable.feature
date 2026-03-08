@@ -1,4 +1,4 @@
-@TEST_VARIABLES
+@TEST_VARIABLES @FRONTEND
 Feature: variables testing with table data
 
     @tableData

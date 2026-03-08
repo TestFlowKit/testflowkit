@@ -78,3 +78,7 @@ func (rb *rodBrowser) InitEngine() {
 	b := rod.New().ControlURL(u).MustConnect()
 	b.MustClose()
 }
+
+func Install() error {
+	return nil
+}

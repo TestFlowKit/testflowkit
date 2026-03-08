@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 env:
   BRANCH_NAME_REGEX: "^(docs|feat|fix|perf|refactor|revert|style|test|chore|releases)/"
@@ -55,3 +56,6 @@ jobs:
 
   e2e_tests:
     uses: "./.github/workflows/e2e.yml"
+    permissions:
+      contents: read
+      actions: write
