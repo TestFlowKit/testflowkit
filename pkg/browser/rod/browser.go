@@ -71,4 +71,10 @@ func New(args browser.CreationArgs) browser.Client {
 }
 
 func (rb *rodBrowser) InitEngine() {
+	path, _ := launcher.LookPath()
+	launcher := launcher.New().Bin(path)
+	u := launcher.MustLaunch()
+
+	b := rod.New().ControlURL(u).MustConnect()
+	b.MustClose()
 }

@@ -112,6 +112,7 @@ func applyOverrides(config *Config, overrides Overrides) {
 		if overrides.Frontend.DefaultTimeout > 0 {
 			config.Frontend.DefaultTimeout = overrides.Frontend.DefaultTimeout
 		}
+		// TODO: fix this bug
 		config.Frontend.Headless = overrides.Frontend.Headless
 	}
 }

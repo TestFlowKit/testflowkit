@@ -18,6 +18,27 @@ func Parse(featureFilesLocation string) []*Feature {
 	return applyMacros(macros, features)
 }
 
+// Filter applies a tag expression to an already-parsed list of features.
+// It is the filtering step of ParseWithFilter, usable when features are parsed once
+// and filtered multiple times with different expressions.
+func Filter(features []*Feature, expr string) []*Feature {
+	groups := parseTagExpression(expr)
+	if groups == nil {
+		return features
+	}
+	return filterFeatures(features, groups)
+}
+
+func ParseWithFilter(featureFilesLocation, expr string) []*Feature {
+	return Filter(Parse(featureFilesLocation), expr)
+}
+
+// ParseContent parses a single Gherkin feature document from its raw string content.
+// It is exported primarily for use in tests that need Feature values without filesystem I/O.
+func ParseContent(content string) (*Feature, error) {
+	return parseFeatureContent(content)
+}
+
 func getFeatures(featureFilesLocation string) []*Feature {
 	featuresPaths, getFeaturesErr := getFeaturesPaths(featureFilesLocation)
 	if getFeaturesErr != nil {
@@ -91,12 +112,13 @@ func parseFeatureContent(content string) (*Feature, error) {
 		}
 	}
 
-	return newFeature(
-		gherkinDoc.Feature.Name,
-		[]byte(content),
-		scenarios,
-		background,
-	), nil
+	return newFeature(NewFeatureParams{
+		Name:       gherkinDoc.Feature.Name,
+		Content:    []byte(content),
+		Scenarios:  scenarios,
+		Background: background,
+		Tags:       gherkinDoc.Feature.Tags,
+	}), nil
 }
 
 var errFeatureParse = errors.New("error parsing feature content")

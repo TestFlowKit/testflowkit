@@ -8,7 +8,6 @@ import (
 
 	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/pkg/browser"
-	"testflowkit/pkg/logger"
 )
 
 var errNoCurrentPageAvailable = errors.New("no current page available")
@@ -34,7 +33,6 @@ func (c *Context) OpenNewPage(url string) {
 
 func (c *Context) EnsureBrowserInitialized() {
 	if c.frontend.browser == nil {
-		logger.Info("Browser not initialized, automatically opening browser")
 		c.InitBrowser(false)
 	}
 }
