@@ -5,6 +5,7 @@ import (
 
 	"testflowkit/internal/actions/actionutils"
 	"testflowkit/internal/step_definitions/frontend"
+	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 )
 
@@ -32,7 +33,7 @@ func compileFrontendStepRegexes() []*regexp.Regexp {
 	return compiled
 }
 
-func IsFrontendStepTextMatch(stepText string) bool {
+func isFrontendStepTextMatch(stepText string) bool {
 	for _, frontendRegex := range frontendStepRegexes {
 		if frontendRegex.MatchString(stepText) {
 			return true
@@ -40,4 +41,8 @@ func IsFrontendStepTextMatch(stepText string) bool {
 	}
 
 	return false
+}
+
+func hasFrontendStepInFeatures(features []*gherkinparser.Feature) bool {
+	return gherkinparser.HasAnyStep(features, isFrontendStepTextMatch)
 }

@@ -7,38 +7,30 @@ import (
 
 	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/internal/config"
+	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 )
 
 var browserInitOnce sync.Once
 
-func initializeBrowserEngineIfFrontendStepExists(cfg *config.Config, stepText string) {
-	if !shouldPreinitializeBrowserEngine(cfg, stepText) {
+func initializeBrowserEngineIfFrontendStepExists(cfg *config.Config, features []*gherkinparser.Feature) {
+	if !shouldPreinitializeBrowserEngine(cfg, features) {
 		return
 	}
 
 	browserInitOnce.Do(func() {
-		preinitializeBrowserEngine(cfg, stepText)
+		preinitializeBrowserEngine(cfg)
 	})
 }
 
-func shouldPreinitializeBrowserEngine(cfg *config.Config, stepText string) bool {
-	if cfg == nil || !cfg.IsFrontendDefined() {
-		return false
-	}
+func shouldPreinitializeBrowserEngine(cfg *config.Config, features []*gherkinparser.Feature) bool {
+	isFrontendConfigDefined := cfg != nil && cfg.IsFrontendDefined()
+	hasFrontendStep := hasFrontendStepInFeatures(features)
 
-	if stepText == "" {
-		return false
-	}
-
-	if !IsFrontendStepTextMatch(stepText) {
-		return false
-	}
-
-	return true
+	return isFrontendConfigDefined && hasFrontendStep
 }
 
-func preinitializeBrowserEngine(cfg *config.Config, stepText string) {
+func preinitializeBrowserEngine(cfg *config.Config) {
 	thinkTime, err := time.ParseDuration(fmt.Sprintf("%dms", cfg.Frontend.ThinkTime))
 	if err != nil {
 		thinkTime = 0
@@ -55,5 +47,5 @@ func preinitializeBrowserEngine(cfg *config.Config, stepText string) {
 	})
 
 	browserInstance.InitEngine()
-	logger.InfoFf("Browser engine pre-initialization completed (trigger: %s)", stepText)
+	logger.Info("Browser engine pre-initialization completed")
 }

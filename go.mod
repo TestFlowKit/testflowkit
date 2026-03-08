@@ -19,6 +19,8 @@ require (
 	github.com/tidwall/gjson v1.18.0
 )
 
+require github.com/cucumber/tag-expressions/go/v6 v6.2.0 // indirect
+
 require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect

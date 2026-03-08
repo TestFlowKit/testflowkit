@@ -28,10 +28,6 @@ type Feature struct {
 	featureTags []*messages.Tag
 }
 
-// tagGroup is an AND group: all tags must match.
-// Tags prefixed with "~" are negations: the scenario must NOT have that tag.
-type tagGroup = []string
-
 type scenario = messages.Scenario
 
 // HasAnyStep reports whether any step text across the background and all scenarios

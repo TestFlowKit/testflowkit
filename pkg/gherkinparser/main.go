@@ -15,22 +15,23 @@ import (
 func Parse(featureFilesLocation string) []*Feature {
 	features := getFeatures(featureFilesLocation)
 	macros := getMacros(features)
-	return applyMacros(macros, features)
+	return Filter(applyMacros(macros, features), excludeMacroTagExpr)
 }
 
-// Filter applies a tag expression to an already-parsed list of features.
+// Filter applies a Cucumber tag expression to an already-parsed list of features.
+// Accepts standard Cucumber syntax: and, or, not, parentheses, e.g. "@smoke and not @slow".
 // It is the filtering step of ParseWithFilter, usable when features are parsed once
 // and filtered multiple times with different expressions.
 func Filter(features []*Feature, expr string) []*Feature {
-	groups := parseTagExpression(expr)
-	if groups == nil {
+	expr = strings.TrimSpace(expr)
+	if expr == "" {
 		return features
 	}
-	return filterFeatures(features, groups)
+	return filterFeatures(features, expr)
 }
 
 func ParseWithFilter(featureFilesLocation, expr string) []*Feature {
-	return Filter(Parse(featureFilesLocation), expr)
+	return Filter(Filter(Parse(featureFilesLocation), expr), excludeMacroTagExpr)
 }
 
 // ParseContent parses a single Gherkin feature document from its raw string content.

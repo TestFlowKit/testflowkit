@@ -20,6 +20,11 @@ import (
 	"github.com/tdewolff/parse/buffer"
 )
 
+const (
+	BeforeAllTag = "@BeforeAll"
+	AfterAllTag  = "@AfterAll"
+)
+
 func Execute(appConfig *config.Config, errCfg error) {
 	if errCfg != nil {
 		logger.Fatal("RUN", errCfg)
@@ -28,33 +33,25 @@ func Execute(appConfig *config.Config, errCfg error) {
 	actionutils.DisplayConfigSummary(appConfig)
 	logger.Info("Starting tests execution ...")
 
-	parsedFeatures := gherkinparser.Parse(appConfig.Settings.GherkinLocation)
-	features := make([]godog.Feature, len(parsedFeatures))
-	for i, f := range parsedFeatures {
-		features[i] = godog.Feature{
-			Name:     f.Name,
-			Contents: f.Contents,
-		}
-	}
-
 	testReport := reporters.New(appConfig.Settings.ReportFormat)
 
-	runBeforeAllScenarios(appConfig, testReport, features)
-
-	runMainScenarios(appConfig, testReport, features)
-
-	runAfterAllScenarios(appConfig, testReport, features)
-
-	if testReport.HasScenarios() {
-		testReport.Write()
-	}
-
-	if !testReport.HasScenarios() {
+	f := getFeaturesToProcess(appConfig.Settings.GherkinLocation, appConfig.Settings.Tags)
+	if len(f) == 0 {
 		logger.Warn("No scenarios executed!", []string{
 			"Make sure your tags are correct",
 			"Make sure your gherkin files directory is configured",
 		})
 		os.Exit(0)
+	}
+
+	initializeBrowserEngineIfFrontendStepExists(appConfig, f)
+
+	runBeforeAllScenarios(appConfig, testReport, gherkinparser.Filter(f, BeforeAllTag))
+	runMainScenarios(appConfig, testReport, gherkinparser.Filter(f, appConfig.Settings.Tags))
+	runAfterAllScenarios(appConfig, testReport, gherkinparser.Filter(f, AfterAllTag))
+
+	if testReport.HasScenarios() {
+		testReport.Write()
 	}
 
 	if testReport.AreAllTestsPassed {
@@ -81,38 +78,40 @@ func Execute(appConfig *config.Config, errCfg error) {
 	os.Exit(1)
 }
 
-func runAfterAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []godog.Feature) {
+func getFeaturesToProcess(featureLoc, mainTagsExpr string) []*gherkinparser.Feature {
+	if mainTagsExpr == "" {
+		return gherkinparser.Parse(featureLoc)
+	}
+
+	expr := fmt.Sprintf("%s or %s or %s", BeforeAllTag, AfterAllTag, mainTagsExpr)
+	return gherkinparser.ParseWithFilter(featureLoc, expr)
+}
+
+func runAfterAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
 	afterAllSuite := createTestSuite(createTestSuiteParams{
 		appConfig:   appConfig,
 		testReport:  testReport,
-		features:    features,
-		tags:        "@AfterAll",
+		features:    gherkinParserFeaturesToGodogFeatures(features),
 		concurrency: 1,
 	})
 	afterAllSuite.Run()
 }
 
-func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, features []godog.Feature) {
-	mainTags := getTagsExludingMacros(appConfig.Settings.Tags)
-	// Exclude BeforeAll and AfterAll from main run
-	mainTags = fmt.Sprintf("%s && ~@BeforeAll && ~@AfterAll", mainTags)
-
+func runMainScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
 	mainSuite := createTestSuite(createTestSuiteParams{
 		appConfig:   appConfig,
 		testReport:  testReport,
-		features:    features,
-		tags:        mainTags,
+		features:    gherkinParserFeaturesToGodogFeatures(features),
 		concurrency: appConfig.GetConcurrency(),
 	})
 	mainSuite.Run()
 }
 
-func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []godog.Feature) {
+func runBeforeAllScenarios(appConfig *config.Config, testReport *reporters.Report, features []*gherkinparser.Feature) {
 	beforeAllSuite := createTestSuite(createTestSuiteParams{
 		appConfig:   appConfig,
 		testReport:  testReport,
-		features:    features,
-		tags:        "@BeforeAll",
+		features:    gherkinParserFeaturesToGodogFeatures(features),
 		concurrency: 1,
 	})
 	if status := beforeAllSuite.Run(); status != 0 {
@@ -132,7 +131,6 @@ func createTestSuite(params createTestSuiteParams) godog.TestSuite {
 		Concurrency:         params.concurrency,
 		Format:              "pretty",
 		ShowStepDefinitions: false,
-		Tags:                params.tags,
 		FeatureContents:     params.features,
 	}
 
@@ -148,7 +146,6 @@ type createTestSuiteParams struct {
 	appConfig   *config.Config
 	testReport  *reporters.Report
 	features    []godog.Feature
-	tags        string
 	concurrency int
 }
 
@@ -173,7 +170,7 @@ func scenarioInitializer(config *config.Config, testReport *reporters.Report) fu
 			ctx = scenario.WithContext(ctx, scenarioCtx)
 			return ctx, nil
 		})
-		sc.StepContext().Before(beforeStepHookInitializer(&myCtx, config))
+		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
 		sc.StepContext().After(afterStepHookInitializer(&myCtx, config))
 		sc.After(afterScenarioHookInitializer(testReport, &myCtx))
 	}
@@ -226,11 +223,8 @@ func takeScreenshot(st *godog.Step, currentPage browser.Page) string {
 	return base64Str
 }
 
-func beforeStepHookInitializer(myCtx *myScenarioCtx, cfg *config.Config) godog.BeforeStepHook {
-	return func(ctx context.Context, step *godog.Step) (context.Context, error) {
-		if step != nil {
-			initializeBrowserEngineIfFrontendStepExists(cfg, step.Text)
-		}
+func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
+	return func(ctx context.Context, _ *godog.Step) (context.Context, error) {
 		myCtx.currentStepStartTime = time.Now()
 		return ctx, nil
 	}
@@ -264,15 +258,6 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 	}
 }
 
-func getTagsExludingMacros(tags string) string {
-	excludeMacros := "~" + gherkinparser.MacroTag
-	if tags == "" {
-		return excludeMacros
-	}
-
-	return fmt.Sprintf("%s && %s", tags, excludeMacros)
-}
-
 type myScenarioCtx struct {
 	currentStepStartTime time.Time
 	scenarioReport       reporters.Scenario
@@ -289,4 +274,15 @@ type stepError struct {
 
 func (se stepError) ScreenshotBase64() string {
 	return se.screenshotBase64
+}
+
+func gherkinParserFeaturesToGodogFeatures(features []*gherkinparser.Feature) []godog.Feature {
+	godogFeatures := make([]godog.Feature, len(features))
+	for i, f := range features {
+		godogFeatures[i] = godog.Feature{
+			Name:     f.Name,
+			Contents: f.Contents,
+		}
+	}
+	return godogFeatures
 }
