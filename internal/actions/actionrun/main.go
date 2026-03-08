@@ -78,8 +78,10 @@ func Execute(appConfig *config.Config, errCfg error) {
 		testReport.Write()
 	}
 
-	summary := testReport.GetSummary()
-	logger.InfoFf("Test execution completed: %d scenario(s) executed, %d passed, %d failed", summary.TotalScenarios, summary.PassedScenarios, summary.FailedScenarios)
+	sum := testReport.GetSummary()
+	format := "Total: %d, Passed: %d, Failed: %d"
+	msg := fmt.Sprintf(format, sum.TotalSc, sum.PassedSc, sum.FailedSc)
+	logger.Info(msg)
 
 	if testReport.AreAllTestsPassed {
 		logger.Success("All tests passed")

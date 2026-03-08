@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 	"testflowkit/pkg/browser"
+	"time"
 
 	pw "github.com/playwright-community/playwright-go"
 )
@@ -121,6 +122,7 @@ func initPlaywright() {
 		runOpts := &pw.RunOptions{
 			SkipInstallBrowsers: true,
 		}
+		time.Sleep(50 * time.Second) // Small delay to ensure any previous installation processes have settled
 		inst, errFirstRun := pw.Run(runOpts)
 		if errFirstRun == nil {
 			pwInstance = inst
@@ -142,7 +144,9 @@ func initPlaywright() {
 			panic(errRun)
 		}
 		pwInstance = instance
+		log.Println("Playwright initialized successfully after installation")
 	})
+	log.Println("Playwright is ready to use")
 }
 
 func getInstalledPlaywrightVersion(ctx context.Context) (string, error) {

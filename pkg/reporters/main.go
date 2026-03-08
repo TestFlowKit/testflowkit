@@ -58,15 +58,15 @@ func (r *Report) HasScenarios() bool {
 
 func (r *Report) GetSummary() ReportSummary {
 	var summary ReportSummary
-	summary.TotalScenarios = len(r.scenarios)
+	summary.TotalSc = len(r.scenarios)
 	for _, sc := range r.scenarios {
 		if sc.Result == succeeded {
-			summary.PassedScenarios++
+			summary.PassedSc++
 			continue
 		}
 
 		if sc.Result == failed {
-			summary.FailedScenarios++
+			summary.FailedSc++
 		}
 	}
 	return summary
@@ -93,7 +93,7 @@ func getFormatter(formatType string) formatter {
 }
 
 type ReportSummary struct {
-	TotalScenarios  int
-	PassedScenarios int
-	FailedScenarios int
+	TotalSc  int
+	PassedSc int
+	FailedSc int
 }
