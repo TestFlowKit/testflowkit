@@ -2,7 +2,9 @@ package actionrun
 
 import (
 	"os"
+	"strings"
 	"testflowkit/internal/config"
+	"testflowkit/pkg/gherkinparser"
 	"testing"
 )
 
@@ -51,7 +53,7 @@ func TestScreenshotDirectoryCreation(t *testing.T) {
 func TestIsFrontendStepTextMatchWhenFrontendStepExists(t *testing.T) {
 	stepText := frontendClickStep
 
-	matched := IsFrontendStepTextMatch(stepText)
+	matched := isFrontendStepTextMatch(stepText)
 	if !matched {
 		t.Fatal("expected frontend step detection to match")
 	}
@@ -60,7 +62,7 @@ func TestIsFrontendStepTextMatchWhenFrontendStepExists(t *testing.T) {
 func TestIsFrontendStepTextMatchWhenNoFrontendStepExists(t *testing.T) {
 	stepText := backendRequestStep
 
-	matched := IsFrontendStepTextMatch(stepText)
+	matched := isFrontendStepTextMatch(stepText)
 	if matched {
 		t.Fatal("expected frontend step detection to not match")
 	}
@@ -69,14 +71,14 @@ func TestIsFrontendStepTextMatchWhenNoFrontendStepExists(t *testing.T) {
 func TestIsFrontendStepTextMatchIsCaseInsensitive(t *testing.T) {
 	stepText := "THE USER CLICKS THE \"submit_button\" BUTTON"
 
-	matched := IsFrontendStepTextMatch(stepText)
+	matched := isFrontendStepTextMatch(stepText)
 	if !matched {
 		t.Fatal("expected case-insensitive frontend step detection to match")
 	}
 }
 
 func TestShouldPreinitializeBrowserEngineWhenConfigIsNil(t *testing.T) {
-	shouldInit := shouldPreinitializeBrowserEngine(nil, frontendClickStep)
+	shouldInit := shouldPreinitializeBrowserEngine(nil, nil)
 	if shouldInit {
 		t.Fatal("expected pre-initialization to be skipped when config is nil")
 	}
@@ -85,20 +87,20 @@ func TestShouldPreinitializeBrowserEngineWhenConfigIsNil(t *testing.T) {
 func TestShouldPreinitializeBrowserEngineWhenFrontendNotDefined(t *testing.T) {
 	cfg := &config.Config{}
 
-	shouldInit := shouldPreinitializeBrowserEngine(cfg, frontendClickStep)
+	shouldInit := shouldPreinitializeBrowserEngine(cfg, nil)
 	if shouldInit {
 		t.Fatal("expected pre-initialization to be skipped when frontend is not defined")
 	}
 }
 
-func TestShouldPreinitializeBrowserEngineWhenStepIsNotFrontend(t *testing.T) {
+func TestShouldPreinitializeBrowserEngineWhenNoFrontendStepInFeatures(t *testing.T) {
 	cfg := &config.Config{
 		Frontend: &config.FrontendConfig{},
 	}
 
-	shouldInit := shouldPreinitializeBrowserEngine(cfg, backendRequestStep)
+	shouldInit := shouldPreinitializeBrowserEngine(cfg, []*gherkinparser.Feature{})
 	if shouldInit {
-		t.Fatal("expected pre-initialization to be skipped for non-frontend step")
+		t.Fatal("expected pre-initialization to be skipped when no frontend steps in features")
 	}
 }
 
@@ -107,8 +109,18 @@ func TestShouldPreinitializeBrowserEngineWhenFrontendStepMatches(t *testing.T) {
 		Frontend: &config.FrontendConfig{},
 	}
 
-	shouldInit := shouldPreinitializeBrowserEngine(cfg, frontendClickStep)
+	featureContent := []string{
+		"Feature: frontend test",
+		"Scenario: click something",
+		"Given the user clicks the \"submit_button\" button",
+	}
+	feature, err := gherkinparser.ParseContent(strings.Join(featureContent, "\n"))
+	if err != nil {
+		t.Fatalf("failed to parse feature content: %v", err)
+	}
+
+	shouldInit := shouldPreinitializeBrowserEngine(cfg, []*gherkinparser.Feature{feature})
 	if !shouldInit {
-		t.Fatal("expected pre-initialization for frontend step")
+		t.Fatal("expected pre-initialization for features containing frontend steps")
 	}
 }

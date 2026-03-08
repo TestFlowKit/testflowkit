@@ -12,6 +12,7 @@ import (
 )
 
 const MacroTag = "@macro"
+const excludeMacroTagExpr = "not " + MacroTag
 
 var macroVarPattern = regexp.MustCompile(`\$\{([^}]+)\}`)
 

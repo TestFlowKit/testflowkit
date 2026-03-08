@@ -4,82 +4,11 @@ import (
 	"sort"
 	"strings"
 
+	"testflowkit/pkg/logger"
+
 	messages "github.com/cucumber/messages/go/v21"
+	tagexpressions "github.com/cucumber/tag-expressions/go/v6"
 )
-
-// parseTagExpression converts a tag expression string into an OR-of-AND-groups structure.
-//
-// Syntax:
-//   - "||" separates OR groups
-//   - "&&" separates AND tags within a group
-//   - e.g. "@smoke || @critical && @api" → [["@smoke"], ["@critical", "@api"]]
-//
-// An empty expression returns nil (no filter → pass all).
-func parseTagExpression(expr string) []tagGroup {
-	expr = strings.TrimSpace(expr)
-	if expr == "" {
-		return nil
-	}
-
-	var groups []tagGroup
-	for _, orPart := range strings.Split(expr, "||") {
-		orPart = strings.TrimSpace(orPart)
-		if orPart == "" {
-			continue
-		}
-		var group tagGroup
-		for _, tag := range strings.Split(orPart, "&&") {
-			tag = strings.TrimSpace(tag)
-			if tag != "" {
-				group = append(group, tag)
-			}
-		}
-		if len(group) > 0 {
-			groups = append(groups, group)
-		}
-	}
-
-	if len(groups) == 0 {
-		return nil
-	}
-	return groups
-}
-
-// matchesFilter reports whether tags satisfies the OR-of-AND filter groups.
-// Tags prefixed with "~" are negations: the scenario must NOT have that tag.
-// Empty groups means no filter → always true.
-func matchesFilter(tags []string, groups []tagGroup) bool {
-	if len(groups) == 0 {
-		return true
-	}
-
-	tagSet := make(map[string]struct{}, len(tags))
-	for _, t := range tags {
-		tagSet[t] = struct{}{}
-	}
-
-	for _, group := range groups {
-		allMatch := true
-		for _, term := range group {
-			if strings.HasPrefix(term, "~") {
-				// negation: tag must NOT be present
-				if _, ok := tagSet[term[1:]]; ok {
-					allMatch = false
-					break
-				}
-			} else {
-				if _, ok := tagSet[term]; !ok {
-					allMatch = false
-					break
-				}
-			}
-		}
-		if allMatch {
-			return true
-		}
-	}
-	return false
-}
 
 // collectTagNames merges tag names from multiple slices of *messages.Tag.
 func collectTagNames(tagSlices ...[]*messages.Tag) []string {
@@ -167,10 +96,22 @@ func filterFeatureContent(f *Feature, toRemove []*scenario) (*Feature, error) {
 	return parseFeatureContent(newContent)
 }
 
-// filterFeatures filters features by a parsed tag expression (OR-of-AND groups).
-// Negated tags (~@tag) mean the scenario must NOT have that tag.
+// filterFeatures filters features using a Cucumber tag expression.
 // Features with no surviving scenarios are dropped entirely.
-func filterFeatures(features []*Feature, groups []tagGroup) []*Feature {
+// An empty expression returns all features unchanged.
+// An invalid expression is treated as a fatal configuration error.
+func filterFeatures(features []*Feature, expr string) []*Feature {
+	expr = strings.TrimSpace(expr)
+	if expr == "" {
+		return features
+	}
+
+	parsed, err := tagexpressions.Parse(expr)
+	if err != nil {
+		logger.Fatal("Invalid tag expression: "+expr, err)
+		return features // unreachable
+	}
+
 	var result []*Feature
 
 	for _, f := range features {
@@ -179,7 +120,7 @@ func filterFeatures(features []*Feature, groups []tagGroup) []*Feature {
 
 		for _, sc := range f.scenarios {
 			allTags := collectTagNames(f.featureTags, sc.Tags)
-			if matchesFilter(allTags, groups) {
+			if parsed.Evaluate(allTags) {
 				kept = append(kept, sc)
 			} else {
 				removed = append(removed, sc)
