@@ -39,8 +39,9 @@ Feature: Posts API Testing
 
     Scenario: Create a new post
         When I try to create a new post with the following details:
-            | title           | body                                     | userId |
-            | Test Post Title | This is a test post body for API testing | 1      |
+            | title  | Test Post Title                          |
+            | body   | This is a test post body for API testing |
+            | userId | 1                                        |
         Then the response status code should be 201
         And the response header "test" should equal "micro"
         And the response header "Location" should match pattern "/posts/\d+"
@@ -78,7 +79,7 @@ Feature: Posts API Testing
         When I set the request body from file "features/restapi/new_post.json"
         And I send the request
         Then the response status code should be 201
-        
+
 
     Scenario: Validate response field types and patterns
         Given I prepare a request to "jsonplaceholder.get_post_by_id"

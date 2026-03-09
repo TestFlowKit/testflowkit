@@ -436,10 +436,11 @@ Advanced Gherkin parsing with macro support for reusable test scenarios.
 
 **Key Features:**
 
-- **Macro Processing**: Reusable scenario definitions with direct step substitution
+- **Macro Processing**: Reusable scenario definitions with direct step substitution using map-based variable resolution
 - **Feature Separation**: Macro vs test feature distinction using `@macro` tags
 - **Parallel Processing**: Concurrent feature parsing and macro application
 - **Error Handling**: Graceful parsing error recovery and circular dependency detection
+- **Variable Substitution**: Data tables converted to maps for efficient variable lookup and replacement
 
 **Macro Definition:**
 
@@ -462,6 +463,26 @@ Scenario: Logout user
 
 **Note:** The `@macro` tag identifies macro scenarios, not the file name. Macros are static groups of steps that get substituted directly.
 
+**Variable Substitution with Maps:**
+
+When macros include variables (using `${variable_name}` syntax), data tables are converted to maps for efficient substitution. Each row contains a variable-value pair:
+
+```gherkin
+@macro
+Scenario: Login with user credentials
+  Given the user goes to the "login" page
+  When the user enters "${email}" into the "email" field
+  And the user enters "${password}" into the "password" field
+
+# Usage with two-column data table format:
+Scenario: Test admin login
+  Given Login with user credentials
+    | email    | admin@example.com |
+    | password | admin123          |
+```
+
+Each data table row is internally converted to a map entry: `{email: "admin@example.com", password: "admin123"}` for fast variable lookup.
+
 **Macro Usage:**
 
 ```gherkin
@@ -478,7 +499,7 @@ Scenario: Regular user login
 **Implementation Details:**
 
 ```go
-// Macro processing workflow
+// Macro processing workflow with map-based variable substitution
 func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
     macroTitles := getMacroTitles(macros)
     mustContainsMacro := regexp.MustCompile(strings.Join(macroTitles, "|"))
@@ -493,6 +514,26 @@ func applyMacros(macros []*scenario, featuresContainingMacros []*Feature) {
             applyMacro(sc.Steps, macroTitles, macros, featureContent)
         }
     }
+}
+
+// Convert DataTable to map for variable substitution
+// Two-column format: each row = [variable_name, value]
+func getMacroVariables(table *messages.DataTable) MacroVariables {
+    variables := make(map[string]string)
+    for _, row := range table.Rows {
+        cells := row.Cells
+        varName := strings.TrimSpace(cells[0].Value)   // First column: variable name
+        varValue := strings.TrimSpace(cells[1].Value)  // Second column: value
+        variables[varName] = varValue
+    }
+    return variables
+}
+
+// ExpandMacroParam uses map instead of DataTable
+type ExpandMacroParam struct {
+    Macro     scenario
+    Keyword   string
+    Variables MacroVariables  // map[string]string
 }
 ```
 
