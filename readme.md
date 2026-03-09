@@ -725,7 +725,7 @@ Scenario: End-to-end data flow with variables
 
 ### Macros with Parameterized Variables
 
-Create reusable, parameterized test scenarios to reduce code duplication and improve maintainability. The macro system supports variable substitution through table definitions.
+Create reusable, parameterized test scenarios to reduce code duplication and improve maintainability. The macro system supports variable substitution through data tables that are internally converted to maps for efficient variable replacement.
 
 #### Macro Definition with Variables
 
@@ -749,25 +749,33 @@ Scenario: user logout
 **Key Features:**
 
 - Use `${variable_name}` syntax to define variable placeholders
-- Variables are automatically substituted during macro expansion
+- Variables are automatically substituted using map-based variable resolution
+- Data tables use two-column format: each row has `[variable_name, value]`
 - Support for multiple variables in a single macro
 
 #### Using Parameterized Macros
+
+Pass variables to macros using data tables. Each row contains a variable name and its value:
 
 ```gherkin
 # In test.feature
 Scenario: Test login with valid credentials
   When user login with credentials
-    | username | password |
-    | oki     | ler123   |
+    | username | oki    |
+    | password | ler123 |
   Then the user should be logged in successfully
 
 Scenario: Test login with different credentials
   When user login with credentials
-    | username | password |
-    | admin   | secret   |
+    | username | admin  |
+    | password | secret |
   Then the user should be logged in successfully
 ```
+
+**Data Table Structure:**
+- **Two-column format**: Each row is `[variable_name, value]`
+- Variables mapped to placeholders: `${username}` and `${password}`
+- Internally converted to: `{username: "oki", password: "ler123"}`
 
 ### Global Hooks and Variables
 
@@ -808,21 +816,23 @@ Scenario: complete user workflow
   When the user navigates to the ${page} page
   Then the user should see the ${page} page
 
-# Usage
+# Usage with multiple variables via data table (map-based substitution)
 Scenario: Test complete workflow
   When complete user workflow
-    | username | password | page      |
-    | oki     | ler123   | dashboard |
+    | username | oki       |
+    | password | ler123    |
+    | page     | dashboard |
   Then the user should see the dashboard page
 ```
 
 #### Macro Benefits
 
-- **Parameterized Reusability**: Use the same macro with different data sets
-- **Table-Driven Testing**: Easy to test multiple scenarios with different parameters
+- **Parameterized Reusability**: Use the same macro with different data sets via map-based variable substitution
+- **Table-Driven Testing**: Easy to test multiple scenarios with different parameters using Gherkin data tables
 - **Maintainability**: Update logic in one place, affects all usages
 - **Better Organization**: Separate macro definitions from test scenarios
 - **Dynamic Behavior**: Adapt macros to different test requirements
+- **Efficient Processing**: Internal map conversion provides fast variable lookup and substitution
 
 #### File Organization
 

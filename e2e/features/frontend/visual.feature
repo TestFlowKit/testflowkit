@@ -3,8 +3,7 @@ Feature: visual e2e tests
 
   Background:
     Given the user is on page
-      | page_name  |
-      | visual e2e |
+      | page_name   | visual e2e |
 
   Scenario: User should see certain things on page
     Given the visual disappearing element should contain the text "Cet élément va disparaître quand vous cliquerez sur le bouton."

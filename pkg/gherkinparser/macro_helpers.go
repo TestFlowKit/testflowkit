@@ -94,10 +94,12 @@ func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureConten
 			continue
 		}
 
+		// Convert DataTable to map for efficient variable substitution
+		// Each row: [variable_name, value] → map entry
 		expandedSteps := mh.expandMacroSteps(ExpandMacroParam{
 			Macro:     mh.macros[macroIdx],
 			Keyword:   step.Keyword,
-			DataTable: step.DataTable,
+			Variables: getMacroVariables(step.DataTable), // Convert to map here
 		})
 
 		stepStartLine := int(step.Location.Line) - 1
@@ -149,9 +151,11 @@ func (mh *Macrohelpers) getStepEndLine(stepStartLine int, featureContent []strin
 
 	return stepEndLine
 }
-func (mh *Macrohelpers) expandMacroSteps(params ExpandMacroParam) []string {
-	variables := getMacroVariables(params.DataTable)
 
+// expandMacroSteps expands a macro scenario into concrete steps with variable substitution.
+// Uses the map-based Variables from ExpandMacroParam for efficient ${variable} replacement.
+// Handles step text, docstrings, and nested data tables within macro definitions.
+func (mh *Macrohelpers) expandMacroSteps(params ExpandMacroParam) []string {
 	var expandedSteps []string
 	for idx, macroStep := range params.Macro.Steps {
 		keyword := params.Keyword
@@ -159,7 +163,8 @@ func (mh *Macrohelpers) expandMacroSteps(params ExpandMacroParam) []string {
 			keyword = "And"
 		}
 
-		stepText := substituteVariables(macroStep.Text, variables)
+		// Substitute variables using the map for O(1) lookup
+		stepText := substituteVariables(macroStep.Text, params.Variables)
 		expandedSteps = append(expandedSteps, fmt.Sprintf("%s %s", keyword, stepText))
 
 		if macroStep.DocString != nil {
@@ -169,7 +174,8 @@ func (mh *Macrohelpers) expandMacroSteps(params ExpandMacroParam) []string {
 				delimiter = "\"\"\""
 			}
 			expandedSteps = append(expandedSteps, delimiter)
-			expandedSteps = append(expandedSteps, substituteVariables(ds.Content, variables))
+			// Also substitute variables in docstring content
+			expandedSteps = append(expandedSteps, substituteVariables(ds.Content, params.Variables))
 			expandedSteps = append(expandedSteps, delimiter)
 		}
 

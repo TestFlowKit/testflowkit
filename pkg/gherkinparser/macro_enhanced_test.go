@@ -25,12 +25,12 @@ var parseMacroCallWithTableTests = []TestCase{
 					{
 						Cells: []*messages.TableCell{
 							{Value: "username"},
-							{Value: "password"},
+							{Value: "oki"},
 						},
 					},
 					{
 						Cells: []*messages.TableCell{
-							{Value: "oki"},
+							{Value: "password"},
 							{Value: "ler123"},
 						},
 					},

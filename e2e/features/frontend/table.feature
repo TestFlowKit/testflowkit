@@ -3,8 +3,8 @@ Feature: Table e2e tests
 
   Background:
     Given the user is on page
-      | page_name |
-      | table e2e |
+      | page_name | table e2e |
+      
 
   Scenario: User should see a specific table row
     Then the user should see a row containing the following elements
