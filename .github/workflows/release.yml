@@ -11,6 +11,7 @@ permissions:
   checks: write
   id-token: write
   pages: write
+  actions: write
 
 
 jobs:
