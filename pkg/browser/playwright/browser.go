@@ -18,9 +18,10 @@ import (
 const playwrightModulePath = "github.com/playwright-community/playwright-go"
 
 type Engine struct {
-	mu          sync.Mutex
-	initialized bool
-	instance    *pw.Playwright
+	mu             sync.Mutex
+	initialized    bool
+	instance       *pw.Playwright
+	warmedBrowsers chan pw.Browser
 }
 
 type playwrightBrowser struct {
@@ -87,7 +88,7 @@ func (pb *playwrightBrowser) Close() {
 	}
 }
 
-func InitEngine() (*Engine, error) {
+func InitEngine(warmUpCount int, warmUpArgs browser.CreationArgs) (*Engine, error) {
 	engine := &Engine{}
 	engine.mu.Lock()
 	defer engine.mu.Unlock()
@@ -96,13 +97,52 @@ func InitEngine() (*Engine, error) {
 		engine.init()
 		engine.initialized = true
 	}
+
+	if warmUpCount > 0 {
+		engine.warmUp(warmUpCount, warmUpArgs)
+	}
+
 	return engine, nil
 }
 
+// warmUp pre-launches warmUpCount Chromium processes in parallel so that
+// subsequent NewBrowser calls can skip the cold-start cost.
+func (e *Engine) warmUp(count int, args browser.CreationArgs) {
+	e.warmedBrowsers = make(chan pw.Browser, count)
+	launchOpts := buildLaunchOptions(args)
+
+	var wg sync.WaitGroup
+	for range count {
+		wg.Go(func() {
+			b, err := e.instance.Chromium.Launch(launchOpts)
+			if err != nil {
+				log.Printf("browser warm-up: failed to pre-launch chromium: %v", err)
+				return
+			}
+			e.warmedBrowsers <- b
+		})
+	}
+	wg.Wait()
+	log.Printf("browser warm-up: %d/%d chromium instance(s) ready", len(e.warmedBrowsers), count)
+}
+
 func (e *Engine) NewBrowser(args browser.CreationArgs) browser.Client {
-	browserInstance, err := e.instance.Chromium.Launch(buildLaunchOptions(args))
-	if err != nil {
-		panic(fmt.Errorf("failed to launch browser: %w", err))
+	var browserInstance pw.Browser
+
+	select {
+	case warmed, ok := <-e.warmedBrowsers:
+		if ok {
+			browserInstance = warmed
+		}
+	default:
+	}
+
+	if browserInstance == nil {
+		var err error
+		browserInstance, err = e.instance.Chromium.Launch(buildLaunchOptions(args))
+		if err != nil {
+			panic(fmt.Errorf("failed to launch browser: %w", err))
+		}
 	}
 
 	return &playwrightBrowser{
@@ -115,6 +155,15 @@ func (e *Engine) NewBrowser(args browser.CreationArgs) browser.Client {
 
 // Close closes the engine and all resources.
 func (e *Engine) Close() {
+	if e.warmedBrowsers != nil {
+		close(e.warmedBrowsers)
+		for b := range e.warmedBrowsers {
+			if err := b.Close(); err != nil {
+				log.Printf("browser warm-up: failed to close unused pre-warmed browser: %v", err)
+			}
+		}
+	}
+
 	err := e.instance.Stop()
 	if err != nil {
 		log.Println(err)
