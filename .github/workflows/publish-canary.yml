@@ -17,6 +17,9 @@ jobs:
   prepare:
     name: Build binaries & resolve canary version
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
     outputs:
       version: ${{ steps.version.outputs.canary }}
 
