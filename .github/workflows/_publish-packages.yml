@@ -27,6 +27,10 @@ on:
       NPM_TOKEN:
         required: true
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   # ── Publish the 6 native packages in parallel (matrix) ───────────────────
   #
@@ -155,3 +159,16 @@ jobs:
           else
             (cd npm && npm publish --access public --tag "${NPM_TAG}")
           fi
+
+  cleanup_artifacts:
+    name: "Cleanup binary artifacts"
+    needs: publish_wrapper
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Delete artifact
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: ${{ inputs.artifact-name }}
+          failOnError: false
