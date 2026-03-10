@@ -1,6 +1,7 @@
 package browser
 
 import (
+	pkgbrowser "testflowkit/pkg/browser"
 	"testflowkit/pkg/browser/playwright"
 	"testflowkit/pkg/browser/rod"
 	"time"
@@ -22,6 +23,7 @@ type Config struct {
 	UserAgent     string
 	Locale        string
 	TimezoneID    string
+	WarmUpCount   int
 }
 
 func InitEngine(cfg Config) (Engine, error) {
@@ -29,7 +31,14 @@ func InitEngine(cfg Config) (Engine, error) {
 	case DriverRod:
 		return rod.InitEngine()
 	case DriverPlaywright:
-		return playwright.InitEngine()
+		warmUpArgs := pkgbrowser.CreationArgs{
+			HeadlessMode: cfg.HeadlessMode,
+			ThinkTime:    cfg.ThinkTime,
+			UserAgent:    cfg.UserAgent,
+			Locale:       cfg.Locale,
+			TimezoneID:   cfg.TimezoneID,
+		}
+		return playwright.InitEngine(cfg.WarmUpCount, warmUpArgs)
 	default:
 		panic("unknown driver type: " + string(cfg.DriverType))
 	}
