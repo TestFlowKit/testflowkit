@@ -1,8 +1,8 @@
 package playwright
 
 import (
-	"errors"
 	"fmt"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 	"testflowkit/pkg/logger"
 	"time"
@@ -72,7 +72,7 @@ func (p *playwrightPage) GetOneByTextContent(text string) (browser.Element, erro
 }
 
 func (p *playwrightPage) handleLocator(el pw.Locator, warningMsg string) (browser.Element, error) {
-	notFoundError := errors.New("element not found")
+	notFoundError := apperrors.ErrElementNotFound
 
 	count, err := el.Count()
 	if err != nil {

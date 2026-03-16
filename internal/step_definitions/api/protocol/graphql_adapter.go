@@ -2,13 +2,13 @@ package protocol
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/utils/fileutils"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/graphql"
 	"testflowkit/pkg/logger"
 	"time"
@@ -26,17 +26,17 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, apiName string, req
 
 	apiDef, errGetAPI := cfg.GetAPI(apiName)
 	if errGetAPI != nil {
-		return ctx, fmt.Errorf("API '%s' not found: %w", apiName, errGetAPI)
+		return ctx, errGetAPI
 	}
 
 	if apiDef.Type != config.APITypeGraphQL {
-		err := fmt.Errorf("API '%s' is not a GraphQL API, got type '%s'", apiName, apiDef.Type)
+		err := fmt.Errorf("API '%s' is not a GraphQL API, got type '%s': %w", apiName, apiDef.Type, apperrors.ErrWrongAPIType)
 		logger.Fatal("graphql adapter", err)
 	}
 
 	operation, exists := apiDef.Operations[reqName]
 	if !exists {
-		return ctx, fmt.Errorf("operation '%s' not found in API '%s'", reqName, apiName)
+		return ctx, &apperrors.OperationNotFoundError{API: apiName, Operation: reqName}
 	}
 
 	query, errGetQuery := a.getQuery(operation.Operation)
@@ -88,12 +88,12 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	request := scenarioCtx.GetGraphQLRequest()
 	if request == nil {
-		return ctx, errors.New("no GraphQL request is prepared to send")
+		return ctx, apperrors.ErrNoRequestPrepared
 	}
 
 	endpoint := scenarioCtx.GetGraphQLEndpoint()
 	if endpoint == "" {
-		return ctx, errors.New("no GraphQL endpoint configured")
+		return ctx, apperrors.ErrNoGraphQLEndpoint
 	}
 
 	headers := scenarioCtx.GetGraphQLHeaders()
@@ -130,7 +130,7 @@ func (a *GraphQLAdapter) GetResponseBody(ctx context.Context) ([]byte, error) {
 	backend := scenarioCtx.GetBackendContext()
 
 	if !backend.HasResponse() {
-		return nil, errors.New("no GraphQL response available")
+		return nil, apperrors.ErrNoGraphQLResponse
 	}
 
 	return backend.GetResponseBody(), nil
@@ -141,7 +141,7 @@ func (a *GraphQLAdapter) GetStatusCode(ctx context.Context) (int, error) {
 	backend := scenarioCtx.GetBackendContext()
 
 	if !backend.HasResponse() {
-		return 0, errors.New("no GraphQL response available")
+		return 0, apperrors.ErrNoGraphQLResponse
 	}
 
 	return backend.GetStatusCode(), nil

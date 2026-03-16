@@ -9,6 +9,7 @@ import (
 	"testflowkit/internal/step_definitions/api/jsonhelpers"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 )
 
 // validateJSONPathContains validates that a JSON path field contains specific text.
@@ -20,7 +21,7 @@ func (steps) validateJSONPathContains() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to validate")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			jsonPath = scenario.ReplaceVariablesInString(scenarioCtx, jsonPath)

@@ -1,9 +1,9 @@
 package rod
 
 import (
-	"errors"
 	"fmt"
 	"strings"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 	"time"
 
@@ -65,7 +65,7 @@ func (p *rodPage) GetOneByXPath(xpath string) (browser.Element, error) {
 	}
 
 	if !exists {
-		return nil, errors.New("element not found")
+		return nil, apperrors.ErrElementNotFound
 	}
 
 	return newRodElement(element), nil
@@ -80,7 +80,7 @@ func (p *rodPage) GetOneByTextContent(text string) (browser.Element, error) {
 		limitedSearchText = text[:searchTextLimit]
 	}
 
-	notFoundError := errors.New("element not found")
+	notFoundError := apperrors.ErrElementNotFound
 
 	elements, err := p.page.ElementsX(fmt.Sprintf(`//*[contains(text(),"%s")]`, limitedSearchText))
 	if err != nil {

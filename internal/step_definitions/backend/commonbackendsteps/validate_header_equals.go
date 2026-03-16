@@ -8,6 +8,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/step_definitions/helpers"
+	"testflowkit/pkg/apperrors"
 )
 
 func (steps) validateResponseHeaderEquals() stepbuilder.Step {
@@ -18,7 +19,7 @@ func (steps) validateResponseHeaderEquals() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to validate")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			headerName = scenario.ReplaceVariablesInString(scenarioCtx, headerName)

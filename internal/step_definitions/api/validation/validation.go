@@ -1,11 +1,11 @@
 package validation
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
 	"testflowkit/internal/step_definitions/api/jsonhelpers"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -13,7 +13,7 @@ import (
 // Works for both GraphQL and REST API responses.
 func ValidateJSONPathValue(jsonBody []byte, jsonPath, expectedValue string) error {
 	if jsonBody == nil {
-		return errors.New("no response available - send a request first")
+		return apperrors.ErrNoResponseAvailable
 	}
 
 	actualValue, err := jsonhelpers.GetPathValueAsString(jsonBody, jsonPath)
@@ -32,7 +32,7 @@ func ValidateJSONPathValue(jsonBody []byte, jsonPath, expectedValue string) erro
 // ValidateJSONPathExists validates that a JSON path exists in the response.
 func ValidateJSONPathExists(jsonBody []byte, jsonPath string) error {
 	if jsonBody == nil {
-		return errors.New("no response available - send a request first")
+		return apperrors.ErrNoResponseAvailable
 	}
 
 	if !jsonhelpers.PathExists(jsonBody, jsonPath) {
@@ -46,7 +46,7 @@ func ValidateJSONPathExists(jsonBody []byte, jsonPath string) error {
 // ValidateBodyContains validates that the response body contains the expected substring.
 func ValidateBodyContains(body []byte, expectedSubstring string) error {
 	if body == nil {
-		return errors.New("no response available - send a request first")
+		return apperrors.ErrNoResponseAvailable
 	}
 
 	bodyStr := string(body)
@@ -61,7 +61,7 @@ func ValidateBodyContains(body []byte, expectedSubstring string) error {
 // ValidateJSONBodyEquals validates that the response body matches the expected JSON.
 func ValidateJSONBodyEquals(actual []byte, expected string) error {
 	if actual == nil {
-		return errors.New("no response available - send a request first")
+		return apperrors.ErrNoResponseAvailable
 	}
 
 	if err := jsonhelpers.CompareJSON([]byte(expected), actual); err != nil {

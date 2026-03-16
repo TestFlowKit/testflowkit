@@ -2,9 +2,9 @@ package commonbackendsteps
 
 import (
 	"context"
-	"errors"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -16,7 +16,7 @@ func (steps) debugAPIResponse() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to debug")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			logger.InfoFf("=== API RESPONSE DEBUG INFO ===")

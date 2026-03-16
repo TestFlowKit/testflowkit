@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"slices"
 	"strconv"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 
 	pw "github.com/playwright-community/playwright-go"
@@ -114,7 +115,7 @@ func (e *playwrightElement) SelectByValue(values []string) error {
 	}
 
 	if len(dropdownsTexts) == 0 {
-		return errors.New("no option found")
+		return apperrors.ErrNoOptionFound
 	}
 
 	if len(dropdownsTexts) < len(values) {
@@ -207,7 +208,7 @@ func (e *playwrightElement) UploadMultipleFiles(filePaths []string) error {
 
 func (e *playwrightElement) checkFilesExist(filePaths []string) error {
 	if len(filePaths) == 0 {
-		return errors.New("no file paths provided")
+		return apperrors.ErrNoFilePaths
 	}
 
 	notFoundFiles := []string{}

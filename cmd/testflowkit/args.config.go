@@ -1,8 +1,8 @@
 package main
 
 import (
-	"errors"
 	"testflowkit/internal/config"
+	"testflowkit/pkg/apperrors"
 	"time"
 
 	"github.com/alexflint/go-arg"
@@ -30,7 +30,7 @@ func (a *argsConfig) getConfigPath() (string, error) {
 		return a.Install.ConfigPath, nil
 	}
 
-	return "", errors.New("no config path provided")
+	return "", apperrors.ErrNoConfigPath
 }
 
 func (a *argsConfig) getAppConfigOverrides() config.Overrides {
@@ -90,7 +90,7 @@ func (a *argsConfig) getMode() (config.Mode, error) {
 		return config.InstallMode, nil
 	}
 
-	return "", errors.New("no mode provided")
+	return "", apperrors.ErrNoModeProvided
 }
 
 func (a *argsConfig) GetTimeout() int {

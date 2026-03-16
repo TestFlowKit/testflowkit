@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"testflowkit/internal/config"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 	"testflowkit/pkg/logger"
 	"time"
@@ -26,7 +27,7 @@ func GetElementByLabel(page browser.Page, pageName, label string) (browser.Eleme
 
 	elt := getElementBySelectors(page, selectors)
 	if elt == nil {
-		return nil, errors.New("element not found")
+		return nil, apperrors.ErrElementNotFound
 	}
 
 	return elt, nil

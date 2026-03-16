@@ -7,6 +7,7 @@ import (
 	"testflowkit/internal/step_definitions/api/validation"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 )
 
 // validateJSONBodyEquals validates that the entire response body matches expected JSON.
@@ -18,7 +19,7 @@ func (steps) validateJSONBodyEquals() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to validate")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			expectedJSON = scenario.ReplaceVariablesInString(scenarioCtx, expectedJSON)

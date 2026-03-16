@@ -8,6 +8,7 @@ import (
 	"testflowkit/internal/step_definitions/api/jsonhelpers"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -19,7 +20,7 @@ func (steps) storeResponseData() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to extract data from")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			// Get the appropriate response body based on protocol

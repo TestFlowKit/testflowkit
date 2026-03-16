@@ -8,6 +8,7 @@ import (
 
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -20,7 +21,7 @@ func (steps) validateErrorMessage() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no GraphQL response available - send a request first")
+				return ctx, apperrors.ErrNoGraphQLResponse
 			}
 
 			if !backend.HasGraphQLErrors() {

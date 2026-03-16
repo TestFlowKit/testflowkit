@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"slices"
 	"strconv"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 
 	"github.com/go-rod/rod"
@@ -82,7 +83,7 @@ func (e *rodElement) SelectByValue(values []string) error {
 	}
 
 	if len(dropdownsTexts) == 0 {
-		return errors.New("no option found")
+		return apperrors.ErrNoOptionFound
 	}
 
 	if len(dropdownsTexts) < len(values) {
@@ -151,7 +152,7 @@ func (e *rodElement) UploadMultipleFiles(filePaths []string) error {
 
 func (e *rodElement) checkFilesExist(filePaths []string) error {
 	if len(filePaths) == 0 {
-		return errors.New("no file paths provided")
+		return apperrors.ErrNoFilePaths
 	}
 
 	notFoundFiles := []string{}
