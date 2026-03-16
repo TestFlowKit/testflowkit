@@ -6,10 +6,11 @@ import (
 	"regexp"
 	"strings"
 
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 )
 
-var errNoCurrentPageAvailable = errors.New("no current page available")
+var errNoCurrentPageAvailable = apperrors.ErrNoCurrentPage
 
 func (c *Context) InitBrowser(incognitoMode bool) {
 	frontCtx := c.frontend

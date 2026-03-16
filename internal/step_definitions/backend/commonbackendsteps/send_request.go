@@ -2,11 +2,11 @@ package commonbackendsteps
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -21,7 +21,7 @@ func (steps) sendRequest() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if backend.GetProtocol() == nil {
-				return ctx, errors.New("no request has been prepared - use 'I prepare a request' step first")
+				return ctx, apperrors.ErrNoRequestPrepared
 			}
 
 			protocol := backend.GetProtocol()

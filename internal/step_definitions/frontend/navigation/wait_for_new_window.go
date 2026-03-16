@@ -2,10 +2,10 @@ package navigation
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 	"time"
 )
@@ -23,7 +23,7 @@ func (steps) switchToNewOpenedWindow() stepbuilder.Step {
 			const duration = 6 * time.Minute
 			for {
 				if time.Since(startTime) > duration {
-					return ctx, errors.New("no new window detected")
+					return ctx, apperrors.ErrNoNewWindow
 				}
 
 				currentPageCount := len(scenarioCtx.GetPages())

@@ -1,11 +1,11 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 	"maps"
 	"os"
 	"sync"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/variables"
 
@@ -90,7 +90,7 @@ func Load(configFilePath string, overrides Overrides) error {
 
 func Get() (*Config, error) {
 	if cfg == nil {
-		return nil, errors.New("configuration not loaded - call Load first")
+		return nil, apperrors.ErrConfigNotLoaded
 	}
 	return cfg, nil
 }

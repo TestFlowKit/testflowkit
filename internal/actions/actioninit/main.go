@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"testflowkit/internal/config"
 	"testflowkit/internal/utils/fileutils"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -182,7 +183,7 @@ func createConfigFile(state *InitializationState) error {
 
 	if _, err := os.Stat(configPath); err == nil {
 		logger.Error("Config file already exists. Please remove config.yml or run init in a different directory.", nil, nil)
-		return errors.New("config.yml already exists")
+		return apperrors.ErrConfigAlreadyExists
 	} else if !os.IsNotExist(err) {
 		logger.Error("Failed to check config file: "+err.Error(), nil, nil)
 		return err

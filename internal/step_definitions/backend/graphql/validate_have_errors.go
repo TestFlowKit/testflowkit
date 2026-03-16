@@ -2,10 +2,10 @@ package graphql
 
 import (
 	"context"
-	"errors"
 
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -17,11 +17,11 @@ func (steps) validateHaveErrors() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no GraphQL response available - send a request first")
+				return ctx, apperrors.ErrNoGraphQLResponse
 			}
 
 			if !backend.HasGraphQLErrors() {
-				return ctx, errors.New("expected GraphQL errors but found none")
+				return ctx, apperrors.ErrNoGraphQLErrors
 			}
 
 			logger.InfoFf("GraphQL response validation passed: errors present")

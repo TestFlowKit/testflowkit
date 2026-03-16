@@ -2,11 +2,11 @@ package variables
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/step_definitions/helpers"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 	"testflowkit/pkg/variables"
 )
@@ -21,7 +21,7 @@ func (steps) storeJSONPathIntoGlobalVariable() stepbuilder.Step {
 
 			response := scenarioCtx.GetResponse()
 			if response == nil {
-				return ctx, errors.New("no response available. Please send a request first")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			value, err := helpers.GetJSONPathValue(response.Body, jsonPath)

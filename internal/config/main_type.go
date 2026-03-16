@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
 
@@ -25,12 +26,12 @@ type Config struct {
 
 func (c *Config) GetAPI(apiName string) (*APIDefinition, error) {
 	if c.APIs == nil || c.APIs.Definitions == nil {
-		return nil, errors.New("no APIs configured")
+		return nil, apperrors.ErrNoAPIsConfigured
 	}
 
 	apiDef, exists := c.APIs.Definitions[apiName]
 	if !exists {
-		return nil, fmt.Errorf("API '%s' not found in configuration", apiName)
+		return nil, &apperrors.APINotFoundError{Name: apiName}
 	}
 
 	return &apiDef, nil
@@ -129,11 +130,11 @@ func (c *Config) validateFrontend() error {
 		return nil
 	}
 	if len(c.Frontend.Elements) == 0 {
-		return errors.New("frontend elements configuration is required")
+		return apperrors.ErrFrontendElementsRequired
 	}
 
 	if len(c.Frontend.Pages) == 0 {
-		return errors.New("frontend pages configuration is required")
+		return apperrors.ErrFrontendPagesRequired
 	}
 
 	if c.Frontend.DefaultTimeout < 1000 || c.Frontend.DefaultTimeout > 300000 {

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 )
 
 func (steps) variableShouldContains() stepbuilder.Step {
@@ -19,12 +20,12 @@ func (steps) variableShouldContains() stepbuilder.Step {
 
 			variable, exists := scenarioCtx.GetVariable(varName)
 			if !exists {
-				return ctx, fmt.Errorf("variable '%s' not found", varName)
+				return ctx, &apperrors.VariableNotFoundError{Name: varName}
 			}
 
 			variableValue, ok := variable.(string)
 			if !ok {
-				return ctx, fmt.Errorf("variable '%s' is not a string", varName)
+				return ctx, &apperrors.VariableNotStringError{Name: varName}
 			}
 
 			if !strings.Contains(variableValue, content) {

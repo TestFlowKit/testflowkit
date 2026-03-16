@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 	"time"
 )
@@ -32,7 +33,7 @@ func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 			startTime := time.Now()
 			for {
 				if time.Since(startTime) > duration {
-					return ctx, fmt.Errorf("no new window detected within %s", waitTime)
+					return ctx, fmt.Errorf("%w within %s", apperrors.ErrNoNewWindow, waitTime)
 				}
 
 				currentPageCount := len(scenarioCtx.GetPages())

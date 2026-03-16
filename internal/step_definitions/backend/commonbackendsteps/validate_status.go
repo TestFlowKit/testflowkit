@@ -2,12 +2,12 @@ package commonbackendsteps
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/apperrors"
 )
 
 func (steps) validateStatusCode() stepbuilder.Step {
@@ -22,7 +22,7 @@ func (steps) validateStatusCode() stepbuilder.Step {
 			backend := scenarioCtx.GetBackendContext()
 
 			if !backend.HasResponse() {
-				return ctx, errors.New("no response available to validate")
+				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
 			actualCode := backend.GetStatusCode()

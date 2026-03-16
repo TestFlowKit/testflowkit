@@ -3,13 +3,13 @@ package protocol
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 	"testflowkit/internal/config"
 	"testflowkit/internal/step_definitions/core/scenario"
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 	"time"
 )
@@ -26,17 +26,17 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, api string, reqName
 
 	apiDef, errGetAPI := cfg.GetAPI(api)
 	if errGetAPI != nil {
-		return ctx, fmt.Errorf("API '%s' not found: %w", api, errGetAPI)
+		return ctx, errGetAPI
 	}
 
 	if apiDef.Type != config.APITypeREST {
-		err := fmt.Errorf("API '%s' is not a REST API, got type '%s'", api, apiDef.Type)
+		err := fmt.Errorf("API '%s' is not a REST API, got type '%s': %w", api, apiDef.Type, apperrors.ErrWrongAPIType)
 		logger.Fatal("rest adapter", err)
 	}
 
 	endpoint, exists := apiDef.Endpoints[reqName]
 	if !exists {
-		return ctx, fmt.Errorf("endpoint '%s' not found in API '%s'", reqName, api)
+		return ctx, &apperrors.EndpointNotFoundError{API: api, Endpoint: reqName}
 	}
 
 	scenarioCtx.SetEndpoint(apiDef.BaseURL, endpoint)
@@ -157,7 +157,7 @@ func (a *RESTAPIAdapter) GetResponseBody(ctx context.Context) ([]byte, error) {
 	backend := scenarioCtx.GetBackendContext()
 
 	if !backend.HasResponse() {
-		return nil, errors.New("no REST API response available")
+		return nil, apperrors.ErrNoRESTResponse
 	}
 
 	return backend.GetResponseBody(), nil
@@ -168,7 +168,7 @@ func (a *RESTAPIAdapter) GetStatusCode(ctx context.Context) (int, error) {
 	backend := scenarioCtx.GetBackendContext()
 
 	if !backend.HasResponse() {
-		return 0, errors.New("no REST API response available")
+		return 0, apperrors.ErrNoRESTResponse
 	}
 
 	return backend.GetStatusCode(), nil
