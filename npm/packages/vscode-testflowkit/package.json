@@ -1,0 +1,91 @@
+{
+  "name": "vscode-testflowkit",
+  "displayName": "TestFlowKit",
+  "description": "Autocomplete, hover documentation, and macro table generation for TestFlowKit Gherkin .feature files",
+  "version": "0.1.0",
+  "publisher": "TestFlowKit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TestFlowKit/testflowkit"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "gherkin",
+    "cucumber",
+    "bdd",
+    "testflowkit",
+    "feature",
+    "autocomplete"
+  ],
+  "activationEvents": [
+    "onLanguage:gherkin",
+    "workspaceContains:**/*.feature"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "testflowkit.refreshSentences",
+        "title": "TestFlowKit: Refresh Sentence Index"
+      },
+      {
+        "command": "testflowkit.refreshMacros",
+        "title": "TestFlowKit: Refresh Macro Index"
+      }
+    ],
+    "configuration": {
+      "title": "TestFlowKit",
+      "properties": {
+        "testflowkit.sentencesPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to the generated sentences directory (relative to workspace root). Leave empty to auto-detect documentation/content/sentences."
+        },
+        "testflowkit.enableMacroCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically insert a data table with variable name rows when completing a macro invocation."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "webpack --mode production",
+    "compile:dev": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "package": "vsce package",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "testMatch": [
+      "**/*.test.ts"
+    ],
+    "moduleNameMapper": {
+      "^vscode$": "<rootDir>/__mocks__/vscode.ts"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+.vscode-test
+node_modules
+src/**/*.test.ts
+**/*.d.ts
+**/*.map
+webpack.config.js
+tsconfig.json
