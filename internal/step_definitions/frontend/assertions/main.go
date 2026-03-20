@@ -12,19 +12,25 @@ func GetSteps() []stepbuilder.Step {
 
 	return []stepbuilder.Step{
 		handlers.checkCheckboxStatus(),
-		handlers.theFieldShouldContain(),
+		handlers.theFieldValueShouldEqualsTo(),
+		handlers.theFieldValueShouldNotEqualsTo(),
 		handlers.radioButtonShouldBeSelectedOrNot(),
 		handlers.dropdownHasValuesSelected(),
+		handlers.dropdownShouldNotHaveValuesSelected(),
 		handlers.elementShouldContainsText(),
 		handlers.elementShouldNotContainsText(),
 		handlers.elementShouldContainsExactText(),
+		handlers.elementShouldNotContainsExactText(),
 		handlers.elementShouldBeVisible(),
 		handlers.elementShouldNotExist(),
 		handlers.elementShouldNotBeVisible(),
 		handlers.elementShouldExist(),
 		handlers.pageTitleShouldBe(),
+		handlers.pageTitleShouldNotBe(),
 		handlers.currentURLShouldContain(),
+		handlers.currentURLShouldNotContain(),
 		handlers.elementAttributeShouldBe(),
+		handlers.elementAttributeShouldNotBe(),
 	}
 }
 

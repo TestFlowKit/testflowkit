@@ -13,6 +13,7 @@ func GetSteps() []stepbuilder.Step {
 		s.validateHaveErrors(),
 		s.validateNoErrors(),
 		s.validateErrorMessage(),
+		s.validateErrorMessageNot(),
 		s.storeGraphQLError(),
 		s.storeGraphQLErrorMessage(),
 	}
