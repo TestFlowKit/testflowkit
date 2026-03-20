@@ -11,10 +11,44 @@ import (
 	"testflowkit/pkg/apperrors"
 )
 
-func (steps) validateResponseHeaderEquals() stepbuilder.Step {
+func (s steps) validateResponseHeaderEquals() stepbuilder.Step {
+	return s.newResponseHeaderEqualsStep(
+		`the response header {string} should equal {string}`,
+		true,
+		stepbuilder.DocParams{
+			Description: "Validates that a specific response header has the expected value.",
+			Variables: []stepbuilder.DocVariable{
+				{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
+				{Name: "value", Description: "Expected value of the header", Type: stepbuilder.VarTypeString},
+			},
+			Example:    `Then the response header "Content-Type" should equal "application/json"`,
+			Categories: stepbuilder.Backend,
+		},
+	)
+}
+
+func (s steps) validateResponseHeaderNotEquals() stepbuilder.Step {
+	return s.newResponseHeaderEqualsStep(
+		`the response header {string} should not equal {string}`,
+		false,
+		stepbuilder.DocParams{
+			Description: "Validates that a specific response header does not have a given value.",
+			Variables: []stepbuilder.DocVariable{
+				{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
+				{Name: "value", Description: "Value that should not be present", Type: stepbuilder.VarTypeString},
+			},
+			Example:    `Then the response header "Cache-Control" should not equal "no-store"`,
+			Categories: stepbuilder.Backend,
+		},
+	)
+}
+
+func (s steps) newResponseHeaderEqualsStep(
+	sentence string, shouldEqual bool, doc stepbuilder.DocParams,
+) stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`the response header {string} should equal {string}`},
-		func(ctx context.Context, headerName, expectedValue string) (context.Context, error) {
+		[]string{sentence},
+		func(ctx context.Context, headerName, value string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			backend := scenarioCtx.GetBackendContext()
 
@@ -23,7 +57,7 @@ func (steps) validateResponseHeaderEquals() stepbuilder.Step {
 			}
 
 			headerName = scenario.ReplaceVariablesInString(scenarioCtx, headerName)
-			expectedValue = scenario.ReplaceVariablesInString(scenarioCtx, expectedValue)
+			value = scenario.ReplaceVariablesInString(scenarioCtx, value)
 
 			response := backend.GetResponse()
 			if response == nil || response.Headers == nil {
@@ -35,21 +69,17 @@ func (steps) validateResponseHeaderEquals() stepbuilder.Step {
 				return ctx, fmt.Errorf("response header '%s' not found", headerName)
 			}
 
-			if actualValue != expectedValue {
-				return ctx, fmt.Errorf("header '%s' has value '%s', expected '%s'", headerName, actualValue, expectedValue)
+			if shouldEqual && actualValue != value {
+				return ctx, fmt.Errorf("header '%s' has value '%s', expected '%s'", headerName, actualValue, value)
+			}
+
+			if !shouldEqual && actualValue == value {
+				return ctx, fmt.Errorf("header '%s' has forbidden value '%s'", headerName, actualValue)
 			}
 
 			return ctx, nil
 		},
 		nil,
-		stepbuilder.DocParams{
-			Description: "Validates that a specific response header has the expected value.",
-			Variables: []stepbuilder.DocVariable{
-				{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
-				{Name: "value", Description: "Expected value of the header", Type: stepbuilder.VarTypeString},
-			},
-			Example:    `Then the response header "Content-Type" should equal "application/json"`,
-			Categories: stepbuilder.Backend,
-		},
+		doc,
 	)
 }

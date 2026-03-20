@@ -26,13 +26,13 @@ func (steps) storeGraphQLError() stepbuilder.Step {
 				return ctx, errors.New("no GraphQL errors found to store")
 			}
 
-			errors := backend.GetGraphQLErrors()
+			gqlErrors := backend.GetGraphQLErrors()
 
 			// Store the entire error array
-			backend.SetGraphQLVariable(variableName, errors)
-			scenarioCtx.SetVariable(variableName, errors)
+			backend.SetGraphQLVariable(variableName, gqlErrors)
+			scenarioCtx.SetVariable(variableName, gqlErrors)
 
-			logger.InfoFf("Stored GraphQL errors as '%s': %d error(s)", variableName, len(errors))
+			logger.InfoFf("Stored GraphQL errors as '%s': %d error(s)", variableName, len(gqlErrors))
 			return ctx, nil
 		},
 		nil,

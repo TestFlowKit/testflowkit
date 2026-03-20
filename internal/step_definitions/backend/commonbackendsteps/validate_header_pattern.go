@@ -12,9 +12,53 @@ import (
 	"testflowkit/pkg/apperrors"
 )
 
-func (steps) validateResponseHeaderPattern() stepbuilder.Step {
+func (s steps) validateResponseHeaderPattern() stepbuilder.Step {
+	return s.newResponseHeaderPatternStep(
+		`the response header {string} should match pattern {string}`,
+		true,
+		func() stepbuilder.DocParams {
+			dsc := "Validates that a specific response header matches a regular expression pattern."
+
+			return stepbuilder.DocParams{
+				Description: dsc,
+				Variables: []stepbuilder.DocVariable{
+					{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
+					{Name: "pattern", Description: "Regular expression pattern to match against", Type: stepbuilder.VarTypeString},
+				},
+				Example:    `Then the response header "Content-Type" should match pattern "application/(json|xml)"`,
+				Categories: stepbuilder.Backend,
+			}
+		}(),
+	)
+}
+
+func (s steps) validateResponseHeaderNotPattern() stepbuilder.Step {
+	return s.newResponseHeaderPatternStep(
+		`the response header {string} should not match pattern {string}`,
+		false,
+		func() stepbuilder.DocParams {
+			dsc := "Validates that a specific response header does not match a regular expression pattern."
+
+			strType := stepbuilder.VarTypeString
+			varDescs := []stepbuilder.DocVariable{
+				{Name: "header", Description: "Name of the header to validate", Type: strType},
+				{Name: "pattern", Description: "Regular expression pattern that should not match", Type: strType},
+			}
+			return stepbuilder.DocParams{
+				Description: dsc,
+				Variables:   varDescs,
+				Example:     `Then the response header "Server" should not match pattern ".*nginx.*"`,
+				Categories:  stepbuilder.Backend,
+			}
+		}(),
+	)
+}
+
+func (s steps) newResponseHeaderPatternStep(
+	sentence string, shouldMatch bool, doc stepbuilder.DocParams,
+) stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`the response header {string} should match pattern {string}`},
+		[]string{sentence},
 		func(ctx context.Context, headerName, pattern string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			backend := scenarioCtx.GetBackendContext()
@@ -43,25 +87,18 @@ func (steps) validateResponseHeaderPattern() stepbuilder.Step {
 				return ctx, fmt.Errorf("invalid regex pattern '%s': %w", pattern, err)
 			}
 
-			if !regex.MatchString(actualValue) {
+			matches := regex.MatchString(actualValue)
+			if shouldMatch && !matches {
 				return ctx, fmt.Errorf("header '%s' value '%s' does not match pattern '%s'", headerName, actualValue, pattern)
+			}
+
+			if !shouldMatch && matches {
+				return ctx, fmt.Errorf("header '%s' value '%s' should not match pattern '%s'", headerName, actualValue, pattern)
 			}
 
 			return ctx, nil
 		},
 		nil,
-		func() stepbuilder.DocParams {
-			dsc := "Validates that a specific response header matches a regular expression pattern."
-
-			return stepbuilder.DocParams{
-				Description: dsc,
-				Variables: []stepbuilder.DocVariable{
-					{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
-					{Name: "pattern", Description: "Regular expression pattern to match against", Type: stepbuilder.VarTypeString},
-				},
-				Example:    `Then the response header "Content-Type" should match pattern "application/(json|xml)"`,
-				Categories: stepbuilder.Backend,
-			}
-		}(),
+		doc,
 	)
 }
