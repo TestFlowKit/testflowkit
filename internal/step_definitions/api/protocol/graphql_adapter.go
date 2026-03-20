@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"testflowkit/internal/config"
+	"testflowkit/internal/httpauth"
+	"testflowkit/internal/security"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/apperrors"
@@ -59,7 +61,17 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, apiName string, req
 		}
 	}
 
-	scenarioCtx.GetBackendContext().SetProtocol(a)
+	// Resolve security for this operation
+	resolved := security.Resolve(cfg, apiDef, operation.SecurityRef)
+	hash, errHash := security.SchemeHash(resolved.Scheme)
+	if errHash != nil {
+		return ctx, fmt.Errorf("failed to compute security scheme hash: %w", errHash)
+	}
+	bc := scenarioCtx.GetBackendContext()
+	bc.ResolvedSecurity = resolved
+	bc.SchemeHash = hash
+
+	bc.SetProtocol(a)
 
 	return ctx, nil
 }
@@ -98,10 +110,23 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	headers := scenarioCtx.GetGraphQLHeaders()
 
+	const defaultDuration = 10
+	bc := scenarioCtx.GetBackendContext()
+	httpClient, errClient := httpauth.NewClient(
+		time.Duration(defaultDuration)*time.Second,
+		bc.ResolvedSecurity,
+		bc.LockManager,
+		bc.SchemeHash,
+	)
+	if errClient != nil {
+		return ctx, fmt.Errorf("failed to create HTTP client: %w", errClient)
+	}
+
 	var options []graphql.ClientOption
 	if len(headers) > 0 {
 		options = append(options, graphql.WithHeaders(headers))
 	}
+	options = append(options, graphql.WithHTTPClient(httpClient))
 	client := graphql.NewClient(endpoint, options...)
 
 	// Ensure variables are set in the request

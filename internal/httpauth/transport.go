@@ -1,0 +1,206 @@
+// Package httpauth provides AuthTransport, a composable http.RoundTripper that:
+//   - resolves auth credentials via the provider layer
+//   - injects them into outgoing requests (header / query / cookie)
+//   - supports per-scheme http/https proxy
+//   - optionally retries once on a 401 response (opt-in, disabled by default)
+package httpauth
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"time"
+
+	"testflowkit/internal/security"
+	"testflowkit/internal/security/providers"
+	"testflowkit/internal/state"
+)
+
+// AuthTransport wraps a base http.RoundTripper and adds auth injection.
+// It is intended to be the innermost user-facing transport; TLS, proxy, and
+// timeout concerns are handled at the base transport level.
+type AuthTransport struct {
+	// Base is the underlying transport used to actually send requests.
+	// Defaults to http.DefaultTransport when nil.
+	Base http.RoundTripper
+
+	// Resolved is the effective security context for this request, computed
+	// by the resolver during request preparation.
+	Resolved security.ResolvedSecurity
+
+	// LockManager, when non-nil, is used to read/write cached tokens.
+	LockManager *state.Manager
+
+	// SchemeHash is the canonical hash of Resolved.Scheme, used as the lock key.
+	SchemeHash string
+}
+
+// RoundTrip implements http.RoundTripper.
+func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.Resolved.Disabled || t.Resolved.Scheme.Type == "" {
+		return t.base().RoundTrip(req)
+	}
+
+	token, err := t.getToken(req.Context())
+	if err != nil {
+		return nil, fmt.Errorf("httpauth: get token: %w", err)
+	}
+
+	injected := req.Clone(req.Context())
+	injectCredential(injected, token)
+
+	resp, err := t.base().RoundTrip(injected)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode == http.StatusUnauthorized && t.Resolved.Scheme.RetryOn401 {
+		resp.Body.Close()
+		// Invalidate the cached entry and try once more.
+		if t.LockManager != nil {
+			t.LockManager.Invalidate(t.SchemeHash)
+		}
+		token, err = t.fetchFreshToken(req.Context())
+		if err != nil {
+			return nil, fmt.Errorf("httpauth: re-auth after 401: %w", err)
+		}
+		retryReq := req.Clone(req.Context())
+		if req.Body != nil {
+			// Re-read body for the retry if it was already consumed.
+			// Callers that need retry support should use GetBody.
+			if req.GetBody != nil {
+				retryReq.Body, err = req.GetBody()
+				if err != nil {
+					return nil, fmt.Errorf("httpauth: restore request body for retry: %w", err)
+				}
+			}
+		}
+		injectCredential(retryReq, token)
+		return t.base().RoundTrip(retryReq)
+	}
+
+	return resp, nil
+}
+
+func (t *AuthTransport) getToken(ctx context.Context) (*providers.TokenResult, error) {
+	// Try the lock cache first.
+	if t.LockManager != nil && t.SchemeHash != "" && t.Resolved.Scheme.Persist {
+		if entry := t.LockManager.Get(t.SchemeHash); entry != nil {
+			return &providers.TokenResult{
+				AccessToken: entry.AccessToken,
+				TokenType:   entry.TokenType,
+				HeaderValue: entry.TokenType + " " + entry.AccessToken,
+			}, nil
+		}
+	}
+	return t.fetchFreshToken(ctx)
+}
+
+func (t *AuthTransport) fetchFreshToken(ctx context.Context) (*providers.TokenResult, error) {
+	result, err := providers.Authenticate(ctx, t.Resolved.Scheme)
+	if err != nil {
+		return nil, err
+	}
+
+	// Persist to lock file if requested.
+	if t.LockManager != nil && t.SchemeHash != "" && t.Resolved.Scheme.Persist {
+		entry := result.ToStateEntry(t.SchemeHash)
+		entry.ObtainedAt = time.Now().UTC()
+
+		if d, ok := t.Resolved.Scheme.ParsedDuration(); ok {
+			entry.ExpiresAt = entry.ObtainedAt.Add(d)
+		} else if result.ExpiresIn > 0 {
+			entry.ExpiresAt = entry.ObtainedAt.Add(time.Duration(result.ExpiresIn) * time.Second)
+		}
+
+		t.LockManager.Put(t.SchemeHash, entry)
+	}
+	return result, nil
+}
+
+// injectCredential attaches the token to req according to the placement strategy.
+func injectCredential(req *http.Request, result *providers.TokenResult) {
+	switch result.Placement {
+	case "query":
+		q := req.URL.Query()
+		q.Set(result.QueryParam, result.AccessToken)
+		req.URL.RawQuery = q.Encode()
+	case "cookie":
+		req.AddCookie(&http.Cookie{Name: result.HeaderName, Value: result.AccessToken})
+	default:
+		// header placement (default for bearer, basic, apikey→header)
+		headerName := result.HeaderName
+		if headerName == "" {
+			headerName = "Authorization"
+		}
+		headerValue := result.HeaderValue
+		if headerValue == "" {
+			headerValue = result.AccessToken
+		}
+		req.Header.Set(headerName, headerValue)
+	}
+}
+
+func (t *AuthTransport) base() http.RoundTripper {
+	if t.Base != nil {
+		return t.Base
+	}
+	return http.DefaultTransport
+}
+
+// NewBaseTransport creates an http.Transport pre-configured with an optional
+// proxy URL.  Use this as the Base for AuthTransport.
+func NewBaseTransport(proxyURL string) (*http.Transport, error) {
+	tr := &http.Transport{}
+	if proxyURL != "" {
+		parsed, err := url.Parse(proxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("httpauth: invalid proxy_url '%s': %w", proxyURL, err)
+		}
+		tr.Proxy = http.ProxyURL(parsed)
+	}
+	return tr, nil
+}
+
+// NewClient builds an *http.Client with AuthTransport as its transport.
+// timeout controls the per-request deadline (0 means no timeout).
+func NewClient(
+	timeout time.Duration,
+	resolved security.ResolvedSecurity,
+	lockMgr *state.Manager,
+	schemeHash string,
+) (*http.Client, error) {
+	proxyURL := ""
+	if !resolved.Disabled {
+		proxyURL = resolved.Scheme.ProxyURL
+	}
+
+	base, err := NewBaseTransport(proxyURL)
+	if err != nil {
+		return nil, err
+	}
+
+	transport := &AuthTransport{
+		Base:        base,
+		Resolved:    resolved,
+		LockManager: lockMgr,
+		SchemeHash:  schemeHash,
+	}
+
+	return &http.Client{
+		Transport: transport,
+		Timeout:   timeout,
+	}, nil
+}
+
+// DrainAndClose discards any remaining body bytes so the underlying TCP
+// connection can be reused.
+func DrainAndClose(body io.ReadCloser) {
+	if body == nil {
+		return
+	}
+	_, _ = io.Copy(io.Discard, body)
+	_ = body.Close()
+}

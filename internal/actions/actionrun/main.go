@@ -7,6 +7,7 @@ import (
 	"testflowkit/internal/actions/actionutils"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
+	"testflowkit/internal/state"
 	stepdefinitions "testflowkit/internal/step_definitions"
 	"testflowkit/internal/step_definitions/core/scenario"
 	pkgbrowser "testflowkit/pkg/browser"
@@ -33,6 +34,17 @@ func Execute(appConfig *config.Config, errCfg error) {
 	actionutils.DisplayConfigSummary(appConfig)
 	logger.Info("Starting tests execution ...")
 
+	// Initialise token-cache lock manager and load any previously persisted tokens.
+	lockMgr := state.NewManager(state.LockFile)
+	if err := lockMgr.Load(); err != nil {
+		logger.Warn("Failed to load lock file (starting with empty cache): "+err.Error(), nil)
+	}
+	defer func() {
+		if saveErr := lockMgr.Save(); saveErr != nil {
+			logger.Warn("Failed to save lock file: "+saveErr.Error(), nil)
+		}
+	}()
+
 	testReport := reporters.New(appConfig.Settings.ReportFormat)
 
 	feats := getFeaturesToProcess(appConfig.Settings.GherkinLocation, appConfig.Settings.Tags)
@@ -56,18 +68,21 @@ func Execute(appConfig *config.Config, errCfg error) {
 		testReport: testReport,
 		features:   gherkinparser.Filter(feats, BeforeAllTag),
 		engine:     engine,
+		lockMgr:    lockMgr,
 	})
 	runMainScenarios(RunScenariosParams{
 		appConfig:  appConfig,
 		testReport: testReport,
 		features:   gherkinparser.Filter(feats, appConfig.Settings.Tags),
 		engine:     engine,
+		lockMgr:    lockMgr,
 	})
 	runAfterAllScenarios(RunScenariosParams{
 		appConfig:  appConfig,
 		testReport: testReport,
 		features:   gherkinparser.Filter(feats, AfterAllTag),
 		engine:     engine,
+		lockMgr:    lockMgr,
 	})
 
 	if engine != nil {
@@ -123,6 +138,7 @@ func runAfterAllScenarios(params RunScenariosParams) {
 		features:    gherkinParserFeaturesToGodogFeatures(params.features),
 		concurrency: 1,
 		engine:      params.engine,
+		lockMgr:     params.lockMgr,
 	})
 
 	if afterAllSuite != nil {
@@ -137,6 +153,7 @@ func runMainScenarios(params RunScenariosParams) {
 		features:    gherkinParserFeaturesToGodogFeatures(params.features),
 		concurrency: params.appConfig.GetConcurrency(),
 		engine:      params.engine,
+		lockMgr:     params.lockMgr,
 	})
 	if mainSuite != nil {
 		mainSuite.Run()
@@ -151,6 +168,7 @@ func runBeforeAllScenarios(params RunScenariosParams) {
 		features:    feats,
 		concurrency: 1,
 		engine:      params.engine,
+		lockMgr:     params.lockMgr,
 	})
 	if beforeAllSuite == nil {
 		return
@@ -187,6 +205,7 @@ func createTestSuite(params createTestSuiteParams) *godog.TestSuite {
 			config:     params.appConfig,
 			testReport: params.testReport,
 			engine:     params.engine,
+			lockMgr:    params.lockMgr,
 		}),
 	}
 }
@@ -197,6 +216,7 @@ type createTestSuiteParams struct {
 	features    []godog.Feature
 	concurrency int
 	engine      browser.Engine
+	lockMgr     *state.Manager
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
@@ -212,7 +232,7 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioContext) {
 	return func(sc *godog.ScenarioContext) {
 		// Inject global variables and engine here
-		scenarioCtx := scenario.NewContext(params.config, variables.GetGlobalVariables(), params.engine)
+		scenarioCtx := scenario.NewContext(params.config, variables.GetGlobalVariables(), params.engine, params.lockMgr)
 		registerTestRunnerStepDefinitions(sc)
 		myCtx := newScenarioCtx()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
@@ -342,10 +362,12 @@ type RunScenariosParams struct {
 	testReport *reporters.Report
 	features   []*gherkinparser.Feature
 	engine     browser.Engine
+	lockMgr    *state.Manager
 }
 
 type ScenarioInitializerParams struct {
 	config     *config.Config
 	testReport *reporters.Report
 	engine     browser.Engine
+	lockMgr    *state.Manager
 }

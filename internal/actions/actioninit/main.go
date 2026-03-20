@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"testflowkit/internal/config"
+	lockstate "testflowkit/internal/state"
 	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
@@ -53,6 +54,13 @@ func Execute(_ *config.Config, _ error) {
 	if err := createSampleFeature(state); err != nil {
 		cleanup(err)
 		return
+	}
+
+	// Create an empty token-cache lock file so it is clear to the user that
+	// lock file is a managed artifact (and so .gitignore can reference it
+	// by an exact, predictable name).
+	if err := lockstate.CreateEmpty(lockstate.LockFile); err != nil {
+		logger.Warn(fmt.Sprintf("Could not create %s: %v", lockstate.LockFile, err), nil)
 	}
 
 	displayGuidance()

@@ -20,6 +20,9 @@ type Config struct {
 
 	Files FileConfig `yaml:"files"`
 
+	SecuritySchemes map[string]SecurityScheme `yaml:"security_schemes"`
+	DefaultSecurity string                    `yaml:"default_security"`
+
 	configPath string
 	appVersion string
 }
@@ -108,12 +111,24 @@ func (c *Config) GetFilesPaths(fileNames []string) ([]string, error) {
 	return filePaths, nil
 }
 
+func (c *Config) GetSecurityScheme(name string) (SecurityScheme, bool) {
+	if c.SecuritySchemes == nil {
+		return SecurityScheme{}, false
+	}
+	s, ok := c.SecuritySchemes[name]
+	return s, ok
+}
+
 func (c *Config) ValidateConfiguration() error {
 	if err := c.validateGlobalSettings(); err != nil {
 		return err
 	}
 
 	if err := c.validateFrontend(); err != nil {
+		return err
+	}
+
+	if err := c.validateSecuritySchemes(); err != nil {
 		return err
 	}
 
@@ -253,6 +268,125 @@ func (*Config) validateRestAPI(apiDef APIDefinition, apiName string) error {
 		if endpoint.Path == "" {
 			return fmt.Errorf("endpoint '%s.%s' must have a path", apiName, endpointName)
 		}
+	}
+	return nil
+}
+
+// validateSecuritySchemes validates the project-level security registry and all
+// security references embedded in API definitions and their endpoints/operations.
+func (c *Config) validateSecuritySchemes() error {
+	// Validate each declared scheme.
+	for name, scheme := range c.SecuritySchemes {
+		if err := validateSecurityScheme(scheme, name); err != nil {
+			return err
+		}
+	}
+
+	// Validate default_security reference.
+	if c.DefaultSecurity != "" {
+		if c.DefaultSecurity != string(SecurityTypeNone) {
+			if _, ok := c.SecuritySchemes[c.DefaultSecurity]; !ok {
+				return fmt.Errorf("default_security references unknown scheme '%s'", c.DefaultSecurity)
+			}
+		}
+	}
+
+	if c.APIs == nil {
+		return nil
+	}
+
+	// Validate endpoint/operation-level references.
+	return c.validateEndpointReferences()
+
+}
+
+func (c *Config) validateEndpointReferences() error {
+
+	for apiName, apiDef := range c.APIs.Definitions {
+		if err := c.validateSecurityRef(apiDef.SecurityRef, fmt.Sprintf("API '%s'", apiName)); err != nil {
+			return err
+		}
+		if apiDef.SecurityOverrides != nil && apiDef.SecurityRef.IsEmpty() && c.DefaultSecurity == "" {
+			logger.Warn(fmt.Sprintf("API '%s' has security_overrides but no security_ref or default_security to override", apiName), nil)
+		}
+		for epName, ep := range apiDef.Endpoints {
+			if err := c.validateSecurityRef(ep.SecurityRef, fmt.Sprintf("endpoint '%s.%s'", apiName, epName)); err != nil {
+				return err
+			}
+		}
+		for opName, op := range apiDef.Operations {
+			if err := c.validateSecurityRef(op.SecurityRef, fmt.Sprintf("operation '%s.%s'", apiName, opName)); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (c *Config) validateSecurityRef(ref *SecurityRef, location string) error {
+	if ref == nil || ref.IsEmpty() {
+		return nil
+	}
+	if ref.IsNone() {
+		return nil
+	}
+	if ref.Inline != nil {
+		return validateSecurityScheme(*ref.Inline, location+" (inline)")
+	}
+	if ref.Name != "" {
+		if _, ok := c.SecuritySchemes[ref.Name]; !ok {
+			return fmt.Errorf("%s references unknown security scheme '%s'", location, ref.Name)
+		}
+	}
+	return nil
+}
+
+// validateSecurityScheme checks that mandatory fields are present for the
+// given scheme type.
+func validateSecurityScheme(s SecurityScheme, name string) error {
+	switch s.Type {
+	case SecurityTypeBearer:
+		if s.Token == "" {
+			return fmt.Errorf("security scheme '%s' (bearer): token is required", name)
+		}
+	case SecurityTypeBasic:
+		if s.Username == "" || s.Password == "" {
+			return fmt.Errorf("security scheme '%s' (basic): username and password are required", name)
+		}
+	case SecurityTypeAPIKey:
+		if s.Key == "" {
+			return fmt.Errorf("security scheme '%s' (apikey): key is required", name)
+		}
+		if s.Placement != "" &&
+			s.Placement != APIKeyPlacementHeader &&
+			s.Placement != APIKeyPlacementQuery &&
+			s.Placement != APIKeyPlacementCookie {
+			return fmt.Errorf("security scheme '%s' (apikey): placement must be header, query, or cookie", name)
+		}
+	case SecurityTypeOAuth2:
+		if s.TokenURL == "" {
+			return fmt.Errorf("security scheme '%s' (oauth2): token_url is required", name)
+		}
+		if s.ClientID == "" {
+			return fmt.Errorf("security scheme '%s' (oauth2): client_id is required", name)
+		}
+		if s.ClientSecret == "" {
+			return fmt.Errorf("security scheme '%s' (oauth2): client_secret is required", name)
+		}
+	case SecurityTypeOIDC:
+		if s.ClientID == "" {
+			return fmt.Errorf("security scheme '%s' (oidc): client_id is required", name)
+		}
+	case SecurityTypeCertificate:
+		if s.CertFile == "" || s.KeyFile == "" {
+			return fmt.Errorf("security scheme '%s' (certificate): cert_file and key_file are required", name)
+		}
+	case SecurityTypeNone:
+		// Explicit sentinel – nothing to validate.
+	case "":
+		return fmt.Errorf("security scheme '%s': type is required", name)
+	default:
+		return fmt.Errorf("security scheme '%s': unknown type '%s'", name, s.Type)
 	}
 	return nil
 }

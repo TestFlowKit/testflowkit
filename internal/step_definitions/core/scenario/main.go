@@ -5,6 +5,7 @@ import (
 	"maps"
 	internalbrowser "testflowkit/internal/browser"
 	"testflowkit/internal/config"
+	"testflowkit/internal/state"
 	"testflowkit/pkg/browser"
 	"testflowkit/pkg/variables"
 
@@ -12,11 +13,12 @@ import (
 )
 
 type Context struct {
-	frontend  *frontend
-	backend   *BackendContext
-	config    *config.Config
-	variables map[string]any
-	engine    internalbrowser.Engine
+	frontend    *frontend
+	backend     *BackendContext
+	config      *config.Config
+	variables   map[string]any
+	engine      internalbrowser.Engine
+	lockManager *state.Manager
 }
 
 func (c *Context) GetConfig() *config.Config {
@@ -49,18 +51,22 @@ func (c *Context) SetVariable(name string, value any) {
 	c.variables[name] = value
 }
 
-func NewContext(cfg *config.Config, initialVariables map[string]any, engine internalbrowser.Engine) *Context {
+func NewContext(cfg *config.Config, initialVariables map[string]any, engine internalbrowser.Engine, lockMgr *state.Manager) *Context {
 	initVars := make(map[string]any)
 	if initialVariables != nil {
 		maps.Copy(initVars, initialVariables)
 	}
 
+	bc := newBackendCtx()
+	bc.LockManager = lockMgr
+
 	return &Context{
-		frontend:  newFrontCtx(cfg),
-		backend:   newBackendCtx(),
-		config:    cfg,
-		variables: initVars,
-		engine:    engine,
+		frontend:    newFrontCtx(cfg),
+		backend:     bc,
+		config:      cfg,
+		variables:   initVars,
+		engine:      engine,
+		lockManager: lockMgr,
 	}
 }
 

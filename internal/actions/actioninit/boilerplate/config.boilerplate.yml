@@ -34,6 +34,41 @@ frontend:
     home: "/"
     sentences: "/sentences"
 
+# Security Schemes (optional)
+# Named credentials used by REST and GraphQL APIs.
+# Reference a scheme from an api definition with: security: <scheme_name>
+# Disable auth for a specific endpoint with: security: none
+#
+# security_schemes:
+#   my_bearer:
+#     type: bearer
+#     token: "{{ env.API_TOKEN }}"           # static token
+#
+#   my_basic:
+#     type: basic
+#     username: "{{ env.API_USER }}"
+#     password: "{{ env.API_PASS }}"
+#
+#   my_apikey:
+#     type: apikey
+#     api_key: "{{ env.API_KEY }}"
+#     placement: header                       # header | query | cookie
+#     header_name: "X-API-Key"               # default: Authorization
+#
+#   my_oauth2:
+#     type: oauth2
+#     client_id: "{{ env.CLIENT_ID }}"
+#     client_secret: "{{ env.CLIENT_SECRET }}"
+#     token_url: "https://auth.example.com/oauth/token"
+#     scopes: ["read", "write"]
+#     persist: true                           # cache token in testflowkit.lock
+#     duration: "1h"                          # override reported expiry
+#     retry_on_401: true                      # re-fetch token once on 401
+#     # proxy_url: "http://proxy.corp:8080"   # optional per-scheme proxy
+#
+# # Project-wide default (applied when no api-level or endpoint-level security is set)
+# default_security: my_oauth2
+
 # APIs configuration
 # Define multiple REST and GraphQL APIs
 # apis:
