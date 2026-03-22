@@ -15,7 +15,7 @@ require (
 require github.com/cucumber/messages/go/v21 v21.0.1
 
 require (
-	github.com/fatih/color v1.18.0
+	github.com/fatih/color v1.19.0
 	github.com/gofrs/uuid/v5 v5.4.0
 	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/tidwall/gjson v1.18.0
@@ -33,7 +33,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	golang.org/x/image v0.37.0
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 )
 
 require (
