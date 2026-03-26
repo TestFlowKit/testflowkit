@@ -65,6 +65,8 @@ config.yml
 | `SecurityRef` struct (name + inline SecurityScheme) | ✅ Done | `internal/config/types.go` |
 | `SecurityOverrides` struct (scopes, audience, proxy_url) | ✅ Done | `internal/config/types.go` |
 | `APIKeyPlacement` enum (header, query, cookie) | ✅ Done | `internal/config/types.go` |
+| `OAuth2TokenAuthMethod` enum (`client_secret_post`, `client_secret_basic`) | ✅ Done | `internal/config/security_types.go` |
+| `SecurityScheme.TokenEndpointAuthMethod` (mandatory for oauth2) | ✅ Done | `internal/config/security_types.go` |
 | `Config.SecuritySchemes` map (root registry) | ✅ Done | `internal/config/main_type.go` |
 | `Config.DefaultSecurity` string reference | ✅ Done | `internal/config/main_type.go` |
 | `APIDefinition.SecurityRef` | ✅ Done | `internal/config/types.go` |
@@ -108,6 +110,7 @@ config.yml
 | Basic auth provider | ✅ Done | `internal/security/providers/basic.go` |
 | API key provider (header / query / cookie placement) | ✅ Done | `internal/security/providers/apikey.go` |
 | OAuth2 client_credentials provider (with proxy support) | ✅ Done | `internal/security/providers/oauth2.go` |
+| OAuth2 strategy pattern: `tokenEndpointAuthHandler` interface (`client_secret_post` / `client_secret_basic`) | ✅ Done | `internal/security/providers/oauth2.go` |
 | OIDC provider stub (returns `ErrNotImplemented`, reserves interface) | ✅ Done | `internal/security/providers/oidc.go` |
 | Certificate / mTLS provider stub (returns `ErrNotImplemented`) | ✅ Done | `internal/security/providers/certificate.go` |
 
@@ -182,6 +185,7 @@ security_schemes:
     type: oauth2
     grant_type: client_credentials
     token_url: "{{ env.AUTH_URL }}"
+    token_endpoint_auth_method: client_secret_post   # required: client_secret_post | client_secret_basic
     client_id: "{{ env.CLIENT_ID }}"
     client_secret: "{{ env.CLIENT_SECRET }}"
     scopes: ["read", "write"]

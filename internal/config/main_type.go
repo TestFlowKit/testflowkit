@@ -373,6 +373,20 @@ func validateSecurityScheme(s SecurityScheme, name string) error {
 		if s.ClientSecret == "" {
 			return fmt.Errorf("security scheme '%s' (oauth2): client_secret is required", name)
 		}
+		switch s.TokenEndpointAuthMethod {
+		case OAuth2TokenAuthMethodPost, OAuth2TokenAuthMethodBasic:
+			// valid
+		case "":
+			return fmt.Errorf(
+				"security scheme '%s' (oauth2): token_endpoint_auth_method is required (client_secret_post | client_secret_basic)",
+				name,
+			)
+		default:
+			return fmt.Errorf(
+				"security scheme '%s' (oauth2): token_endpoint_auth_method '%s' is not supported; use client_secret_post or client_secret_basic",
+				name, s.TokenEndpointAuthMethod,
+			)
+		}
 	case SecurityTypeOIDC:
 		if s.ClientID == "" {
 			return fmt.Errorf("security scheme '%s' (oidc): client_id is required", name)

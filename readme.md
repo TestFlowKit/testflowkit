@@ -367,10 +367,47 @@ TestFlowKit uses YAML configuration files to define test environments, element s
 
 - **REST API Endpoints**: REST API definitions with methods and paths
 - **GraphQL Operations**: GraphQL queries and mutations with comprehensive variable support
+- **Security Schemes**: Reusable auth definitions (`security_schemes`) with API-level references (`security_ref`)
+- **OAuth2 Token Auth Method**: `token_endpoint_auth_method` is mandatory for `type: oauth2` (`client_secret_post` or `client_secret_basic`)
 - **Array Variables**: Full support for GraphQL array variables including strings, numbers, and complex objects
 - **Default Headers**: Common HTTP headers for API requests
 - **Authentication**: API authentication configuration
 - **Variable Parsing**: Intelligent parsing of JSON objects, arrays, and primitive types
+
+Implemented security mechanisms:
+- `bearer`
+- `basic`
+- `apikey` (`placement`: `header` | `query` | `cookie`)
+- `oauth2` (client credentials)
+- `none` sentinel via `security_ref.name: none` to disable inherited auth
+
+`oidc` and `certificate` are defined for future use but are not implemented at runtime yet.
+
+Example OAuth2 security scheme:
+
+```yaml
+security_schemes:
+  enterprise_idp:
+    type: oauth2
+    token_url: "{{ env.auth_url }}"
+    client_id: "{{ env.client_id }}"
+    client_secret: "{{ env.client_secret }}"
+    token_endpoint_auth_method: client_secret_post   # required: client_secret_post | client_secret_basic
+    scopes: ["read", "write"]
+
+default_security: "enterprise_idp"
+
+apis:
+  definitions:
+    users_api:
+      type: rest
+      base_url: "{{ env.users_api_base_url }}"
+      security_ref: enterprise_idp
+      endpoints:
+        get_user:
+          method: GET
+          path: "/users/{id}"
+```
 
 ### File Configuration
 

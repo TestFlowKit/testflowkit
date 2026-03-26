@@ -26,6 +26,22 @@ const (
 	APIKeyPlacementCookie APIKeyPlacement = "cookie"
 )
 
+// OAuth2TokenAuthMethod controls how client credentials are sent to the token
+// endpoint. This maps directly to the token_endpoint_auth_method field defined
+// in RFC 7591 and OpenID Connect Core.
+type OAuth2TokenAuthMethod string
+
+const (
+	// OAuth2TokenAuthMethodPost sends client_id and client_secret as
+	// application/x-www-form-urlencoded body parameters (RFC 6749 §2.3.1).
+	OAuth2TokenAuthMethodPost OAuth2TokenAuthMethod = "client_secret_post"
+
+	// OAuth2TokenAuthMethodBasic sends client credentials in the Authorization
+	// header using HTTP Basic authentication (RFC 6749 §2.3.1, alternative).
+	// Neither client_id nor client_secret appear in the request body.
+	OAuth2TokenAuthMethodBasic OAuth2TokenAuthMethod = "client_secret_basic"
+)
+
 // SecurityScheme is a reusable, named authentication configuration stored in
 // the root security_schemes registry. All {{ env.* }} references are resolved
 // before this struct is populated, making its field values suitable for
@@ -55,6 +71,10 @@ type SecurityScheme struct {
 	ClientSecret string   `yaml:"client_secret"`
 	Scopes       []string `yaml:"scopes"`
 	Audience     string   `yaml:"audience"`
+	// TokenEndpointAuthMethod controls how client credentials are sent to the
+	// token endpoint. Required for type: oauth2.
+	// Values: client_secret_post | client_secret_basic
+	TokenEndpointAuthMethod OAuth2TokenAuthMethod `yaml:"token_endpoint_auth_method"`
 
 	// --- Certificate / mTLS ---
 	// CertFile and KeyFile are paths to PEM certificate and private-key files.
