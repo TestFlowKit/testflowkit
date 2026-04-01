@@ -64,6 +64,10 @@ func NewContext(cfg *config.Config, initialVariables map[string]any, engine inte
 	}
 }
 
+func (c *Context) ClearBackendContext() {
+	c.backend = newBackendCtx()
+}
+
 func newFrontCtx(cfg *config.Config) *frontend {
 	if !cfg.IsFrontendDefined() {
 		return &frontend{}

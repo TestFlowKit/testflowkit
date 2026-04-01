@@ -46,6 +46,7 @@ func (steps) prepareRequest() stepbuilder.Step {
 				return ctx, fmt.Errorf("unsupported API type: %s", apiDef.Type)
 			}
 
+			scenarioCtx.ClearBackendContext()
 			// Prepare the request using the protocol adapter
 			ctx, err = adapter.PrepareRequest(ctx, apiName, endpointName)
 			if err != nil {
