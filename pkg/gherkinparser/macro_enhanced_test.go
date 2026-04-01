@@ -5,6 +5,7 @@ import (
 
 	messages "github.com/cucumber/messages/go/v21"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type TestCase struct {
@@ -132,24 +133,59 @@ func TestSubstituteVariables(t *testing.T) {
 			variables: map[string]string{},
 			expected:  "the user clicks the button",
 		},
-		{
-			name: "handles variable not in map",
-			text: "the user fills the ${username} field with ${password}",
-			variables: map[string]string{
-				"username": "oki",
-			},
-			expected: "the user fills the oki field with ${password}",
-		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := substituteVariables(tt.text, tt.variables)
+			result, err := substituteVariables(tt.text, tt.variables)
+			require.NoError(t, err)
 			if result != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, result)
 			}
 		})
 	}
+}
+
+func TestSubstituteVariables_ReturnsErrorWhenVariableMissing(t *testing.T) {
+	_, err := substituteVariables("the user fills the ${username} field with ${password}", map[string]string{
+		"username": "oki",
+	})
+
+	require.ErrorIs(t, err, errMacroVariableNotFound)
+	assert.EqualError(t, err, "macro variable not found: password")
+}
+
+func TestConvertDatatableToString_SubstitutesVariables(t *testing.T) {
+	result, err := convertDatatableToString(&messages.DataTable{
+		Rows: []*messages.TableRow{
+			{
+				Location: &messages.Location{Column: 5},
+				Cells: []*messages.TableCell{
+					{Value: "id"},
+					{Value: "${contactId}"},
+				},
+			},
+		},
+	}, map[string]string{"contactId": "{{ contact_id }}"})
+
+	require.NoError(t, err)
+	assert.Equal(t, "    | id | {{ contact_id }} |\n", result)
+}
+
+func TestConvertDatatableToString_ReturnsErrorWhenVariableMissing(t *testing.T) {
+	_, err := convertDatatableToString(&messages.DataTable{
+		Rows: []*messages.TableRow{
+			{
+				Cells: []*messages.TableCell{
+					{Value: "id"},
+					{Value: "${contactId}"},
+				},
+			},
+		},
+	}, map[string]string{})
+
+	require.ErrorIs(t, err, errMacroVariableNotFound)
+	assert.EqualError(t, err, "macro variable not found: contactId")
 }
 
 func TestMacroVariableStruct(t *testing.T) {

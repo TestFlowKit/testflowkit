@@ -6,6 +6,7 @@ import (
 
 	messages "github.com/cucumber/messages/go/v21"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_GetMacroTitles(t *testing.T) {
@@ -102,7 +103,8 @@ func Test_ApplyMacro(t *testing.T) {
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			newContent := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(testContent, "\n"))
+			newContent, err := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(testContent, "\n"))
+			require.NoError(t, err)
 			assert.Equal(t, strings.Join(tt.expected, "\n"), newContent)
 		})
 	}
@@ -268,6 +270,64 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 				"Then a result",
 			},
 		},
+		{
+			name: "replaces variables in docstring and datatable",
+			scenario: &messages.Scenario{
+				Steps: []*messages.Step{
+					{
+						Keyword:  "Then",
+						Text:     "a macro step with variables",
+						Location: &messages.Location{Line: 2},
+						DataTable: &messages.DataTable{
+							Rows: []*messages.TableRow{
+								{
+									Cells: []*messages.TableCell{{Value: "id"}, {Value: "{{ contact_id }}"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			macros: []messages.Scenario{
+				{
+					Name: "a macro step with variables",
+					Steps: []*messages.Step{
+						{
+							Keyword: "Given",
+							Text:    "I prepare a request for ${id}",
+							DocString: &messages.DocString{
+								Content: `{"id":"${id}"}`,
+							},
+						},
+						{
+							Keyword: "And",
+							Text:    "I set the following path parameters:",
+							DataTable: &messages.DataTable{
+								Rows: []*messages.TableRow{
+									{
+										Location: &messages.Location{Column: 5},
+										Cells:    []*messages.TableCell{{Value: "id"}, {Value: "${id}"}},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			featureContent: []string{
+				"Scenario: Test scenario",
+				"Then a macro step with variables",
+			},
+			expected: []string{
+				"Scenario: Test scenario",
+				"Then I prepare a request for {{ contact_id }}",
+				"\"\"\"",
+				`{"id":"{{ contact_id }}"}`,
+				"\"\"\"",
+				"And I set the following path parameters:",
+				"    | id | {{ contact_id }} |\n",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -278,7 +338,8 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			content := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(tt.featureContent, "\n"))
+			content, err := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(tt.featureContent, "\n"))
+			require.NoError(t, err)
 
 			// // Trim any trailing empty lines for comparison
 			// for len(testContent) > 0 && strings.TrimSpace(testContent[len(testContent)-1]) == "" {
@@ -288,6 +349,38 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 			assert.Equal(t, strings.Join(tt.expected, "\n"), content)
 		})
 	}
+}
+
+func Test_ApplyMacro_ReturnsErrorWhenVariableMissing(t *testing.T) {
+	macroHelper := NewMacroHelpers([]scenario{
+		{
+			Name: "a macro step",
+			Steps: []*step{
+				{
+					Keyword: "When",
+					Text:    "I set the following path parameters:",
+					DataTable: &messages.DataTable{
+						Rows: []*messages.TableRow{
+							{
+								Cells: []*messages.TableCell{{Value: "id"}, {Value: "${id}"}},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+
+	_, err := macroHelper.applyMacro([]*messages.Step{
+		{
+			Keyword:  "When",
+			Text:     "a macro step",
+			Location: &messages.Location{Line: 2},
+		},
+	}, "Scenario: Test scenario\nWhen a macro step")
+
+	require.ErrorIs(t, err, errMacroVariableNotFound)
+	assert.EqualError(t, err, "macro variable not found: id")
 }
 
 func Test_NewMacroHelpers_AllowsRegexLikeMacroNames(t *testing.T) {

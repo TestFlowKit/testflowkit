@@ -1,6 +1,8 @@
 package gherkinparser
 
 import (
+	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 	"testflowkit/pkg/logger"
@@ -13,6 +15,7 @@ const excludeMacroTagExpr = "not " + MacroTag
 const errMsg = "Invalid macro variables table: each row must have exactly 2 cells (variable name and value)"
 
 var macroVarPattern = regexp.MustCompile(`\$\{([^}]+)\}`)
+var errMacroVariableNotFound = errors.New("macro variable not found")
 
 type MacroVariable struct {
 	Name  string
@@ -54,17 +57,29 @@ func getMacroVariables(table *messages.DataTable) MacroVariables {
 }
 
 // substituteVariables replaces ${variable_name} placeholders in step content with values from the map.
-// Uses the macroVarPattern regex to find placeholders and performs map lookup for substitution.
-func substituteVariables(stepContent string, variables MacroVariables) string {
-	return macroVarPattern.ReplaceAllStringFunc(stepContent, func(match string) string {
+// Returns an error when a referenced variable is missing so macro expansion cannot continue partially.
+func substituteVariables(stepContent string, variables MacroVariables) (string, error) {
+	missingVar := ""
+
+	result := macroVarPattern.ReplaceAllStringFunc(stepContent, func(match string) string {
+		if missingVar != "" {
+			return match
+		}
+
 		varName := strings.TrimSpace(match[2 : len(match)-1])
 		if value, exists := variables[varName]; exists {
 			return value
 		}
 
-		logger.Warn("Macro variable not found: "+varName, nil)
+		missingVar = varName
 		return match
 	})
+
+	if missingVar != "" {
+		return "", fmt.Errorf("%w: %s", errMacroVariableNotFound, missingVar)
+	}
+
+	return result, nil
 }
 
 // TODO: refactor for better understanding.
@@ -75,6 +90,8 @@ func applyMacros(macros []scenario, features []*Feature) []*Feature {
 		currFeature, err := macroHelper.ApplyMacroToFeature(*f)
 		if err != nil {
 			logger.Warn("Error applying macros to feature: "+f.Name, []string{err.Error()})
+			newFeatures = append(newFeatures, f)
+			continue
 		}
 		newFeatures = append(newFeatures, currFeature)
 	}
@@ -118,23 +135,32 @@ func isMacroScenario(scenario *scenario) bool {
 }
 
 // convertDatatableToString converts a DataTable to its string representation for output.
-func convertDatatableToString(dt *messages.DataTable) string {
+// Each cell value is expanded using the same ${variable} substitution rules as step text.
+func convertDatatableToString(dt *messages.DataTable, variables MacroVariables) (string, error) {
 	if dt == nil || len(dt.Rows) == 0 {
-		return ""
+		return "", nil
 	}
 
 	var sb strings.Builder
 	for _, row := range dt.Rows {
-		sb.WriteString(strings.Repeat(" ", int(row.Location.Column)-1))
+		indent := 0
+		if row.Location != nil && row.Location.Column > 0 {
+			indent = int(row.Location.Column) - 1
+		}
+		sb.WriteString(strings.Repeat(" ", indent))
 		sb.WriteString("|")
 		for _, cell := range row.Cells {
+			cellValue, err := substituteVariables(cell.Value, variables)
+			if err != nil {
+				return "", err
+			}
 			sb.WriteString(" ")
-			sb.WriteString(cell.Value)
+			sb.WriteString(cellValue)
 			sb.WriteString(" |")
 		}
 		sb.WriteString("\n")
 	}
-	return sb.String()
+	return sb.String(), nil
 }
 
 // ExpandMacroParam encapsulates parameters for macro expansion.
