@@ -32,23 +32,26 @@ config.yml
 └── apis:
       definitions:
         my_api:
-          security_ref: my_idp        ← API-level override (reference)
+          security_ref:
+            name: my_idp             ← API-level override (reference)
           security_overrides:         ← API-level partial overrides
             scopes: ["inventory.all"]
           endpoints:
             get_item:
-              security: none          ← endpoint-level: disables all inheritance
+              security_ref:
+                name: none            ← endpoint-level: disables all inheritance
               # or:
-              security_ref: other_idp ← endpoint-level: full override
+              security_ref:
+                name: other_idp       ← endpoint-level: full override
 ```
 
 **Inheritance resolution order (highest priority first):**
 
-1. Endpoint / Operation level (`security` or `security_ref`)
-2. API definition level (`security` / `security_ref` + `security_overrides`)
+1. Endpoint / Operation level (`security_ref`)
+2. API definition level (`security_ref` + `security_overrides`)
 3. Project root `default_security`
 
-`security: none` at any level disables inheritance from all lower-priority levels.
+`security_ref.name: none` at any level disables inheritance from all lower-priority levels.
 
 **Token persistence key**: SHA256 of the fully-resolved (env-substituted) SecurityScheme + any active overrides.
 
@@ -157,7 +160,7 @@ config.yml
 | Certificate / mTLS provider (`.p12`, `.pem`) | Low priority for current users | Future phase |
 | BDD Gherkin steps for role-switch / force-refresh | Scope decision (runtime/config only for now) | Future phase |
 | Token encryption at rest in `testflowkit.lock` | Plain JSON sufficient for current needs; docs warning present | Future phase |
-| `security: none` on a `security_overrides`-only entry | Edge case; not validated yet | Future phase |
+| `security_ref.name: none` on a `security_overrides`-only entry | Edge case; not validated yet | Future phase |
 
 ---
 
@@ -206,7 +209,8 @@ apis:
   definitions:
     inventory_api:
       base_url: "{{ env.API_URL }}"
-      security_ref: enterprise_idp        # API-level – inherits + allows overrides
+      security_ref:
+        name: enterprise_idp         # API-level – inherits + allows overrides
       security_overrides:
         scopes: ["inventory.all"]         # override scopes for this API only
 
@@ -216,14 +220,16 @@ apis:
 
     admin_api:
       base_url: "{{ env.ADMIN_URL }}"
-      security_ref: admin_key
+      security_ref:
+        name: admin_key
 
       endpoints:
         health_check:
           method: GET
           path: /health
           description: Public health endpoint
-          security: none                  # disables all inherited security
+          security_ref:
+            name: none                    # disables all inherited security
 ```
 
 ---
@@ -296,7 +302,7 @@ cache:
 - [ ] `go test ./internal/httpauth/...` — auth injection, proxy, retry_on_401
 - [ ] `go test ./...` — full suite green
 - [ ] Existing config with only `default_headers` runs without change
-- [ ] `security: none` on endpoint disables project and API auth
+- [ ] `security_ref.name: none` on endpoint disables project and API auth
 - [ ] Changing `env.AUTH_URL` produces a different lock key
 - [ ] `retry_on_401: false` by default; when `true`, one re-auth + one retry
 - [ ] Two parallel test runners do not corrupt `testflowkit.lock`

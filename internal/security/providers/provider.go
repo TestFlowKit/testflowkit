@@ -17,7 +17,7 @@ var ErrNotImplemented = errors.New("auth provider: not implemented in this relea
 // The transport layer uses it to attach credentials to outgoing requests.
 type TokenResult struct {
 	// AccessToken is the raw token/key value.
-	AccessToken string
+	AccessToken string //nolint:gosec // Auth provider output intentionally carries token material.
 	// TokenType is e.g. "Bearer" (used as the Authorization header prefix).
 	TokenType string
 	// ExpiresIn is the TTL reported by the IDP.  Zero means unknown/no expiry.

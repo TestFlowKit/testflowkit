@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"time"
 
+	"testflowkit/internal/config"
 	"testflowkit/internal/security"
 	"testflowkit/internal/security/providers"
 	"testflowkit/internal/state"
@@ -55,33 +56,46 @@ func (t *AuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	return t.retryOnUnauthorized(req, resp)
+}
 
-	if resp.StatusCode == http.StatusUnauthorized && t.Resolved.Scheme.RetryOn401 {
-		resp.Body.Close()
-		// Invalidate the cached entry and try once more.
-		if t.LockManager != nil {
-			t.LockManager.Invalidate(t.SchemeHash)
-		}
-		token, err = t.fetchFreshToken(req.Context())
-		if err != nil {
-			return nil, fmt.Errorf("httpauth: re-auth after 401: %w", err)
-		}
-		retryReq := req.Clone(req.Context())
-		if req.Body != nil {
-			// Re-read body for the retry if it was already consumed.
-			// Callers that need retry support should use GetBody.
-			if req.GetBody != nil {
-				retryReq.Body, err = req.GetBody()
-				if err != nil {
-					return nil, fmt.Errorf("httpauth: restore request body for retry: %w", err)
-				}
-			}
-		}
-		injectCredential(retryReq, token)
-		return t.base().RoundTrip(retryReq)
+func (t *AuthTransport) retryOnUnauthorized(req *http.Request, resp *http.Response) (*http.Response, error) {
+	if resp.StatusCode != http.StatusUnauthorized || !t.Resolved.Scheme.RetryOn401 {
+		return resp, nil
 	}
 
-	return resp, nil
+	resp.Body.Close()
+	// Invalidate the cached entry and try once more.
+	if t.LockManager != nil {
+		t.LockManager.Invalidate(t.SchemeHash)
+	}
+
+	token, err := t.fetchFreshToken(req.Context())
+	if err != nil {
+		return nil, fmt.Errorf("httpauth: re-auth after 401: %w", err)
+	}
+
+	retryReq := req.Clone(req.Context())
+	bodyErr := restoreRetryBody(req, retryReq)
+	if bodyErr != nil {
+		return nil, bodyErr
+	}
+
+	injectCredential(retryReq, token)
+	return t.base().RoundTrip(retryReq)
+}
+
+func restoreRetryBody(original *http.Request, retryReq *http.Request) error {
+	if original.Body == nil || original.GetBody == nil {
+		return nil
+	}
+
+	body, err := original.GetBody()
+	if err != nil {
+		return fmt.Errorf("httpauth: restore request body for retry: %w", err)
+	}
+	retryReq.Body = body
+	return nil
 }
 
 func (t *AuthTransport) getToken(ctx context.Context) (*providers.TokenResult, error) {
@@ -123,13 +137,13 @@ func (t *AuthTransport) fetchFreshToken(ctx context.Context) (*providers.TokenRe
 // injectCredential attaches the token to req according to the placement strategy.
 func injectCredential(req *http.Request, result *providers.TokenResult) {
 	switch result.Placement {
-	case "query":
+	case config.APIKeyPlacementQuery:
 		q := req.URL.Query()
 		q.Set(result.QueryParam, result.AccessToken)
 		req.URL.RawQuery = q.Encode()
-	case "cookie":
+	case config.APIKeyPlacementCookie:
 		req.AddCookie(&http.Cookie{Name: result.HeaderName, Value: result.AccessToken})
-	default:
+	case config.APIKeyPlacementHeader, "":
 		// header placement (default for bearer, basic, apikey→header)
 		headerName := result.HeaderName
 		if headerName == "" {
@@ -140,6 +154,9 @@ func injectCredential(req *http.Request, result *providers.TokenResult) {
 			headerValue = result.AccessToken
 		}
 		req.Header.Set(headerName, headerValue)
+	default:
+		// Defensive default for any unknown placement.
+		req.Header.Set("Authorization", result.AccessToken)
 	}
 }
 

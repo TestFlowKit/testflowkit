@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -20,11 +21,13 @@ import (
 type OAuth2Provider struct{}
 
 type oauth2TokenResponse struct {
-	AccessToken string `json:"access_token"`
+	AccessToken string `json:"access_token"` //nolint:gosec // OAuth2 response schema uses this field name.
 	TokenType   string `json:"token_type"`
 	ExpiresIn   int64  `json:"expires_in"`
 	Scope       string `json:"scope"`
 }
+
+const tokenRequestTimeout = 30 * time.Second
 
 // tokenEndpointAuthHandler is the strategy interface for injecting OAuth2
 // client credentials. Each method owns exactly one concern:
@@ -64,12 +67,10 @@ func (clientSecretBasicHandler) ApplyToRequest(req *http.Request, scheme config.
 // authHandlerFor returns the tokenEndpointAuthHandler for the given method.
 // Validation guarantees the method is always a known value when this is called.
 func authHandlerFor(method config.OAuth2TokenAuthMethod) tokenEndpointAuthHandler {
-	switch method {
-	case config.OAuth2TokenAuthMethodBasic:
+	if method == config.OAuth2TokenAuthMethodBasic {
 		return clientSecretBasicHandler{}
-	default:
-		return clientSecretPostHandler{}
 	}
+	return clientSecretPostHandler{}
 }
 
 func (*OAuth2Provider) Authenticate(ctx context.Context, scheme config.SecurityScheme) (*TokenResult, error) {
@@ -102,7 +103,7 @@ func (*OAuth2Provider) Authenticate(ctx context.Context, scheme config.SecurityS
 	// Inject any request-level credential headers.
 	h.ApplyToRequest(req, scheme)
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) //nolint:gosec // Token endpoint URL is user-configured and intentionally requested.
 	if err != nil {
 		return nil, fmt.Errorf("oauth2: token request failed: %w", err)
 	}
@@ -117,11 +118,12 @@ func (*OAuth2Provider) Authenticate(ctx context.Context, scheme config.SecurityS
 	}
 
 	var tokenResp oauth2TokenResponse
-	if err := json.Unmarshal(body, &tokenResp); err != nil {
-		return nil, fmt.Errorf("oauth2: parse token response: %w", err)
+	decodeErr := json.Unmarshal(body, &tokenResp)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("oauth2: parse token response: %w", decodeErr)
 	}
 	if tokenResp.AccessToken == "" {
-		return nil, fmt.Errorf("oauth2: token response missing access_token")
+		return nil, errors.New("oauth2: token response missing access_token")
 	}
 
 	tokenType := tokenResp.TokenType
@@ -155,6 +157,6 @@ func buildHTTPClient(proxyURL string) (*http.Client, error) {
 	}
 	return &http.Client{
 		Transport: transport,
-		Timeout:   30 * time.Second,
+		Timeout:   tokenRequestTimeout,
 	}, nil
 }

@@ -297,17 +297,21 @@ func (c *Config) validateSecuritySchemes() error {
 
 	// Validate endpoint/operation-level references.
 	return c.validateEndpointReferences()
-
 }
 
 func (c *Config) validateEndpointReferences() error {
-
 	for apiName, apiDef := range c.APIs.Definitions {
 		if err := c.validateSecurityRef(apiDef.SecurityRef, fmt.Sprintf("API '%s'", apiName)); err != nil {
 			return err
 		}
 		if apiDef.SecurityOverrides != nil && apiDef.SecurityRef.IsEmpty() && c.DefaultSecurity == "" {
-			logger.Warn(fmt.Sprintf("API '%s' has security_overrides but no security_ref or default_security to override", apiName), nil)
+			logger.Warn(
+				fmt.Sprintf(
+					"API '%s' has security_overrides but no security_ref or default_security to override",
+					apiName,
+				),
+				nil,
+			)
 		}
 		for epName, ep := range apiDef.Endpoints {
 			if err := c.validateSecurityRef(ep.SecurityRef, fmt.Sprintf("endpoint '%s.%s'", apiName, epName)); err != nil {
@@ -326,6 +330,9 @@ func (c *Config) validateEndpointReferences() error {
 func (c *Config) validateSecurityRef(ref *SecurityRef, location string) error {
 	if ref == nil || ref.IsEmpty() {
 		return nil
+	}
+	if ref.Name != "" && ref.Inline != nil {
+		return fmt.Errorf("%s security_ref cannot set both name and inline", location)
 	}
 	if ref.IsNone() {
 		return nil
@@ -346,61 +353,93 @@ func (c *Config) validateSecurityRef(ref *SecurityRef, location string) error {
 func validateSecurityScheme(s SecurityScheme, name string) error {
 	switch s.Type {
 	case SecurityTypeBearer:
-		if s.Token == "" {
-			return fmt.Errorf("security scheme '%s' (bearer): token is required", name)
-		}
+		return validateBearerScheme(s, name)
 	case SecurityTypeBasic:
-		if s.Username == "" || s.Password == "" {
-			return fmt.Errorf("security scheme '%s' (basic): username and password are required", name)
-		}
+		return validateBasicScheme(s, name)
 	case SecurityTypeAPIKey:
-		if s.Key == "" {
-			return fmt.Errorf("security scheme '%s' (apikey): key is required", name)
-		}
-		if s.Placement != "" &&
-			s.Placement != APIKeyPlacementHeader &&
-			s.Placement != APIKeyPlacementQuery &&
-			s.Placement != APIKeyPlacementCookie {
-			return fmt.Errorf("security scheme '%s' (apikey): placement must be header, query, or cookie", name)
-		}
+		return validateAPIKeyScheme(s, name)
 	case SecurityTypeOAuth2:
-		if s.TokenURL == "" {
-			return fmt.Errorf("security scheme '%s' (oauth2): token_url is required", name)
-		}
-		if s.ClientID == "" {
-			return fmt.Errorf("security scheme '%s' (oauth2): client_id is required", name)
-		}
-		if s.ClientSecret == "" {
-			return fmt.Errorf("security scheme '%s' (oauth2): client_secret is required", name)
-		}
-		switch s.TokenEndpointAuthMethod {
-		case OAuth2TokenAuthMethodPost, OAuth2TokenAuthMethodBasic:
-			// valid
-		case "":
-			return fmt.Errorf(
-				"security scheme '%s' (oauth2): token_endpoint_auth_method is required (client_secret_post | client_secret_basic)",
-				name,
-			)
-		default:
-			return fmt.Errorf(
-				"security scheme '%s' (oauth2): token_endpoint_auth_method '%s' is not supported; use client_secret_post or client_secret_basic",
-				name, s.TokenEndpointAuthMethod,
-			)
-		}
+		return validateOAuth2Scheme(s, name)
 	case SecurityTypeOIDC:
-		if s.ClientID == "" {
-			return fmt.Errorf("security scheme '%s' (oidc): client_id is required", name)
-		}
+		return validateOIDCScheme(s, name)
 	case SecurityTypeCertificate:
-		if s.CertFile == "" || s.KeyFile == "" {
-			return fmt.Errorf("security scheme '%s' (certificate): cert_file and key_file are required", name)
-		}
+		return validateCertificateScheme(s, name)
 	case SecurityTypeNone:
 		// Explicit sentinel – nothing to validate.
+		return nil
 	case "":
 		return fmt.Errorf("security scheme '%s': type is required", name)
 	default:
 		return fmt.Errorf("security scheme '%s': unknown type '%s'", name, s.Type)
+	}
+}
+
+func validateBearerScheme(s SecurityScheme, name string) error {
+	if s.Token == "" {
+		return fmt.Errorf("security scheme '%s' (bearer): token is required", name)
+	}
+	return nil
+}
+
+func validateBasicScheme(s SecurityScheme, name string) error {
+	if s.Username == "" || s.Password == "" {
+		return fmt.Errorf("security scheme '%s' (basic): username and password are required", name)
+	}
+	return nil
+}
+
+func validateAPIKeyScheme(s SecurityScheme, name string) error {
+	if s.Key == "" {
+		return fmt.Errorf("security scheme '%s' (apikey): key is required", name)
+	}
+	if s.Placement != "" &&
+		s.Placement != APIKeyPlacementHeader &&
+		s.Placement != APIKeyPlacementQuery &&
+		s.Placement != APIKeyPlacementCookie {
+		return fmt.Errorf("security scheme '%s' (apikey): placement must be header, query, or cookie", name)
+	}
+	return nil
+}
+
+func validateOAuth2Scheme(s SecurityScheme, name string) error {
+	if s.TokenURL == "" {
+		return fmt.Errorf("security scheme '%s' (oauth2): token_url is required", name)
+	}
+	if s.ClientID == "" {
+		return fmt.Errorf("security scheme '%s' (oauth2): client_id is required", name)
+	}
+	if s.ClientSecret == "" {
+		return fmt.Errorf("security scheme '%s' (oauth2): client_secret is required", name)
+	}
+
+	switch s.TokenEndpointAuthMethod {
+	case OAuth2TokenAuthMethodPost, OAuth2TokenAuthMethodBasic:
+		return nil
+	case "":
+		return fmt.Errorf(
+			"security scheme '%s' (oauth2): token_endpoint_auth_method is required (client_secret_post | client_secret_basic)",
+			name,
+		)
+	default:
+		return fmt.Errorf(
+			"security scheme '%s' (oauth2): token_endpoint_auth_method '%s' is not supported; "+
+				"use client_secret_post or client_secret_basic",
+			name,
+			s.TokenEndpointAuthMethod,
+		)
+	}
+}
+
+func validateOIDCScheme(s SecurityScheme, name string) error {
+	if s.ClientID == "" {
+		return fmt.Errorf("security scheme '%s' (oidc): client_id is required", name)
+	}
+	return nil
+}
+
+func validateCertificateScheme(s SecurityScheme, name string) error {
+	if s.CertFile == "" || s.KeyFile == "" {
+		return fmt.Errorf("security scheme '%s' (certificate): cert_file and key_file are required", name)
 	}
 	return nil
 }

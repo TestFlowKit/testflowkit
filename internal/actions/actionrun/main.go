@@ -39,11 +39,11 @@ func Execute(appConfig *config.Config, errCfg error) {
 	if err := lockMgr.Load(); err != nil {
 		logger.Warn("Failed to load lock file (starting with empty cache): "+err.Error(), nil)
 	}
-	defer func() {
+	saveLockState := func() {
 		if saveErr := lockMgr.Save(); saveErr != nil {
 			logger.Warn("Failed to save lock file: "+saveErr.Error(), nil)
 		}
-	}()
+	}
 
 	testReport := reporters.New(appConfig.Settings.ReportFormat)
 
@@ -53,6 +53,7 @@ func Execute(appConfig *config.Config, errCfg error) {
 			"Make sure your tags are correct",
 			"Make sure your gherkin files directory is configured",
 		})
+		saveLockState()
 		os.Exit(0)
 	}
 
@@ -100,6 +101,7 @@ func Execute(appConfig *config.Config, errCfg error) {
 
 	if testReport.AreAllTestsPassed {
 		logger.Success("All tests passed")
+		saveLockState()
 		os.Exit(0)
 	}
 
@@ -118,6 +120,7 @@ func Execute(appConfig *config.Config, errCfg error) {
 		"please see logs for more details",
 		"please see the test report for more details",
 	})
+	saveLockState()
 
 	os.Exit(1)
 }

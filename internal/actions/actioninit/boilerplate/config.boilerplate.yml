@@ -36,7 +36,9 @@ frontend:
 
 # Security Schemes (optional)
 # Named credentials used by REST and GraphQL APIs.
-# Reference a scheme from an api definition with: security_ref: <scheme_name>
+# Reference a scheme from an api definition with:
+#   security_ref:
+#     name: <scheme_name>
 # Disable inherited auth with:
 #   security_ref:
 #     name: none

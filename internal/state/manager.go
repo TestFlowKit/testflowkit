@@ -32,7 +32,7 @@ const (
 // TokenEntry holds the persisted state for one acquired token.
 type TokenEntry struct {
 	// AccessToken is the raw bearer / access token value.
-	AccessToken string `json:"access_token"`
+	AccessToken string `json:"access_token"` //nolint:gosec // Lock state intentionally persists token material.
 	// TokenType is e.g. "Bearer" (for display / injection).
 	TokenType string `json:"token_type,omitempty"`
 	// ObtainedAt is when the token was fetched (UTC).
@@ -97,7 +97,8 @@ func (m *Manager) Load() error {
 	}
 
 	var content lockFileContent
-	if err := json.Unmarshal(data, &content); err != nil {
+	decodeErr := json.Unmarshal(data, &content)
+	if decodeErr != nil {
 		// Corrupted file – discard and start fresh.
 		m.entries = make(map[string]*TokenEntry)
 		return nil
@@ -136,8 +137,9 @@ func (m *Manager) Save() error {
 	}
 
 	const perm = 0600
-	if err := os.WriteFile(m.path, data, perm); err != nil {
-		return fmt.Errorf("state: write lock file: %w", err)
+	writeErr := os.WriteFile(m.path, data, perm)
+	if writeErr != nil {
+		return fmt.Errorf("state: write lock file: %w", writeErr)
 	}
 	return nil
 }

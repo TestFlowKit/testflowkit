@@ -402,7 +402,8 @@ apis:
     users_api:
       type: rest
       base_url: "{{ env.users_api_base_url }}"
-      security_ref: enterprise_idp
+      security_ref:
+        name: enterprise_idp
       endpoints:
         get_user:
           method: GET

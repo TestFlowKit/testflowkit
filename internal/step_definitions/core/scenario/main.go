@@ -51,14 +51,24 @@ func (c *Context) SetVariable(name string, value any) {
 	c.variables[name] = value
 }
 
-func NewContext(cfg *config.Config, initialVariables map[string]any, engine internalbrowser.Engine, lockMgr *state.Manager) *Context {
+func NewContext(
+	cfg *config.Config,
+	initialVariables map[string]any,
+	engine internalbrowser.Engine,
+	lockMgr ...*state.Manager,
+) *Context {
+	var lockManager *state.Manager
+	if len(lockMgr) > 0 {
+		lockManager = lockMgr[0]
+	}
+
 	initVars := make(map[string]any)
 	if initialVariables != nil {
 		maps.Copy(initVars, initialVariables)
 	}
 
 	bc := newBackendCtx()
-	bc.LockManager = lockMgr
+	bc.LockManager = lockManager
 
 	return &Context{
 		frontend:    newFrontCtx(cfg),
@@ -66,7 +76,7 @@ func NewContext(cfg *config.Config, initialVariables map[string]any, engine inte
 		config:      cfg,
 		variables:   initVars,
 		engine:      engine,
-		lockManager: lockMgr,
+		lockManager: lockManager,
 	}
 }
 

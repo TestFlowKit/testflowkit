@@ -2,6 +2,7 @@ package security
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -25,7 +26,7 @@ func SchemeHash(s config.SecurityScheme) (string, error) {
 		return "", fmt.Errorf("security hash: canonicalise failed: %w", err)
 	}
 	sum := sha256.Sum256(canonical)
-	return fmt.Sprintf("%x", sum), nil
+	return hex.EncodeToString(sum[:]), nil
 }
 
 // canonicalise converts a SecurityScheme into a deterministic JSON byte slice.
@@ -39,8 +40,9 @@ func canonicalise(s config.SecurityScheme) ([]byte, error) {
 
 	// Unmarshal into a generic ordered representation.
 	var m map[string]any
-	if err := json.Unmarshal(raw, &m); err != nil {
-		return nil, err
+	decodeErr := json.Unmarshal(raw, &m)
+	if decodeErr != nil {
+		return nil, decodeErr
 	}
 
 	// Re-marshal with sorted keys.
@@ -53,46 +55,54 @@ func canonicalise(s config.SecurityScheme) ([]byte, error) {
 func marshalSorted(v any) ([]byte, error) {
 	switch val := v.(type) {
 	case map[string]any:
-		keys := make([]string, 0, len(val))
-		for k := range val {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-
-		buf := []byte{'{'}
-		for i, k := range keys {
-			key, err := json.Marshal(k)
-			if err != nil {
-				return nil, err
-			}
-			child, err := marshalSorted(val[k])
-			if err != nil {
-				return nil, err
-			}
-			buf = append(buf, key...)
-			buf = append(buf, ':')
-			buf = append(buf, child...)
-			if i < len(keys)-1 {
-				buf = append(buf, ',')
-			}
-		}
-		return append(buf, '}'), nil
+		return marshalSortedMap(val)
 
 	case []any:
-		buf := []byte{'['}
-		for i, item := range val {
-			child, err := marshalSorted(item)
-			if err != nil {
-				return nil, err
-			}
-			buf = append(buf, child...)
-			if i < len(val)-1 {
-				buf = append(buf, ',')
-			}
-		}
-		return append(buf, ']'), nil
+		return marshalSortedSlice(val)
 
 	default:
 		return json.Marshal(v)
 	}
+}
+
+func marshalSortedMap(val map[string]any) ([]byte, error) {
+	keys := make([]string, 0, len(val))
+	for k := range val {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	buf := []byte{'{'}
+	for i, k := range keys {
+		key, err := json.Marshal(k)
+		if err != nil {
+			return nil, err
+		}
+		child, err := marshalSorted(val[k])
+		if err != nil {
+			return nil, err
+		}
+		buf = append(buf, key...)
+		buf = append(buf, ':')
+		buf = append(buf, child...)
+		if i < len(keys)-1 {
+			buf = append(buf, ',')
+		}
+	}
+	return append(buf, '}'), nil
+}
+
+func marshalSortedSlice(val []any) ([]byte, error) {
+	buf := []byte{'['}
+	for i, item := range val {
+		child, err := marshalSorted(item)
+		if err != nil {
+			return nil, err
+		}
+		buf = append(buf, child...)
+		if i < len(val)-1 {
+			buf = append(buf, ',')
+		}
+	}
+	return append(buf, ']'), nil
 }
