@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strings"
 	"testflowkit/internal/config"
+	"testflowkit/internal/httpauth"
+	"testflowkit/internal/security"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
@@ -47,8 +49,13 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, api string, reqName
 		}
 	}
 
+	// Resolve security for this request
+	resolved := security.Resolve(cfg, apiDef, endpoint.SecurityRef)
+	bc := scenarioCtx.GetBackendContext()
+	bc.ResolvedSecurity = resolved
+
 	// Store this adapter as the protocol
-	scenarioCtx.GetBackendContext().SetProtocol(a)
+	bc.SetProtocol(a)
 
 	return ctx, nil
 }
@@ -57,9 +64,13 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	scenarioCtx := scenario.MustFromContext(ctx)
 	const defaultDuration = 10
 
-	client := &http.Client{
-		// TODO: make timeout configurable
-		Timeout: time.Duration(defaultDuration) * time.Second,
+	bc := scenarioCtx.GetBackendContext()
+	client, errClient := httpauth.NewClient(
+		time.Duration(defaultDuration)*time.Second,
+		bc.ResolvedSecurity,
+	)
+	if errClient != nil {
+		return ctx, fmt.Errorf("failed to create HTTP client: %w", errClient)
 	}
 
 	req, err := a.createRequest(ctx, scenarioCtx)
@@ -68,7 +79,7 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	}
 
 	startTime := time.Now()
-	//nolint:gosec // we want to allow insecure requests in tests
+
 	resp, err := client.Do(req)
 	duration := time.Since(startTime)
 	if err != nil {

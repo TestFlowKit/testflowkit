@@ -2,6 +2,7 @@ package scenario
 
 import (
 	"context"
+	"testflowkit/internal/security"
 	"testflowkit/pkg/graphql"
 	"testflowkit/pkg/variables"
 )
@@ -37,6 +38,11 @@ type BackendContext struct {
 	Response *UnifiedResponse
 	Protocol APIProtocol
 	parser   *variables.Parser
+
+	// ResolvedSecurity holds the auth context computed by the security resolver
+	// during request preparation. The transport layer uses it to inject
+	// credentials and handle retry_on_401.
+	ResolvedSecurity security.ResolvedSecurity
 
 	Rest    RestContext
 	GraphQL GraphQLContext
