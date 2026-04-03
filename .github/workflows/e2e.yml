@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       - name: Build server image
         run: docker compose -f e2e/compose.yml -p e2e build server
@@ -20,7 +20,7 @@ jobs:
         run: docker save e2e-server -o server-image.tar
 
       - name: Upload server image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: server-image
           path: server-image.tar
@@ -38,10 +38,10 @@ jobs:
           - e2e_playwright
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       - name: Download server image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: server-image
 
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload test results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: test-results-${{ matrix.service }}
           path: report-${{ matrix.service }}.html
@@ -85,7 +85,7 @@ jobs:
 
     steps:
       - name: Delete server image artifact
-        uses: geekyeggo/delete-artifact@v5
+        uses: GeekyEggo/delete-artifact@v6.0.0
         with:
           name: server-image
           failOnError: false
