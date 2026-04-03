@@ -34,6 +34,45 @@ frontend:
     home: "/"
     sentences: "/sentences"
 
+# Security Schemes (optional)
+# Named credentials used by REST and GraphQL APIs.
+# Reference a scheme from an api definition with:
+#   security_ref:
+#     name: <scheme_name>
+# Disable inherited auth with:
+#   security_ref:
+#     name: none
+#
+# security_schemes:
+#   my_bearer:
+#     type: bearer
+#     token: "{{ env.API_TOKEN }}"           # static token
+#
+#   my_basic:
+#     type: basic
+#     username: "{{ env.API_USER }}"
+#     password: "{{ env.API_PASS }}"
+#
+#   my_apikey:
+#     type: apikey
+#     key: "{{ env.API_KEY }}"
+#     placement: header                       # header | query | cookie
+#     header_name: "X-API-Key"               # default: Authorization
+#
+#   my_oauth2:
+#     type: oauth2
+#     client_id: "{{ env.CLIENT_ID }}"
+#     client_secret: "{{ env.CLIENT_SECRET }}"
+#     token_url: "https://auth.example.com/oauth/token"
+#     token_endpoint_auth_method: client_secret_post   # required: client_secret_post | client_secret_basic
+#     scopes: ["read", "write"]
+#     duration: "1h"                          # override reported expiry
+#     retry_on_401: true                      # re-fetch token once on 401
+#     # proxy_url: "http://proxy.corp:8080"   # optional per-scheme proxy
+#
+# # Project-wide default (applied when no api-level or endpoint-level security is set)
+# default_security: my_oauth2
+
 # APIs configuration
 # Define multiple REST and GraphQL APIs
 # apis:

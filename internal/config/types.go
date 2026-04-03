@@ -115,6 +115,13 @@ type APIDefinition struct {
 	Timeout        *int                        `yaml:"timeout" validate:"omitempty,min=1000,max=300000"`
 	Endpoints      map[string]Endpoint         `yaml:"endpoints" validate:"required_if=Type rest,min=1"`
 	Operations     map[string]GraphQLOperation `yaml:"operations" validate:"required_if=Type graphql,min=1"`
+
+	// Security – API-level auth (overrides project default_security).
+	// Use SecurityRef to reference a named scheme or embed an inline one.
+	// Use SecurityOverrides to patch specific fields (e.g. scopes) without
+	// duplicating the whole scheme.
+	SecurityRef       *SecurityRef       `yaml:"security_ref"`
+	SecurityOverrides *SecurityOverrides `yaml:"security_overrides"`
 }
 
 type Endpoint struct {
@@ -123,6 +130,10 @@ type Endpoint struct {
 	Path string `yaml:"path" validate:"required"`
 
 	Description string `yaml:"description" validate:"required"`
+
+	// SecurityRef overrides the API-level and project-level security for this
+	// specific endpoint. Set Name to "none" to disable all inherited auth.
+	SecurityRef *SecurityRef `yaml:"security_ref"`
 }
 
 type FileConfig struct {
@@ -134,4 +145,8 @@ type GraphQLOperation struct {
 	Type        string `yaml:"type" validate:"required,oneof=query mutation"`
 	Operation   string `yaml:"operation" validate:"required"`
 	Description string `yaml:"description"`
+
+	// SecurityRef overrides the API-level and project-level security for this
+	// specific GraphQL operation. Set Name to "none" to disable all inherited auth.
+	SecurityRef *SecurityRef `yaml:"security_ref"`
 }
