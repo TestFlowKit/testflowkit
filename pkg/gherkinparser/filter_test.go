@@ -261,6 +261,30 @@ func Test_Filter_EmptyExpression_ReturnsAllFeatures(t *testing.T) {
 	assert.Equal(t, features, Filter(features, "   "))
 }
 
+func Test_Filter_WithTESTTag_ReturnsOnlyTaggedScenario(t *testing.T) {
+	content := `Feature: Selects contact by id
+
+  @TEST
+  Scenario: Select contact by id successfully
+    Given I prepare a request to "contact.select_by_id"
+    Then the response status code should be 200
+
+  Scenario: Contact not found
+    Given I prepare a request to "contact.select_by_id"
+    Then the response status code should be 404`
+
+	result := Filter([]*Feature{mustParseFeature(t, content)}, "@TEST")
+
+	require.Len(t, result, 1)
+	require.Len(t, result[0].scenarios, 1)
+	assert.Equal(t, "Select contact by id successfully", result[0].scenarios[0].Name)
+
+	newScenarioContent := string(result[0].Contents)
+	assert.Contains(t, newScenarioContent, "@TEST")
+	assert.NotContains(t, newScenarioContent, "Then the response status code should be 404")
+	assert.NotContains(t, newScenarioContent, "Contact not found")
+}
+
 // ── Cucumber tag-expression syntax ───────────────────────────────────────────
 
 func Test_FilterFeatures_Cucumber_And(t *testing.T) {
