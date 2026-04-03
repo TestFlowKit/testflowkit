@@ -58,7 +58,9 @@ func filterFeatureContent(f *Feature, toRemove []*scenario) (*Feature, error) {
 	for _, sc := range toRemove {
 		startLine := scenarioFirstLine(sc) // 1-based
 		// Find the next sibling's first line.
-		endLine := len(lines) // default: remove to EOF
+		// endLine is exclusive, so default to one past EOF to fully remove the
+		// last scenario when it is the final block in the feature file.
+		endLine := len(lines) + 1
 		for _, sib := range siblingFirstLines {
 			if sib > startLine {
 				endLine = sib
