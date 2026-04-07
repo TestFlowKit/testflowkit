@@ -77,7 +77,9 @@ func (e *EndpointEnricher) GetFullURL() string {
 	}
 	u.RawQuery = q.Encode()
 
-	return strings.TrimRight(u.String(), "/")
+	u.Path = strings.TrimRight(u.Path, "/")
+
+	return u.String()
 }
 
 func (e *EndpointEnricher) getSimpleURL() (string, error) {
@@ -87,7 +89,6 @@ func (e *EndpointEnricher) getSimpleURL() (string, error) {
 
 	rawPath := strings.TrimSpace(e.Path)
 
-	// More robust than strings.Contains(path, "://")
 	if u, err := url.Parse(rawPath); err == nil && u.IsAbs() {
 		return u.String(), nil
 	}

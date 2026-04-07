@@ -49,6 +49,17 @@ func TestEndpointEnricher_GetFullURL(t *testing.T) {
 			want: "https://service.example.com/search?page=1&q=golang",
 		},
 		{
+			name: "keeps query string without trailing slash before question mark",
+			enricher: EndpointEnricher{
+				Endpoint: config.Endpoint{
+					Method:      "GET",
+					Path:        "/path/?ok=true",
+					Description: "path with query string",
+				},
+			},
+			want: "/path?ok=true",
+		},
+		{
 			name: "returns relative path when no base URL is configured",
 			enricher: EndpointEnricher{
 				Endpoint: config.Endpoint{
