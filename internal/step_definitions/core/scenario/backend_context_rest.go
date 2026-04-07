@@ -53,55 +53,56 @@ type EndpointEnricher struct {
 }
 
 func (e *EndpointEnricher) GetFullURL() string {
-	fullURL, err := e.getSimpleURL()
+	raw, err := e.getSimpleURL()
 	if err != nil {
 		return ""
 	}
 
-	if len(e.PathParams) > 0 {
-		for name, value := range e.PathParams {
-			placeholder := fmt.Sprintf("{%s}", name)
-			fullURL = strings.ReplaceAll(fullURL, placeholder, value)
-		}
+	u, err := url.Parse(raw)
+	if err != nil {
+		return ""
 	}
 
-	if len(e.QueryParams) > 0 {
-		values := url.Values{}
-		for key, value := range e.QueryParams {
-			values.Set(key, value)
-		}
-		encoded := values.Encode()
-		if encoded != "" {
-			fullURL += "?" + encoded
-		}
+	for name, value := range e.PathParams {
+		u.Path = strings.ReplaceAll(
+			u.Path,
+			fmt.Sprintf("{%s}", name),
+			value,
+		)
 	}
 
-	return fullURL
+	q := u.Query()
+	for key, value := range e.QueryParams {
+		q.Set(key, value)
+	}
+	u.RawQuery = q.Encode()
+
+	return strings.TrimRight(u.String(), "/")
 }
 
 func (e *EndpointEnricher) getSimpleURL() (string, error) {
-	path := e.Path
-	if path == "" {
+	if strings.TrimSpace(e.Path) == "" {
 		return "", errors.New("endpoint path is empty")
 	}
 
-	// If it's already an absolute URL, return as-is
-	if strings.Contains(path, "://") {
-		return path, nil
+	rawPath := strings.TrimSpace(e.Path)
+
+	// More robust than strings.Contains(path, "://")
+	if u, err := url.Parse(rawPath); err == nil && u.IsAbs() {
+		return u.String(), nil
 	}
 
-	// If no base URL, return path as-is
 	if e.ConfiguredBaseURL == "" {
-		return path, nil
+		return rawPath, nil
 	}
 
-	// Join base URL and path, handling slashes
-	baseURL := strings.TrimSuffix(e.ConfiguredBaseURL, "/")
-	if !strings.HasPrefix(path, "/") {
-		path = "/" + path
+	base, err := url.Parse(e.ConfiguredBaseURL)
+	if err != nil {
+		return "", fmt.Errorf("invalid base URL %q: %w", e.ConfiguredBaseURL, err)
 	}
 
-	return baseURL + path, nil
+	base.Path = strings.TrimSuffix(base.Path, "/") + "/" + strings.TrimPrefix(rawPath, "/")
+	return base.String(), nil
 }
 
 func (e *EndpointEnricher) SetPathParams(params map[string]string) {
