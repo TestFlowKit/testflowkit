@@ -1,5 +1,8 @@
-package helpers
+package queryable
 
+import "strings"
+
+// ValueType is the normalized type of a queried response value.
 type ValueType string
 
 const (
@@ -12,8 +15,8 @@ const (
 	TypeArray   ValueType = "array"
 )
 
-// GetJSONType returns the JSON type of a value.
-func GetJSONType(value any) string {
+// GetValueType returns the normalized type name of a value.
+func GetValueType(value any) string {
 	if value == nil {
 		return string(TypeNull)
 	}
@@ -37,15 +40,20 @@ func GetJSONType(value any) string {
 	}
 }
 
+// NormalizeType normalizes supported type aliases to their canonical names.
 func NormalizeType(typeName string) string {
-	switch typeName {
+	switch strings.ToLower(typeName) {
 	case "int":
 		return string(TypeInteger)
 	case "float":
 		return string(TypeNumber)
 	case "bool":
 		return string(TypeBoolean)
+	case "text":
+		return string(TypeString)
+	case "list":
+		return string(TypeArray)
 	default:
-		return typeName
+		return strings.ToLower(typeName)
 	}
 }

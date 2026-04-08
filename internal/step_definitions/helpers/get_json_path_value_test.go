@@ -19,3 +19,11 @@ func TestGetUndefineJSONPathValue(t *testing.T) {
 	require.Error(t, err)
 	require.Nil(t, value)
 }
+
+func TestGetResponsePathValue_XML(t *testing.T) {
+	xmlBody := []byte(`<root><user><name>John</name><active>true</active></user></root>`)
+
+	value, err := GetResponsePathValue(xmlBody, "//user/name")
+	require.NoError(t, err)
+	require.Equal(t, "John", value)
+}

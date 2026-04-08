@@ -9,7 +9,7 @@ type steps struct{}
 func GetAllSteps() []stepbuilder.Step {
 	st := steps{}
 	return []stepbuilder.Step{
-		st.storeJSONPathIntoVariable(),
+		st.storeJSONPathIntoScenarioVariable(),
 		st.storeElementContentIntoVariable(),
 		st.storeCustomVariable(),
 		st.variableShouldContains(),

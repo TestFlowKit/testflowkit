@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"testflowkit/internal/step_definitions/api/jsonhelpers"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/internal/step_definitions/helpers"
 	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/logger"
 )
@@ -15,7 +15,7 @@ import (
 func (steps) storeResponseData() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
 		[]string{`I store the value from "{string}" as "{string}"`},
-		func(ctx context.Context, jsonPath, variableName string) (context.Context, error) {
+		func(ctx context.Context, responsePath, variableName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			backend := scenarioCtx.GetBackendContext()
 
@@ -23,30 +23,36 @@ func (steps) storeResponseData() stepbuilder.Step {
 				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
-			// Get the appropriate response body based on protocol
 			responseBody := backend.GetResponseBody()
 			if responseBody == nil {
 				return ctx, errors.New("response body is empty")
 			}
 
-			value, err := jsonhelpers.GetPathValue(responseBody, jsonPath)
+			value, err := helpers.GetResponsePathValue(responseBody, responsePath)
 			if err != nil {
-				return ctx, fmt.Errorf("failed to extract value from path '%s': %w", jsonPath, err)
+				return ctx, fmt.Errorf("failed to extract value from path '%s': %w", responsePath, err)
 			}
 
-			// Store in both backend context and global context
 			backend.SetGraphQLVariable(variableName, value)
 			scenarioCtx.SetVariable(variableName, value)
 
-			logger.InfoFf("Stored value from '%s' as '%s': %v", jsonPath, variableName, value)
+			logger.InfoFf("Stored value from '%s' as '%s': %v", responsePath, variableName, value)
 			return ctx, nil
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "Extracts a value from the response using a JSON path and stores it as a variable.",
+			Description: "Extracts a value from the response using a response path and stores it as a variable.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "jsonPath", Description: "JSON path to extract value from", Type: stepbuilder.VarTypeString},
-				{Name: "variableName", Description: "Name of the variable to store the value in", Type: stepbuilder.VarTypeString},
+				{
+					Name:        "jsonPath",
+					Description: "Response path to extract value from (GJSON for JSON, XPath for XML)",
+					Type:        stepbuilder.VarTypeString,
+				},
+				{
+					Name:        "variableName",
+					Description: "Name of the variable to store the value in",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example: `And I store the value from "data.user.id" as "userId"
 And I store the value from "token" as "authToken"`,

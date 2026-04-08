@@ -14,13 +14,13 @@
 - **Gherkin Syntax**: Write tests using clear, readable BDD syntax
 - **Environment Variables**: Flexible environment configuration using env variables and external .env files
 - **Frontend Testing**: Comprehensive web UI automation with smart element detection
-- **Backend API Testing**: Full REST API testing capabilities with request/response validation
+- **Backend API Testing**: Full REST API testing with JSON (GJSON) and XML (XPath) response validation
 - **GraphQL Support**: Complete GraphQL testing with queries, mutations, schema validation
 - **Macro System**: Reusable test scenarios to reduce code duplication
 - **Global Hooks**: Setup and teardown logic with `@BeforeAll` and `@AfterAll` tags
 - **Parallel Execution**: Run tests concurrently for faster execution
 - **Rich Reporting**: HTML and JSON report formats with detailed test results
-- **XPath Support**: Full XPath 1.0 support alongside CSS selectors for flexible element selection
+- **XPath Support**: Full XPath 1.0 support for frontend selectors and XML response assertions
 
 ### Advanced Features
 
@@ -281,6 +281,8 @@ Feature: Dynamic User Testing
     Then the "name" field should contain "{{user_name}}"
     And the "avatar" field should contain the uploaded file
 ```
+
+> 💡 `I store the JSON path ...` uses GJSON for JSON responses. For XML APIs, validate with XPath using steps such as `Then the response field "//user/name" should be "John Doe"` and `Then the response should have field "//user/@id"`.
 
 ### 5. Run Tests
 
@@ -719,11 +721,19 @@ When the user enters "{{ env.TEST_EMAIL }}" into the "email" field
 When I store the "Active" into "status" variable
 ```
 
-**JSON Path Variables**: Extract data from API responses
+**JSON Path Variables**: Extract data from **JSON** API responses using GJSON
 
 ```gherkin
 When I store the JSON path "data.user.id" from the response into "user_id" variable
-And I store the JSON path "items[0].name" from the response into "first_item" variable
+And I store the JSON path "items.0.name" from the response into "first_item" variable
+```
+
+**XML Response Assertions**: Validate XML API responses using XPath
+
+```gherkin
+Then the response field "//user/id" should be "123"
+And the response field "//user/email" should contain "@example.com"
+And the response should have field "//user/@status"
 ```
 
 **HTML Element Variables**: Capture content from web page elements

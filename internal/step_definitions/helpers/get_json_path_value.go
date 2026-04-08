@@ -1,22 +1,32 @@
 package helpers
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/tidwall/gjson"
+	"testflowkit/pkg/queryable"
 )
 
+func GetResponsePathValue(responseBody []byte, path string) (any, error) {
+	return getPathValue(responseBody, path, queryable.FormatAuto)
+}
+
 func GetJSONPathValue(jsonBody []byte, path string) (any, error) {
-	var data interface{}
-	if err := json.Unmarshal(jsonBody, &data); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON body: %w", err)
+	return getPathValue(jsonBody, path, queryable.FormatJSON)
+}
+
+func getPathValue(body []byte, path string, format queryable.Format) (any, error) {
+	engine, err := queryable.NewEngine(body, format)
+	if err != nil {
+		return nil, err
 	}
 
-	value := gjson.Get(string(jsonBody), path)
-	if !value.Exists() {
-		return nil, fmt.Errorf("JSON path '%s' does not exist in response body", path)
+	result, err := engine.Get(path)
+	if err != nil {
+		return nil, err
+	}
+	if !result.Exists {
+		return nil, fmt.Errorf("response path '%s' does not exist in response body", path)
 	}
 
-	return value.Value(), nil
+	return result.Value, nil
 }

@@ -10,11 +10,11 @@ import (
 	"testflowkit/pkg/apperrors"
 )
 
-// validateJSONBodyEquals validates that the entire response body matches expected JSON.
+// validateJSONBodyEquals validates that the entire response body matches expected JSON or XML.
 func (steps) validateJSONBodyEquals() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
 		[]string{`the response body should be:`},
-		func(ctx context.Context, expectedJSON string) (context.Context, error) {
+		func(ctx context.Context, expectedBody string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			backend := scenarioCtx.GetBackendContext()
 
@@ -22,14 +22,14 @@ func (steps) validateJSONBodyEquals() stepbuilder.Step {
 				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
-			expectedJSON = scenario.ReplaceVariablesInString(scenarioCtx, expectedJSON)
+			expectedBody = scenario.ReplaceVariablesInString(scenarioCtx, expectedBody)
 
 			responseBody := backend.GetResponseBody()
 			if responseBody == nil {
 				return ctx, errors.New("response body is empty")
 			}
 
-			err := validation.ValidateJSONBodyEquals(responseBody, expectedJSON)
+			err := validation.ValidateBodyEquals(responseBody, expectedBody)
 			if err != nil {
 				return ctx, err
 			}
@@ -38,9 +38,9 @@ func (steps) validateJSONBodyEquals() stepbuilder.Step {
 		},
 		nil,
 		stepbuilder.DocParams{
-			Description: "Validates that the response body matches the expected JSON exactly.",
+			Description: "Validates that the response body matches the expected JSON or XML exactly.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "json", Description: "Expected JSON body", Type: stepbuilder.VarTypeString},
+				{Name: "body", Description: "Expected JSON or XML body", Type: stepbuilder.VarTypeString},
 			},
 			Example: `Then the response body should be:
 """
