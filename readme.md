@@ -743,6 +743,30 @@ When I store the content of "page_title" into "title" variable
 And I store the content of "user_name_label" into "displayed_name" variable
 ```
 
+**Random Data**: Generate dynamic values inline using `{{ rand:type:options }}`
+
+```gherkin
+# UUID, email, phone, integer, date, words, regex
+And I store the value "{{ rand:uuid }}" into "user_id" variable
+And I store the value "{{ rand:email:domain=kil.com }}" into "user_email" variable
+And I store the value "{{ rand:phone:country=FR,format=e164 }}" into "phone" variable
+And I store the value "{{ rand:int:min=1,max=100 }}" into "quantity" variable
+And I store the value "{{ rand:date:direction=past }}" into "birth_date" variable
+And I store the value "{{ rand:regex:pattern=[A-Z]{3}-\d{4} }}" into "code" variable
+```
+
+| Generator | Syntax | Notes |
+|-----------|--------|-------|
+| UUID | `{{ rand:uuid }}` | v4, unique each call |
+| Email | `{{ rand:email }}` or `{{ rand:email:domain=example.com }}` | |
+| Phone | `{{ rand:phone:country=FR,format=e164 }}` | formats: `e164`, `national`, `international` |
+| Integer | `{{ rand:int:min=1,max=100 }}` | defaults: 0–1000 |
+| Date | `{{ rand:date:direction=past }}` | `past`, `future`, `now`; optional `format` layout |
+| Words | `{{ rand:words:count=5 }}` | default count: 3 |
+| Regex | `{{ rand:regex:pattern=[A-Z]{3} }}` | |
+
+Each generated value is logged at runtime (`[rand] generated '...' → value`) for reproducibility. To reuse a value, store it first with `I store the value "{{ rand:uuid }}" into "id" variable`.
+
 #### Advanced Variable Usage
 
 Variables can be used in complex scenarios for data-driven testing:

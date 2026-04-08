@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"testflowkit/internal/step_definitions/core"
+	"testflowkit/pkg/rand"
 	"testflowkit/pkg/variables"
 )
 
@@ -50,6 +51,17 @@ func ReplaceVariablesInString(ctx *Context, sentence string) string {
 		}
 
 		varDef, varName := v[0], strings.TrimSpace(v[1])
+
+		if rand.IsRandExpression(varName) {
+			generated, err := rand.Generate(varName)
+			if err != nil {
+				log.Printf("rand generation failed for '%s': %v", varName, err)
+				continue
+			}
+			log.Printf("[rand] generated '%s' → %s", varDef, generated)
+			replacedSentence = strings.ReplaceAll(replacedSentence, varDef, generated)
+			continue
+		}
 
 		if envKey, ok := strings.CutPrefix(varName, "env."); ok {
 			if val, exists := variables.GetEnvVariable(envKey); exists {

@@ -66,6 +66,7 @@ const allDocs = [
   { path: '/docs/features/frontend-testing', title: 'Frontend Testing' },
   { path: '/docs/features/api-testing', title: 'API Testing' },
   { path: '/docs/features/global-hooks', title: 'Global Hooks' },
+  { path: '/docs/features/random-data-generation', title: 'Random Data' },
   // Reference
   { path: '/docs/reference/cli', title: 'CLI Reference' },
   { path: '/docs/reference/step-definitions', title: 'Step Definitions' },
