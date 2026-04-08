@@ -53,6 +53,7 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, api string, reqName
 	resolved := security.Resolve(cfg, apiDef, endpoint.SecurityRef)
 	bc := scenarioCtx.GetBackendContext()
 	bc.ResolvedSecurity = resolved
+	bc.Timeout = time.Duration(cfg.GetAPIRequestTimeout(api, reqName)) * time.Millisecond
 
 	// Store this adapter as the protocol
 	bc.SetProtocol(a)
@@ -62,11 +63,15 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, api string, reqName
 
 func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, error) {
 	scenarioCtx := scenario.MustFromContext(ctx)
-	const defaultDuration = 10
 
 	bc := scenarioCtx.GetBackendContext()
+	timeout := bc.Timeout
+	if timeout <= 0 {
+		timeout = time.Duration(scenarioCtx.GetConfig().GetAPITimeout("")) * time.Millisecond
+	}
+
 	client, errClient := httpauth.NewClient(
-		time.Duration(defaultDuration)*time.Second,
+		timeout,
 		bc.ResolvedSecurity,
 	)
 	if errClient != nil {
