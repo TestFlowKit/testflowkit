@@ -1,8 +1,10 @@
 package variables
 
 import (
+	"log"
 	"regexp"
 	"strings"
+	"testflowkit/pkg/rand"
 )
 
 // ReplaceInString replaces all variable placeholders in the format {{variableName}} with their actual values.
@@ -13,6 +15,17 @@ func (p *Parser) ReplaceInString(input string) string {
 	return re.ReplaceAllStringFunc(input, func(match string) string {
 		// Extract variable name from {{variableName}}
 		varName := strings.TrimSpace(match[2 : len(match)-2])
+
+		// Resolve rand expressions before store lookup
+		if rand.IsRandExpression(varName) {
+			generated, err := rand.Generate(varName)
+			if err != nil {
+				log.Printf("rand generation failed for '%s': %v", varName, err)
+				return match
+			}
+			log.Printf("[rand] generated '%s' → %s", match, generated)
+			return generated
+		}
 
 		// Get variable value from context
 		value, exists := p.store.GetGraphQLVariable(varName)
