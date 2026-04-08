@@ -65,6 +65,31 @@ func (c *Config) GetAPITimeout(apiName string) int {
 	return defaultTimeoutInMS
 }
 
+func (c *Config) GetAPIRequestTimeout(apiName string, requestName string) int {
+	apiTimeout := c.GetAPITimeout(apiName)
+	if c.APIs == nil {
+		return apiTimeout
+	}
+
+	apiDef, err := c.GetAPI(apiName)
+	if err != nil {
+		return apiTimeout
+	}
+
+	switch apiDef.Type {
+	case APITypeREST:
+		if endpoint, exists := apiDef.Endpoints[requestName]; exists && endpoint.Timeout != nil {
+			return *endpoint.Timeout
+		}
+	case APITypeGraphQL:
+		if operation, exists := apiDef.Operations[requestName]; exists && operation.Timeout != nil {
+			return *operation.Timeout
+		}
+	}
+
+	return apiTimeout
+}
+
 func (c *Config) IsAPIsConfigured() bool {
 	return c.APIs != nil && len(c.APIs.Definitions) > 0
 }

@@ -65,6 +65,7 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, apiName string, req
 	resolved := security.Resolve(cfg, apiDef, operation.SecurityRef)
 	bc := scenarioCtx.GetBackendContext()
 	bc.ResolvedSecurity = resolved
+	bc.Timeout = time.Duration(cfg.GetAPIRequestTimeout(apiName, reqName)) * time.Millisecond
 
 	bc.SetProtocol(a)
 
@@ -105,10 +106,14 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	headers := scenarioCtx.GetGraphQLHeaders()
 
-	const defaultDuration = 10
 	bc := scenarioCtx.GetBackendContext()
+	timeout := bc.Timeout
+	if timeout <= 0 {
+		timeout = time.Duration(scenarioCtx.GetConfig().GetAPITimeout("")) * time.Millisecond
+	}
+
 	httpClient, errClient := httpauth.NewClient(
-		time.Duration(defaultDuration)*time.Second,
+		timeout,
 		bc.ResolvedSecurity,
 	)
 	if errClient != nil {

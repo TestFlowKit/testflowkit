@@ -173,13 +173,14 @@ frontend:
     dashboard: "/dashboard"
 
 apis:
-  default_timeout: 30000  # Default timeout for all APIs (ms)
+  default_timeout: 30000  # Global fallback for all APIs (ms)
   
   definitions:
     # REST API example
     users_api:
       type: rest
       base_url: "{{ env.users_api_base_url }}"
+      timeout: 15000  # Optional API-level override
       default_headers:
         Content-Type: "application/json"
         Authorization: "Bearer {{ env.api_token }}"
@@ -188,6 +189,7 @@ apis:
           method: "GET"
           path: "/users/{id}"
           description: "Retrieve user by ID"
+          timeout: 5000  # Highest precedence for this request
         create_user:
           method: "POST"
           path: "/users"
@@ -197,6 +199,7 @@ apis:
     content_api:
       type: graphql
       endpoint: "{{ env.graphql_endpoint }}"
+      timeout: 20000
       default_headers:
         Content-Type: "application/json"
       operations:
@@ -215,6 +218,7 @@ apis:
               }
             }
           description: "Fetch user profile with nested data"
+          timeout: 7000
 
 files:
   base_directory: "./"

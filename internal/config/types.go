@@ -131,6 +131,9 @@ type Endpoint struct {
 
 	Description string `yaml:"description" validate:"required"`
 
+	// Timeout overrides the API-level timeout for this specific REST endpoint.
+	Timeout *int `yaml:"timeout" validate:"omitempty,min=1000,max=300000"`
+
 	// SecurityRef overrides the API-level and project-level security for this
 	// specific endpoint. Set Name to "none" to disable all inherited auth.
 	SecurityRef *SecurityRef `yaml:"security_ref"`
@@ -145,6 +148,9 @@ type GraphQLOperation struct {
 	Type        string `yaml:"type" validate:"required,oneof=query mutation"`
 	Operation   string `yaml:"operation" validate:"required"`
 	Description string `yaml:"description"`
+
+	// Timeout overrides the API-level timeout for this specific GraphQL operation.
+	Timeout *int `yaml:"timeout" validate:"omitempty,min=1000,max=300000"`
 
 	// SecurityRef overrides the API-level and project-level security for this
 	// specific GraphQL operation. Set Name to "none" to disable all inherited auth.

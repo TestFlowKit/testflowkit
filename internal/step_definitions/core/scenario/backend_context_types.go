@@ -5,6 +5,7 @@ import (
 	"testflowkit/internal/security"
 	"testflowkit/pkg/graphql"
 	"testflowkit/pkg/variables"
+	"time"
 )
 
 // APIProtocol defines the interface for different API protocol implementations
@@ -43,6 +44,8 @@ type BackendContext struct {
 	// during request preparation. The transport layer uses it to inject
 	// credentials and handle retry_on_401.
 	ResolvedSecurity security.ResolvedSecurity
+
+	Timeout time.Duration
 
 	Rest    RestContext
 	GraphQL GraphQLContext
