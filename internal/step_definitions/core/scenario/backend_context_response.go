@@ -19,6 +19,13 @@ func (bc *BackendContext) GetResponseBody() []byte {
 	return bc.Response.Body
 }
 
+func (bc *BackendContext) GetResponseHeaders() map[string]string {
+	if bc.Response == nil {
+		return nil
+	}
+	return bc.Response.Headers
+}
+
 func (bc *BackendContext) GetStatusCode() int {
 	if bc.Response == nil {
 		return 0

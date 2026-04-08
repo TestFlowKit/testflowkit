@@ -3,41 +3,8 @@ package jsonhelpers
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/tidwall/gjson"
 )
 
-// GetPathValue extracts a value from JSON data at the specified path.
-func GetPathValue(jsonBody []byte, path string) (any, error) {
-	var data any
-	if err := json.Unmarshal(jsonBody, &data); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON body: %w", err)
-	}
-
-	value := gjson.Get(string(jsonBody), path)
-	if !value.Exists() {
-		return nil, fmt.Errorf("JSON path '%s' does not exist in response body", path)
-	}
-
-	return value.Value(), nil
-}
-
-// PathExists checks if a JSON path exists in the data.
-func PathExists(jsonBody []byte, path string) bool {
-	value := gjson.Get(string(jsonBody), path)
-	return value.Exists()
-}
-
-// GetPathValueAsString extracts a value as string from JSON data at the specified path.
-func GetPathValueAsString(jsonBody []byte, path string) (string, error) {
-	value := gjson.Get(string(jsonBody), path)
-	if !value.Exists() {
-		return "", fmt.Errorf("JSON path '%s' does not exist in response body", path)
-	}
-	return value.String(), nil
-}
-
-// CompareJSON compares two JSON byte arrays for equality.
 func CompareJSON(expected, actual []byte) error {
 	var expectedData, actualData any
 

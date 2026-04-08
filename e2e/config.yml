@@ -167,6 +167,11 @@ apis:
           path: "/albums/{id}/photos"
           description: "Retrieve photos for a specific album"
 
+        get_xml_customer_profile:
+          method: "GET"
+          path: "/xml/customer/{id}"
+          description: "Retrieve a customer profile as XML for XPath validation"
+
     almansi:
       type: graphql
       endpoint: "{{ env.almansi_graphql_endpoint }}"

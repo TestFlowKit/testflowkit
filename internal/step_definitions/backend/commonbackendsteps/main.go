@@ -24,6 +24,7 @@ func GetSteps() []stepbuilder.Step {
 		s.validateJSONPathNotContains(),
 		s.validateJSONPathType(),
 		s.validateJSONPathNotType(),
+		s.validatePathCount(),
 		s.validateJSONPathPattern(),
 		s.validateJSONPathNotPattern(),
 		s.validateJSONBodyEquals(),

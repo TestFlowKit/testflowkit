@@ -128,6 +128,48 @@ server.get("/albums/:id/photos", (req: Request, res: Response) => {
   }
 });
 
+server.get("/xml/customer/:id", (req: Request, res: Response) => {
+  const customerId = req.params.id;
+
+  if (customerId !== "42") {
+    return res
+      .status(404)
+      .type("application/xml")
+      .send(
+        `<?xml version="1.0" encoding="UTF-8"?><error><message>Customer ${customerId} not found</message></error>`,
+      );
+  }
+
+  const okValue = String(req.query.ok ?? "false");
+
+  res.status(200).type("application/xml")
+    .send(`<?xml version="1.0" encoding="UTF-8"?>
+<customer id="${customerId}">
+  <status>ok</status>
+  <query>
+    <ok>${okValue}</ok>
+  </query>
+  <info>
+    <email>contact@example.com</email>
+    <verified>true</verified>
+  </info>
+  <tags>
+    <tag priority="high">vip</tag>
+    <tag priority="low">beta</tag>
+  </tags>
+  <orders>
+    <order>
+      <id>1001</id>
+      <total>42.50</total>
+    </order>
+    <order>
+      <id>1002</id>
+      <total>10.00</total>
+    </order>
+  </orders>
+</customer>`);
+});
+
 server.get("/echo", (req: Request, res: Response) => {
   res.jsonp(req.query);
 });

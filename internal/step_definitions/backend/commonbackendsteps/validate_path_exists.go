@@ -2,8 +2,6 @@ package commonbackendsteps
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	"testflowkit/internal/step_definitions/api/validation"
 	"testflowkit/internal/step_definitions/core/scenario"
@@ -17,9 +15,9 @@ func (s steps) validateJSONPathExists() stepbuilder.Step {
 		`the response should have field {string}`,
 		true,
 		stepbuilder.DocParams{
-			Description: "Validates that a specific JSON path exists in the response.",
+			Description: "Validates that a specific response path exists in the response.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "path", Description: "JSON path to check", Type: stepbuilder.VarTypeString},
+				responsePathDocVariable("Response path to check (GJSON for JSON, XPath for XML)"),
 			},
 			Example:    `Then the response should have field "user.name"`,
 			Categories: stepbuilder.Backend,
@@ -33,9 +31,9 @@ func (s steps) validateJSONPathNotExists() stepbuilder.Step {
 		`the response should not have field {string}`,
 		false,
 		stepbuilder.DocParams{
-			Description: "Validates that a specific JSON path does not exist in the response.",
+			Description: "Validates that a specific response path does not exist in the response.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "path", Description: "JSON path that should not exist", Type: stepbuilder.VarTypeString},
+				{Name: "path", Description: "Response path that should not exist", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the response should not have field "user.password"`,
 			Categories: stepbuilder.Backend,
@@ -56,22 +54,12 @@ func (s steps) newJSONPathExistsStep(sentence string, shouldExist bool, doc step
 
 			jsonPath = scenario.ReplaceVariablesInString(scenarioCtx, jsonPath)
 
-			responseBody := backend.GetResponseBody()
-
-			if responseBody == nil {
-				return ctx, errors.New("response body is empty")
-			}
-
-			err := validation.ValidateJSONPathExists(responseBody, jsonPath)
-			if shouldExist && err != nil {
+			engine, err := newResponseEngine(backend)
+			if err != nil {
 				return ctx, err
 			}
 
-			if !shouldExist && err == nil {
-				return ctx, fmt.Errorf("path '%s' exists in response but should not", jsonPath)
-			}
-
-			return ctx, nil
+			return ctx, validation.ValidatePathExists(engine, jsonPath, shouldExist)
 		},
 		nil,
 		doc,
