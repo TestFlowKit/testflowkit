@@ -100,7 +100,6 @@ func filterFeatures(features []*Feature, expr string) []*Feature {
 	parsed, err := tagexpressions.Parse(expr)
 	if err != nil {
 		logger.Fatal("Invalid tag expression: "+expr, err)
-		return features // unreachable
 	}
 
 	var result []*Feature
