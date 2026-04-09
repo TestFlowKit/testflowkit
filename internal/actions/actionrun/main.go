@@ -112,7 +112,7 @@ func getFeaturesToProcess(featureLoc, mainTagsExpr string) []*gherkinparser.Feat
 		return gherkinparser.Parse(featureLoc)
 	}
 
-	expr := fmt.Sprintf("%s or %s or %s", BeforeAllTag, AfterAllTag, mainTagsExpr)
+	expr := fmt.Sprintf("%s or %s or (%s)", BeforeAllTag, AfterAllTag, mainTagsExpr)
 	return gherkinparser.ParseWithFilter(featureLoc, expr)
 }
 
