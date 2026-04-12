@@ -15,24 +15,24 @@ require (
 require github.com/cucumber/messages/go/v21 v21.0.1
 
 require (
+	github.com/antchfx/xmlquery v1.5.1
+	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/fatih/color v1.19.0
 	github.com/gofrs/uuid/v5 v5.4.0
+	github.com/lucasjones/reggen v0.0.0-20200904144131-37ba4fa293bb
+	github.com/nyaruka/phonenumbers v1.7.1
 	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/tidwall/gjson v1.18.0
 )
 
 require (
-	github.com/antchfx/xmlquery v1.5.1 // indirect
 	github.com/antchfx/xpath v1.3.6 // indirect
-	github.com/brianvoe/gofakeit/v6 v6.28.0 // indirect
 	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/lucasjones/reggen v0.0.0-20200904144131-37ba4fa293bb // indirect
-	github.com/nyaruka/phonenumbers v1.7.1 // indirect
 	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/text v0.35.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
@@ -41,7 +41,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/image v0.38.0
+	golang.org/x/image v0.39.0
 	golang.org/x/sys v0.42.0 // indirect
 )
 
