@@ -4,6 +4,7 @@ import (
 	"context"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/formatter"
 	"testflowkit/pkg/logger"
 )
 
@@ -13,31 +14,34 @@ func (steps) debugRequest() stepbuilder.Step {
 		func(ctx context.Context) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 
-			logger.InfoFf("=== REQUEST DEBUG INFO ===")
+			logger.Debug("=== REQUEST DEBUG INFO ===")
 
 			endpoint := scenarioCtx.GetEndpoint()
 			if endpoint.Path != "" {
-				logger.InfoFf("Endpoint: %s", endpoint.GetFullURL())
-				logger.InfoFf("Method: %s", endpoint.Method)
+				logger.DebugFf("Endpoint: %s", endpoint.GetFullURL())
+				logger.DebugFf("Method: %s", endpoint.Method)
 			} else {
-				logger.InfoFf("No endpoint configured")
+				logger.DebugFf("No endpoint configured")
 			}
 
 			headers := scenarioCtx.GetRequestHeaders()
 			if len(headers) > 0 {
-				logger.InfoFf("Headers: %v", headers)
+				logger.DebugFf("Headers: %v", headers)
 			} else {
-				logger.InfoFf("No headers set")
+				logger.DebugFf("No headers set")
 			}
 
 			body := scenarioCtx.GetRESTRequestBody()
 			if body != nil {
-				logger.InfoFf("Body: %s (%d bytes)", string(body), len(body))
+				contentType := scenarioCtx.GetRequestHeaders()["Content-Type"]
+				formatted := formatter.Format(contentType, body, formatter.DefaultMaxBodySize)
+				logger.DebugFf("Body (%d bytes):", len(body))
+				logger.Debug(formatted)
 			} else {
-				logger.InfoFf("No body set")
+				logger.Debug("No body set")
 			}
 
-			logger.InfoFf("=== END DEBUG INFO ===")
+			logger.Debug("=== END DEBUG INFO ===")
 
 			return ctx, nil
 		},

@@ -115,7 +115,6 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	httpClient, errClient := httpauth.NewClient(
 		timeout,
 		bc.ResolvedSecurity,
-		scenarioCtx.GetConfig().Settings.Debug,
 	)
 	if errClient != nil {
 		return ctx, fmt.Errorf("failed to create HTTP client: %w", errClient)
