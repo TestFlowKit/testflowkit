@@ -65,9 +65,8 @@ func (steps) setHeader() stepbuilder.Step {
 
 func setHeadersHelper(ctx context.Context, headers map[string]string) {
 	scenarioCtx := scenario.MustFromContext(ctx)
-	backend := scenarioCtx.GetBackendContext()
 
 	for name, value := range headers {
-		backend.SetGraphQLHeader(name, value)
+		scenarioCtx.AddHeader(name, value)
 	}
 }
