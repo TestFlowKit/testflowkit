@@ -50,6 +50,7 @@ func (r *Report) Write() {
 	)
 
 	r.formatter.WriteReport(*ts)
+	consoleReportFormatter{}.WriteReport(*ts)
 }
 
 func (r *Report) HasScenarios() bool {
