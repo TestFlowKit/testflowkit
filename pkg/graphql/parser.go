@@ -3,6 +3,7 @@ package graphql
 import (
 	"errors"
 	"fmt"
+	"testflowkit/pkg/apperrors"
 
 	"github.com/tidwall/gjson"
 )
@@ -67,7 +68,7 @@ func (rp *ResponseParser) GetAllPaths() []string {
 // ValidateDataPath checks if a path exists and optionally validates the data type.
 func (rp *ResponseParser) ValidateDataPath(path string, expectedType string) error {
 	if !rp.PathExists(path) {
-		return fmt.Errorf("path '%s' does not exist in response data", path)
+		return &apperrors.NoExistingPathError{Path: path}
 	}
 
 	if expectedType == "" {

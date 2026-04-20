@@ -46,6 +46,9 @@ func IsValid(data []byte) bool {
 	return json.Unmarshal(data, &js) == nil
 }
 
+// ContainsJSON reports whether expected is a deep-subset match of any nested
+// object or array within actual, not just the root. On failure, it reruns the
+// comparison at the root to return a more relevant mismatch error.
 func ContainsJSON(expected, actual []byte) error {
 	var expectedData, actualData any
 

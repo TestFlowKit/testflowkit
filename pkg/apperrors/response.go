@@ -1,6 +1,9 @@
 package apperrors
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // ErrNoResponseAvailable is returned when a step expects a response but none has been received yet.
 var ErrNoResponseAvailable = errors.New("no response available - send a request first")
@@ -16,3 +19,11 @@ var ErrNoGraphQLErrors = errors.New("expected GraphQL errors but found none")
 
 // ErrNoRequestPrepared is returned when a send step is executed without a prior prepare step.
 var ErrNoRequestPrepared = errors.New("no request has been prepared - use 'I prepare a request' step first")
+
+type NoExistingPathError struct {
+	Path string
+}
+
+func (e *NoExistingPathError) Error() string {
+	return fmt.Sprintf("path '%s' does not exist in response", e.Path)
+}
