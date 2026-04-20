@@ -272,6 +272,30 @@ func ValidateJSONBodyEquals(actual []byte, expected string) error {
 	return ValidateBodyEquals(actual, expected)
 }
 
+// ValidateBodyContainsPartial validates that the actual response body contains all
+// fields specified in the expected partial JSON (deep subset check).
+func ValidateBodyContainsPartial(actual []byte, expected string) error {
+	if actual == nil {
+		return apperrors.ErrNoResponseAvailable
+	}
+
+	actualBody := bytes.TrimSpace(actual)
+	expectedBody := bytes.TrimSpace([]byte(expected))
+	if len(actualBody) == 0 {
+		return errors.New("response body is empty")
+	}
+	if len(expectedBody) == 0 {
+		return errors.New("expected body is empty")
+	}
+
+	if err := jsonhelpers.ContainsJSON(expectedBody, actualBody); err != nil {
+		return fmt.Errorf("response body does not match partial JSON: %w", err)
+	}
+
+	logger.Info("response validation passed: body contains expected partial JSON")
+	return nil
+}
+
 func detectBodyFormat(body []byte) queryable.Format {
 	trimmedBody := bytes.TrimSpace(body)
 	if len(trimmedBody) == 0 {
