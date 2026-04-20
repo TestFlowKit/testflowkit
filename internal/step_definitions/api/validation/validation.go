@@ -29,7 +29,7 @@ func ValidatePathValue(engine queryable.Queryable, path, expectedValue string, s
 		return fmt.Errorf(NoPathValueFound, path, err)
 	}
 	if !result.Exists {
-		return fmt.Errorf("path '%s' does not exist in response", path)
+		return &apperrors.NoExistingPathError{Path: path}
 	}
 
 	if shouldEqual && result.Raw != expectedValue {
@@ -60,7 +60,7 @@ func ValidatePathExists(engine queryable.Queryable, path string, shouldExist boo
 	}
 
 	if shouldExist && !exists {
-		return fmt.Errorf("path '%s' does not exist in response", path)
+		return &apperrors.NoExistingPathError{Path: path}
 	}
 
 	if !shouldExist && exists {
@@ -86,7 +86,7 @@ func ValidatePathContains(engine queryable.Queryable, path, expectedSubstring st
 		return fmt.Errorf(NoPathValueFound, path, err)
 	}
 	if !result.Exists {
-		return fmt.Errorf("path '%s' does not exist in response", path)
+		return &apperrors.NoExistingPathError{Path: path}
 	}
 
 	contains := strings.Contains(result.Raw, expectedSubstring)
@@ -112,7 +112,7 @@ func ValidatePathPattern(engine queryable.Queryable, path, pattern string, shoul
 		return fmt.Errorf(NoPathValueFound, path, err)
 	}
 	if !result.Exists {
-		return fmt.Errorf("path '%s' does not exist in response", path)
+		return &apperrors.NoExistingPathError{Path: path}
 	}
 
 	regex, err := regexp.Compile(pattern)
@@ -186,11 +186,16 @@ func resolvePathType(engine queryable.Queryable, path string) (string, error) {
 	if len(results) > 1 {
 		return string(queryable.TypeArray), nil
 	}
-	if results[0].Kind != "" {
-		return queryable.NormalizeType(results[0].Kind), nil
+
+	result, getErr := engine.Get(path)
+	if getErr != nil {
+		return "", fmt.Errorf(NoPathValueFound, path, getErr)
+	}
+	if result.Kind != "" {
+		return queryable.NormalizeType(result.Kind), nil
 	}
 
-	return queryable.GetValueType(results[0].Value), nil
+	return queryable.GetValueType(result.Value), nil
 }
 
 // ValidateJSONPathValue validates that a JSON path contains the expected value.

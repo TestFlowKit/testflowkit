@@ -1,8 +1,7 @@
 package helpers
 
 import (
-	"fmt"
-
+	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/queryable"
 )
 
@@ -25,7 +24,7 @@ func getPathValue(body []byte, path string, format queryable.Format) (any, error
 		return nil, err
 	}
 	if !result.Exists {
-		return nil, fmt.Errorf("response path '%s' does not exist in response body", path)
+		return nil, &apperrors.NoExistingPathError{Path: path}
 	}
 
 	return result.Value, nil

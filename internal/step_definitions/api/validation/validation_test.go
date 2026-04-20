@@ -16,6 +16,46 @@ func TestValidatePathType_SupportsAliases(t *testing.T) {
 	require.NoError(t, ValidatePathType(engine, "tags", "list", true))
 }
 
+func TestValidatePathType_SingleElementArrayIsArray(t *testing.T) {
+	// A single-element array must be detected as "array", not as the type of its sole item.
+	body := []byte(`{
+		"order": {
+			"id": "ORD-001",
+			"status": "pending",
+			"lines": [
+				{
+					"sku": "WIDGET-42",
+					"qty": 3,
+					"price": 9.99,
+					"tags": ["fragile"]
+				}
+			]
+		}
+	}`)
+	engine, err := queryable.NewEngine(body, queryable.FormatJSON)
+	require.NoError(t, err)
+
+	t.Run("single-element array detected as array", func(t *testing.T) {
+		require.NoError(t, ValidatePathType(engine, "order.lines", "array", true))
+	})
+
+	t.Run("single-element array is not object", func(t *testing.T) {
+		require.Error(t, ValidatePathType(engine, "order.lines", "object", true))
+	})
+
+	t.Run("nested single-element array detected as array", func(t *testing.T) {
+		require.NoError(t, ValidatePathType(engine, "order.lines.0.tags", "array", true))
+	})
+
+	t.Run("string field detected as string", func(t *testing.T) {
+		require.NoError(t, ValidatePathType(engine, "order.id", "string", true))
+	})
+
+	t.Run("number field detected as number", func(t *testing.T) {
+		require.NoError(t, ValidatePathType(engine, "order.lines.0.price", "number", true))
+	})
+}
+
 func TestValidatePathCount_XML(t *testing.T) {
 	engine, err := queryable.NewEngine(
 		[]byte(`<root><tags><tag priority="high">alpha</tag><tag priority="low">beta</tag></tags></root>`),
