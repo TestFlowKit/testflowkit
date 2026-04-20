@@ -67,7 +67,7 @@ type GlobalSettings struct {
 type DebugConfig struct {
 	PrettyPrint bool `yaml:"pretty_print"`
 
-	MaxBodySize int64 `yaml:"max_body_size"`
+	MaxBodySize int64 `yaml:"max_body_size" validate:"min=0,max=10485760"`
 }
 
 type FrontendElements = map[string]map[string][]string
