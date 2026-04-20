@@ -53,7 +53,8 @@ func (mh *Macrohelpers) ApplyMacroToFeature(feature Feature) (*Feature, error) {
 		feature = *f
 	}
 
-	for _, sc := range feature.scenarios {
+	for i := 0; i < len(feature.scenarios); i++ {
+		sc := feature.scenarios[i]
 		if sc == nil || isMacroScenario(sc) || !mh.containsMacro(sc.Steps) {
 			continue
 		}
@@ -172,7 +173,7 @@ func (mh *Macrohelpers) getStepEndLine(stepStartLine int, featureContent []strin
 func (mh *Macrohelpers) expandMacroSteps(params ExpandMacroParam) ([]string, error) {
 	var expandedSteps []string
 	for idx, macroStep := range params.Macro.Steps {
-		keyword := params.Keyword
+		keyword := strings.TrimSpace(params.Keyword)
 		if idx > 0 {
 			keyword = "And"
 		}

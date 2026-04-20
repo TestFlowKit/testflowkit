@@ -226,4 +226,63 @@ Then a result`
 	assert.Equal(t, expectedContent, string(featuresContainingMacros[0].Contents))
 }
 
+func TestApplyMacros_ReplacesMacroStepsInAllScenarios(t *testing.T) {
+	// Regression test: macro was only replaced in the first scenario because the
+	// range loop captured the original scenario slice before feature was re-parsed.
+	featuresContainingMacros := []*Feature{
+		{
+			Name: "Test feature",
+			Contents: []byte(`Feature: Test feature
+
+Scenario: First scenario
+Given a step
+When a macro step
+
+Scenario: Second scenario
+Given another step
+When a macro step`),
+			scenarios: []*scenario{
+				{
+					Name: "First scenario",
+					Steps: []*step{
+						{Keyword: "Given", Text: "a step", Location: &messages.Location{Line: 4}},
+						{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 5}},
+					},
+				},
+				{
+					Name: "Second scenario",
+					Steps: []*step{
+						{Keyword: "Given", Text: "another step", Location: &messages.Location{Line: 8}},
+						{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 9}},
+					},
+				},
+			},
+		},
+	}
+	macros := []scenario{
+		{
+			Name: "a macro step",
+			Steps: []*step{
+				{Keyword: "Given", Text: "macro step 1"},
+				{Keyword: "And", Text: "macro step 2"},
+			},
+		},
+	}
+
+	result := applyMacros(macros, featuresContainingMacros)
+
+	expectedContent := `Feature: Test feature
+
+Scenario: First scenario
+Given a step
+When macro step 1
+And macro step 2
+
+Scenario: Second scenario
+Given another step
+When macro step 1
+And macro step 2`
+	assert.Equal(t, expectedContent, string(result[0].Contents))
+}
+
 type step = messages.Step
