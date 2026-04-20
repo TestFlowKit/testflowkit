@@ -50,7 +50,7 @@ func (steps) checkCheckboxStatus() sb.Step {
 				{Name: "status", Description: "The status of the checkbox.", Type: sb.VarTypeEnum("checked", "unchecked")},
 			},
 			Example:    `Then the "terms" checkbox should be checked`,
-			Categories: []sb.StepCategory{sb.Form},
+			Categories: []sb.StepCategory{sb.Form, sb.Frontend},
 		},
 	)
 }

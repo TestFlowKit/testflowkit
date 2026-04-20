@@ -35,7 +35,7 @@ func (steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the option with value "CIV" from the "Country" dropdown.`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

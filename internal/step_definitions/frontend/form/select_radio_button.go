@@ -45,6 +45,6 @@ func (steps) selectRadioButton() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the radio button.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the "Gender Male" radio button`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form}},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend}},
 	)
 }

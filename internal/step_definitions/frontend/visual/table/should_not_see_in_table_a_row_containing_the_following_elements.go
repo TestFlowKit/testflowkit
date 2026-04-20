@@ -56,7 +56,7 @@ func (steps) shouldNotSeeRowContainingTheFollowingElements() stepbuilder.Step {
 				{Name: "table", Description: "The table containing the elements to check.", Type: stepbuilder.VarTypeTable},
 			},
 			Example:    example,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},
 		},
 	)
 }

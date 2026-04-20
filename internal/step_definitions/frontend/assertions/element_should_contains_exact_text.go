@@ -20,7 +20,7 @@ func (s steps) elementShouldContainsExactText() stepbuilder.Step {
 				{Name: "expectedText", Description: "The exact text that should be contained.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the text of the "Welcome Message" element should be exactly "Hello John".`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }
@@ -40,7 +40,7 @@ func (s steps) elementShouldNotContainsExactText() stepbuilder.Step {
 				Description: desc,
 				Variables:   vars,
 				Example:     `Then the text of the "Welcome Message" element should not be exactly "Error".`,
-				Categories:  []stepbuilder.StepCategory{stepbuilder.Assertions},
+				Categories:  []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 			}
 		}(),
 	)

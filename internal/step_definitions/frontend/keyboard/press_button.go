@@ -45,7 +45,7 @@ func (k keyboardSteps) userPressButton() stepbuilder.Step {
 				{Name: "key", Description: "The button to press.", Type: stepbuilder.VarTypeEnum(supportedKeys...)},
 			},
 			Example:    "When the user presses the \"Enter\" key",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Keyboard},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Keyboard, stepbuilder.Frontend},
 		},
 	)
 }

@@ -44,7 +44,7 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 				{Name: "checkBoxName", Description: "The name of the checkbox to uncheck.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user unchecks the \"Newsletter\" checkbox",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

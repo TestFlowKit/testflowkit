@@ -19,7 +19,7 @@ func (s steps) theFieldValueShouldEqualsTo() stepbuilder.Step {
 				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the value of the "Username" field should be "myUsername".`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }
@@ -35,7 +35,7 @@ func (s steps) theFieldValueShouldNotEqualsTo() stepbuilder.Step {
 				{Name: "text", Description: "The text that should not match.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the value of the "Username" field should not be "admin".`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

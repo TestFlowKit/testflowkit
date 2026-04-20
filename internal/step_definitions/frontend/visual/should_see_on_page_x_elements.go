@@ -37,7 +37,7 @@ func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 				{Name: "elementName", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the user should see 3 buttons elements on the page",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},
 		},
 	)
 }
