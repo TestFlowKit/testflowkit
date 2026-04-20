@@ -5,6 +5,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/apperrors"
+	"testflowkit/pkg/formatter"
 	"testflowkit/pkg/logger"
 )
 
@@ -19,32 +20,35 @@ func (steps) debugAPIResponse() stepbuilder.Step {
 				return ctx, apperrors.ErrNoResponseAvailable
 			}
 
-			logger.InfoFf("=== API RESPONSE DEBUG INFO ===")
+			logger.Debug("=== API RESPONSE DEBUG INFO ===")
 
 			response := backend.GetResponse()
 
 			statusCode := backend.GetStatusCode()
-			logger.InfoFf("Status Code: %d", statusCode)
+			logger.DebugFf("Status Code: %d", statusCode)
 
 			// Headers
 			if len(response.Headers) > 0 {
-				logger.InfoFf("Headers:")
+				logger.DebugFf("Headers:")
 				for key, value := range response.Headers {
-					logger.InfoFf("  %s: %s", key, value)
+					logger.DebugFf("  %s: %s", key, value)
 				}
 			} else {
-				logger.InfoFf("No headers in response")
+				logger.DebugFf("No headers in response")
 			}
 
 			// Body
 			body := backend.GetResponseBody()
 			if len(body) > 0 {
-				logger.InfoFf("Body: %s (%d bytes)", string(body), len(body))
+				contentType := response.Headers["Content-Type"]
+				formatted := formatter.Format(contentType, body, formatter.DefaultMaxBodySize)
+				logger.DebugFf("Body (%d bytes):", len(body))
+				logger.Debug(formatted)
 			} else {
-				logger.InfoFf("No body in response")
+				logger.Debug("No body in response")
 			}
 
-			logger.InfoFf("=== END DEBUG INFO ===")
+			logger.Debug("=== END DEBUG INFO ===")
 
 			return ctx, nil
 		},
