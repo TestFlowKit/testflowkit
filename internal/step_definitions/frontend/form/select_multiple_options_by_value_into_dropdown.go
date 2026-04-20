@@ -36,7 +36,7 @@ func (steps) userSelectMultipleOptionsByValueIntoDropdown() stepbuilder.Step {
 				{Name: "dropdownId", Description: "The id of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the options with values "UK,US" from the "Country" dropdown.`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

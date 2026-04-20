@@ -20,7 +20,7 @@ func (s steps) currentURLShouldContain() stepbuilder.Step {
 				Type:        stepbuilder.VarTypeString,
 			}},
 			Example:    `Then the current URL should contain "dashboard"`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }
@@ -37,7 +37,7 @@ func (s steps) currentURLShouldNotContain() stepbuilder.Step {
 				Type:        stepbuilder.VarTypeString,
 			}},
 			Example:    `Then the current URL should not contain "error"`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }

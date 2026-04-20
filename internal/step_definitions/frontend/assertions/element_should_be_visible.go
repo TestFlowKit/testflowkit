@@ -38,7 +38,7 @@ func (steps) elementShouldBeVisible() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the submit button should be visible",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }

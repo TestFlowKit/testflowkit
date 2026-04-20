@@ -61,7 +61,7 @@ func (steps) waitAMomentForNewWindow() stepbuilder.Step {
 				{Name: "waitTime", Description: docDescription, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user waits for a new window to open within \"5s\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation, stepbuilder.Frontend},
 		},
 	)
 }

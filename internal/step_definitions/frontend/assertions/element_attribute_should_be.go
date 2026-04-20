@@ -21,7 +21,7 @@ func (s steps) elementAttributeShouldBe() stepbuilder.Step {
 				{Name: "expectedValue", Description: "The expected value of the attribute.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the "href" attribute of the "login_link" element should be "/login"`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }
@@ -41,7 +41,7 @@ func (s steps) elementAttributeShouldNotBe() stepbuilder.Step {
 				Description: "This assertion checks if the specified attribute of an element is different from a forbidden value.",
 				Variables:   vars,
 				Example:     `Then the "href" attribute of the "login_link" element should not be "/logout"`,
-				Categories:  []stepbuilder.StepCategory{stepbuilder.Assertions},
+				Categories:  []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 			}
 		}(),
 	)

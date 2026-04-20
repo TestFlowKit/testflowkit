@@ -40,6 +40,6 @@ func (steps) clearField() stepbuilder.Step {
 				{Name: "inputLabel", Description: "The label of the input field to clear.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user clears the \"Username\" field",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form}},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend}},
 	)
 }

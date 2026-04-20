@@ -52,7 +52,7 @@ func (steps) userShouldBeNavigatedToPage() stepbuilder.Step {
 				{Name: "pageName", Description: "The name of the page to check navigation to.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the user should be navigated to the \"Home\" page",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation, stepbuilder.Frontend},
 		},
 	)
 }

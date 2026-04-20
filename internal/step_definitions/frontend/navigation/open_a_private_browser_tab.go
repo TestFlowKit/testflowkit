@@ -19,7 +19,7 @@ func (steps) openANewPrivateBrowserTab() stepbuilder.Step {
 			Description: "opens a new private browser tab.",
 			Variables:   nil,
 			Example:     "Given the user opens a new private browser tab",
-			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation},
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Navigation, stepbuilder.Frontend},
 		},
 	)
 }

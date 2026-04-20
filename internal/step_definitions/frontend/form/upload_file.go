@@ -60,7 +60,7 @@ func (steps) userUploadsFileIntoField() stepbuilder.Step {
 				{Name: "inputLabel", Description: "The logical name of the file input field.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user uploads the "profile_image" file into the "Avatar" field`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

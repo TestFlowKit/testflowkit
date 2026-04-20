@@ -23,6 +23,6 @@ func (steps) userNavigateToURL() stepbuilder.Step {
 				{Name: "URL", Description: "the absolute URL", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user navigates to the URL \"https://myapp.com/login\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation}},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Navigation, stepbuilder.Frontend}},
 	)
 }

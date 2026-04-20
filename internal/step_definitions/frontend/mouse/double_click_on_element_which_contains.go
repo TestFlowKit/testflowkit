@@ -30,7 +30,7 @@ func (s steps) doubleClickOnElementWhichContains() stepbuilder.Step {
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user double clicks on \"File item\" which contains \"document.pdf\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},
 		},
 	)
 }
