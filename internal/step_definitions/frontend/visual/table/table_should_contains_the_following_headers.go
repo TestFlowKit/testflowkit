@@ -46,7 +46,7 @@ func (steps) tableShouldContainsTheFollowingHeaders() stepbuilder.Step {
 				{Name: "table", Description: "The table containing the headers to check.", Type: stepbuilder.VarTypeTable},
 			},
 			Example:    example,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Visual},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},
 		},
 	)
 }

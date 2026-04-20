@@ -20,7 +20,7 @@ func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
 				{Name: "optionLabels", Description: "The labels of the options to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the "country" dropdown should have "USA,Canada" selected`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }
@@ -39,7 +39,7 @@ func (s steps) dropdownShouldNotHaveValuesSelected() stepbuilder.Step {
 			Description: "checks if the dropdown does not have the specified values selected.",
 			Variables:   vars,
 			Example:     `Then the "country" dropdown should not have "USA,Canada" selected`,
-			Categories:  []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories:  []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

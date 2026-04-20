@@ -32,6 +32,7 @@ const (
 	GraphQL    StepCategory = "graphql"
 	Variable   StepCategory = "variable"
 	Assertions StepCategory = "assertions"
+	Frontend   StepCategory = "frontend"
 )
 
 func mergeCategories(doc DocParams) []StepCategory {

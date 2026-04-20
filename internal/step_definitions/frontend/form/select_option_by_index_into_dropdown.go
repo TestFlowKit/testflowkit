@@ -47,7 +47,7 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the option at index 2 from the "Country" dropdown`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Form},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
 		},
 	)
 }

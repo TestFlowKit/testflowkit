@@ -38,7 +38,7 @@ func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then \"Submit button\" should not be visible",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }

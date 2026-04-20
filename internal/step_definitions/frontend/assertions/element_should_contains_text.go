@@ -42,7 +42,7 @@ func (steps) elementShouldContainsText() stepbuilder.Step {
 				{Name: "expectedText", Description: "The text that should be contained.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the welcome card should contain the text "Hello John"`,
-			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},
 		},
 	)
 }

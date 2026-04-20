@@ -30,7 +30,7 @@ func (s steps) clickOnElementWhichContains() stepbuilder.Step {
 				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user clicks on \"Submit button\" which contains \"Submit\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},
 		},
 	)
 }

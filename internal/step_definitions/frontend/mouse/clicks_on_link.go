@@ -21,7 +21,7 @@ func (s steps) userClicksOnLink() stepbuilder.Step {
 				{Name: "name", Description: "The logical name of link to click on.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user clicks the \"Forgot Password\" link",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse},
+			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},
 		},
 	)
 }
