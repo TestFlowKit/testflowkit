@@ -137,6 +137,8 @@ func TestDebugTransport_BinaryResponseNotCorrupted(t *testing.T) {
 	if !bytes.Equal(got, binary) {
 		t.Errorf("binary body corrupted")
 	}
+
+	resp.Body.Close()
 }
 
 func TestDebugTransport_OversizedBody_StillRestored(t *testing.T) {
@@ -160,6 +162,7 @@ func TestDebugTransport_OversizedBody_StillRestored(t *testing.T) {
 	if string(got) != largeBody {
 		t.Errorf("oversized body was not fully restored: got len=%d, want len=%d", len(got), len(largeBody))
 	}
+	resp.Body.Close()
 }
 
 func TestDebugTransport_DefaultBase_UsesDefaultTransport(_ *testing.T) {
