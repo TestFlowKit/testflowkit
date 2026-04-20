@@ -4,17 +4,11 @@ import (
 	"encoding/json"
 	"os"
 	"path"
-	"path/filepath"
 	"regexp"
-	"slices"
 	"strings"
-	"testflowkit/internal/step_definitions/backend"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
-	"testflowkit/internal/step_definitions/frontend"
-	"testflowkit/internal/step_definitions/frontend/assertions"
-	"testflowkit/internal/step_definitions/variables"
-	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/logger"
+	"testflowkit/scripts/shared"
 )
 
 func main() {
@@ -24,7 +18,7 @@ func main() {
 	}
 	outputDir := path.Join(wd, "documentation", "content", "sentences")
 
-	allDocs := slices.Concat(frontend.GetDocs(), backend.GetDocs(), variables.GetDocs(), assertions.GetDocs())
+	allDocs := shared.GetAllDocs()
 	generateDocs(allDocs, outputDir)
 }
 
@@ -57,8 +51,6 @@ func generateDocs(stepDocumentations []stepbuilder.Documentation, outputDir stri
 }
 
 func formatSentencesDocs(sentences []stepbuilder.Documentation) (docs []doc) {
-	re := regexp.MustCompile(`[$^]`)
-
 	for _, step := range sentences {
 		var categories []string
 		for _, c := range step.Categories {
@@ -66,7 +58,7 @@ func formatSentencesDocs(sentences []stepbuilder.Documentation) (docs []doc) {
 		}
 
 		curr := doc{
-			Sentence:    re.ReplaceAllString(step.Sentence, ""),
+			Sentence:    shared.CleanSentence(step.Sentence),
 			Description: step.Description,
 			Categories:  categories,
 			Example:     step.Example,
@@ -95,19 +87,7 @@ func formatFilename(sentence string) string {
 }
 
 func createFileWithDirectories(filePath string, data []byte) error {
-	dir := filepath.Dir(filePath)
-
-	err := os.MkdirAll(dir, fileutils.DirPermission)
-	if err != nil {
-		return err
-	}
-
-	mkdErr := os.WriteFile(filePath, data, fileutils.FilePermission)
-	if mkdErr != nil {
-		return err
-	}
-
-	return nil
+	return shared.WriteFileWithDirectories(filePath, data)
 }
 
 type doc struct {
