@@ -72,14 +72,15 @@ func (d *DebugTransport) logResponse(resp *http.Response) {
 	}
 
 	body, err := io.ReadAll(resp.Body)
-	_ = resp.Body.Close()
 	if err != nil {
 		logger.DebugFf("Response body read error: %v", err)
-		// Restore an empty body so callers don't receive a nil reader.
-		resp.Body = io.NopCloser(bytes.NewReader(nil))
+		// Restore the body so callers can still read any bytes already consumed
+		// during logging and then continue reading from the original stream.
+		resp.Body = io.NopCloser(io.MultiReader(bytes.NewReader(body), resp.Body))
 		return
 	}
 
+	_ = resp.Body.Close()
 	// Restore the body so application code can still read the full response.
 	resp.Body = io.NopCloser(bytes.NewReader(body))
 
