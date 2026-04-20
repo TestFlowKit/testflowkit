@@ -56,8 +56,11 @@ func (a *GraphQLAdapter) PrepareRequest(ctx context.Context, apiName string, req
 	scenarioCtx.SetGraphQLEndpoint(apiDef.Endpoint)
 
 	if len(apiDef.DefaultHeaders) > 0 {
+		existingHeaders := scenarioCtx.GetRequestHeaders()
 		for key, value := range apiDef.DefaultHeaders {
-			scenarioCtx.SetGraphQLHeader(key, value)
+			if _, alreadySet := existingHeaders[key]; !alreadySet {
+				scenarioCtx.AddHeader(key, value)
+			}
 		}
 	}
 
@@ -104,7 +107,7 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 		return ctx, apperrors.ErrNoGraphQLEndpoint
 	}
 
-	headers := scenarioCtx.GetGraphQLHeaders()
+	headers := scenarioCtx.GetRequestHeaders()
 
 	bc := scenarioCtx.GetBackendContext()
 	timeout := bc.Timeout

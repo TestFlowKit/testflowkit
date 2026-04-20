@@ -44,8 +44,11 @@ func (a *RESTAPIAdapter) PrepareRequest(ctx context.Context, api string, reqName
 	scenarioCtx.SetEndpoint(apiDef.BaseURL, endpoint)
 
 	if len(apiDef.DefaultHeaders) > 0 {
+		existingHeaders := scenarioCtx.GetRequestHeaders()
 		for key, value := range apiDef.DefaultHeaders {
-			scenarioCtx.AddHeader(key, value)
+			if _, alreadySet := existingHeaders[key]; !alreadySet {
+				scenarioCtx.AddHeader(key, value)
+			}
 		}
 	}
 
