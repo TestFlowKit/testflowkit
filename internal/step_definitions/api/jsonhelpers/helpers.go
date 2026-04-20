@@ -46,8 +46,6 @@ func IsValid(data []byte) bool {
 	return json.Unmarshal(data, &js) == nil
 }
 
-// ContainsJSON checks that all keys and values present in expected are also
-// present in actual (deep subset check). Extra fields in actual are ignored.
 func ContainsJSON(expected, actual []byte) error {
 	var expectedData, actualData any
 
@@ -59,11 +57,34 @@ func ContainsJSON(expected, actual []byte) error {
 		return fmt.Errorf("failed to unmarshal actual JSON: %w", err)
 	}
 
-	if err := containsValue("$", expectedData, actualData); err != nil {
-		return fmt.Errorf("partial JSON mismatch: %w", err)
+	if searchValue("$", expectedData, actualData) {
+		return nil
 	}
 
-	return nil
+	// Re-run at root to surface the most relevant error message.
+	err := containsValue("$", expectedData, actualData)
+	return fmt.Errorf("partial JSON mismatch (searched entire response): %w", err)
+}
+
+func searchValue(path string, expected, actual any) bool {
+	if containsValue(path, expected, actual) == nil {
+		return true
+	}
+	switch act := actual.(type) {
+	case map[string]any:
+		for key, val := range act {
+			if searchValue(path+"."+key, expected, val) {
+				return true
+			}
+		}
+	case []any:
+		for i, val := range act {
+			if searchValue(fmt.Sprintf("%s[%d]", path, i), expected, val) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func containsValue(path string, expected, actual any) error {
