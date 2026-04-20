@@ -88,3 +88,42 @@ func TestContainsJSON_InvalidActual(t *testing.T) {
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "unmarshal actual")
 }
+
+func TestContainsJSON_RootMatch(t *testing.T) {
+	expected := []byte(`{"status":"success"}`)
+	actual := []byte(`{"status":"success","extra":"ignored"}`)
+	require.NoError(t, ContainsJSON(expected, actual))
+}
+
+func TestContainsJSON_NestedOneLevel(t *testing.T) {
+	expected := []byte(`{"administrativeInformation":{"isCertified":true}}`)
+	actual := []byte(`{"data":{"administrativeInformation":{"isCertified":true,"isValidated":false}}}`)
+	require.NoError(t, ContainsJSON(expected, actual))
+}
+
+func TestContainsJSON_NestedDeep(t *testing.T) {
+	expected := []byte(`{"credit":{"limit":"5000","isExceeding":false}}`)
+	credit := `{"limit":"5000","outstandingAmount":"3334.41","isExceeding":false}`
+	actual := []byte(`{"data":{"administrativeInformation":{"credit":` + credit + `}}}`)
+	require.NoError(t, ContainsJSON(expected, actual))
+}
+
+func TestContainsJSON_NestedInsideArray(t *testing.T) {
+	expected := []byte(`{"code":"CERTIF","label":"Client Certifié INSEE"}`)
+	actual := []byte(`{"items":[{"code":"1","label":"Client"},{"code":"CERTIF","label":"Client Certifié INSEE"}]}`)
+	require.NoError(t, ContainsJSON(expected, actual))
+}
+
+func TestContainsJSON_WrongValueFails(t *testing.T) {
+	expected := []byte(`{"credit":{"outstandingAmount":"1367.04"}}`)
+	actual := []byte(`{"data":{"administrativeInformation":{"credit":{"outstandingAmount":"3334.41"}}}}`)
+	err := ContainsJSON(expected, actual)
+	require.Error(t, err)
+}
+
+func TestContainsJSON_MissingKeyFails(t *testing.T) {
+	expected := []byte(`{"unknown":"field"}`)
+	actual := []byte(`{"data":{"id":1,"name":"John"}}`)
+	err := ContainsJSON(expected, actual)
+	require.Error(t, err)
+}
