@@ -159,6 +159,7 @@ func NewBaseTransport(proxyURL string) (*http.Transport, error) {
 func NewClient(
 	timeout time.Duration,
 	resolved security.ResolvedSecurity,
+	debugCfg config.DebugConfig,
 ) (*http.Client, error) {
 	proxyURL := ""
 	if !resolved.Disabled {
@@ -175,8 +176,16 @@ func NewClient(
 		Resolved: resolved,
 	}
 
+	var finalTransport http.RoundTripper = transport
+	if debugCfg.PrettyPrint {
+		finalTransport = &DebugTransport{
+			Base:        transport,
+			MaxBodySize: debugCfg.MaxBodySize,
+		}
+	}
+
 	return &http.Client{
-		Transport: transport,
+		Transport: finalTransport,
 		Timeout:   timeout,
 	}, nil
 }

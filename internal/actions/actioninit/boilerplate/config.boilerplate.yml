@@ -2,6 +2,9 @@ settings:
   concurrency: 1
   report_format: "html"
   gherkin_location: "./features"
+  debug:
+    pretty_print: true
+    max_body_size: 1048576 
 
 # Environment Variables
 # Access these in Gherkin files and config using {{ env.variable_name }}
