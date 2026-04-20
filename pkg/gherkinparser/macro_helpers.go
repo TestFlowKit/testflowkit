@@ -53,7 +53,7 @@ func (mh *Macrohelpers) ApplyMacroToFeature(feature Feature) (*Feature, error) {
 		feature = *f
 	}
 
-	for i := 0; i < len(feature.scenarios); i++ {
+	for i := range len(feature.scenarios) {
 		sc := feature.scenarios[i]
 		if sc == nil || isMacroScenario(sc) || !mh.containsMacro(sc.Steps) {
 			continue
