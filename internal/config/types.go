@@ -57,6 +57,17 @@ type GlobalSettings struct {
 	Tags string `yaml:"tags"`
 
 	EnvFile string `yaml:"env_file"`
+
+	Debug DebugConfig `yaml:"debug"`
+}
+
+// DebugConfig holds debug-mode settings. All fields default to their zero
+// values so that existing config files without a "debug" block continue to
+// work unchanged.
+type DebugConfig struct {
+	PrettyPrint bool `yaml:"pretty_print"`
+
+	MaxBodySize int64 `yaml:"max_body_size"`
 }
 
 type FrontendElements = map[string]map[string][]string

@@ -144,6 +144,17 @@ func (c *Config) GetSecurityScheme(name string) (SecurityScheme, bool) {
 	return s, ok
 }
 
+func (c *Config) IsDebugPrettyPrint() bool {
+	return c.Settings.Debug.PrettyPrint
+}
+
+func (c *Config) GetDebugMaxBodySize(defaultSize int64) int64 {
+	if c.Settings.Debug.MaxBodySize > 0 {
+		return c.Settings.Debug.MaxBodySize
+	}
+	return defaultSize
+}
+
 func (c *Config) ValidateConfiguration() error {
 	if err := c.validateGlobalSettings(); err != nil {
 		return err

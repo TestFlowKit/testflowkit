@@ -25,6 +25,8 @@ func getLevelColor(level logLevel) func(format string, a ...interface{}) string 
 		return color.RedString
 	case fatal:
 		return color.RedString
+	case debug:
+		return color.CyanString
 	default:
 		return color.WhiteString
 	}
@@ -38,6 +40,7 @@ const (
 	success logLevel = "SUCCESS"
 	erro    logLevel = "ERROR"
 	fatal   logLevel = "FATAL"
+	debug   logLevel = "DEBUG"
 )
 
 const indent = "  "
