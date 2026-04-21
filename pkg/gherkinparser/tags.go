@@ -1,6 +1,8 @@
 package gherkinparser
 
 import (
+	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
@@ -90,6 +92,19 @@ func filterFeatureContent(f *Feature, toRemove []*scenario) (*Feature, error) {
 
 	newContent := strings.Join(lines, "\n")
 	return parseFeatureContent(newContent)
+}
+
+func filterSkipped(features []*Feature) []*Feature {
+	for _, f := range features {
+		for _, sc := range f.scenarios {
+			allTags := collectTagNames(f.featureTags, sc.Tags)
+			if slices.Contains(allTags, SkipTag) {
+				msg := fmt.Sprintf("Skipping scenario: \"%s\" in feature: \"%s\"", sc.Name, f.Name)
+				logger.Warn(msg, nil)
+			}
+		}
+	}
+	return Filter(features, excludeSkipTagExpr)
 }
 
 // filterFeatures filters features using a Cucumber tag expression.
