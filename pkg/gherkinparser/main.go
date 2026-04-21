@@ -12,10 +12,14 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
+const SkipTag = "@skip"
+const excludeSkipTagExpr = "not " + SkipTag
+
 func Parse(featureFilesLocation string) []*Feature {
 	features := getFeatures(featureFilesLocation)
 	macros := getMacros(features)
-	return Filter(applyMacros(macros, features), excludeMacroTagExpr)
+	withoutMacros := Filter(applyMacros(macros, features), excludeMacroTagExpr)
+	return filterSkipped(withoutMacros)
 }
 
 // Filter applies a Cucumber tag expression to an already-parsed list of features.
