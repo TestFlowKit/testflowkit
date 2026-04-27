@@ -35,6 +35,7 @@ func GetSteps() []stepbuilder.Step {
 		s.validateResponseHeaderNotEquals(),
 		s.validateResponseHeaderPattern(),
 		s.validateResponseHeaderNotPattern(),
+		s.displayRequestCURL(),
 		s.debugAPIResponse(),
 	}
 }

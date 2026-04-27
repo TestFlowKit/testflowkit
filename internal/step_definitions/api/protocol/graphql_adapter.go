@@ -2,7 +2,9 @@ package protocol
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"testflowkit/internal/config"
@@ -149,6 +151,36 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 		response.StatusCode, duration, len(response.Errors))
 
 	return ctx, nil
+}
+
+func (a *GraphQLAdapter) GetCURLCommand(ctx context.Context) (string, error) {
+	scenarioCtx := scenario.MustFromContext(ctx)
+	request := scenarioCtx.GetGraphQLRequest()
+	if request == nil {
+		return "", apperrors.ErrNoRequestPrepared
+	}
+
+	endpoint := scenarioCtx.GetGraphQLEndpoint()
+	if endpoint == "" {
+		return "", apperrors.ErrNoGraphQLEndpoint
+	}
+
+	payload, err := json.Marshal(graphql.Request{
+		Query:     request.Query,
+		Variables: scenarioCtx.GetGraphQLVariables(),
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal GraphQL request: %w", err)
+	}
+
+	headers := cloneHeaders(scenarioCtx.GetRequestHeaders())
+	if headers["Content-Type"] == "" {
+		headers["Content-Type"] = "application/json"
+	}
+
+	headers, endpoint = withStaticSecurity(headers, endpoint, scenarioCtx.GetBackendContext().ResolvedSecurity)
+
+	return buildCurlCommand(http.MethodPost, endpoint, headers, payload), nil
 }
 
 func (a *GraphQLAdapter) GetResponseBody(ctx context.Context) ([]byte, error) {

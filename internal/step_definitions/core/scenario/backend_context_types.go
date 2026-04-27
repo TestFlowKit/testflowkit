@@ -16,6 +16,8 @@ type APIProtocol interface {
 	// SendRequest executes the prepared request and stores the response
 	SendRequest(ctx context.Context) (context.Context, error)
 
+	GetCURLCommand(ctx context.Context) (string, error)
+
 	// GetResponseBody returns the raw response body as bytes
 	GetResponseBody(ctx context.Context) ([]byte, error)
 

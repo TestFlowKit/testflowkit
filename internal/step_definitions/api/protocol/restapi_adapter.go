@@ -114,6 +114,28 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	return ctx, nil
 }
 
+func (a *RESTAPIAdapter) GetCURLCommand(ctx context.Context) (string, error) {
+	scenarioCtx := scenario.MustFromContext(ctx)
+	endpoint := scenarioCtx.GetEndpoint()
+	if endpoint.Path == "" {
+		return "", apperrors.ErrNoRequestPrepared
+	}
+
+	body := scenarioCtx.GetRESTRequestBody()
+	headers := cloneHeaders(scenarioCtx.GetRequestHeaders())
+	if headers["Content-Type"] == "" && body != nil {
+		contentType := a.detectContentType(body)
+		if contentType != "" {
+			headers["Content-Type"] = contentType
+		}
+	}
+
+	requestURL := endpoint.GetFullURL()
+	headers, requestURL = withStaticSecurity(headers, requestURL, scenarioCtx.GetBackendContext().ResolvedSecurity)
+
+	return buildCurlCommand(defaultRESTMethod(endpoint.Method), requestURL, headers, body), nil
+}
+
 func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenario.Context) (*http.Request, error) {
 	endpoint := scenarioCtx.GetEndpoint()
 	bodyReader := a.getBodyReader(scenarioCtx)
