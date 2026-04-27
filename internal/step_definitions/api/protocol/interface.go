@@ -9,6 +9,8 @@ type APIProtocol interface {
 
 	SendRequest(ctx context.Context) (context.Context, error)
 
+	GetCURLCommand(ctx context.Context) (string, error)
+
 	GetResponseBody(ctx context.Context) ([]byte, error)
 
 	GetStatusCode(ctx context.Context) (int, error)
