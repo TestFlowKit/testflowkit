@@ -47,6 +47,13 @@ jobs:
       - name: Run unit tests
         run: go test ./...
 
+      - name: Export and validate step definitions catalog
+        run: |
+          make export-step-definitions
+          jq -e 'type == "array" and length > 0' build/step-definitions.json
+          jq -e '.[0] | has("sentence") and has("description") and has("categories")' \
+            build/step-definitions.json
+
       - name: Run npm package tests
         working-directory: ./npm
         run: |

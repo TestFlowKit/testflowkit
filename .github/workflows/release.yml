@@ -63,6 +63,10 @@ jobs:
       - e2e_tests
     name: Release
     runs-on: ubuntu-latest
+    # gh is preinstalled on GitHub-hosted runners; GH_TOKEN is required for gh steps.
+    # https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-github-cli
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
 
     steps:
       - uses: actions/checkout@v6.0.2
@@ -96,35 +100,40 @@ jobs:
         with:
           go-version: ${{ vars.GO_VERSION }}
 
-      - name: Install GitHub CLI
-        run: |
-          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && sudo apt update \
-          && sudo apt install gh -y
-
       - name: Build Go Binaries with Version Tag
         run: |
           # Fetch the latest tags to ensure we have the newly created tag
           git fetch --tags
           make releases
 
+      - name: Export step definitions catalog
+        run: make export-step-definitions
+
       - name: Upload Release Assets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "Latest tag: $LATEST_TAG"
-          
-          # Upload all build artifacts to the release
+
           for file in build/*.zip; do
             if [ -f "$file" ]; then
               echo "Uploading $file to release $LATEST_TAG"
               gh release upload "$LATEST_TAG" "$file" --clobber
             fi
           done
+
+          echo "Uploading step-definitions.json to release $LATEST_TAG"
+          gh release upload "$LATEST_TAG" build/step-definitions.json --clobber
+
+      - name: Verify step definitions release asset
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          mkdir -p /tmp/verify-release
+          gh release download "$LATEST_TAG" \
+            --pattern "step-definitions.json" \
+            --dir /tmp/verify-release
+          jq -e 'type == "array" and length > 0' /tmp/verify-release/step-definitions.json
+          jq -e '.[0] | has("sentence") and has("description") and has("categories")' \
+            /tmp/verify-release/step-definitions.json
 
   publish_npm_package:
     needs:
