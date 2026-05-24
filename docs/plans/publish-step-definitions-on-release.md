@@ -1,6 +1,6 @@
 # Plan: Publish step definitions on GitHub Release
 
-This document describes how to ship the TestFlowKit **step catalog** (`step-definitions.json`) as a **GitHub Release asset** on every stable release, and how **canary** builds should expose the same catalog without creating a release per commit.
+This document describes how to ship the TestFlowKit **step catalog** (`step-definitions.json`) as a **GitHub Release asset** on every stable release. **Canary** npm builds publish CLI binaries only; the catalog is not uploaded for canary.
 
 It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the catalog when `testflowkit.agent.yml` does not specify a local file.
 
@@ -13,7 +13,7 @@ It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the
 | **Zero-config agent** | Consumers can omit a local catalog; the agent resolves it from the release matching the installed CLI version. |
 | **Version alignment** | Catalog for tag `v1.2.4` matches the step implementations in that tag. |
 | **Stable channel** | One `step-definitions.json` per semver GitHub Release (alongside platform ZIPs). |
-| **Canary channel** | Latest main-line catalog available without per-SHA releases. |
+| **Canary channel** | CLI via npm `canary` tag; catalog via local export or stable release for the semver base. |
 | **Reproducibility** | Same export command used locally, in CI, and on release. |
 
 ## Non-goals (this iteration)
@@ -62,9 +62,7 @@ It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the
 
 | Workflow | File | Behavior |
 |----------|------|----------|
-| Canary | `.github/workflows/publish-canary.yml` | Version `"{last-tag}-canary.{short-sha}"` → `make releases` → workflow artifact (1 day) → npm `canary` tag |
-
-**Gap:** No GitHub Release and no published catalog for canary.
+| Canary | `.github/workflows/publish-canary.yml` | Version `"{last-semver-tag}-canary.{short-sha}"` → `make releases` → workflow artifact (1 day) → npm `canary` tag (no catalog upload) |
 
 ---
 
@@ -75,7 +73,7 @@ It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the
 | **Filename** | `step-definitions.json` |
 | **Content-Type** | `application/json` |
 | **Produced by** | `go run ./scripts/step_definitions_export/main.go -output-file build/step-definitions.json` |
-| **Attached to** | GitHub Release (stable + rolling canary) |
+| **Attached to** | GitHub Release (stable only) |
 
 ### Optional v1.1 enhancements
 
@@ -91,7 +89,7 @@ It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the
 | Channel | URL pattern | Example |
 |---------|-------------|---------|
 | **Stable** | `https://github.com/TestFlowKit/testflowkit/releases/download/<tag>/step-definitions.json` | Tag `1.2.4` (no `v` prefix, per semantic-release) |
-| **Canary** | `https://github.com/TestFlowKit/testflowkit/releases/download/canary/step-definitions.json` | Rolling pre-release, updated on each `main` push |
+| **Canary** | — | No published catalog; use local export or stable URL for the semver base (e.g. `3.6.1` from `3.6.1-canary.abc1234`) |
 
 **Local export** (gitignored output):
 
@@ -100,7 +98,7 @@ make export-step-definitions
 # → build/step-definitions.json
 ```
 
-**Agent rule:** Resolve the catalog for the **installed CLI version** (`tkit version`), not GitHub `latest`. Use the canary URL only when `step_catalog.channel: canary` (future agent spec).
+**Agent rule:** Resolve the catalog for the **installed CLI version** (`tkit version`), not GitHub `latest`. For canary installs, prefer `step_catalog.file` or the stable release matching the semver base before the `-canary.` suffix.
 
 ---
 
@@ -110,12 +108,6 @@ Stable release (tag matches semantic-release `tagFormat`: `${version}`, e.g. `1.
 
 ```text
 https://github.com/TestFlowKit/testflowkit/releases/download/<tag>/step-definitions.json
-```
-
-Canary rolling pre-release:
-
-```text
-https://github.com/TestFlowKit/testflowkit/releases/download/canary/step-definitions.json
 ```
 
 Agent resolution order (documented in future `testflowkit.agent.yml` spec):
@@ -173,44 +165,22 @@ After upload, a lightweight check on the release tag:
 
 ---
 
-## Canary channel — recommended approach
+## Canary channel — decision
 
-**Do not** create a new GitHub Release per commit (`1.2.3-canary.abc1234`).
-
-Use a **single rolling pre-release** named `canary`:
+**Do not** publish `step-definitions.json` on canary (no rolling GitHub release, no per-SHA release).
 
 | Property | Value |
 |----------|--------|
-| Tag / release name | `canary` (or `v0.0.0-canary` if tags must be semver-shaped) |
-| Pre-release flag | `true` |
-| Update cadence | Every successful `publish-canary.yml` run on `main` |
-| Assets | `step-definitions.json` (+ optionally latest canary ZIPs) |
-| Upload | `gh release upload canary build/step-definitions.json --clobber` |
+| CLI distribution | npm `canary` dist-tag (`publish-canary.yml` → `_publish-packages.yml`) |
+| Catalog | `make export-step-definitions` locally, or stable release URL for the semver base in the canary version string |
 
-Agent config (future):
+**Rationale:** Avoids a `canary` git tag that breaks npm semver resolution (`canary-canary.<sha>`), and keeps canary CI limited to build + npm publish (`contents: read`).
 
-```yaml
-step_catalog:
-  channel: canary   # resolves to rolling release "canary"
-```
+### Canary workflow (`.github/workflows/publish-canary.yml`)
 
-### Alternative (if avoiding GitHub releases for canary)
-
-Bundle `step-definitions.json` in the **npm canary package** next to CLI binaries (`publish-canary.yml` / `_publish-packages.yml`). MCP reads from `node_modules/...` when `tkit version` contains `-canary`.
-
-| Approach | Pros | Cons |
-|----------|------|------|
-| Rolling `canary` release | Same URL model as stable; works without npm | Needs `contents: write` on canary workflow |
-| npm-bundled only | Matches existing canary install path | No direct URL; npm required |
-
-**Recommendation:** Rolling **`canary` pre-release** for catalog; keep binary distribution as today (artifact → npm). Catalog is small and benefits from a stable HTTPS URL.
-
-### Canary workflow changes (`.github/workflows/publish-canary.yml`)
-
-1. Grant `contents: write` (only if creating/updating releases).
-2. After build, run `export-step-definitions`.
-3. Ensure release `canary` exists (`gh release create canary --prerelease` if missing).
-4. `gh release upload canary build/step-definitions.json --clobber`.
+1. Resolve version: `{last-semver-tag}-canary.{short-sha}` via `git describe --match '[0-9]*'`.
+2. `make releases` → workflow artifact → npm publish under tag `canary`.
+3. Do **not** run `export-step-definitions` or `gh release` in this workflow.
 
 ---
 
@@ -280,9 +250,8 @@ Use for:
 
 ### Phase 3 — Canary
 
-- [x] Update `publish-canary.yml` to export and upload to rolling `canary` pre-release.
-- [x] Document `channel: canary` URL in agent spec (see Published artifacts above).
-- [x] Decide permissions (`contents: write`) and release creation idempotency.
+- [x] Keep `publish-canary.yml` CLI-only (no catalog upload; semver-safe version resolution).
+- [x] Document canary catalog resolution (local export / stable base tag) in README and this plan.
 
 ### Phase 2 (continued) — PR CI
 
@@ -302,7 +271,7 @@ Use for:
 |------|------------|
 | Catalog out of sync with binary | Generate in same job, same commit, same tag before upload |
 | Agent uses wrong version | Pin to CLI version; never default to GitHub `latest` |
-| Canary URL moves every push | Fixed release name `canary` + `--clobber` |
+| Canary catalog missing on GitHub | Local `make export-step-definitions` or stable release for semver base |
 | Large JSON over time | Compress optional (`step-definitions.json.gz`); MCP accepts both |
 | Private GitHub org | `step_catalog.url` + token via env in agent config |
 
@@ -314,7 +283,7 @@ Use for:
 |---|----------|----------|
 | 1 | Tag format in URL: `v1.2.4` vs `1.2.4`? | Match `git describe` / semantic-release output exactly (verify in first release). |
 | 2 | Include catalog version inside JSON? | Add top-level wrapper in v2: `{ "version": "1.2.4", "steps": [...] }` (breaking change; defer or version file). |
-| 3 | Canary: GitHub rolling release vs npm bundle? | Rolling `canary` pre-release for catalog. |
+| 3 | Canary: GitHub rolling release vs npm bundle? | **Decided:** no canary catalog on GitHub; CLI-only canary on npm. |
 | 4 | Commit catalog to repo? | No — release + local export only (stays gitignored). |
 
 ---

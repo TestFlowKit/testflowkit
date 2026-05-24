@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   actions: write
 
 jobs:
@@ -21,8 +21,7 @@ jobs:
   prepare:
     name: Build binaries & resolve canary version
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
+
     outputs:
       version: ${{ steps.version.outputs.canary }}
 
@@ -47,19 +46,6 @@ jobs:
 
       - name: Build Go binaries for all platforms
         run: make releases
-
-      - name: Export step definitions catalog
-        run: make export-step-definitions
-
-      - name: Publish step definitions to canary release
-        run: |
-          jq -e 'type == "array" and length > 0' build/step-definitions.json
-          jq -e '.[0] | has("sentence") and has("description") and has("categories")' \
-            build/step-definitions.json
-          gh release view canary >/dev/null 2>&1 || \
-            gh release create canary --prerelease --title "Canary" \
-              --notes "Rolling channel for step-definitions.json (updated on each main push)."
-          gh release upload canary build/step-definitions.json --clobber
 
       - name: Upload binaries as workflow artifact
         uses: actions/upload-artifact@v7.0.0
