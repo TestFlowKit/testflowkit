@@ -84,7 +84,7 @@ func validateEnvVars(parsedFeatures []*gherkinparser.Feature, configFilePath str
 			logger.InfoFf("  - env.%s", k)
 		}
 		logger.Info("\nDefine these variables in:")
-		logger.Info("  1. config.yml under 'env:' block, or")
+		logger.Info("  1. testflowkit.yml under 'env:' block, or")
 		logger.Info("  2. A separate YAML file referenced by 'settings.env_file' or --env-file")
 		os.Exit(1)
 	}

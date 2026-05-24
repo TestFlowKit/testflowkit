@@ -14,10 +14,7 @@ import (
 
 var validatePath = fileutils.ValidatePath
 
-const (
-	featuresDir = "features"
-	configFile  = "config.yml"
-)
+const featuresDir = "features"
 
 //go:embed boilerplate/config.boilerplate.yml
 var configTemplate string
@@ -168,8 +165,13 @@ func createSampleFeature(state *InitializationState) error {
 	return nil
 }
 
+func configFileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
 func createConfigFile(state *InitializationState) error {
-	configPath := configFile
+	configPath := config.DefaultConfigFile
 
 	if err := validatePath(configPath); err != nil {
 		logger.Error("Invalid config path: "+err.Error(), nil, nil)
@@ -181,12 +183,10 @@ func createConfigFile(state *InitializationState) error {
 		return err
 	}
 
-	if _, err := os.Stat(configPath); err == nil {
-		logger.Error("Config file already exists. Please remove config.yml or run init in a different directory.", nil, nil)
-		return apperrors.ErrConfigAlreadyExists
-	} else if !os.IsNotExist(err) {
-		logger.Error("Failed to check config file: "+err.Error(), nil, nil)
-		return err
+	if configFileExists(configPath) || configFileExists(config.LegacyConfigFile) {
+		const instruction = "Please remove testflowkit.yml (or legacy config.yml) or run init in a different directory."
+		logger.Error("Config file already exists. "+instruction, nil, nil)
+		return fmt.Errorf("%w: %s", apperrors.ErrConfigAlreadyExists, instruction)
 	}
 
 	err := os.WriteFile(configPath, []byte(configTemplate), fileutils.FilePermission)
@@ -205,7 +205,7 @@ func displayGuidance() {
 	logger.Info("")
 
 	logger.Info("📁 Generated files:")
-	logger.Info("   ├── config.yml (TestFlowKit configuration)")
+	logger.Info("   ├── testflowkit.yml (TestFlowKit configuration)")
 	logger.Info("   └── features/sample.feature (Sample test file)")
 	logger.Info("")
 

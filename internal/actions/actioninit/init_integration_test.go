@@ -12,10 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	testConfigFile  = "config.yml"
-	testFeaturesDir = "features"
-)
+const testFeaturesDir = "features"
 
 func setupTestDir(t *testing.T) func() {
 	t.Helper()
@@ -47,11 +44,11 @@ func TestCompleteInitializationFlow(t *testing.T) {
 
 func verifyConfigFileCreation(t *testing.T) {
 	t.Helper()
-	_, statErr := os.Stat(testConfigFile)
-	assert.False(t, os.IsNotExist(statErr), "config.yml was not created")
+	_, statErr := os.Stat(config.DefaultConfigFile)
+	assert.False(t, os.IsNotExist(statErr), "testflowkit.yml was not created")
 
-	content, readErr := os.ReadFile(testConfigFile)
-	require.NoError(t, readErr, "Failed to read config.yml")
+	content, readErr := os.ReadFile(config.DefaultConfigFile)
+	require.NoError(t, readErr, "Failed to read testflowkit.yml")
 
 	configStr := string(content)
 
@@ -119,7 +116,7 @@ func verifyFilePermissions(t *testing.T) {
 		t.Skip("Skipping: Windows does not support Unix-style file permissions")
 	}
 
-	configInfo, statErr := os.Stat(testConfigFile)
+	configInfo, statErr := os.Stat(config.DefaultConfigFile)
 	require.NoError(t, statErr, "Failed to get config file info")
 	assert.Equal(t, os.FileMode(0600), configInfo.Mode().Perm(), "Expected config file permissions 0600")
 
@@ -189,8 +186,8 @@ func TestGeneratedFilesStructure(t *testing.T) {
 
 func testConfigFileStructure(t *testing.T) {
 	t.Helper()
-	content, readErr := os.ReadFile(testConfigFile)
-	require.NoError(t, readErr, "Failed to read config.yml")
+	content, readErr := os.ReadFile(config.DefaultConfigFile)
+	require.NoError(t, readErr, "Failed to read testflowkit.yml")
 
 	configStr := string(content)
 
@@ -241,7 +238,7 @@ func testDirectoryStructure(t *testing.T) {
 	t.Helper()
 
 	expectedPaths := []string{
-		testConfigFile,
+		config.DefaultConfigFile,
 		testFeaturesDir,
 		filepath.Join(testFeaturesDir, "sample.feature"),
 	}
@@ -297,8 +294,8 @@ func testFeatureFileValidGherkin(t *testing.T) {
 func testConfigurationCompatibility(t *testing.T) {
 	t.Helper()
 
-	configContent, readErr := os.ReadFile(testConfigFile)
-	require.NoError(t, readErr, "Failed to read config.yml")
+	configContent, readErr := os.ReadFile(config.DefaultConfigFile)
+	require.NoError(t, readErr, "Failed to read testflowkit.yml")
 
 	featureContent, readErr := os.ReadFile(filepath.Join(testFeaturesDir, "sample.feature"))
 	require.NoError(t, readErr, "Failed to read sample.feature")

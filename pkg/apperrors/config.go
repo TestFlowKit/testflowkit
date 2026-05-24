@@ -11,8 +11,8 @@ var ErrNoModeProvided = errors.New("no mode provided")
 // ErrConfigNotLoaded is returned when Get() is called before Load().
 var ErrConfigNotLoaded = errors.New("configuration not loaded - call Load first")
 
-// ErrConfigAlreadyExists is returned when init is run and config.yml already exists.
-var ErrConfigAlreadyExists = errors.New("config.yml already exists")
+// ErrConfigAlreadyExists is returned when init is run and a config file already exists.
+var ErrConfigAlreadyExists = errors.New("configuration file already exists")
 
 // ErrFrontendElementsRequired is returned when frontend elements configuration is absent.
 var ErrFrontendElementsRequired = errors.New("frontend elements configuration is required")

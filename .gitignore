@@ -37,6 +37,7 @@ tkit*
 **/report.json
 
 config.yml
+testflowkit.yml
 
 
 #IDEs
