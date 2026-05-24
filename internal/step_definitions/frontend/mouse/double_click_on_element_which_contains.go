@@ -23,14 +23,10 @@ func (s steps) doubleClickOnElementWhichContains() stepbuilder.Step {
 			return ctx, err
 		},
 		nil,
-		stepbuilder.DocParams{
-			Description: "double clicks on an element which contains a specific text.",
-			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to double click on.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
-			},
-			Example:    "When the user double clicks on \"File item\" which contains \"document.pdf\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},
-		},
+		elementWhichContainsDocParams(
+			docDescElementDoubleClickOn,
+			"double clicks on an element which contains a specific text.",
+			`When the user double clicks on "File item" which contains "document.pdf"`,
+		),
 	)
 }

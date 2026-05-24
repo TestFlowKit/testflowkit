@@ -32,7 +32,7 @@ func (steps) userSelectOptionWithValueIntoDropdown() stepbuilder.Step {
 			Description: "Selects an option from a dropdown list based on its underlying 'value' attribute.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "option value", Description: "The value of the option to select.", Type: stepbuilder.VarTypeString},
-				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescDropdown, Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the option with value "CIV" from the "Country" dropdown.`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},

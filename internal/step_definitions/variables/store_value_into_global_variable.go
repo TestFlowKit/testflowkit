@@ -21,8 +21,8 @@ func (steps) storeValueIntoGlobalVariable() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Stores a custom value into a global variable accessible by all scenarios.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "value", Description: "The value to store", Type: stepbuilder.VarTypeString},
-				{Name: "varName", Description: "The name of the global variable", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "The value to store", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarVarName, Description: "The name of the global variable", Type: stepbuilder.VarTypeString},
 			},
 			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},
 			Example:    `When I store the value "admin_token" into global variable "AUTH_TOKEN"`,

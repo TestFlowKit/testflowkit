@@ -175,7 +175,7 @@ func (a *GraphQLAdapter) GetCURLCommand(ctx context.Context) (string, error) {
 
 	headers := cloneHeaders(scenarioCtx.GetRequestHeaders())
 	if headers["Content-Type"] == "" {
-		headers["Content-Type"] = "application/json"
+		headers["Content-Type"] = jsonContentType
 	}
 
 	headers, endpoint = withStaticSecurity(headers, endpoint, scenarioCtx.GetBackendContext().ResolvedSecurity)

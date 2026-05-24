@@ -7,6 +7,8 @@ import (
 	"github.com/cucumber/godog"
 )
 
+const colorGray = "gray"
+
 type Scenario struct {
 	Title     string
 	Steps     []Step
@@ -26,15 +28,15 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 			godog.StepPassed:    "green",
 			godog.StepFailed:    "red",
 			godog.StepSkipped:   "yellow",
-			godog.StepPending:   "gray",
-			godog.StepUndefined: "gray",
-			godog.StepAmbiguous: "gray",
+			godog.StepPending:   colorGray,
+			godog.StepUndefined: colorGray,
+			godog.StepAmbiguous: colorGray,
 		}
 
 		if color, ok := stepStatusColors[status]; ok {
 			return color
 		}
-		return "gray"
+		return colorGray
 	}
 
 	screenshotBase64 := ""

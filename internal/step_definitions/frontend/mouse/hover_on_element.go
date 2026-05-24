@@ -22,7 +22,7 @@ func (steps) hoverOnElement() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "performs a hover action on the element identified by its logical name",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of element to hover on.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: docDescElementHoverOn, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user hovers on \"Submit button\"",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},

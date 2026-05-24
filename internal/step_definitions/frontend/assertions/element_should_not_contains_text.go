@@ -39,7 +39,7 @@ func (steps) elementShouldNotContainsText() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the element's text does not include the specified substring.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
 				{Name: "unexpectedText", Description: "The text that should not be contained.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the "Welcome Message" element should not contain the text "Hello John"`,

@@ -22,8 +22,12 @@ func (s steps) validateResponseHeaderPattern() stepbuilder.Step {
 			return stepbuilder.DocParams{
 				Description: dsc,
 				Variables: []stepbuilder.DocVariable{
-					{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
-					{Name: "pattern", Description: "Regular expression pattern to match against", Type: stepbuilder.VarTypeString},
+					{Name: stepbuilder.DocVarHeader, Description: stepbuilder.DocDescHeaderName, Type: stepbuilder.VarTypeString},
+					{
+						Name:        stepbuilder.DocVarPattern,
+						Description: "Regular expression pattern to match against",
+						Type:        stepbuilder.VarTypeString,
+					},
 				},
 				Example:    `Then the response header "Content-Type" should match pattern "application/(json|xml)"`,
 				Categories: stepbuilder.Backend,
@@ -41,8 +45,8 @@ func (s steps) validateResponseHeaderNotPattern() stepbuilder.Step {
 
 			strType := stepbuilder.VarTypeString
 			varDescs := []stepbuilder.DocVariable{
-				{Name: "header", Description: "Name of the header to validate", Type: strType},
-				{Name: "pattern", Description: "Regular expression pattern that should not match", Type: strType},
+				{Name: stepbuilder.DocVarHeader, Description: stepbuilder.DocDescHeaderName, Type: strType},
+				{Name: stepbuilder.DocVarPattern, Description: "Regular expression pattern that should not match", Type: strType},
 			}
 			return stepbuilder.DocParams{
 				Description: dsc,

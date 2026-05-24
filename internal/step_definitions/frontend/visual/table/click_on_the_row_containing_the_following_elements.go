@@ -56,7 +56,11 @@ func (steps) clickOnTheRowContainingTheFollowingElements() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "clicks on the row containing the following elements.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "table", Description: "The table containing the elements to click on.", Type: stepbuilder.VarTypeTable},
+				{
+					Name:        stepbuilder.DocVarTable,
+					Description: "The table containing the elements to click on.",
+					Type:        stepbuilder.VarTypeTable,
+				},
 			},
 			Example:    example,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},

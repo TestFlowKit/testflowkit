@@ -35,7 +35,7 @@ func (steps) elementShouldBeVisible() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the element is present in the DOM and displayed on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementLogicalName, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the submit button should be visible",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},

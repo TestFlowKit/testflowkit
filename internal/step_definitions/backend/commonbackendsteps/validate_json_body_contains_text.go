@@ -19,7 +19,11 @@ func (s steps) validateJSONBodyContains() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Validates that the response contains a specific text.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "text", Description: "Text that should be present in the response", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarText,
+					Description: "Text that should be present in the response",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `Then the response should contain "success"`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
@@ -35,7 +39,11 @@ func (s steps) validateJSONBodyNotContains() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Validates that the response does not contain a specific text.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "text", Description: "Text that should not be present in the response", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarText,
+					Description: "Text that should not be present in the response",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `Then the response should not contain "error"`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},

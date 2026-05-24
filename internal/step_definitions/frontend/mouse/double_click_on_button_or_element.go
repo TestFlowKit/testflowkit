@@ -7,7 +7,7 @@ import (
 )
 
 func (steps) doubleClickOn() stepbuilder.Step {
-	const docDescription = "The logical name of element to double click on."
+	const docDescription = docDescElementDoubleClickOn
 
 	return stepbuilder.NewWithOneVariable(
 		[]string{`the user double clicks on {string}`},
@@ -24,7 +24,7 @@ func (steps) doubleClickOn() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "performs a double click action on the element identified by its logical name",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: docDescription, Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: docDescription, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user double clicks on \"File item\"",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},

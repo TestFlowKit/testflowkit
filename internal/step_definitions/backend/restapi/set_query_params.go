@@ -62,8 +62,8 @@ func (steps) setQueryParam() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Sets a single URL query parameter for the REST API request.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The query parameter name", Type: stepbuilder.VarTypeString},
-				{Name: "value", Description: "The query parameter value", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: "The query parameter name", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "The query parameter value", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Given I set the query parameter "page" to "1"`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},

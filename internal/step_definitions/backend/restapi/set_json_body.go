@@ -5,6 +5,7 @@ import (
 
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 )
 
@@ -29,15 +30,11 @@ func (steps) setJSONBody() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example: `Given I set the JSON request body to:
-"""
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "age": 30,
-  "tags": ["developer", "golang"]
-}
-"""`,
+			Example: gherkinparser.DocStringExample(
+				"Given I set the JSON request body to:",
+				"{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"age\": 30,\n  "+
+					"\"tags\": [\"developer\", \"golang\"]\n}",
+			),
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)

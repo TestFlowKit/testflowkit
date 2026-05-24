@@ -40,7 +40,11 @@ func (steps) storeJSONPathIntoScenarioVariable() stepbuilder.Step {
 			Description: "Stores a value from a response using a response path into a scenario variable.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "jsonPath", Description: finalDescription, Type: stepbuilder.VarTypeString},
-				{Name: "varName", Description: "The name of the variable to store the value in", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarVarName,
+					Description: "The name of the variable to store the value in",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `When I store the response path "data.user.id" from the response into "user_id" variable`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},

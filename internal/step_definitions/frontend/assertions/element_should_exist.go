@@ -26,7 +26,7 @@ func (steps) elementShouldExist() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "verifies that an element exists on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementLogicalName, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the submit button should exist",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},

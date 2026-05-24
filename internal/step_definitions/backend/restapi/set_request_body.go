@@ -5,6 +5,7 @@ import (
 
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
+	"testflowkit/pkg/gherkinparser"
 	"testflowkit/pkg/logger"
 )
 
@@ -34,11 +35,10 @@ func (steps) setRequestBody() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example: `Given I set the request body to:
-"""
-{"name": "John", "email": "john@example.com"}
-"""
-`,
+			Example: gherkinparser.DocStringExample(
+				"Given I set the request body to:",
+				"{\"name\": \"John\", \"email\": \"john@example.com\"}",
+			) + "\n",
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
 	)
 }

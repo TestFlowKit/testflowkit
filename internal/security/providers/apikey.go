@@ -31,7 +31,7 @@ func (*APIKeyProvider) Authenticate(_ context.Context, scheme config.SecuritySch
 	case config.APIKeyPlacementQuery:
 		param := scheme.QueryParam
 		if param == "" {
-			param = "api_key"
+			param = DefaultAPIKeyQueryParam
 		}
 		result.QueryParam = param
 	case config.APIKeyPlacementCookie:
@@ -39,7 +39,7 @@ func (*APIKeyProvider) Authenticate(_ context.Context, scheme config.SecuritySch
 		// as the cookie name.
 		cookieName := scheme.HeaderName
 		if cookieName == "" {
-			cookieName = "api_key"
+			cookieName = DefaultAPIKeyQueryParam
 		}
 		result.HeaderName = cookieName
 	}

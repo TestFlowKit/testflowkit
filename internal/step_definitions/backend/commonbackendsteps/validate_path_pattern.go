@@ -13,7 +13,11 @@ func (s steps) validateJSONPathPattern() stepbuilder.Step {
 			Description: "Validates that a specific response path field matches a regular expression pattern.",
 			Variables: []stepbuilder.DocVariable{
 				responsePathDocVariable("Response path to the field to validate (GJSON for JSON, XPath for XML)"),
-				{Name: "pattern", Description: "Regular expression pattern to match against", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarPattern,
+					Description: "Regular expression pattern to match against",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `Then the response field "user.email" should match pattern "^[a-z]+@example\\.com$"`,
 			Categories: stepbuilder.Backend,
@@ -29,7 +33,11 @@ func (s steps) validateJSONPathNotPattern() stepbuilder.Step {
 			Description: "Validates that a specific response path field does not match a regular expression pattern.",
 			Variables: []stepbuilder.DocVariable{
 				responsePathDocVariable("Response path to the field to validate (GJSON for JSON, XPath for XML)"),
-				{Name: "pattern", Description: "Regular expression pattern that should not match", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarPattern,
+					Description: "Regular expression pattern that should not match",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `Then the response field "user.email" should not match pattern ".*@internal\\.com$"`,
 			Categories: stepbuilder.Backend,

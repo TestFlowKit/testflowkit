@@ -24,8 +24,12 @@ func (steps) storeCustomVariable() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Stores a custom value into a scenario variable.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "value", Description: "The value to store in the variable", Type: stepbuilder.VarTypeString},
-				{Name: "varName", Description: "The name of the variable to store the value in", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "The value to store in the variable", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarVarName,
+					Description: "The name of the variable to store the value in",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `When I store the value "John Doe" into "displayed_name" variable`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Variable},

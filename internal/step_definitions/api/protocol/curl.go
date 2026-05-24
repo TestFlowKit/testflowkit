@@ -10,6 +10,7 @@ import (
 
 	"testflowkit/internal/config"
 	"testflowkit/internal/security"
+	"testflowkit/internal/security/providers"
 )
 
 func buildCurlCommand(method string, requestURL string, headers map[string]string, body []byte) string {
@@ -101,7 +102,7 @@ func applyAPIKeySecurity(
 
 		queryParam := scheme.QueryParam
 		if queryParam == "" {
-			queryParam = "api_key"
+			queryParam = providers.DefaultAPIKeyQueryParam
 		}
 
 		query := parsedURL.Query()

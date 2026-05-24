@@ -16,7 +16,11 @@ func (s steps) variableShouldContains() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Verifies that a variable contains a specific string.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "varName", Description: "The name of the variable to check", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarVarName,
+					Description: "The name of the variable to check",
+					Type:        stepbuilder.VarTypeString,
+				},
 				{Name: "content", Description: "The string that should be present in the variable",
 					Type: stepbuilder.VarTypeString},
 			},
@@ -33,7 +37,11 @@ func (s steps) variableShouldNotContains() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Verifies that a variable does not contain a specific string.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "varName", Description: "The name of the variable to check", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarVarName,
+					Description: "The name of the variable to check",
+					Type:        stepbuilder.VarTypeString,
+				},
 				{Name: "content", Description: "The string that should not be present in the variable",
 					Type: stepbuilder.VarTypeString},
 			},

@@ -40,8 +40,8 @@ func (steps) shouldSeeElementWhichContains() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "checks if a link, button or element is visible and contains a specific text.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarText, Description: stepbuilder.DocDescTextContains, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the user should see a button which contains \"Submit\"",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},

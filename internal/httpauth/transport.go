@@ -107,7 +107,13 @@ func injectCredential(req *http.Request, result *providers.TokenResult) {
 		q.Set(result.QueryParam, result.AccessToken)
 		req.URL.RawQuery = q.Encode()
 	case config.APIKeyPlacementCookie:
-		req.AddCookie(&http.Cookie{Name: result.HeaderName, Value: result.AccessToken})
+		req.AddCookie(&http.Cookie{
+			Name:     result.HeaderName,
+			Value:    result.AccessToken,
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+		})
 	case config.APIKeyPlacementHeader, "":
 		// header placement (default for bearer, basic, apikey→header)
 		headerName := result.HeaderName

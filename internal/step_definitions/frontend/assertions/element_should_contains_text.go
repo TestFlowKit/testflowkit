@@ -38,7 +38,7 @@ func (steps) elementShouldContainsText() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the element's text includes the specified substring.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
 				{Name: "expectedText", Description: "The text that should be contained.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the welcome card should contain the text "Hello John"`,
