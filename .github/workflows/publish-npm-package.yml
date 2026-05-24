@@ -9,6 +9,8 @@ jobs:
   prepare:
     name: Prepare release artifacts
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
     outputs:
       version: ${{ steps.version.outputs.tag }}
 
@@ -26,8 +28,6 @@ jobs:
           echo "Publishing version: ${LATEST_TAG}"
 
       - name: Download release binaries from GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
         run: |
           mkdir -p build
           gh release download "${{ steps.version.outputs.tag }}" \

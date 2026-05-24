@@ -1033,7 +1033,26 @@ go fmt ./...
 
 # Generate documentation
 make generate_doc
+
+# Export step definitions catalog (for agents / IDE tooling)
+make export-step-definitions
 ```
+
+### Step definitions catalog
+
+Each stable release publishes `step-definitions.json` alongside CLI binaries. Download for a given version (tags have **no** `v` prefix, e.g. `1.2.4`):
+
+```text
+https://github.com/TestFlowKit/testflowkit/releases/download/<tag>/step-definitions.json
+```
+
+The rolling **canary** catalog (updated on every push to `main`):
+
+```text
+https://github.com/TestFlowKit/testflowkit/releases/download/canary/step-definitions.json
+```
+
+IDE agents should fetch the catalog matching the **installed** `tkit version`, not GitHub `latest`. See the publish plan for the full contract.
 
 ## 🤝 Contributing
 
