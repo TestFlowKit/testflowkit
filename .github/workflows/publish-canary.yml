@@ -15,7 +15,7 @@ permissions:
 jobs:
   # ── 1. Compile binaries inline (no GitHub Release exists yet) ───────────
   #
-  #  Canary version format: {last-tag}-canary.{short-sha}
+  #  Canary version format: {last-semver-tag}-canary.{short-sha}
   #  e.g.  1.2.3-canary.abc1234
   #
   prepare:
@@ -38,11 +38,11 @@ jobs:
       - name: Resolve canary version
         id: version
         run: |
-          BASE_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          CANARY_VERSION="${BASE_TAG}-canary.${SHORT_SHA}"
-          echo "canary=${CANARY_VERSION}" >> "$GITHUB_OUTPUT"
-          echo "Canary version: ${CANARY_VERSION}"
+            BASE_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            CANARY_VERSION="${BASE_TAG}-canary.${SHORT_SHA}"
+            echo "canary=${CANARY_VERSION}" >> "$GITHUB_OUTPUT"
+            echo "Canary version: ${CANARY_VERSION}"
 
       - name: Build Go binaries for all platforms
         run: make releases
