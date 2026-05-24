@@ -4,13 +4,14 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   # ── 1. Download the release ZIPs from GitHub Releases and cache them ─────
   prepare:
     name: Prepare release artifacts
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
     outputs:
       version: ${{ steps.version.outputs.tag }}
 
@@ -28,6 +29,8 @@ jobs:
           echo "Publishing version: ${LATEST_TAG}"
 
       - name: Download release binaries from GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p build
           gh release download "${{ steps.version.outputs.tag }}" \
