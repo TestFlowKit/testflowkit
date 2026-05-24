@@ -1046,11 +1046,7 @@ Each stable release publishes `step-definitions.json` alongside CLI binaries. Do
 https://github.com/TestFlowKit/testflowkit/releases/download/<tag>/step-definitions.json
 ```
 
-The rolling **canary** catalog (updated on every push to `main`):
-
-```text
-https://github.com/TestFlowKit/testflowkit/releases/download/canary/step-definitions.json
-```
+**Canary** npm builds do not publish a catalog asset. Use `make export-step-definitions` locally from the same commit, or fetch the stable catalog for the semver base in your canary version (e.g. `3.6.1` from `3.6.1-canary.abc1234`).
 
 IDE agents should fetch the catalog matching the **installed** `tkit version`, not GitHub `latest`. See the publish plan for the full contract.
 
