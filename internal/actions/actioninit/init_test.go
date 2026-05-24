@@ -3,6 +3,7 @@ package actioninit
 import (
 	"os"
 	"path/filepath"
+	"testflowkit/internal/config"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -134,8 +135,8 @@ func TestInitializationStateCleanup(t *testing.T) {
 }
 
 func TestCreateConfigFile(t *testing.T) {
-	defer os.Remove(configFile)
-	os.Remove(configFile)
+	defer os.Remove(config.DefaultConfigFile)
+	os.Remove(config.DefaultConfigFile)
 
 	state := &InitializationState{
 		createdFiles: make([]string, 0),
@@ -145,11 +146,11 @@ func TestCreateConfigFile(t *testing.T) {
 	err := createConfigFile(state)
 	require.NoError(t, err, "Expected no error")
 
-	_, statErr := os.Stat(configFile)
+	_, statErr := os.Stat(config.DefaultConfigFile)
 	assert.False(t, os.IsNotExist(statErr), "Config file was not created")
 
 	assert.Len(t, state.createdFiles, 1, "Expected state to track one created file")
-	assert.Equal(t, configFile, state.createdFiles[0], "Expected state to track the config file")
+	assert.Equal(t, config.DefaultConfigFile, state.createdFiles[0], "Expected state to track the config file")
 
 	state2 := &InitializationState{
 		createdFiles: make([]string, 0),
@@ -159,4 +160,20 @@ func TestCreateConfigFile(t *testing.T) {
 	require.Error(t, err, "Expected error when config file already exists")
 
 	assert.Empty(t, state2.createdFiles, "Expected state not to track existing file")
+}
+
+func TestCreateConfigFileRejectsLegacyConfig(t *testing.T) {
+	defer os.Remove(config.LegacyConfigFile)
+	os.Remove(config.DefaultConfigFile)
+
+	require.NoError(t, os.WriteFile(config.LegacyConfigFile, []byte("settings: {}"), 0600))
+
+	state := &InitializationState{
+		createdFiles: make([]string, 0),
+		createdDirs:  make([]string, 0),
+	}
+
+	err := createConfigFile(state)
+	require.Error(t, err, "Expected error when legacy config file exists")
+	assert.Empty(t, state.createdFiles)
 }

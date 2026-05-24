@@ -18,19 +18,20 @@ type argsConfig struct {
 }
 
 func (a *argsConfig) getConfigPath() (string, error) {
-	if a.Run != nil {
-		return a.Run.ConfigPath, nil
+	var path string
+
+	switch {
+	case a.Run != nil:
+		path = a.Run.ConfigPath
+	case a.Validate != nil:
+		path = a.Validate.ConfigPath
+	case a.Install != nil:
+		path = a.Install.ConfigPath
+	default:
+		return "", apperrors.ErrNoConfigPath
 	}
 
-	if a.Validate != nil {
-		return a.Validate.ConfigPath, nil
-	}
-
-	if a.Install != nil {
-		return a.Install.ConfigPath, nil
-	}
-
-	return "", apperrors.ErrNoConfigPath
+	return config.ResolveConfigPath(path), nil
 }
 
 func (a *argsConfig) getAppConfigOverrides() config.Overrides {
@@ -115,7 +116,7 @@ type initCmd struct {
 }
 
 type installCmd struct {
-	ConfigPath string `arg:"-c,--config" help:"app config path" default:"config.yml"`
+	ConfigPath string `arg:"-c,--config" help:"app config path" default:"testflowkit.yml"`
 	EnvFile    string `arg:"--env-file" help:"path to env file"`
 }
 
@@ -129,7 +130,7 @@ type versionCmd struct {
 
 type commonCmd struct {
 	GherkinLocation string `arg:"-l,--location" help:"path to gherkin files"`
-	ConfigPath      string `arg:"-c,--config" help:"app config path" default:"config.yml"`
+	ConfigPath      string `arg:"-c,--config" help:"app config path" default:"testflowkit.yml"`
 	Tags            string `arg:"-t,--tags" help:"tags"`
 	EnvFile         string `arg:"--env-file" help:"path to env file"`
 }
