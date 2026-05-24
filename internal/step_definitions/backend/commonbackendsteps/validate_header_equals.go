@@ -18,8 +18,8 @@ func (s steps) validateResponseHeaderEquals() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Validates that a specific response header has the expected value.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
-				{Name: "value", Description: "Expected value of the header", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarHeader, Description: stepbuilder.DocDescHeaderName, Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "Expected value of the header", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the response header "Content-Type" should equal "application/json"`,
 			Categories: stepbuilder.Backend,
@@ -34,8 +34,8 @@ func (s steps) validateResponseHeaderNotEquals() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Validates that a specific response header does not have a given value.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "header", Description: "Name of the header to validate", Type: stepbuilder.VarTypeString},
-				{Name: "value", Description: "Value that should not be present", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarHeader, Description: stepbuilder.DocDescHeaderName, Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "Value that should not be present", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the response header "Cache-Control" should not equal "no-store"`,
 			Categories: stepbuilder.Backend,

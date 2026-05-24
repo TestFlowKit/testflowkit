@@ -23,14 +23,10 @@ func (s steps) rightClickOnElementWhichContains() stepbuilder.Step {
 			return ctx, err
 		},
 		nil,
-		stepbuilder.DocParams{
-			Description: "right clicks on an element which contains a specific text.",
-			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to right click on.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
-			},
-			Example:    "When the user right clicks on \"Submit button\" which contains \"Submit\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},
-		},
+		elementWhichContainsDocParams(
+			docDescElementRightClickOn,
+			"right clicks on an element which contains a specific text.",
+			`When the user right clicks on "Submit button" which contains "Submit"`,
+		),
 	)
 }

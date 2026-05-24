@@ -23,14 +23,10 @@ func (s steps) clickOnElementWhichContains() stepbuilder.Step {
 			return ctx, err
 		},
 		nil,
-		stepbuilder.DocParams{
-			Description: "clicks on an element which contains a specific text.",
-			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to click on.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text that the element should contain.", Type: stepbuilder.VarTypeString},
-			},
-			Example:    "When the user clicks on \"Submit button\" which contains \"Submit\"",
-			Categories: []stepbuilder.StepCategory{stepbuilder.Mouse, stepbuilder.Frontend},
-		},
+		elementWhichContainsDocParams(
+			docDescElementClickOn,
+			"clicks on an element which contains a specific text.",
+			`When the user clicks on "Submit button" which contains "Submit"`,
+		),
 	)
 }

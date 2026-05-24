@@ -1,15 +1,9 @@
 {
   "formatters": {
-    "enable": [
-      "goimports"
-    ],
+    "enable": ["goimports"],
     "exclusions": {
       "generated": "lax",
-      "paths": [
-        "third_party$",
-        "builtin$",
-        "examples$"
-      ]
+      "paths": ["third_party$", "builtin$", "examples$"]
     }
   },
   "issues": {
@@ -44,7 +38,7 @@
       "gocyclo",
       "godot",
       "gomoddirectives",
-      "gomodguard",
+      "gomodguard_v2",
       "goprintffuncname",
       "gosec",
       "govet",
@@ -86,11 +80,7 @@
     ],
     "exclusions": {
       "generated": "lax",
-      "paths": [
-        "third_party$",
-        "builtin$",
-        "examples$"
-      ],
+      "paths": ["third_party$", "builtin$", "examples$"],
       "presets": [
         "comments",
         "common-false-positives",
@@ -99,15 +89,11 @@
       ],
       "rules": [
         {
-          "linters": [
-            "godot"
-          ],
+          "linters": ["godot"],
           "source": "(noinspection|TODO)"
         },
         {
-          "linters": [
-            "gocritic"
-          ],
+          "linters": ["gocritic"],
           "source": "//noinspection"
         },
         {
@@ -133,10 +119,7 @@
         "check-type-assertions": true
       },
       "exhaustive": {
-        "check": [
-          "switch",
-          "map"
-        ]
+        "check": ["switch", "map"]
       },
       "exhaustruct": {
         "exclude": [
@@ -181,40 +164,28 @@
           }
         }
       },
-      "gomodguard": {
-        "blocked": {
-          "modules": [
-            {
-              "github.com/golang/protobuf": {
-                "reason": "see https://developers.google.com/protocol-buffers/docs/reference/go/faq#modules",
-                "recommendations": [
-                  "google.golang.org/protobuf"
-                ]
-              }
-            },
-            {
-              "github.com/satori/go.uuid": {
-                "reason": "satori's package is not maintained",
-                "recommendations": [
-                  "github.com/google/uuid"
-                ]
-              }
-            },
-            {
-              "github.com/gofrs/uuid": {
-                "reason": "gofrs' package was not go module before v5",
-                "recommendations": [
-                  "github.com/gofrs/uuid/v5"
-                ]
-              }
-            }
-          ]
-        }
+      "gomodguard_v2": {
+        "local-replace-directives": true,
+        "blocked": [
+          {
+            "module": "github.com/golang/protobuf",
+            "reason": "see https://developers.google.com/protocol-buffers/docs/reference/go/faq#modules",
+            "recommendations": ["google.golang.org/protobuf"]
+          },
+          {
+            "module": "github.com/satori/go.uuid",
+            "reason": "satori's package is not maintained",
+            "recommendations": ["github.com/google/uuid"]
+          },
+          {
+            "module": "github.com/gofrs/uuid",
+            "reason": "gofrs' package was not go module before v5",
+            "recommendations": ["github.com/gofrs/uuid/v5"]
+          }
+        ]
       },
       "govet": {
-        "disable": [
-          "fieldalignment"
-        ],
+        "disable": ["fieldalignment"],
         "enable-all": true,
         "settings": {
           "shadow": {
@@ -245,11 +216,7 @@
         "max-func-lines": 0
       },
       "nolintlint": {
-        "allow-no-explanation": [
-          "funlen",
-          "gocognit",
-          "lll"
-        ],
+        "allow-no-explanation": ["funlen", "gocognit", "lll"],
         "require-explanation": true,
         "require-specific": true
       },
@@ -257,9 +224,7 @@
         "strconcat": false
       },
       "rowserrcheck": {
-        "packages": [
-          "github.com/jmoiron/sqlx"
-        ]
+        "packages": ["github.com/jmoiron/sqlx"]
       },
       "sloglint": {
         "context": "scope",

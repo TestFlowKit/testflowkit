@@ -44,7 +44,7 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 			Description: "selects an option from a dropdown by its index.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "index", Description: "The index of the option to select.", Type: stepbuilder.VarTypeInt},
-				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescDropdown, Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the option at index 2 from the "Country" dropdown`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},

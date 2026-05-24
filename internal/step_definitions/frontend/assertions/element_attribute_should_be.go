@@ -17,7 +17,7 @@ func (s steps) elementAttributeShouldBe() stepbuilder.Step {
 			Description: "This assertion checks if the specified attribute of an element matches the expected value exactly.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "attributeName", Description: "The name of the HTML attribute to check.", Type: stepbuilder.VarTypeString},
-				{Name: "elementName", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "elementName", Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
 				{Name: "expectedValue", Description: "The expected value of the attribute.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the "href" attribute of the "login_link" element should be "/login"`,
@@ -34,7 +34,7 @@ func (s steps) elementAttributeShouldNotBe() stepbuilder.Step {
 			str := stepbuilder.VarTypeString
 			vars := []stepbuilder.DocVariable{
 				{Name: "attributeName", Description: "The name of the HTML attribute to check.", Type: str},
-				{Name: "elementName", Description: "The logical name of the element to check.", Type: str},
+				{Name: "elementName", Description: stepbuilder.DocDescElementToCheck, Type: str},
 				{Name: "unexpectedValue", Description: "The attribute value that should not be present.", Type: str},
 			}
 			return stepbuilder.DocParams{

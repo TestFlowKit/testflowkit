@@ -8,6 +8,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/apperrors"
+	"testflowkit/pkg/gherkinparser"
 )
 
 // validateJSONBodyEquals validates that the entire response body matches expected JSON or XML.
@@ -42,10 +43,10 @@ func (steps) validateJSONBodyEquals() stepbuilder.Step {
 			Variables: []stepbuilder.DocVariable{
 				{Name: "body", Description: "Expected JSON or XML body", Type: stepbuilder.VarTypeString},
 			},
-			Example: `Then the response body should be:
-"""
-{"status":"success","data":{"id":1}}
-"""`,
+			Example: gherkinparser.DocStringExample(
+				"Then the response body should be:",
+				"{\"status\":\"success\",\"data\":{\"id\":1}}",
+			),
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},
 		},
 	)

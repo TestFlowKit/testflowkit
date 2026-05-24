@@ -38,7 +38,11 @@ func (steps) userUploadsMultipleFiles() stepbuilder.Step {
 			Description: "Uploads multiple files into a file input field identified by its logical name.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "fileNames", Description: filenamesDesc, Type: stepbuilder.VarTypeString},
-				{Name: "inputLabel", Description: "The logical name of the file input field.", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarInputLabel,
+					Description: "The logical name of the file input field.",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `When the user uploads the "image1, image2, image3" files into the "Gallery" field`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend}},

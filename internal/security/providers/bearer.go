@@ -11,7 +11,7 @@ type BearerProvider struct{}
 func (*BearerProvider) Authenticate(_ context.Context, scheme config.SecurityScheme) (*TokenResult, error) {
 	return &TokenResult{
 		AccessToken: scheme.Token,
-		TokenType:   "Bearer",
+		TokenType:   BearerTokenType,
 		HeaderValue: "Bearer " + scheme.Token,
 	}, nil
 }

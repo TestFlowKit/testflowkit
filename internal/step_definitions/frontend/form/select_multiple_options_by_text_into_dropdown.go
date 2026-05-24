@@ -38,7 +38,7 @@ func (steps) selectMultipleOptionsByTextIntoDropdown() stepbuilder.Step {
 			Description: "selects multiple options from a dropdown by their text.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "options", Description: "Comma-separated list of option texts to select.", Type: stepbuilder.VarTypeString},
-				{Name: "name", Description: "The logical name of the dropdown.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescDropdown, Type: stepbuilder.VarTypeString},
 			},
 			Example:    `When the user selects the options with text "Konoha,Hidden Leaf Village" from the "Country" dropdown`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},

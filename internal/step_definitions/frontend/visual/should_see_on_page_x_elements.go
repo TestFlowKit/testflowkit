@@ -34,7 +34,7 @@ func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 			Description: "checks if a specific number of elements are visible on the page.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "expectedCount", Description: "The expected number of elements.", Type: stepbuilder.VarTypeInt},
-				{Name: "elementName", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: "elementName", Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then the user should see 3 buttons elements on the page",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},

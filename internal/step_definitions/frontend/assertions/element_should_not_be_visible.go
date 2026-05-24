@@ -35,7 +35,7 @@ func (steps) elementShouldNotBeVisible() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "verifies that an element is not visible on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementLogicalName, Type: stepbuilder.VarTypeString},
 			},
 			Example:    "Then \"Submit button\" should not be visible",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Assertions, stepbuilder.Frontend},

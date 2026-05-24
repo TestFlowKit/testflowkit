@@ -41,7 +41,7 @@ func (steps) checkCheckbox() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "checks a checkbox if it is not already checked.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "checkbox logical name", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: "checkbox logical name", Type: stepbuilder.VarTypeString},
 			},
 			Example:    "When the user checks the \"Terms\" checkbox",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},

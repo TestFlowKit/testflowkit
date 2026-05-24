@@ -44,7 +44,7 @@ func (steps) storeJSONPathIntoGlobalVariable() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 				{
-					Name:        "varName",
+					Name:        stepbuilder.DocVarVarName,
 					Description: "The name of the global variable",
 					Type:        stepbuilder.VarTypeString,
 				},

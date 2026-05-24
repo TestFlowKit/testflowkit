@@ -57,8 +57,12 @@ func (steps) shouldSeeDetailsOnPage() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "checks if the details are visible on the page.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
-				{Name: "table", Description: "The table containing the details to check.", Type: stepbuilder.VarTypeTable},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarTable,
+					Description: "The table containing the details to check.",
+					Type:        stepbuilder.VarTypeTable,
+				},
 			},
 			Example:    "When the user should see \"User\" details on the page\n| Name | John |\n| Age | 30 |",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Visual, stepbuilder.Frontend},

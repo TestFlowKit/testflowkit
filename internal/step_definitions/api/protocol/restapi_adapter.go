@@ -182,7 +182,7 @@ func (a *RESTAPIAdapter) detectContentType(body []byte) string {
 
 	// Check for JSON
 	if body[0] == '{' || body[0] == '[' {
-		return "application/json"
+		return jsonContentType
 	}
 
 	// Check for XML

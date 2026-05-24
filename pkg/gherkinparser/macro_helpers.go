@@ -130,7 +130,13 @@ func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureConten
 
 func (mh *Macrohelpers) getStepEndLine(stepStartLine int, featureContent []string) int {
 	stepEndLine := stepStartLine
-	stepKeywords := []string{"Given", "When", "Then", "And", "But"}
+	stepKeywords := []string{
+		gherkinKeywordGiven,
+		gherkinKeywordWhen,
+		gherkinKeywordThen,
+		gherkinKeywordAnd,
+		gherkinKeywordBut,
+	}
 	structureKeywords := []string{"Scenario:", "Scenario Outline:", "Background:", "Feature:", "Examples:"}
 
 	for i := stepStartLine + 1; i < len(featureContent); i++ {
@@ -175,7 +181,7 @@ func (mh *Macrohelpers) expandMacroSteps(params ExpandMacroParam) ([]string, err
 	for idx, macroStep := range params.Macro.Steps {
 		keyword := strings.TrimSpace(params.Keyword)
 		if idx > 0 {
-			keyword = "And"
+			keyword = gherkinKeywordAnd
 		}
 
 		// Substitute variables using the map for O(1) lookup
@@ -210,7 +216,7 @@ func (mh *Macrohelpers) applyToDocString(ds *messages.DocString, vars MacroVaria
 
 	delimiter := ds.Delimiter
 	if delimiter == "" {
-		delimiter = "\"\"\""
+		delimiter = DocStringDelimiter
 	}
 	newParts = append(newParts, delimiter)
 	docStringContent, err := substituteVariables(ds.Content, vars)

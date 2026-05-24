@@ -128,7 +128,7 @@ func (*OAuth2Provider) Authenticate(ctx context.Context, scheme config.SecurityS
 
 	tokenType := tokenResp.TokenType
 	if tokenType == "" {
-		tokenType = "Bearer"
+		tokenType = BearerTokenType
 	}
 
 	return &TokenResult{

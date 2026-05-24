@@ -54,8 +54,8 @@ func (steps) setHeader() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Sets a single HTTP header for the request.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The header name", Type: stepbuilder.VarTypeString},
-				{Name: "value", Description: "The header value", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: "The header name", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "The header value", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `And I set the header "Authorization" to "Bearer {{token}}"`,
 			Categories: stepbuilder.Backend,

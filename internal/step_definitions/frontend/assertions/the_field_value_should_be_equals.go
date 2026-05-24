@@ -16,7 +16,7 @@ func (s steps) theFieldValueShouldEqualsTo() stepbuilder.Step {
 			Description: "This assertion checks if the current value of an input field matches the specified value.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "fieldId", Description: "The id of the field.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text to check.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarText, Description: "The text to check.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the value of the "Username" field should be "myUsername".`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},
@@ -32,7 +32,7 @@ func (s steps) theFieldValueShouldNotEqualsTo() stepbuilder.Step {
 			Description: "This assertion checks if the current value of an input field is different from the specified value.",
 			Variables: []stepbuilder.DocVariable{
 				{Name: "fieldId", Description: "The id of the field.", Type: stepbuilder.VarTypeString},
-				{Name: "text", Description: "The text that should not match.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarText, Description: "The text that should not match.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the value of the "Username" field should not be "admin".`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},

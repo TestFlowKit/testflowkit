@@ -37,7 +37,11 @@ func (steps) clearField() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "clears the content of an input field.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "inputLabel", Description: "The label of the input field to clear.", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarInputLabel,
+					Description: "The label of the input field to clear.",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    "When the user clears the \"Username\" field",
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend}},

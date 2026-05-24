@@ -14,7 +14,7 @@ func parseResponse(responseBody []byte, statusCode int) (*Response, error) {
 		return nil, NewNetworkError(
 			"received empty response body",
 			map[string]interface{}{
-				"status_code": statusCode,
+				detailKeyStatusCode: statusCode,
 			},
 		)
 	}
@@ -25,9 +25,9 @@ func parseResponse(responseBody []byte, statusCode int) (*Response, error) {
 		return nil, NewNetworkError(
 			"failed to parse GraphQL response JSON",
 			map[string]interface{}{
-				"parse_error":   err.Error(),
-				"response_body": string(responseBody),
-				"status_code":   statusCode,
+				"parse_error":         err.Error(),
+				detailKeyResponseBody: string(responseBody),
+				detailKeyStatusCode:   statusCode,
 			},
 		)
 	}
@@ -40,8 +40,8 @@ func parseResponse(responseBody []byte, statusCode int) (*Response, error) {
 		return nil, NewGraphQLError(
 			"invalid GraphQL response structure",
 			map[string]interface{}{
-				"validation_error": err.Error(),
-				"response_body":    string(responseBody),
+				"validation_error":    err.Error(),
+				detailKeyResponseBody: string(responseBody),
 			},
 		)
 	}
@@ -111,8 +111,8 @@ func classifyGraphQLError(err *Error) string {
 
 	// Validation errors
 	validationErrorTerms := [][]string{
-		{"validation"},
-		{"invalid"},
+		{termValidation},
+		{termInvalid},
 	}
 
 	if isMessageContainsSubstrings(message, validationErrorTerms) {
@@ -120,8 +120,8 @@ func classifyGraphQLError(err *Error) string {
 	}
 
 	fieldErrorTerms := [][]string{
-		{"field", "not found"},
-		{"field", "unknown"},
+		{termField, termNotFound},
+		{termField, "unknown"},
 	}
 
 	if isMessageContainsSubstrings(message, fieldErrorTerms) {
@@ -155,10 +155,10 @@ func checkIfIsAuthError(message string) bool {
 		{"authentication"},
 		{"permission"},
 		{"unauthenticated"},
-		{"invalid", "token"},
-		{"invalid", "auth"},
-		{"invalid", "password"},
-		{"invalid", "credentials"},
+		{termInvalid, termToken},
+		{termInvalid, termAuth},
+		{termInvalid, "password"},
+		{termInvalid, "credentials"},
 	}
 
 	return isMessageContainsSubstrings(message, authErrorsSubStrings)
@@ -205,7 +205,7 @@ func determineSeverity(err *Error) string {
 	}
 
 	// Medium severity errors
-	if strings.Contains(message, "validation") || strings.Contains(message, "field") {
+	if strings.Contains(message, termValidation) || strings.Contains(message, termField) {
 		return "MEDIUM"
 	}
 

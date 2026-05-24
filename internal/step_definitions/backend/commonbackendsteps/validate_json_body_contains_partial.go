@@ -8,6 +8,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/apperrors"
+	"testflowkit/pkg/gherkinparser"
 )
 
 // validateJSONBodyContainsPartial validates that the response body contains all fields
@@ -48,10 +49,10 @@ func (steps) validateJSONBodyContainsPartial() stepbuilder.Step {
 					Type:        stepbuilder.VarTypeString,
 				},
 			},
-			Example: `Then the response body should contain:
-"""
-{"status":"success","data":{"id":1}}
-"""`,
+			Example: gherkinparser.DocStringExample(
+				"Then the response body should contain:",
+				"{\"status\":\"success\",\"data\":{\"id\":1}}",
+			),
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI, stepbuilder.GraphQL},
 		},
 	)

@@ -16,7 +16,7 @@ func (s steps) elementShouldContainsExactText() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "This assertion checks if the element's visible text is an exact match to the specified string.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementToCheck, Type: stepbuilder.VarTypeString},
 				{Name: "expectedText", Description: "The exact text that should be contained.", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Then the text of the "Welcome Message" element should be exactly "Hello John".`,
@@ -33,7 +33,7 @@ func (s steps) elementShouldNotContainsExactText() stepbuilder.Step {
 			desc := "This assertion checks if the element's visible text is not an exact match to the specified string."
 			str := stepbuilder.VarTypeString
 			vars := []stepbuilder.DocVariable{
-				{Name: "name", Description: "The logical name of the element to check.", Type: str},
+				{Name: stepbuilder.DocVarName, Description: stepbuilder.DocDescElementToCheck, Type: str},
 				{Name: "unexpectedText", Description: "The exact text that should not be contained.", Type: str},
 			}
 			return stepbuilder.DocParams{

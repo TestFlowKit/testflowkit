@@ -9,7 +9,13 @@ import (
 	"strings"
 )
 
-const nullString = "null"
+const (
+	nullString      = "null"
+	literalTrue     = "true"
+	literalFalse    = "false"
+	typeNameInteger = "integer"
+	typeNameFloat   = "float"
+)
 
 type Parser struct {
 	store Store
@@ -44,10 +50,10 @@ func (p *Parser) ParseValue(value string) (any, error) {
 	}
 
 	// Handle booleans
-	if value == "true" {
+	if value == literalTrue {
 		return true, nil
 	}
-	if value == "false" {
+	if value == literalFalse {
 		return false, nil
 	}
 
@@ -149,9 +155,9 @@ func (p *Parser) GetVariableType(value any) string {
 	case bool:
 		return "boolean"
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-		return "integer"
+		return typeNameInteger
 	case float32, float64:
-		return "float"
+		return typeNameFloat
 	case []any:
 		return "array"
 	case map[string]any:

@@ -37,8 +37,12 @@ func (steps) userEntersTextIntoField() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Types the specified text into an input field identified by its logical name.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "text", Description: "The text to type.", Type: stepbuilder.VarTypeString},
-				{Name: "name", Description: "The logical name of the input field.", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarText, Description: "The text to type.", Type: stepbuilder.VarTypeString},
+				{
+					Name:        stepbuilder.DocVarName,
+					Description: "The logical name of the input field.",
+					Type:        stepbuilder.VarTypeString,
+				},
 			},
 			Example:    `When the user enters "myUsername" into the "Username" field`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.Form, stepbuilder.Frontend},

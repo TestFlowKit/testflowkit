@@ -63,8 +63,8 @@ func (steps) setPathParam() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Sets a single URL path parameter for the REST API request.",
 			Variables: []stepbuilder.DocVariable{
-				{Name: "name", Description: "The path parameter name", Type: stepbuilder.VarTypeString},
-				{Name: "value", Description: "The path parameter value", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarName, Description: "The path parameter name", Type: stepbuilder.VarTypeString},
+				{Name: stepbuilder.DocVarValue, Description: "The path parameter value", Type: stepbuilder.VarTypeString},
 			},
 			Example:    `Given I set the path parameter "userId" to "123"`,
 			Categories: []stepbuilder.StepCategory{stepbuilder.RESTAPI},

@@ -104,8 +104,8 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 		return nil, NewNetworkError(
 			"failed to create HTTP request",
 			map[string]interface{}{
-				"endpoint": c.endpoint,
-				"error":    err.Error(),
+				"endpoint":     c.endpoint,
+				detailKeyError: err.Error(),
 			},
 		)
 	}
@@ -122,8 +122,8 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 		return nil, NewNetworkError(
 			"failed to execute HTTP request",
 			map[string]interface{}{
-				"endpoint": c.endpoint,
-				"error":    err.Error(),
+				"endpoint":     c.endpoint,
+				detailKeyError: err.Error(),
 			},
 		)
 	}
@@ -135,8 +135,8 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 		return nil, NewNetworkError(
 			"failed to read response body",
 			map[string]interface{}{
-				"status_code": httpResp.StatusCode,
-				"error":       err.Error(),
+				detailKeyStatusCode: httpResp.StatusCode,
+				detailKeyError:      err.Error(),
 			},
 		)
 	}
@@ -145,8 +145,8 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 		return nil, NewNetworkError(
 			fmt.Sprintf("HTTP request failed with status %d", httpResp.StatusCode),
 			map[string]interface{}{
-				"status_code":   httpResp.StatusCode,
-				"response_body": string(responseBody),
+				detailKeyStatusCode:   httpResp.StatusCode,
+				detailKeyResponseBody: string(responseBody),
 			},
 		)
 	}
