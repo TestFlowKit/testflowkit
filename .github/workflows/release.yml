@@ -63,10 +63,6 @@ jobs:
       - e2e_tests
     name: Release
     runs-on: ubuntu-latest
-    # gh is preinstalled on GitHub-hosted runners; GH_TOKEN is required for gh steps.
-    # https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-github-cli
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
 
     steps:
       - uses: actions/checkout@v6.0.2
@@ -92,7 +88,7 @@ jobs:
 
       - name: Run Semantic Release (Create Tag)
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_SEMANTIC_RELEASE }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: npx semantic-release
 
       - name: Set Up Go Environment
@@ -110,6 +106,8 @@ jobs:
         run: make export-step-definitions
 
       - name: Upload Release Assets
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
           echo "Latest tag: $LATEST_TAG"
@@ -125,6 +123,8 @@ jobs:
           gh release upload "$LATEST_TAG" build/step-definitions.json --clobber
 
       - name: Verify step definitions release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           LATEST_TAG=$(git describe --tags --abbrev=0)
           mkdir -p /tmp/verify-release
