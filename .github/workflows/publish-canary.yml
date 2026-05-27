@@ -5,7 +5,7 @@ name: Publish Canary
 #   - Manual dispatch   → useful for testing from any branch
 on:
   push:
-    branches: [main]
+    # branches: [main]
   workflow_dispatch:
 
 permissions:
