@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   # ── 1. Download the release ZIPs from GitHub Releases and cache them ─────
