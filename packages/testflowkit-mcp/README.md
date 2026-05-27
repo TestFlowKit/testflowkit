@@ -86,45 +86,37 @@ Then in `.cursor/mcp.json`:
 
 | Tool | Description |
 |------|-------------|
-| `initialize_session` | Register the installed `tkit` CLI version for the session. Call once after `tkit version`. |
-| `get_session_info` | Inspect the resolved CLI version, source, and catalog mode (debug). |
-| `get_step_catalog` | Step definitions catalog from the resolved source, with optional category filtering. |
-| `get_step_categories` | List all available step definition categories from the resolved catalog. |
-| `read_test_config` | Summary of `testflowkit.yml` (APIs, pages, elements — secrets redacted). |
-| `list_features` | List all `.feature` files under `features_glob`. |
-| `read_feature` | Read a specific feature file. |
-| `write_feature` | Create or update a feature file (path-guarded to `features_glob`). |
-| `get_run_command` | Returns the configured `tkit run` command. |
+| `get_step_catalog` | Full step definitions catalog from the resolved source |
+| `search_sentences` | Search catalog by keyword and/or category |
+| `read_test_config` | Summary of `testflowkit.yml` (APIs, pages, elements — secrets redacted) |
+| `list_features` | List all `.feature` files under `features_glob` |
+| `read_feature` | Read a specific feature file |
+| `get_guidelines` | Return bundled concept guidelines (e.g. `concept: "macro"`; unknown/empty concept returns all) |
+| `write_feature` | Create or update a feature file (path-guarded to `features_glob`) |
+| `write_macro` | Create or update macro feature files containing `@macro` scenarios |
 
-## Agent workflow
+## Available resources
 
-1. Run `tkit version` in the **project terminal** to get the CLI version string.
-2. Call `initialize_session({ cliVersion: "x.y.z" })` — sets the version for all catalog tools in this session.
-3. Call `get_step_categories` to discover valid categories, then `get_step_catalog` as needed.
+| Resource URI | Description |
+|---|---|
+| `testflowkit://guidelines/macros` | Macro authoring and usage documentation |
+| `testflowkit://guidelines/ide-agent` | IDE agent setup and usage documentation |
+| `testflowkit://guidelines/copilot-instructions` | Copilot instruction template rules |
+
+If a documentation resource is missing in the workspace, the server returns a fallback note and you can still call `get_guidelines` for bundled guidance.
 
 ## Catalog resolution
 
-Version precedence (first non-null wins):
-
-1. Per-tool `cliVersion` override
-2. Session version (set by `initialize_session`)
-3. `TESTFLOWKIT_CLI_VERSION` env var
-4. `step_catalog.cli_version` in `testflowkit.agent.yml`
-5. Server-side probe (`tkit version` / `npx @testflowkit/cli version`)
-
-Catalog source order:
-
 1. `step_catalog.file` (local override)
 2. `step_catalog.url`
-3. GitHub Release for resolved version → `https://github.com/{repository}/releases/download/{version}/{asset}`
-4. Cache at `.testflowkit/cache/step-definitions-<version>.json`
+3. Installed `tkit version` → `https://github.com/{repository}/releases/download/{version}/{asset}`
+4. Cache at `step_catalog.cache.path`
 
 ## Environment variables
 
 | Variable | Description |
 |----------|-------------|
 | `TESTFLOWKIT_AGENT_CONFIG` | Override path to `testflowkit.agent.yml` |
-| `TESTFLOWKIT_CLI_VERSION` | Pre-seed the `tkit` CLI version at boot (useful in CI or sandboxed environments). |
 
 ## `.gitignore` (recommended)
 

@@ -1,10 +1,3 @@
----
-title: Macros
-description: Create reusable, parameterized test patterns with macros
-navigation:
-  title: Macros
----
-
 # Macros
 
 Macros in TestFlowKit are reusable, parameterized test scenarios that help reduce code duplication and improve maintainability.
@@ -205,27 +198,6 @@ Scenario: Purchase with US credit card
   Then the "order_number" should be visible
 ```
 
-## Organizing Macros
-
-### File Structure
-
-```
-features/
-├── macros/
-│   ├── auth.feature        # Login/logout macros
-│   ├── data-setup.feature  # API data creation macros
-│   └── checkout.feature    # E-commerce macros
-├── login/
-│   └── login.feature       # Login tests
-└── checkout/
-    └── purchase.feature    # Checkout tests
-```
-
-### Naming Conventions
-
-- ✅ Use descriptive names that indicate the macro's purpose
-- ✅ Start with a verb: "Login as", "Create", "Fill", "Complete"
-- ✅ Keep names concise but clear
 
 ## Best Practices
 
@@ -246,50 +218,4 @@ features/
 - ❌ Don't create macros too specific to one use case
 - ❌ Don't ignore macro reusability
 
-## Troubleshooting
 
-### Macro Not Found
-
-**Problem:** TestFlowKit can't find your macro
-
-**Solutions:**
-- Verify the `@macro` tag is present
-- Check the scenario name matches exactly
-- Ensure the macro file is in the features directory
-
-### Variable Not Substituted
-
-**Problem:** `${variable}` appears literally in test output
-
-**Solutions:**
-- Verify variable name in data table matches the placeholder
-- Check for typos in variable names
-- Ensure data table is properly formatted
-
-### Wrong Values Used
-
-**Problem:** Variables have unexpected values
-
-**Solutions:**
-- Check data table row/column alignment
-- Verify variable names are unique
-- Use `--verbose` flag for debugging
-
-## Writing Macros With IDE Agent
-
-When using Cursor or VS Code Copilot with TestFlowKit MCP:
-
-- Use `write_macro` for macro definitions.
-- `write_macro` requires at least one `@macro` scenario in the content.
-- If `agent.capabilities.macros: false` in `testflowkit.agent.yml`, macro writes are denied.
-- `write_feature` remains available for regular scenarios and will reject `@macro` content when macros are disabled.
-
-Recommended prompt pattern:
-
-> "Create a reusable login macro with variables email and password, then provide one invocation example scenario."
-
-## Next Steps
-
-- [Global Hooks](/docs/features/global-hooks) — Setup and teardown across test suites
-- [Frontend Testing](/docs/features/frontend-testing) — Browser automation features
-- [API Testing](/docs/features/api-testing) — REST API testing

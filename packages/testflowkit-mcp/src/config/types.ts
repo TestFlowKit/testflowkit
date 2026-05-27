@@ -18,6 +18,11 @@ export const AgentConfigSchema = z.object({
     .default({}),
   agent: z
     .object({
+      capabilities: z
+        .object({
+          macros: z.boolean().default(true),
+        })
+        .default({}),
       default_tags_for_draft: z.string().default("@wip @ai-generated"),
       run_command: z
         .string()

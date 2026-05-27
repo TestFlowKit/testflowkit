@@ -142,6 +142,20 @@ This prevents collisions across CLI versions while keeping cache files out of gi
 
 Space-separated Gherkin tags added to every scenario written by the agent. Keeps AI-generated scenarios isolated so they can be reviewed before running in CI.
 
+#### `agent.capabilities`
+
+##### `agent.capabilities.macros`
+
+| | |
+|-|-|
+| Type | boolean |
+| Default | `true` |
+
+Controls macro authoring from MCP tools.
+
+- `true`: `write_macro` can create/update macro files and `write_feature` accepts macro content.
+- `false`: `write_macro` is denied and `write_feature` rejects content containing `@macro`.
+
 #### `agent.run_command`
 
 | | |

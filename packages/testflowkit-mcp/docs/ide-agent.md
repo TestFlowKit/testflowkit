@@ -93,11 +93,17 @@ project:
 
 step_catalog:
   # Omit file/url to auto-fetch from GitHub Release for your tkit version.
-  # cli_version: "1.4.2"                  # optional: pin the tkit version (skips probe)
-  # file: "./build/step-definitions.json"  # local override (canary / offline)
+  # file: "./build/step-definitions.json"  # local override
   # url: "https://..."                     # explicit URL
+  release:
+    repository: "TestFlowKit/testflowkit"
+    asset: "step-definitions.json"
+  cache:
+    path: ".testflowkit/cache/step-definitions.json"
 
 agent:
+  capabilities:
+    macros: true
   default_tags_for_draft: "@wip @ai-generated"
   run_command: "tkit run -c testflowkit.yml --tags @wip"
 ```
@@ -141,7 +147,7 @@ The server resolves the step catalog in this order:
 1. `step_catalog.file` (local path)
 2. `step_catalog.url`
 3. Installed `tkit version` → `https://github.com/TestFlowKit/testflowkit/releases/download/{version}/step-definitions.json`
-4. Cache at `.testflowkit/cache/step-definitions-<version>.json`
+4. Cache at `step_catalog.cache.path`
 
 For canary builds (e.g. `3.6.1-canary.abc1234`), the catalog for the semver base (`3.6.1`) is fetched.
 
@@ -183,7 +189,7 @@ Collect these and open a GitHub issue (or implement the Go step) to extend the c
 **/step-definitions.json
 ```
 
-## Environment variables
+## Environment variable
 
 | Variable | Purpose |
 |----------|---------|

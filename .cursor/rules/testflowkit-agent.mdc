@@ -10,13 +10,8 @@ You are helping write Gherkin feature files for a project using the **TestFlowKi
 
 ## Before writing any steps
 
-1. Run `tkit version` in the **project workspace terminal** to capture the installed CLI version.
-2. Call `initialize_session({ cliVersion: "<version>" })` with the version string from step 1. This registers the version for the entire session — you only need to do this once per connection.
-3. Call `get_step_catalog` (or `search_sentences`) to retrieve the available sentences.
-4. Call `read_test_config` before using `I prepare a request to "..."` — both the API name and the operation/endpoint name must exist in the config.
-
-> If `tkit` is not installed locally, try `npx --yes @testflowkit/cli version`. If the MCP server cannot detect the version itself, it will prompt you to call `initialize_session`.
-> Use `get_session_info` at any time to inspect the resolved CLI version and catalog source.
+1. Call `get_step_catalog` (or `search_sentences`) to retrieve the available sentences.
+2. Call `read_test_config` before using `I prepare a request to "..."` — both the API name and the operation/endpoint name must exist in the config.
 
 ## Sentence rules
 

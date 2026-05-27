@@ -9,6 +9,8 @@ const VERSION_RE =
 export const CLI_VERSION_RE =
   /\d+\.\d+\.\d+(?:-canary\.[a-f0-9]+(?:-\d+-g[a-f0-9]+)?)?/i;
 
+const MCP_DEBUG = process.env.TESTFLOWKIT_MCP_DEBUG === "1";
+
 export type CliVersionProbeAttempt = {
   command: string;
   output: string | null;

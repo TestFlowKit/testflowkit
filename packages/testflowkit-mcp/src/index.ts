@@ -8,6 +8,7 @@ import {
 import { createCatalogSession } from "./context/session.js";
 import { Logger } from "./logger.js";
 import { registerTools } from "./tools/index.js";
+import { registerResources } from "./resources/registerResources.js";
 
 async function main(): Promise<void> {
   let { config, configDir } = loadConfig();
@@ -18,7 +19,8 @@ async function main(): Promise<void> {
     version: "0.1.0",
   });
 
-  registerTools(server, config, configDir, session);
+  registerTools(server, config, configDir);
+  registerResources(server, configDir);
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

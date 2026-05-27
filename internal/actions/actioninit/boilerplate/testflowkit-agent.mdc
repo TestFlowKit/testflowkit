@@ -45,6 +45,13 @@ missing_sentence:
 - Add `{{ agent.default_tags_for_draft }}` (from `testflowkit.agent.yml`) to every new scenario — default: `@wip @ai-generated`.
 - Use `@macro` for reusable scenario definitions; use `${variable_name}` placeholders inside macros.
 
+## Macro authoring
+
+- Use `write_macro` for macro definitions.
+- Ensure macro content includes at least one scenario tagged with `@macro`.
+- When asked to provide a macro, include one invocation example scenario after the macro definition.
+- If `agent.capabilities.macros` is `false`, explain that macro creation is disabled and ask for enablement.
+
 ## Feature file structure
 
 ```gherkin
