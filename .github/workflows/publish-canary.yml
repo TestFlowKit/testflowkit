@@ -91,20 +91,10 @@ jobs:
           SHORT_SHA=$(git rev-parse --short HEAD)
           CANARY_VERSION="${BASE_TAG}-canary.${SHORT_SHA}"
 
-          # Idempotent: delete any existing release for this version before
-          # re-creating it (handles workflow_dispatch re-runs on the same commit).
-          gh release delete "${CANARY_VERSION}" --yes 2>/dev/null || true
-
-          # --target pins the tag to the exact commit being built, not the
-          # default branch HEAD at creation time.
           gh release create "${CANARY_VERSION}" \
             --prerelease \
-            --target "$GITHUB_SHA" \
             --title "Canary ${CANARY_VERSION}" \
-            --notes "Step definitions catalog for canary build \`${CANARY_VERSION}\`.
-
-Matches npm \`@testflowkit/cli@${CANARY_VERSION}\`.
-" \
+            --notes "Step definitions catalog for canary build \`${CANARY_VERSION}\`." \
             build/step-definitions.json
 
   # ── 3. Publish all packages via the shared reusable workflow ─────────────
