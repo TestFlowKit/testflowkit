@@ -40,6 +40,51 @@ func TestCompleteInitializationFlow(t *testing.T) {
 	t.Run("VerifyDirectoryStructure", verifyDirectoryStructure)
 	t.Run("VerifySampleFeatureFile", verifySampleFeatureFile)
 	t.Run("VerifyFilePermissions", verifyFilePermissions)
+	t.Run("VerifyAgentConfigFileCreation", verifyAgentConfigFileCreation)
+	t.Run("VerifyCursorRuleCreation", verifyCursorRuleCreation)
+	t.Run("VerifyCopilotInstructionsCreation", verifyCopilotInstructionsCreation)
+}
+
+func verifyAgentConfigFileCreation(t *testing.T) {
+	t.Helper()
+	_, statErr := os.Stat("testflowkit.agent.yml")
+	assert.False(t, os.IsNotExist(statErr), "testflowkit.agent.yml was not created")
+
+	content, readErr := os.ReadFile("testflowkit.agent.yml")
+	require.NoError(t, readErr, "Failed to read testflowkit.agent.yml")
+
+	agentStr := string(content)
+	assert.Contains(t, agentStr, "version: 1")
+	assert.Contains(t, agentStr, "test_config:")
+	assert.Contains(t, agentStr, "features_glob:")
+	assert.Contains(t, agentStr, "TestFlowKit/testflowkit")
+}
+
+func verifyCursorRuleCreation(t *testing.T) {
+	t.Helper()
+	rulePath := filepath.Join(".cursor", "rules", "testflowkit-agent.mdc")
+	_, statErr := os.Stat(rulePath)
+	assert.False(t, os.IsNotExist(statErr), ".cursor/rules/testflowkit-agent.mdc was not created")
+
+	content, readErr := os.ReadFile(rulePath)
+	require.NoError(t, readErr, "Failed to read Cursor rule file")
+
+	ruleStr := string(content)
+	assert.Contains(t, ruleStr, "get_step_catalog")
+	assert.Contains(t, ruleStr, "read_test_config")
+	assert.Contains(t, ruleStr, "missing_sentence")
+}
+
+func verifyCopilotInstructionsCreation(t *testing.T) {
+	t.Helper()
+	_, statErr := os.Stat("copilot-instructions.md")
+	assert.False(t, os.IsNotExist(statErr), "copilot-instructions.md was not created")
+
+	content, readErr := os.ReadFile("copilot-instructions.md")
+	require.NoError(t, readErr, "Failed to read copilot-instructions.md")
+
+	assert.Contains(t, string(content), "TestFlowKit")
+	assert.Contains(t, string(content), "get_step_catalog")
 }
 
 func verifyConfigFileCreation(t *testing.T) {

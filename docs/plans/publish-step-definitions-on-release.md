@@ -10,7 +10,9 @@ The CI pipeline no longer relies on `scripts/step_definitions_export/main.go` or
 
 The rest of this document is kept for historical context.
 
-It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the catalog when `testflowkit.agent.yml` does not specify a local file.
+It supports the **IDE agent** (Cursor / VS Code MCP), which can fetch the catalog when `testflowkit.agent.yml` does not specify a local file.
+
+> **Full roadmap (all phases):** [testflowkit-agent-roadmap.md](./testflowkit-agent-roadmap.md)
 
 ---
 
@@ -309,8 +311,6 @@ Use for:
 
 ---
 
-## Related documents (to create later)
+## Related documents
 
-- `testflowkit.agent.yml` specification (step catalog resolution, GraphQL/OpenAPI sources).
-- IDE agent architecture (MCP tools + Cursor rules).
-- MCP server design (`get_step_catalog`, cache paths).
+- [testflowkit-agent-roadmap.md](./testflowkit-agent-roadmap.md) — Phases 0–4 (foundation, IDE agent, schema, run loop, hardening).
