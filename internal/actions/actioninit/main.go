@@ -15,12 +15,22 @@ import (
 var validatePath = fileutils.ValidatePath
 
 const featuresDir = "features"
+const cursorRulesDir = ".cursor/rules"
 
 //go:embed boilerplate/config.boilerplate.yml
 var configTemplate string
 
 //go:embed boilerplate/sample.boilerplate.feature
 var sampleFeatureTemplate string
+
+//go:embed boilerplate/testflowkit.agent.boilerplate.yml
+var agentConfigTemplate string
+
+//go:embed boilerplate/testflowkit-agent.mdc
+var cursorRuleTemplate string
+
+//go:embed boilerplate/copilot-instructions.md
+var copilotInstructionsTemplate string
 
 func Execute(_ *config.Config, _ error) {
 	logger.Info("Initializing TestFlowKit project...")
@@ -51,6 +61,14 @@ func Execute(_ *config.Config, _ error) {
 		cleanup(err)
 		return
 	}
+
+	if err := createAgentConfigFile(state); err != nil {
+		cleanup(err)
+		return
+	}
+
+	createCursorRule(state)
+	createCopilotInstructions(state)
 
 	displayGuidance()
 }
@@ -200,20 +218,91 @@ func createConfigFile(state *InitializationState) error {
 	return nil
 }
 
+func createAgentConfigFile(state *InitializationState) error {
+	agentConfigPath := "testflowkit.agent.yml"
+
+	if err := validatePath(agentConfigPath); err != nil {
+		logger.Error("Invalid agent config path: "+err.Error(), nil, nil)
+		return err
+	}
+
+	if configFileExists(agentConfigPath) {
+		logger.Info("Agent config already exists, skipping creation")
+		return nil
+	}
+
+	if err := os.WriteFile(agentConfigPath, []byte(agentConfigTemplate), fileutils.FilePermission); err != nil {
+		logger.Error("Failed to create agent config file: "+err.Error(), nil, nil)
+		return err
+	}
+
+	state.addCreatedFile(agentConfigPath)
+	logger.Info("Created agent config file: " + agentConfigPath)
+	return nil
+}
+
+func createCursorRule(state *InitializationState) {
+	const dirPerm = 0755
+
+	if err := os.MkdirAll(cursorRulesDir, dirPerm); err != nil {
+		logger.Warn(fmt.Sprintf("Could not create %s directory, skipping Cursor rule: %v", cursorRulesDir, err), nil)
+		return
+	}
+
+	rulePath := filepath.Join(cursorRulesDir, "testflowkit-agent.mdc")
+
+	if configFileExists(rulePath) {
+		logger.Info("Cursor rule already exists, skipping creation")
+		return
+	}
+
+	if err := os.WriteFile(rulePath, []byte(cursorRuleTemplate), fileutils.FilePermission); err != nil {
+		logger.Warn("Failed to create Cursor rule file (non-fatal): "+err.Error(), nil)
+		return
+	}
+
+	state.addCreatedFile(rulePath)
+	logger.Info("Created Cursor rule: " + rulePath)
+}
+
+func createCopilotInstructions(state *InitializationState) {
+	copilotPath := "copilot-instructions.md"
+
+	if configFileExists(copilotPath) {
+		logger.Info("copilot-instructions.md already exists, skipping creation")
+		return
+	}
+
+	if err := os.WriteFile(copilotPath, []byte(copilotInstructionsTemplate), fileutils.FilePermission); err != nil {
+		logger.Warn("Failed to create copilot-instructions.md (non-fatal): "+err.Error(), nil)
+		return
+	}
+
+	state.addCreatedFile(copilotPath)
+	logger.Info("Created VS Code Copilot instructions: " + copilotPath)
+}
+
 func displayGuidance() {
 	logger.Success("🎉 TestFlowKit project initialized successfully!")
 	logger.Info("")
 
 	logger.Info("📁 Generated files:")
-	logger.Info("   ├── testflowkit.yml (TestFlowKit configuration)")
-	logger.Info("   └── features/sample.feature (Sample test file)")
+	logger.Info("   ├── testflowkit.yml          (TestFlowKit runtime configuration)")
+	logger.Info("   ├── testflowkit.agent.yml    (IDE agent configuration)")
+	logger.Info("   ├── features/sample.feature  (Sample test file)")
+	logger.Info("   ├── .cursor/rules/testflowkit-agent.mdc  (Cursor rules)")
+	logger.Info("   └── copilot-instructions.md  (VS Code Copilot instructions)")
 	logger.Info("")
 
 	logger.Info("🚀 Next steps:")
 	logger.Info("   1. Run your first test:")
 	logger.Info("      ./tkit run")
 	logger.Info("")
-	logger.Info("   2. Explore the sample test:")
+	logger.Info("   2. Enable the IDE agent (Cursor):")
+	logger.Info("      Add .cursor/mcp.json with the testflowkit-mcp server.")
+	logger.Info("      See: https://testflowkit.github.io/testflowkit/docs/getting-started/ide-agent")
+	logger.Info("")
+	logger.Info("   3. Explore the sample test:")
 	logger.Info("      cat features/sample.feature")
 	logger.Info("")
 
@@ -221,6 +310,7 @@ func displayGuidance() {
 	logger.Info("   • TestFlowKit Documentation: https://testflowkit.github.io")
 	logger.Info("   • Available Test Sentences: https://testflowkit.github.io/testflowkit/sentences")
 	logger.Info("   • Configuration Guide: https://testflowkit.github.io/testflowkit/configuration")
+	logger.Info("   • IDE Agent Guide: https://testflowkit.github.io/testflowkit/docs/getting-started/ide-agent")
 	logger.Info("")
 
 	logger.Info("✨ Welcome to TestFlowKit! Your sample test is ready to run against our documentation site.")

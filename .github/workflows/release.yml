@@ -105,6 +105,9 @@ jobs:
       - name: Export step definitions catalog
         run: make export-step-definitions
 
+      - name: Export config schema
+        run: make export-config-schema
+
       - name: Upload Release Assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -122,6 +125,9 @@ jobs:
           echo "Uploading step-definitions.json to release $LATEST_TAG"
           gh release upload "$LATEST_TAG" build/step-definitions.json --clobber
 
+          echo "Uploading config-schema.json to release $LATEST_TAG"
+          gh release upload "$LATEST_TAG" build/config-schema.json --clobber
+
       - name: Verify step definitions release asset
         env:
           GH_TOKEN: ${{ github.token }}
@@ -134,6 +140,20 @@ jobs:
           jq -e 'type == "array" and length > 0' /tmp/verify-release/step-definitions.json
           jq -e '.[0] | has("sentence") and has("description") and has("categories")' \
             /tmp/verify-release/step-definitions.json
+
+      - name: Verify config schema release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          mkdir -p /tmp/verify-release
+          gh release download "$LATEST_TAG" \
+            --pattern "config-schema.json" \
+            --dir /tmp/verify-release
+          jq -e 'has("schema_version") and has("generated_by") and has("files")' \
+            /tmp/verify-release/config-schema.json
+          jq -e '.files | has("testflowkit.yml") and has("testflowkit.agent.yml")' \
+            /tmp/verify-release/config-schema.json
 
   publish_npm_package:
     needs:

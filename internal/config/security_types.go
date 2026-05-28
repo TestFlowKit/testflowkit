@@ -55,22 +55,34 @@ type SecurityScheme struct {
 	Token string `yaml:"token" json:"token"`
 
 	// --- Basic auth ---
+	// Username is the HTTP Basic auth username.
 	Username string `yaml:"username" json:"username"`
+	// Password is the HTTP Basic auth password.
 	Password string `yaml:"password" json:"password"`
 
 	// --- API Key ---
-	Key        string          `yaml:"key" json:"key"`
-	Placement  APIKeyPlacement `yaml:"placement" json:"placement"`     // header | query | cookie (default: header)
-	HeaderName string          `yaml:"header_name" json:"header_name"` // e.g. "X-Api-Key" (default: Authorization)
-	QueryParam string          `yaml:"query_param" json:"query_param"` // e.g. "api_key" (for placement: query)
+	// Key is the API key value.
+	Key string `yaml:"key" json:"key"`
+	// Placement chooses where to attach the API key: header, query, or cookie.
+	Placement APIKeyPlacement `yaml:"placement" json:"placement"`
+	// HeaderName is the header key when placement is set to header.
+	HeaderName string `yaml:"header_name" json:"header_name"`
+	// QueryParam is the query parameter name when placement is set to query.
+	QueryParam string `yaml:"query_param" json:"query_param"`
 
 	// --- OAuth2 / OIDC ---
-	GrantType    string   `yaml:"grant_type" json:"grant_type"` // client_credentials | password | …
-	TokenURL     string   `yaml:"token_url" json:"token_url"`
-	ClientID     string   `yaml:"client_id" json:"client_id"`
-	ClientSecret string   `yaml:"client_secret" json:"client_secret"`
-	Scopes       []string `yaml:"scopes" json:"scopes"`
-	Audience     string   `yaml:"audience" json:"audience"`
+	// GrantType is reserved for non-client-credentials flows.
+	GrantType string `yaml:"grant_type" json:"grant_type"`
+	// TokenURL is the OAuth2 token endpoint URL.
+	TokenURL string `yaml:"token_url" json:"token_url"`
+	// ClientID is the OAuth2/OIDC client identifier.
+	ClientID string `yaml:"client_id" json:"client_id"`
+	// ClientSecret is the OAuth2/OIDC client secret.
+	ClientSecret string `yaml:"client_secret" json:"client_secret"`
+	// Scopes is the list of scopes requested for token acquisition.
+	Scopes []string `yaml:"scopes" json:"scopes"`
+	// Audience is an optional audience claim for providers that require it.
+	Audience string `yaml:"audience" json:"audience"`
 	// TokenEndpointAuthMethod controls how client credentials are sent to the
 	// token endpoint. Required for type: oauth2.
 	// Values: client_secret_post | client_secret_basic
@@ -132,7 +144,10 @@ func (r *SecurityRef) IsEmpty() bool {
 // referenced SecurityScheme. They do not replace the base scheme; they patch
 // specific fields (e.g. restricting scopes for one API without a new scheme).
 type SecurityOverrides struct {
-	Scopes   []string `yaml:"scopes"`
-	Audience string   `yaml:"audience"`
-	ProxyURL string   `yaml:"proxy_url"`
+	// Scopes overrides the base scheme scopes for one API definition.
+	Scopes []string `yaml:"scopes"`
+	// Audience overrides the base scheme audience for one API definition.
+	Audience string `yaml:"audience"`
+	// ProxyURL overrides token-fetch proxy settings for one API definition.
+	ProxyURL string `yaml:"proxy_url"`
 }

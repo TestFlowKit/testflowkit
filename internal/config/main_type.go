@@ -10,20 +10,29 @@ import (
 )
 
 type Config struct {
+	// Env stores project-level variables available via {{ env.KEY }} interpolation.
 	Env map[string]any `yaml:"env"`
 
+	// Settings contains global runner behavior such as concurrency and report format.
 	Settings GlobalSettings `yaml:"settings" validate:"required"`
 
+	// Frontend configures browser/UI scenarios. Leave nil when no frontend tests exist.
 	Frontend *FrontendConfig `yaml:"frontend"`
 
+	// APIs configures REST/GraphQL definitions. Leave nil when no API tests exist.
 	APIs *APIsConfig `yaml:"apis"`
 
+	// Files stores reusable file aliases used in upload and payload steps.
 	Files FileConfig `yaml:"files"`
 
+	// SecuritySchemes is the reusable auth registry referenced by security_ref.name.
 	SecuritySchemes map[string]SecurityScheme `yaml:"security_schemes"`
-	DefaultSecurity string                    `yaml:"default_security"`
+	// DefaultSecurity applies when no API-level or endpoint-level security_ref is set.
+	DefaultSecurity string `yaml:"default_security"`
 
+	// configPath is the absolute or resolved path of the loaded configuration file.
 	configPath string
+	// appVersion is the CLI version injected at runtime for reporting and exports.
 	appVersion string
 }
 

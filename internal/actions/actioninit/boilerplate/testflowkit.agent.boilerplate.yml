@@ -1,0 +1,33 @@
+# testflowkit.agent.yml — TestFlowKit IDE agent configuration
+#
+# This file configures the TestFlowKit MCP server used by Cursor and VS Code Copilot.
+# It is separate from testflowkit.yml (runtime test config) and is never read by the tkit CLI.
+# Repository: TestFlowKit/testflowkit
+#
+# Full field reference: https://testflowkit.github.io/testflowkit/docs/reference/ide-agent
+version: 1
+
+project:
+  # Path to your TestFlowKit runtime configuration (relative to this file)
+  test_config: "./testflowkit.yml"
+  # Glob pattern for your feature files
+  features_glob: "features/**/*.feature"
+
+step_catalog:
+  # How to resolve the step definitions catalog.
+  # Omit 'file' and 'url' to auto-fetch from GitHub Release matching your installed tkit version.
+
+  # Uncomment to use a local catalog (useful on feature branches or offline):
+  # file: "./build/step-definitions.json"
+
+  # Uncomment to fetch from a custom URL (forks, mirrors, private GitHub Enterprise):
+  # url: "https://example.com/artifacts/step-definitions.json"
+
+
+agent:
+  # Tags added to every scenario drafted by the agent.
+  # Keep @wip so AI-generated scenarios run only when you explicitly include them.
+  default_tags_for_draft: "@wip @ai-generated"
+
+  # Command used to run draft tests (used in Phase 3 run loop — informational for now).
+  run_command: "tkit run -c testflowkit.yml --tags @wip"

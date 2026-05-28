@@ -1,0 +1,69 @@
+---
+description: TestFlowKit Gherkin test generation rules
+globs: ["**/*.feature", "testflowkit.agent.yml", "testflowkit.yml", "config.yml"]
+alwaysApply: true
+---
+
+# TestFlowKit agent rules
+
+You are helping write Gherkin feature files for a project using the **TestFlowKit** framework.
+
+## Before writing any steps
+
+1. Call `get_step_catalog` (or `search_sentences`) to retrieve the available sentences.
+2. Call `read_test_config` before using `I prepare a request to "..."` — both the API name and the operation/endpoint name must exist in the config.
+
+## Sentence rules
+
+- Only use sentences that exist verbatim in the step catalog returned by `get_step_catalog`.
+- Sentence parameters (`{string}`, `{int}`, `{float}`) must be replaced with the appropriate literal values.
+- If no catalog sentence fits the intent, do **not** invent a step. Instead output a `missing_sentence` block:
+
+```yaml
+missing_sentence:
+  intent: "describe what you wanted to assert"
+  closest_matches:
+    - "the closest existing sentence 1"
+    - "the closest existing sentence 2"
+  proposed_sentence: "proposed new sentence pattern"
+  proposed_category: "restapi | frontend | graphql | ..."
+```
+
+## API and GraphQL steps
+
+- `I prepare a request to "api_name.operation_name"` — both `api_name` and `operation_name` must appear in `read_test_config` output.
+- Use `I set the following GraphQL variables:` with a data table for GraphQL variable injection.
+- Never inline secrets, tokens, or passwords in feature files. Use `{{ env.VAR_NAME }}` and keep secrets in the environment file.
+
+## Frontend steps
+
+- Element names must match keys under `frontend.elements` in the config.
+- Page names must match keys under `frontend.pages` in the config.
+
+## Scenario tags
+
+- Add `{{ agent.default_tags_for_draft }}` (from `testflowkit.agent.yml`) to every new scenario — default: `@wip @ai-generated`.
+- Use `@macro` for reusable scenario definitions; use `${variable_name}` placeholders inside macros.
+
+## Feature file structure
+
+```gherkin
+@tag1 @tag2
+Feature: Short descriptive title
+
+  Background:
+    # optional shared setup steps
+
+  @wip @ai-generated
+  Scenario: Descriptive scenario name
+    Given ...
+    When ...
+    Then ...
+```
+
+## What NOT to do
+
+- Do not invent sentences not in the catalog.
+- Do not hardcode API base URLs, tokens, or credentials.
+- Do not create files outside the `features_glob` directory (MCP write_feature enforces this).
+- Do not remove `@wip` from AI-generated scenarios — let the developer promote them manually.

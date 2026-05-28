@@ -118,6 +118,8 @@ func applyOverrides(config *Config, overrides Overrides) {
 }
 
 type Overrides struct {
+	// Settings contains CLI/runtime overrides applied on top of file settings.
 	Settings GlobalSettings
+	// Frontend contains CLI/runtime overrides applied on top of frontend config.
 	Frontend FrontendConfig
 }

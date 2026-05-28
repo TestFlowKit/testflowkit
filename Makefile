@@ -48,6 +48,11 @@ export-step-definitions:
 	@mkdir -p $(BUILD_DIR)
 	go run ./scripts/step_definitions_export/main.go -output-file $(BUILD_DIR)/step-definitions.json
 
+.PHONY: export-config-schema
+export-config-schema:
+	@mkdir -p $(BUILD_DIR)
+	go run ./scripts/config_schema_export -output-file $(BUILD_DIR)/config-schema.json -app-version $(VERSION)
+
 .PHONY: clean
 clean:
 	@echo "Cleaning up build directory..."

@@ -54,7 +54,7 @@ jobs:
           path: build/*.zip
           retention-days: 1
 
-  # ── 2. Export step definitions catalog & publish as versioned canary release ─
+  # ── 2. Export catalogs & publish as versioned canary release ─
   #
   #  Runs in parallel with 'prepare' — no dependency on the binaries.
   #  Version is resolved inline (same logic as 'prepare') so the job does not
@@ -63,9 +63,10 @@ jobs:
   #  Each canary push produces a distinct GitHub prerelease aligned exactly
   #  with the npm canary version:
   #    releases/download/{base-tag}-canary.{short-sha}/step-definitions.json
+  #    releases/download/{base-tag}-canary.{short-sha}/config-schema.json
   #
   publish-catalog:
-    name: Publish step definitions to canary release
+    name: Publish catalogs to canary release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -83,6 +84,9 @@ jobs:
       - name: Export step definitions catalog
         run: make export-step-definitions
 
+      - name: Export config schema
+        run: make export-config-schema
+
       - name: Publish versioned canary GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -94,8 +98,9 @@ jobs:
           gh release create "${CANARY_VERSION}" \
             --prerelease \
             --title "Canary ${CANARY_VERSION}" \
-            --notes "Step definitions catalog for canary build \`${CANARY_VERSION}\`." \
-            build/step-definitions.json
+            --notes "Step definitions and config schema catalogs for canary build \`${CANARY_VERSION}\`." \
+            build/step-definitions.json \
+            build/config-schema.json
 
   # ── 3. Publish all packages via the shared reusable workflow ─────────────
   #      Published under the 'canary' dist-tag — never touches 'latest'.
