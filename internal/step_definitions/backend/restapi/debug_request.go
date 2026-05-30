@@ -50,6 +50,6 @@ func (steps) debugRequest() stepbuilder.Step {
 			Description: "Debug helper to show the current request configuration.",
 			Variables:   []stepbuilder.DocVariable{},
 			Example:     `When I debug the API request`,
-			Categories:  []stepbuilder.StepCategory{stepbuilder.RESTAPI}},
+			Categories:  []stepbuilder.StepCategory{stepbuilder.RESTAPI, stepbuilder.Debug}},
 	)
 }

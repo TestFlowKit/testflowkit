@@ -45,3 +45,4 @@ testflowkit.yml
 .cursorrules/
 **/__debug*
 **/step-definitions.json
+**/node_modules/

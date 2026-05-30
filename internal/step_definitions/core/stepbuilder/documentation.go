@@ -31,6 +31,7 @@ const (
 	RESTAPI    StepCategory = "restapi"
 	GraphQL    StepCategory = "graphql"
 	Variable   StepCategory = "variable"
+	Debug      StepCategory = "debug"
 	Assertions StepCategory = "assertions"
 	Frontend   StepCategory = "frontend"
 )

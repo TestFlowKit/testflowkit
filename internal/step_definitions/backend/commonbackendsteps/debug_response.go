@@ -2,6 +2,7 @@ package commonbackendsteps
 
 import (
 	"context"
+	"slices"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/apperrors"
@@ -57,7 +58,7 @@ func (steps) debugAPIResponse() stepbuilder.Step {
 			Description: "Debug helper to show the current API response details including status code, headers, and body.",
 			Variables:   []stepbuilder.DocVariable{},
 			Example:     `Then I debug the API response`,
-			Categories:  stepbuilder.Backend,
+			Categories:  slices.Concat([]stepbuilder.StepCategory{stepbuilder.Debug}, stepbuilder.Backend),
 		},
 	)
 }

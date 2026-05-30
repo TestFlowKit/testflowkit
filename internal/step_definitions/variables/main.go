@@ -12,6 +12,7 @@ func GetAllSteps() []stepbuilder.Step {
 		st.storeJSONPathIntoScenarioVariable(),
 		st.storeElementContentIntoVariable(),
 		st.storeCustomVariable(),
+		st.displayVariableValue(),
 		st.variableShouldContains(),
 		st.variableShouldNotContains(),
 		st.storeValueIntoGlobalVariable(),
