@@ -42,7 +42,7 @@ func (steps) displayRequestCURL() stepbuilder.Step {
 		stepbuilder.DocParams{
 			Description: "Displays the current prepared request as a cURL command for REST and GraphQL contexts.",
 			Example:     `And I display the request cURL`,
-			Categories:  stepbuilder.Backend,
+			Categories:  []stepbuilder.StepCategory{stepbuilder.RESTAPI, stepbuilder.GraphQL, stepbuilder.Debug},
 		},
 	)
 }
