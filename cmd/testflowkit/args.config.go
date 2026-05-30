@@ -15,6 +15,8 @@ type argsConfig struct {
 	Install    *installCmd  `arg:"subcommand:install" help:"install browser drivers"`
 	Validate   *validateCmd `arg:"subcommand:validate" help:"validate gherkin files"`
 	VersionCmd *versionCmd  `arg:"subcommand:version" help:"show version information"`
+	//nolint:lll // Subcommand name is intentionally long and fixed by CLI contract.
+	ExportStepDefinitions *exportStepDefinitionsCmd `arg:"subcommand:export-step-definitions" help:"export step definitions"`
 }
 
 func (a *argsConfig) getConfigPath() (string, error) {
@@ -91,7 +93,15 @@ func (a *argsConfig) getMode() (config.Mode, error) {
 		return config.InstallMode, nil
 	}
 
+	if a.ExportStepDefinitions != nil {
+		return config.ExportStepDefinitionsMode, nil
+	}
+
 	return "", apperrors.ErrNoModeProvided
+}
+
+func (a *argsConfig) isSilent() bool {
+	return a.ExportStepDefinitions != nil && a.ExportStepDefinitions.Silent
 }
 
 func (a *argsConfig) GetTimeout() int {
@@ -126,6 +136,11 @@ type validateCmd struct {
 
 type versionCmd struct {
 	// No additional fields needed - simple command
+}
+
+type exportStepDefinitionsCmd struct {
+	Format string `arg:"--format" help:"output format (json)" default:"json"`
+	Silent bool   `arg:"--silent" help:"suppress all stderr output"`
 }
 
 type commonCmd struct {

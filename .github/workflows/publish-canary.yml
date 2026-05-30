@@ -5,7 +5,7 @@ name: Publish Canary
 #   - Manual dispatch   → useful for testing from any branch
 on:
   push:
-    # branches: [main]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -54,50 +54,7 @@ jobs:
           path: build/*.zip
           retention-days: 1
 
-  # ── 2. Export step definitions catalog & publish as versioned canary release ─
-  #
-  #  Runs in parallel with 'prepare' — no dependency on the binaries.
-  #  Version is resolved inline (same logic as 'prepare') so the job does not
-  #  need to wait for binary compilation.
-  #
-  #  Each canary push produces a distinct GitHub prerelease aligned exactly
-  #  with the npm canary version:
-  #    releases/download/{base-tag}-canary.{short-sha}/step-definitions.json
-  #
-  publish-catalog:
-    name: Publish step definitions to canary release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0
-
-      - name: Setup Go
-        uses: actions/setup-go@v6.4.0
-        with:
-          go-version: ${{ vars.GO_VERSION }}
-
-      - name: Export step definitions catalog
-        run: make export-step-definitions
-
-      - name: Publish versioned canary GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          BASE_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          CANARY_VERSION="${BASE_TAG}-canary.${SHORT_SHA}"
-
-          gh release create "${CANARY_VERSION}" \
-            --prerelease \
-            --title "Canary ${CANARY_VERSION}" \
-            --notes "Step definitions catalog for canary build \`${CANARY_VERSION}\`." \
-            build/step-definitions.json
-
-  # ── 3. Publish all packages via the shared reusable workflow ─────────────
+  # ── 2. Publish all packages via the shared reusable workflow ─────────────
   #      Published under the 'canary' dist-tag — never touches 'latest'.
   publish:
     name: Publish all packages

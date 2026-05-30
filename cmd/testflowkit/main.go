@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"testflowkit/internal/actions"
+	"testflowkit/internal/actions/actionexportsteps"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/logger"
 )
@@ -13,9 +16,18 @@ var Version string
 func main() {
 	args := getAppArgs()
 
+	if args.isSilent() {
+		log.SetOutput(io.Discard)
+	}
+
 	mode, err := args.getMode()
 	if err != nil {
 		logger.Fatal("Failed to get mode", err)
+	}
+
+	if mode == config.ExportStepDefinitionsMode {
+		actionexportsteps.Execute(args.ExportStepDefinitions.Format)
+		return
 	}
 
 	cfg, err := getConfig(args, err)

@@ -1035,20 +1035,19 @@ go fmt ./...
 make generate_doc
 
 # Export step definitions catalog (for agents / IDE tooling)
-make export-step-definitions
+go run ./cmd/testflowkit/*.go export-step-definitions --format json > build/step-definitions.json
 ```
 
 ### Step definitions catalog
 
-Each stable release publishes `step-definitions.json` alongside CLI binaries. Download for a given version (tags have **no** `v` prefix, e.g. `1.2.4`):
+Generate the catalog locally from the CLI command and redirect stdout to a file:
 
-```text
-https://github.com/TestFlowKit/testflowkit/releases/download/<tag>/step-definitions.json
+```bash
+mkdir -p build
+go run ./cmd/testflowkit/*.go export-step-definitions --format json > build/step-definitions.json
 ```
 
-**Canary** npm builds do not publish a catalog asset. Use `make export-step-definitions` locally from the same commit, or fetch the stable catalog for the semver base in your canary version (e.g. `3.6.1` from `3.6.1-canary.abc1234`).
-
-IDE agents should fetch the catalog matching the **installed** `tkit version`, not GitHub `latest`. See the publish plan for the full contract.
+The command emits JSON to stdout and returns a non-zero exit code on failure.
 
 ## 🤝 Contributing
 

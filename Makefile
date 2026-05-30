@@ -43,11 +43,6 @@ run_e2e_server:
 generate_doc:
 	go run scripts/doc_generator/main.go
 
-.PHONY: export-step-definitions
-export-step-definitions:
-	@mkdir -p $(BUILD_DIR)
-	go run ./scripts/step_definitions_export/main.go -output-file $(BUILD_DIR)/step-definitions.json
-
 .PHONY: clean
 clean:
 	@echo "Cleaning up build directory..."
@@ -120,7 +115,6 @@ help:
 	@echo "  run              Run testflowkit app"
 	@echo "  test             Run tests with coverage"
 	@echo "  releases         Build for all architectures in parallel"
-	@echo "  export-step-definitions  Export step catalog JSON to $(BUILD_DIR)/"
 	@echo "  build            Build for a specific OS and architecture"
 	@echo "                  Example: make build GOOS=linux GOARCH=amd64"
 	@echo "  clean            Remove all build artifacts"

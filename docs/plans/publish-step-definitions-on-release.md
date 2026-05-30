@@ -1,6 +1,14 @@
-# Plan: Publish step definitions on GitHub Release
+# Plan (Historical): Publish step definitions on GitHub Release
 
-This document describes how to ship the TestFlowKit **step catalog** (`step-definitions.json`) as a **GitHub Release asset** on every stable release. **Canary** npm builds publish CLI binaries only; the catalog is not uploaded for canary.
+Status: superseded.
+
+TestFlowKit now exports step definitions locally via CLI:
+
+`go run ./cmd/testflowkit/*.go export-step-definitions --format json > build/step-definitions.json`
+
+The CI pipeline no longer relies on `scripts/step_definitions_export/main.go` or GitHub release assets for the step catalog.
+
+The rest of this document is kept for historical context.
 
 It supports the future **IDE agent** (Cursor / VS Code MCP), which can fetch the catalog when `testflowkit.agent.yml` does not specify a local file.
 
