@@ -102,9 +102,6 @@ jobs:
           git fetch --tags
           make releases
 
-      - name: Export step definitions catalog
-        run: make export-step-definitions
-
       - name: Upload Release Assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -118,22 +115,6 @@ jobs:
               gh release upload "$LATEST_TAG" "$file" --clobber
             fi
           done
-
-          echo "Uploading step-definitions.json to release $LATEST_TAG"
-          gh release upload "$LATEST_TAG" build/step-definitions.json --clobber
-
-      - name: Verify step definitions release asset
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          mkdir -p /tmp/verify-release
-          gh release download "$LATEST_TAG" \
-            --pattern "step-definitions.json" \
-            --dir /tmp/verify-release
-          jq -e 'type == "array" and length > 0' /tmp/verify-release/step-definitions.json
-          jq -e '.[0] | has("sentence") and has("description") and has("categories")' \
-            /tmp/verify-release/step-definitions.json
 
   publish_npm_package:
     needs:

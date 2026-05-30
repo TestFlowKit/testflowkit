@@ -2,6 +2,7 @@ package actions
 
 import (
 	"fmt"
+	"testflowkit/internal/actions/actionexportsteps"
 	"testflowkit/internal/actions/actioninit"
 	"testflowkit/internal/actions/actioninstall"
 	"testflowkit/internal/actions/actionrun"
@@ -12,11 +13,12 @@ import (
 
 func Execute(cfg *config.Config, cfgErr error, mode config.Mode) {
 	modes := map[config.Mode]func(*config.Config, error){
-		config.RunMode:        actionrun.Execute,
-		config.InitMode:       actioninit.Execute,
-		config.InstallMode:    actioninstall.Execute,
-		config.ValidationMode: actionvalidate.Execute,
-		config.VersionMode:    version,
+		config.RunMode:                   actionrun.Execute,
+		config.InitMode:                  actioninit.Execute,
+		config.InstallMode:               actioninstall.Execute,
+		config.ValidationMode:            actionvalidate.Execute,
+		config.VersionMode:               version,
+		config.ExportStepDefinitionsMode: func(_ *config.Config, _ error) { actionexportsteps.Execute("json") },
 	}
 
 	if action, ok := modes[mode]; ok {

@@ -49,7 +49,8 @@ jobs:
 
       - name: Export and validate step definitions catalog
         run: |
-          make export-step-definitions
+          mkdir -p build
+          go run ./cmd/testflowkit/*.go export-step-definitions --format json > build/step-definitions.json
           jq -e 'type == "array" and length > 0' build/step-definitions.json
           jq -e '.[0] | has("sentence") and has("description") and has("categories")' \
             build/step-definitions.json
