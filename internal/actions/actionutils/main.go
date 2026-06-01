@@ -4,15 +4,15 @@ import (
 	"strings"
 	"testflowkit/internal/config"
 	stepdefinitions "testflowkit/internal/step_definitions"
-	"testflowkit/internal/step_definitions/core"
 	"testflowkit/pkg/logger"
+	"testflowkit/pkg/stepexpr"
 )
 
 func FormatStep(sentence string) string {
 	cleanedSentence := strings.TrimPrefix(sentence, "^")
 	cleanedSentence = strings.TrimSuffix(cleanedSentence, "$")
 
-	pattern := "^" + core.ConvertWildcards(cleanedSentence) + "$"
+	pattern := "^" + stepexpr.ConvertWildcards(cleanedSentence) + "$"
 	return pattern
 }
 

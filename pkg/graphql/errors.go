@@ -119,7 +119,8 @@ func (r *Response) GetDetailedErrorInfo() []map[string]interface{} {
 
 	details := make([]map[string]interface{}, len(r.Errors))
 	for i, err := range r.Errors {
-		details[i] = map[string]interface{}{
+		//nolint:goconst // JSON payload keys are intentionally repeated for readability.
+		details[i] = map[string]any{
 			"message":    err.Message,
 			"locations":  err.Locations,
 			"path":       err.Path,
