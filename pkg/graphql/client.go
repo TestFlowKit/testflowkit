@@ -141,19 +141,30 @@ func (c *Client) Execute(ctx context.Context, req Request) (*Response, error) {
 		)
 	}
 
-	if httpResp.StatusCode != http.StatusOK {
-		return nil, NewNetworkError(
-			fmt.Sprintf("HTTP request failed with status %d", httpResp.StatusCode),
-			map[string]interface{}{
-				detailKeyStatusCode:   httpResp.StatusCode,
-				detailKeyResponseBody: string(responseBody),
-			},
-		)
-	}
-
 	// Parse GraphQL response
 	graphqlResp, err := parseResponse(responseBody, httpResp.StatusCode)
 	if err != nil {
+		// For non-200 responses with unparseable bodies (e.g. HTML error pages),
+		// return a synthetic response so test steps can still assert the status code.
+		if httpResp.StatusCode != http.StatusOK {
+			syntheticResp := &Response{
+				StatusCode: httpResp.StatusCode,
+				RawBody:    responseBody,
+				Errors: []Error{
+					{
+						Message: fmt.Sprintf("HTTP %d: %s", httpResp.StatusCode, http.StatusText(httpResp.StatusCode)),
+						Extensions: map[string]interface{}{
+							"rawBody": string(responseBody),
+						},
+					},
+				},
+				Headers: make(map[string]string),
+			}
+			for key, values := range httpResp.Header {
+				syntheticResp.Headers[key] = strings.Join(values, ", ")
+			}
+			return syntheticResp, nil
+		}
 		return nil, err
 	}
 

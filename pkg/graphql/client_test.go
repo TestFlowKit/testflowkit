@@ -335,3 +335,86 @@ func TestClient_NetworkError(t *testing.T) {
 		t.Error("Expected ClientError type")
 	}
 }
+
+func TestClient_NonOKStatusWithGraphQLErrors(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		response := map[string]interface{}{
+			"errors": []map[string]interface{}{
+				{"message": "Unauthorized"},
+			},
+		}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			t.Fatalf("Failed to encode response: %v", err)
+		}
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL)
+	req := Request{Query: `query { user { id } }`}
+
+	ctx := context.Background()
+	response, err := client.Execute(ctx, req)
+	if err != nil {
+		t.Fatalf("Expected no error for non-200 with GraphQL errors body, got: %v", err)
+	}
+	if response.StatusCode != http.StatusUnauthorized {
+		t.Errorf("Expected status 401, got %d", response.StatusCode)
+	}
+	if !response.HasErrors() {
+		t.Error("Expected GraphQL errors in response")
+	}
+	if response.Errors[0].Message != "Unauthorized" {
+		t.Errorf("Expected error message 'Unauthorized', got %s", response.Errors[0].Message)
+	}
+}
+
+func TestClient_NonOKStatusWithNonJSONBody(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("<html><body>Internal Server Error</body></html>"))
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL)
+	req := Request{Query: `query { user { id } }`}
+
+	ctx := context.Background()
+	response, err := client.Execute(ctx, req)
+	if err != nil {
+		t.Fatalf("Expected no error for non-200 with non-JSON body, got: %v", err)
+	}
+	if response.StatusCode != http.StatusInternalServerError {
+		t.Errorf("Expected status 500, got %d", response.StatusCode)
+	}
+	if !response.HasErrors() {
+		t.Error("Expected synthetic error in response")
+	}
+	expectedMsg := "HTTP 500: Internal Server Error"
+	if response.Errors[0].Message != expectedMsg {
+		t.Errorf("Expected error message %q, got %q", expectedMsg, response.Errors[0].Message)
+	}
+	if rawBody, ok := response.Errors[0].Extensions["rawBody"]; !ok || rawBody == "" {
+		t.Error("Expected non-empty rawBody in error extensions")
+	}
+}
+
+func TestClient_OKStatusWithMalformedJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("{not valid json}"))
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL)
+	req := Request{Query: `query { user { id } }`}
+
+	ctx := context.Background()
+	_, err := client.Execute(ctx, req)
+	if err == nil {
+		t.Error("Expected error for 200 response with malformed JSON body")
+	}
+}

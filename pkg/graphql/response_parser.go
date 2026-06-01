@@ -13,7 +13,7 @@ func parseResponse(responseBody []byte, statusCode int) (*Response, error) {
 	if len(responseBody) == 0 {
 		return nil, NewNetworkError(
 			"received empty response body",
-			map[string]interface{}{
+			map[string]any{
 				detailKeyStatusCode: statusCode,
 			},
 		)
@@ -24,7 +24,7 @@ func parseResponse(responseBody []byte, statusCode int) (*Response, error) {
 	if err := json.Unmarshal(responseBody, &graphqlResp); err != nil {
 		return nil, NewNetworkError(
 			"failed to parse GraphQL response JSON",
-			map[string]interface{}{
+			map[string]any{
 				"parse_error":         err.Error(),
 				detailKeyResponseBody: string(responseBody),
 				detailKeyStatusCode:   statusCode,
@@ -32,14 +32,15 @@ func parseResponse(responseBody []byte, statusCode int) (*Response, error) {
 		)
 	}
 
-	// Set status code for reference
+	// Set status code and raw body for reference
 	graphqlResp.StatusCode = statusCode
+	graphqlResp.RawBody = responseBody
 
 	// Validate response structure
 	if err := validateResponseStructure(&graphqlResp); err != nil {
 		return nil, NewGraphQLError(
 			"invalid GraphQL response structure",
-			map[string]interface{}{
+			map[string]any{
 				"validation_error":    err.Error(),
 				detailKeyResponseBody: string(responseBody),
 			},
@@ -86,7 +87,7 @@ func processGraphQLErrors(resp *Response) {
 
 		// Ensure extensions map is initialized
 		if err.Extensions == nil {
-			err.Extensions = make(map[string]interface{})
+			err.Extensions = make(map[string]any)
 		}
 
 		// Add error classification if not present
