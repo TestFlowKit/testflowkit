@@ -12,11 +12,12 @@ type Request struct {
 
 // Response represents a GraphQL response.
 type Response struct {
-	Data       json.RawMessage        `json:"data,omitempty"`
-	Errors     []Error                `json:"errors,omitempty"`
-	Headers    map[string]string      `json:"headers,omitempty"`
-	Extensions map[string]interface{} `json:"extensions,omitempty"`
-	StatusCode int                    `json:"-"` // HTTP status code (not part of GraphQL spec)
+	Data       json.RawMessage   `json:"data,omitempty"`
+	Errors     []Error           `json:"errors,omitempty"`
+	Headers    map[string]string `json:"headers,omitempty"`
+	Extensions map[string]any    `json:"extensions,omitempty"`
+	StatusCode int               `json:"-"` // HTTP status code (not part of GraphQL spec)
+	RawBody    []byte            `json:"-"` // Full raw HTTP response body
 }
 
 // Error represents a GraphQL error.
