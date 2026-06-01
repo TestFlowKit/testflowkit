@@ -6,8 +6,8 @@ import (
 	"log"
 	"regexp"
 	"strings"
-	"testflowkit/internal/step_definitions/core"
 	"testflowkit/pkg/rand"
+	"testflowkit/pkg/stepexpr"
 	"testflowkit/pkg/variables"
 )
 
@@ -39,7 +39,7 @@ func ReplaceVariablesInArray[T any](ctx *Context, data []T) ([]T, error) {
 }
 
 func ReplaceVariablesInString(ctx *Context, sentence string) string {
-	re := regexp.MustCompile(core.VariablePattern)
+	re := regexp.MustCompile(stepexpr.VariablePattern)
 	matches := re.FindAllStringSubmatch(sentence, -1)
 	replacedSentence := sentence
 

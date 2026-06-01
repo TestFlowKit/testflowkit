@@ -17,6 +17,17 @@ import (
 
 const NoPathValueFound = "failed to get value at path '%s': %w"
 
+func normalizeEscapedInput(value string) string {
+	replacer := strings.NewReplacer(
+		`\"`, `"`,
+		`\n`, "\n",
+		`\r`, "\r",
+		`\t`, "\t",
+		`\\`, `\`,
+	)
+	return replacer.Replace(value)
+}
+
 // ValidatePathValue validates that a response path contains or does not contain
 // the expected value, regardless of whether the response is JSON or XML.
 func ValidatePathValue(engine queryable.Queryable, path, expectedValue string, shouldEqual bool) error {
@@ -31,6 +42,8 @@ func ValidatePathValue(engine queryable.Queryable, path, expectedValue string, s
 	if !result.Exists {
 		return &apperrors.NoExistingPathError{Path: path}
 	}
+
+	expectedValue = normalizeEscapedInput(expectedValue)
 
 	if shouldEqual && result.Raw != expectedValue {
 		return fmt.Errorf("expected value '%s' at path '%s', but got '%s'", expectedValue, path, result.Raw)
@@ -88,6 +101,8 @@ func ValidatePathContains(engine queryable.Queryable, path, expectedSubstring st
 	if !result.Exists {
 		return &apperrors.NoExistingPathError{Path: path}
 	}
+
+	expectedSubstring = normalizeEscapedInput(expectedSubstring)
 
 	contains := strings.Contains(result.Raw, expectedSubstring)
 	if shouldContain && !contains {

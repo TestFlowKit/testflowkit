@@ -76,6 +76,34 @@ func TestValidatePathExists_PropagatesSyntaxGuard(t *testing.T) {
 	require.EqualError(t, err, "XPath syntax detected on JSON content; please use GJSON syntax")
 }
 
+func TestValidatePathContains_UnescapesQuotedInput(t *testing.T) {
+	body := []byte(`{"errors":[{"message":"Field \"priority\" of required type \"String!\" was not provided."}]}`)
+	engine, err := queryable.NewEngine(body, queryable.FormatJSON)
+	require.NoError(t, err)
+
+	err = ValidatePathContains(
+		engine,
+		"errors.0.message",
+		`Field \"priority\" of required type \"String!\" was not provided.`,
+		true,
+	)
+	require.NoError(t, err)
+}
+
+func TestValidatePathValue_UnescapesQuotedInput(t *testing.T) {
+	body := []byte(`{"errors":[{"message":"Field \"priority\" of required type \"String!\" was not provided."}]}`)
+	engine, err := queryable.NewEngine(body, queryable.FormatJSON)
+	require.NoError(t, err)
+
+	err = ValidatePathValue(
+		engine,
+		"errors.0.message",
+		`Field \"priority\" of required type \"String!\" was not provided.`,
+		true,
+	)
+	require.NoError(t, err)
+}
+
 func TestValidateBodyEquals_XML(t *testing.T) {
 	actual := []byte(`<root><status>ok</status><user id="1">John</user></root>`)
 	expected := `<root>
