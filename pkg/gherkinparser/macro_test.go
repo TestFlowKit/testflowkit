@@ -223,6 +223,85 @@ var applyMacroTests = []testApplyMacro{
 			"Then a result",
 		},
 	},
+	{
+		// Regression: when the first macro call expands to more lines than it
+		// occupies (e.g. it contains inner DataTable rows), the second macro call
+		// must still be expanded at the correct position.
+		name: "two macro calls in same scenario where first expansion grows line count",
+		scenario: &scenario{
+			Steps: []*step{
+				{Keyword: "When", Text: "set headers macro", Location: &messages.Location{Line: 2},
+					DataTable: &messages.DataTable{
+						Rows: []*messages.TableRow{
+							{Cells: []*messages.TableCell{{Value: "token"}, {Value: "abc"}}},
+						},
+					},
+				},
+				{Keyword: "When", Text: "set variables macro", Location: &messages.Location{Line: 4},
+					DataTable: &messages.DataTable{
+						Rows: []*messages.TableRow{
+							{Cells: []*messages.TableCell{{Value: "input"}, {Value: "xyz"}}},
+						},
+					},
+				},
+			},
+		},
+		macroTitles: []string{"set headers macro", "set variables macro"},
+		macros: []scenario{
+			{
+				Name: "set headers macro",
+				Steps: []*step{
+					{Keyword: "Given", Text: "I prepare a request"},
+					{
+						Keyword: "And",
+						Text:    "I set the following headers:",
+						DataTable: &messages.DataTable{
+							Rows: []*messages.TableRow{
+								{
+									Location: &messages.Location{Column: 5},
+									Cells:    []*messages.TableCell{{Value: "Authorization"}, {Value: "Bearer ${token}"}},
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				Name: "set variables macro",
+				Steps: []*step{
+					{
+						Keyword: "When",
+						Text:    "I set the following GraphQL variables:",
+						DataTable: &messages.DataTable{
+							Rows: []*messages.TableRow{
+								{
+									Location: &messages.Location{Column: 5},
+									Cells:    []*messages.TableCell{{Value: "input"}, {Value: "${input}"}},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		featureContent: []string{
+			"Scenario: Test scenario",
+			"When set headers macro",
+			"    | token | abc |",
+			"When set variables macro",
+			"    | input | xyz |",
+			"Then a result",
+		},
+		expected: []string{
+			"Scenario: Test scenario",
+			"When I prepare a request",
+			"And I set the following headers:",
+			"    | Authorization | Bearer abc |\n",
+			"When I set the following GraphQL variables:",
+			"    | input | xyz |\n",
+			"Then a result",
+		},
+	},
 }
 
 func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
