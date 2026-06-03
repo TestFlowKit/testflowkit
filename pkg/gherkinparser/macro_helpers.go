@@ -96,32 +96,44 @@ func (mh *Macrohelpers) containsMacro(steps []*messages.Step) bool {
 // apply macro and return updated feature content.
 func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureContent string) (string, error) {
 	featureContentLines := strings.Split(featureContent, "\n")
+
+	// Collect only the steps that are macro calls, preserving their macro index.
+	type macroMatch struct {
+		step     *messages.Step
+		macroIdx int
+	}
+	var macroMatches []macroMatch
 	for _, step := range scenarioSteps {
 		macroIdx := slices.IndexFunc(mh.macros, func(macro scenario) bool {
 			return macro.Name == step.Text
 		})
-
-		isMacroStep := macroIdx != -1
-		if !isMacroStep {
-			continue
+		if macroIdx != -1 {
+			macroMatches = append(macroMatches, macroMatch{step: step, macroIdx: macroIdx})
 		}
+	}
 
+	// Process macro calls bottom-to-top so that replacing a lower call does not
+	// shift the line numbers of calls that appear earlier in the file.
+	slices.SortFunc(macroMatches, func(a, b macroMatch) int {
+		return int(b.step.Location.Line) - int(a.step.Location.Line)
+	})
+
+	for _, match := range macroMatches {
 		// Convert DataTable to map for efficient variable substitution
 		// Each row: [variable_name, value] → map entry
 		expandedSteps, err := mh.expandMacroSteps(ExpandMacroParam{
-			Macro:     mh.macros[macroIdx],
-			Keyword:   step.Keyword,
-			Variables: getMacroVariables(step.DataTable), // Convert to map here
+			Macro:     mh.macros[match.macroIdx],
+			Keyword:   match.step.Keyword,
+			Variables: getMacroVariables(match.step.DataTable),
 		})
 		if err != nil {
 			return "", err
 		}
 
-		stepStartLine := int(step.Location.Line) - 1
+		stepStartLine := int(match.step.Location.Line) - 1
 		stepEndLine := mh.getStepEndLine(stepStartLine, featureContentLines)
 
 		featureContentLines = slices.Delete(featureContentLines, stepStartLine, stepEndLine+1)
-
 		featureContentLines = slices.Insert(featureContentLines, stepStartLine, expandedSteps...)
 	}
 
