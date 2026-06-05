@@ -27,8 +27,8 @@ func NewParser(store Store) *Parser {
 
 // Supports: JSON arrays, JSON objects, booleans, numbers, and strings.
 func (p *Parser) ParseValue(value string) (any, error) {
-	if value == "" {
-		return "", nil
+	if value == "" || p.HasVariablePlaceholders(value) {
+		return value, nil
 	}
 
 	// Handle JSON arrays
@@ -169,7 +169,6 @@ func (p *Parser) GetVariableType(value any) string {
 	}
 }
 
-// HasVariablePlaceholders checks if a string contains any variable placeholders.
 func (p *Parser) HasVariablePlaceholders(input string) bool {
 	return variablePlaceholderRe.MatchString(input)
 }
