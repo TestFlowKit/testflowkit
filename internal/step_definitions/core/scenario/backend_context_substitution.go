@@ -66,9 +66,6 @@ func (bc *BackendContext) marshalAndSubstituteVariables(ctx *Context) error {
 	}
 	bc.GraphQL.Variables = newVariables
 
-	// Post-processing: Try to parse strings that look like JSON or booleans/numbers
-	// This ensures that variables that were substituted into complex types (arrays/objects)
-	// are correctly parsed into their Go types.
 	for k, v := range bc.GraphQL.Variables {
 		if strVal, ok := v.(string); ok {
 			if parsed, errParse := bc.parser.ParseValue(strVal); errParse == nil {
