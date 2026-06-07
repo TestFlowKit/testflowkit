@@ -20,7 +20,7 @@ require (
 	github.com/fatih/color v1.19.0
 	github.com/gofrs/uuid/v5 v5.4.0
 	github.com/lucasjones/reggen v0.0.0-20200904144131-37ba4fa293bb
-	github.com/nyaruka/phonenumbers v1.7.5
+	github.com/nyaruka/phonenumbers v1.8.0
 	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/tidwall/gjson v1.19.0
 )
