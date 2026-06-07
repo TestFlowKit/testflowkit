@@ -70,3 +70,37 @@ func TestNumberWildcardShouldMatchNumericValues(t *testing.T) {
 		}
 	}
 }
+
+func TestIntWildcardShouldRejectNonIntegerValues(t *testing.T) {
+	pattern := ConvertWildcards(`^I must see {int} links$`)
+	re := regexp.MustCompile(pattern)
+
+	if re.MatchString(`I must see 4.5 links`) {
+		t.Fatalf("int wildcard unexpectedly matched a float value\npattern: %s", pattern)
+	}
+	if re.MatchString(`I must see "12" links`) {
+		t.Fatalf("int wildcard unexpectedly matched a quoted number\npattern: %s", pattern)
+	}
+	if !re.MatchString(`I must see 10 links`) {
+		t.Fatalf("int wildcard did not match an integer value\npattern: %s", pattern)
+	}
+	if !re.MatchString(`I must see -3 links`) {
+		t.Fatalf("int wildcard did not match a negative integer value\npattern: %s", pattern)
+	}
+}
+
+func TestIntWildcardShouldMatchIntegerValues(t *testing.T) {
+	pattern := ConvertWildcards(`^I must see {int} links$`)
+	re := regexp.MustCompile(pattern)
+
+	cases := []string{
+		`I must see 10 links`,
+		`I must see -3 links`,
+	}
+
+	for _, step := range cases {
+		if !re.MatchString(step) {
+			t.Fatalf("int wildcard did not match integer step\npattern: %s\nstep: %s", pattern, step)
+		}
+	}
+}

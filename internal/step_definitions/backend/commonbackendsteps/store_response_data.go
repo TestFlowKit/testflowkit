@@ -14,7 +14,7 @@ import (
 
 func (steps) storeResponseData() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`I store the value from "{string}" as "{string}"`},
+		[]string{`I store the value from {string} as {string}`},
 		func(ctx context.Context, responsePath, variableName string) (context.Context, error) {
 			scenarioCtx := scenario.MustFromContext(ctx)
 			backend := scenarioCtx.GetBackendContext()

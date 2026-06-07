@@ -11,7 +11,7 @@ import (
 
 func (s steps) dropdownHasValuesSelected() stepbuilder.Step {
 	return s.newDropdownSelectedStep(
-		`the {string} dropdown should have "{string}" selected`,
+		`the {string} dropdown should have {string} selected`,
 		true,
 		stepbuilder.DocParams{
 			Description: "checks if the dropdown has the specified values selected.",
@@ -33,7 +33,7 @@ func (s steps) dropdownShouldNotHaveValuesSelected() stepbuilder.Step {
 	}
 
 	return s.newDropdownSelectedStep(
-		`the {string} dropdown should not have "{string}" selected`,
+		`the {string} dropdown should not have {string} selected`,
 		false,
 		stepbuilder.DocParams{
 			Description: "checks if the dropdown does not have the specified values selected.",

@@ -8,7 +8,7 @@ import (
 // validateJSONPathValue validates that a JSON path has a specific value.
 func (s steps) validateJSONPathValue() stepbuilder.Step {
 	return s.newJSONPathValueStep(
-		`the response field "{string}" should be "{string}"`,
+		`the response field {string} should be {string}`,
 		true,
 		newResponseFieldDocParams(
 			"Validates that a specific response path has the expected value.",
@@ -23,7 +23,7 @@ func (s steps) validateJSONPathValue() stepbuilder.Step {
 // validateJSONPathValueNot validates that a JSON path does not have a specific value.
 func (s steps) validateJSONPathValueNot() stepbuilder.Step {
 	return s.newJSONPathValueStep(
-		`the response field "{string}" should not be "{string}"`,
+		`the response field {string} should not be {string}`,
 		false,
 		newResponseFieldDocParams(
 			"Validates that a specific response path does not have the specified value.",
