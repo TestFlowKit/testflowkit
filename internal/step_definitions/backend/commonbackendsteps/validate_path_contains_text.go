@@ -8,7 +8,7 @@ import (
 // validateJSONPathContains validates that a JSON path field contains specific text.
 func (s steps) validateJSONPathContains() stepbuilder.Step {
 	return s.newJSONPathContainsStep(
-		`the response field "{string}" should contain "{string}"`,
+		`the response field {string} should contain {string}`,
 		true,
 		newResponseFieldDocParams(
 			"Validates that a specific response path field contains the expected text (substring match).",
@@ -23,7 +23,7 @@ func (s steps) validateJSONPathContains() stepbuilder.Step {
 // validateJSONPathNotContains validates that a JSON path field does not contain specific text.
 func (s steps) validateJSONPathNotContains() stepbuilder.Step {
 	return s.newJSONPathContainsStep(
-		`the response field "{string}" should not contain "{string}"`,
+		`the response field {string} should not contain {string}`,
 		false,
 		newResponseFieldDocParams(
 			"Validates that a specific response path field does not contain the specified text.",

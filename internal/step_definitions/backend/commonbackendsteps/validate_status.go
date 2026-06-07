@@ -12,7 +12,7 @@ import (
 
 func (s steps) validateStatusCode() stepbuilder.Step {
 	return s.newStatusCodeStep(
-		`the response status code should be {number}`,
+		`the response status code should be {int}`,
 		true,
 		stepbuilder.DocParams{
 			Description: "Validates the HTTP response status code.",
@@ -27,7 +27,7 @@ func (s steps) validateStatusCode() stepbuilder.Step {
 
 func (s steps) validateStatusCodeNot() stepbuilder.Step {
 	return s.newStatusCodeStep(
-		`the response status code should not be {number}`,
+		`the response status code should not be {int}`,
 		false,
 		stepbuilder.DocParams{
 			Description: "Validates the HTTP response status code is not a specific value.",

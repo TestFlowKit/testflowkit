@@ -16,7 +16,7 @@ func (steps) userSelectOptionByIndexIntoDropdown() stepbuilder.Step {
 	}
 
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`the user selects the option at index {number} from the {string} dropdown`},
+		[]string{`the user selects the option at index {int} from the {string} dropdown`},
 		func(ctx context.Context, index, dropdownId string) (context.Context, error) {
 			indexInt, err := strconv.Atoi(index)
 			if err != nil {

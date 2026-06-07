@@ -11,7 +11,7 @@ import (
 
 func (steps) shouldSeeOnPageXElements() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`the user should see {number} {string} elements on the page`},
+		[]string{`the user should see {int} {string} elements on the page`},
 		func(ctx context.Context, expectedCount, elementName string) (context.Context, error) {
 			expectedCountInt, err := strconv.Atoi(expectedCount)
 			if err != nil {

@@ -14,7 +14,7 @@ import (
 // validateJSONBodyContains checks if response body contains a specific value.
 func (s steps) validateJSONBodyContains() stepbuilder.Step {
 	return s.newJSONBodyContainsStep(
-		`the response should contain "{string}"`,
+		`the response should contain {string}`,
 		true,
 		stepbuilder.DocParams{
 			Description: "Validates that the response contains a specific text.",
@@ -34,7 +34,7 @@ func (s steps) validateJSONBodyContains() stepbuilder.Step {
 // validateJSONBodyNotContains checks if response body does not contain a specific value.
 func (s steps) validateJSONBodyNotContains() stepbuilder.Step {
 	return s.newJSONBodyContainsStep(
-		`the response should not contain "{string}"`,
+		`the response should not contain {string}`,
 		false,
 		stepbuilder.DocParams{
 			Description: "Validates that the response does not contain a specific text.",

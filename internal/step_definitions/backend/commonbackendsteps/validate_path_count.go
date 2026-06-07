@@ -13,8 +13,8 @@ import (
 
 func (s steps) validatePathCount() stepbuilder.Step {
 	return stepbuilder.NewWithTwoVariables(
-		[]string{`the response path "{string}" should have {int} elements`},
-		func(ctx context.Context, expectedCountRaw, path string) (context.Context, error) {
+		[]string{`the response path {string} should have {int} elements`},
+		func(ctx context.Context, path, expectedCountRaw string) (context.Context, error) {
 			expectedCount, err := strconv.Atoi(expectedCountRaw)
 			if err != nil {
 				return ctx, fmt.Errorf("invalid expected count '%s': %w", expectedCountRaw, err)

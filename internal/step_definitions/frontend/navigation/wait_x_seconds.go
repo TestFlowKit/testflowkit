@@ -10,7 +10,7 @@ import (
 
 func (steps) userWait() stepbuilder.Step {
 	return stepbuilder.NewWithOneVariable(
-		[]string{`the user waits for {number} seconds`},
+		[]string{`the user waits for {int} seconds`},
 		func(ctx context.Context, seconds string) (context.Context, error) {
 			secondsInt, err := strconv.Atoi(seconds)
 			if err != nil {
