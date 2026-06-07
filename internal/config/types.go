@@ -64,10 +64,18 @@ type GlobalSettings struct {
 // DebugConfig holds debug-mode settings. All fields default to their zero
 // values so that existing config files without a "debug" block continue to
 // work unchanged.
+//
+// Debug mode itself is only enabled via the CLI `--debug` flag and is not
+// controlled by the configuration file.
 type DebugConfig struct {
 	PrettyPrint bool `yaml:"pretty_print"`
 
 	MaxBodySize int64 `yaml:"max_body_size" validate:"min=0,max=10485760"`
+
+	// Enabled toggles debug-mode features (full request/response printing).
+	// This field is set by CLI overrides only and is ignored during YAML
+	// unmarshalling.
+	Enabled bool `yaml:"-"`
 }
 
 type FrontendElements = map[string]map[string][]string

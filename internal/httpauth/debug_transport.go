@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"time"
 
 	"testflowkit/pkg/formatter"
 	"testflowkit/pkg/logger"
@@ -34,59 +35,68 @@ type DebugTransport struct {
 func (d *DebugTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	d.logRequest(req)
 
+	start := time.Now()
 	resp, err := d.base().RoundTrip(req)
+	duration := time.Since(start)
 	if err != nil {
 		return nil, err
 	}
 
-	d.logResponse(resp)
+	d.logResponse(resp, duration)
 	return resp, nil
 }
 
 func (d *DebugTransport) logRequest(req *http.Request) {
-	if req.Body == nil {
-		return
+	// Read and restore body if present
+	var body []byte
+	if req.Body != nil {
+		b, err := io.ReadAll(req.Body)
+		if err != nil {
+			logger.DebugFf("Request body read error: %v", err)
+		} else {
+			body = b
+		}
+
+		req.Body = io.NopCloser(bytes.NewReader(body))
+		req.GetBody = func() (io.ReadCloser, error) {
+			return io.NopCloser(bytes.NewReader(body)), nil
+		}
 	}
 
-	body, err := io.ReadAll(req.Body)
-	if err != nil {
-		// Do not block the request; log what we have.
-		logger.DebugFf("Request body read error: %v", err)
-		return
-	}
-
-	// Restore the body so AuthTransport and the HTTP stack can still read it.
-	req.Body = io.NopCloser(bytes.NewReader(body))
-	req.GetBody = func() (io.ReadCloser, error) {
-		return io.NopCloser(bytes.NewReader(body)), nil
-	}
-
+	// Mask headers, URL, and body for logging
+	maskedHeaders := logger.MaskHeaders(req.Header)
+	maskedURL := logger.MaskURL(req.URL)
 	contentType := req.Header.Get("Content-Type")
+	maskedBody := logger.MaskBody(contentType, body)
 	maxSize := d.effectiveMaxSize()
-	logger.DebugFf("→ Request body (%s):\n%s", contentType, formatter.Format(contentType, body, maxSize))
+
+	logger.DebugFf("→ Request %s %s", req.Method, maskedURL)
+	logger.DebugFf("Headers:\n%s", logger.HeadersToString(maskedHeaders))
+	logger.DebugFf("Body (%s):\n%s", contentType, formatter.Format(contentType, maskedBody, maxSize))
 }
 
-func (d *DebugTransport) logResponse(resp *http.Response) {
-	if resp.Body == nil {
-		return
+func (d *DebugTransport) logResponse(resp *http.Response, duration time.Duration) {
+	var body []byte
+	if resp.Body != nil {
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			logger.DebugFf("Response body read error: %v", err)
+			// Attempt to restore what we have and continue
+			resp.Body = io.NopCloser(io.MultiReader(bytes.NewReader(b), resp.Body))
+			return
+		}
+		_ = resp.Body.Close()
+		resp.Body = io.NopCloser(bytes.NewReader(b))
+		body = b
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		logger.DebugFf("Response body read error: %v", err)
-		// Restore the body so callers can still read any bytes already consumed
-		// during logging and then continue reading from the original stream.
-		resp.Body = io.NopCloser(io.MultiReader(bytes.NewReader(body), resp.Body))
-		return
-	}
-
-	_ = resp.Body.Close()
-	// Restore the body so application code can still read the full response.
-	resp.Body = io.NopCloser(bytes.NewReader(body))
-
+	maskedHeaders := logger.MaskHeaders(resp.Header)
 	contentType := resp.Header.Get("Content-Type")
-	maxSize := d.effectiveMaxSize()
-	logger.DebugFf("← Response body (%s):\n%s", contentType, formatter.Format(contentType, body, maxSize))
+	maskedBody := logger.MaskBody(contentType, body)
+
+	logger.DebugFf("← Response %d %s (%s)", resp.StatusCode, resp.Status, duration)
+	logger.DebugFf("Headers:\n%s", logger.HeadersToString(maskedHeaders))
+	logger.DebugFf("Body (%s):\n%s", contentType, formatter.Format(contentType, maskedBody, d.effectiveMaxSize()))
 }
 
 func (d *DebugTransport) base() http.RoundTripper {

@@ -35,8 +35,30 @@ func (f consoleReportFormatter) WriteReport(details testSuiteDetails) {
 	)
 	fmt.Fprintln(os.Stdout, cyan(consoleSeparator))
 
-	for _, sc := range details.Scenarios {
-		printScenario(sc, green, red)
+	// Separate scenarios into categories
+	beforeAllScenarios := filterScenarios(details.Scenarios, beforeHook)
+	afterAllScenarios := filterScenarios(details.Scenarios, afterHook)
+	regularScenarios := filterScenarios(details.Scenarios, scenario)
+
+	// Print BeforeAll hooks
+	if len(beforeAllScenarios) > 0 {
+		fmt.Fprintln(os.Stdout, cyan("📋 BEFORE ALL HOOKS"))
+		fmt.Fprintln(os.Stdout, cyan(consoleSeparator))
+		printScenariosGrouped(beforeAllScenarios, green, red)
+	}
+
+	// Print regular scenarios
+	if len(regularScenarios) > 0 {
+		fmt.Fprintln(os.Stdout, cyan("📋 SCENARIOS"))
+		fmt.Fprintln(os.Stdout, cyan(consoleSeparator))
+		printScenariosGrouped(regularScenarios, green, red)
+	}
+
+	// Print AfterAll hooks
+	if len(afterAllScenarios) > 0 {
+		fmt.Fprintln(os.Stdout, cyan("📋 AFTER ALL HOOKS"))
+		fmt.Fprintln(os.Stdout, cyan(consoleSeparator))
+		printScenariosGrouped(afterAllScenarios, green, red)
 	}
 
 	fmt.Fprintln(os.Stdout, cyan(consoleSeparator))
@@ -101,5 +123,39 @@ func colorizeRate(rate string, green, red, yellow func(format string, a ...inter
 		return red(rate)
 	default:
 		return yellow(rate)
+	}
+}
+
+// filterScenarios returns scenarios matching the given type.
+func filterScenarios(scenarios []Scenario, scType scenarioType) []Scenario {
+	var filtered []Scenario
+	for _, sc := range scenarios {
+		if sc.Type == scType {
+			filtered = append(filtered, sc)
+		}
+	}
+	return filtered
+}
+
+// printScenariosGrouped prints scenarios grouped by success/failure (succeeded first, then failed).
+func printScenariosGrouped(scenarios []Scenario, green, red func(format string, a ...interface{}) string) {
+	// Separate succeeded and failed scenarios
+	var succeeded, failed []Scenario
+	for _, sc := range scenarios {
+		if sc.Result == scenarioResult("succeeded") {
+			succeeded = append(succeeded, sc)
+		} else {
+			failed = append(failed, sc)
+		}
+	}
+
+	// Print succeeded scenarios first
+	for _, sc := range succeeded {
+		printScenario(sc, green, red)
+	}
+
+	// Print failed scenarios
+	for _, sc := range failed {
+		printScenario(sc, green, red)
 	}
 }

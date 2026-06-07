@@ -100,6 +100,8 @@ func applyOverrides(config *Config, overrides Overrides) {
 		config.Settings.GherkinLocation = overrides.Settings.GherkinLocation
 	}
 
+	config.Settings.Debug.Enabled = overrides.Settings.Debug.Enabled
+
 	if overrides.Settings.Tags != "" {
 		config.Settings.Tags = overrides.Settings.Tags
 	}

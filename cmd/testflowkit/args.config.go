@@ -43,6 +43,9 @@ func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 				GherkinLocation: a.Run.GherkinLocation,
 				Tags:            a.Run.Tags,
 				EnvFile:         a.Run.EnvFile,
+				Debug: config.DebugConfig{
+					Enabled: a.Run.Debug,
+				},
 			},
 			Frontend: config.FrontendConfig{
 				DefaultTimeout: a.GetTimeout(),
@@ -120,6 +123,7 @@ type runCmd struct {
 	commonCmd
 	Headless bool   `arg:"--headless" help:"headless mode" default:"true"`
 	Timeout  string `arg:"--timeout" help:"timeout duration (e.g. 10s, 1m, 2h)"`
+	Debug    bool   `arg:"--debug" help:"enable debug output (full request/response payloads)"`
 }
 
 type initCmd struct {

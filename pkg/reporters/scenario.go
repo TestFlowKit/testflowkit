@@ -9,6 +9,14 @@ import (
 
 const colorGray = "gray"
 
+type scenarioType string
+
+const (
+	beforeHook scenarioType = "beforeHook"
+	scenario   scenarioType = "scenario"
+	afterHook  scenarioType = "afterHook"
+)
+
 type Scenario struct {
 	Title     string
 	Steps     []Step
@@ -16,6 +24,7 @@ type Scenario struct {
 	StartDate time.Time
 	Duration  time.Duration
 	Result    scenarioResult
+	Type      scenarioType
 }
 
 func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration time.Duration, err error) {
@@ -80,8 +89,23 @@ type Step struct {
 	ScreenshotBase64     string
 }
 
-func NewScenario() Scenario {
+func NewMainScenario() Scenario {
 	return Scenario{
 		StartDate: time.Now(),
+		Type:      scenario,
+	}
+}
+
+func NewBeforeAllHook() Scenario {
+	return Scenario{
+		StartDate: time.Now(),
+		Type:      beforeHook,
+	}
+}
+
+func NewAfterAllHook() Scenario {
+	return Scenario{
+		StartDate: time.Now(),
+		Type:      afterHook,
 	}
 }

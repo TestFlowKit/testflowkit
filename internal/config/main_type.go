@@ -155,6 +155,11 @@ func (c *Config) GetDebugMaxBodySize(defaultSize int64) int64 {
 	return defaultSize
 }
 
+// IsDebugEnabled returns true when debug mode is enabled via config or CLI.
+func (c *Config) IsDebugEnabled() bool {
+	return c.Settings.Debug.Enabled
+}
+
 func (c *Config) ValidateConfiguration() error {
 	if err := c.validateGlobalSettings(); err != nil {
 		return err

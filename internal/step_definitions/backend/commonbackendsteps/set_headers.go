@@ -22,7 +22,6 @@ func (steps) setHeaders() stepbuilder.Step {
 			}
 
 			setHeadersHelper(ctx, headers)
-			logger.InfoFf("Headers set: %v", headers)
 			return ctx, nil
 		},
 		nil,

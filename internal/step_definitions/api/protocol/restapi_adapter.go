@@ -141,7 +141,6 @@ func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenari
 	bodyReader := a.getBodyReader(scenarioCtx)
 
 	finalURL := endpoint.GetFullURL()
-	logger.InfoFf("Sending %s request to: %s", endpoint.Method, finalURL)
 
 	req, err := http.NewRequestWithContext(ctx, endpoint.Method, finalURL, bodyReader)
 	if err != nil {

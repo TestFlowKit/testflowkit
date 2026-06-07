@@ -9,7 +9,6 @@ import (
 	"testflowkit/internal/step_definitions/api/protocol"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
-	"testflowkit/pkg/logger"
 )
 
 func (steps) prepareRequest() stepbuilder.Step {
@@ -53,7 +52,6 @@ func (steps) prepareRequest() stepbuilder.Step {
 				return ctx, fmt.Errorf("failed to prepare request: %w", err)
 			}
 
-			logger.InfoFf("Request prepared: %s - %s.%s", adapter.GetProtocolName(), apiName, endpointName)
 			return ctx, nil
 		},
 		nil,

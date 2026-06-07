@@ -123,6 +123,11 @@ func runAfterAllScenarios(params RunScenariosParams) {
 		features:    gherkinParserFeaturesToGodogFeatures(params.features),
 		concurrency: 1,
 		engine:      params.engine,
+		scenarioBuilder: func() *myScenarioCtx {
+			return &myScenarioCtx{
+				scenarioReport: reporters.NewAfterAllHook(),
+			}
+		},
 	})
 
 	if afterAllSuite != nil {
@@ -137,6 +142,11 @@ func runMainScenarios(params RunScenariosParams) {
 		features:    gherkinParserFeaturesToGodogFeatures(params.features),
 		concurrency: params.appConfig.GetConcurrency(),
 		engine:      params.engine,
+		scenarioBuilder: func() *myScenarioCtx {
+			return &myScenarioCtx{
+				scenarioReport: reporters.NewMainScenario(),
+			}
+		},
 	})
 	if mainSuite != nil {
 		mainSuite.Run()
@@ -151,6 +161,11 @@ func runBeforeAllScenarios(params RunScenariosParams) {
 		features:    feats,
 		concurrency: 1,
 		engine:      params.engine,
+		scenarioBuilder: func() *myScenarioCtx {
+			return &myScenarioCtx{
+				scenarioReport: reporters.NewBeforeAllHook(),
+			}
+		},
 	})
 	if beforeAllSuite == nil {
 		return
@@ -184,19 +199,21 @@ func createTestSuite(params createTestSuiteParams) *godog.TestSuite {
 		Options:              &opts,
 		TestSuiteInitializer: testSuiteInitializer(params.testReport),
 		ScenarioInitializer: scenarioInitializer(ScenarioInitializerParams{
-			config:     params.appConfig,
-			testReport: params.testReport,
-			engine:     params.engine,
+			config:          params.appConfig,
+			testReport:      params.testReport,
+			engine:          params.engine,
+			scenarioBuilder: params.scenarioBuilder,
 		}),
 	}
 }
 
 type createTestSuiteParams struct {
-	appConfig   *config.Config
-	testReport  *reporters.Report
-	features    []godog.Feature
-	concurrency int
-	engine      browser.Engine
+	appConfig       *config.Config
+	testReport      *reporters.Report
+	features        []godog.Feature
+	concurrency     int
+	engine          browser.Engine
+	scenarioBuilder ScenarioBuilder
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
@@ -214,15 +231,15 @@ func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioC
 		// Inject global variables and engine here
 		scenarioCtx := scenario.NewContext(params.config, variables.GetGlobalVariables(), params.engine)
 		registerTestRunnerStepDefinitions(sc)
-		myCtx := newScenarioCtx()
+		myCtx := params.scenarioBuilder()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 			logger.InfoFf("Running scenario: %s", sc.Name)
 			ctx = scenario.WithContext(ctx, scenarioCtx)
 			return ctx, nil
 		})
-		sc.StepContext().Before(beforeStepHookInitializer(&myCtx))
-		sc.StepContext().After(afterStepHookInitializer(&myCtx, params.config))
-		sc.After(afterScenarioHookInitializer(params.testReport, &myCtx))
+		sc.StepContext().Before(beforeStepHookInitializer(myCtx))
+		sc.StepContext().After(afterStepHookInitializer(myCtx, params.config))
+		sc.After(afterScenarioHookInitializer(params.testReport, myCtx))
 	}
 }
 
@@ -287,15 +304,16 @@ func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenari
 		myCtx.scenarioReport.End()
 		testReport.AddScenario(myCtx.scenarioReport)
 
-		scenario.MustFromContext(ctx).Done()
+		scCtx := scenario.MustFromContext(ctx)
+		// Dump variables summary when debug enabled or on failure.
+		if scCtx.GetConfig().IsDebugEnabled() {
+			summary := scCtx.GenerateVariablesSummary()
+			logger.DebugFf("--- Scenario Variables for '%s' ---\n%s", sc.Name, summary)
+		}
+
+		scCtx.Done()
 
 		return ctx, err
-	}
-}
-
-func newScenarioCtx() myScenarioCtx {
-	return myScenarioCtx{
-		scenarioReport: reporters.NewScenario(),
 	}
 }
 
@@ -345,7 +363,10 @@ type RunScenariosParams struct {
 }
 
 type ScenarioInitializerParams struct {
-	config     *config.Config
-	testReport *reporters.Report
-	engine     browser.Engine
+	config          *config.Config
+	testReport      *reporters.Report
+	engine          browser.Engine
+	scenarioBuilder ScenarioBuilder
 }
+
+type ScenarioBuilder = func() *myScenarioCtx
