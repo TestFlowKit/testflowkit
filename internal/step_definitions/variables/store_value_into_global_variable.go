@@ -3,7 +3,6 @@ package variables
 import (
 	"context"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
-	"testflowkit/pkg/logger"
 	"testflowkit/pkg/variables"
 )
 
@@ -14,7 +13,6 @@ func (steps) storeValueIntoGlobalVariable() stepbuilder.Step {
 		},
 		func(ctx context.Context, value, varName string) (context.Context, error) {
 			variables.SetGlobalVariable(varName, value)
-			logger.InfoFf("Stored value '%s' into global variable '%s'", value, varName)
 			return ctx, nil
 		},
 		nil,

@@ -7,7 +7,6 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/pkg/apperrors"
-	"testflowkit/pkg/logger"
 )
 
 func (steps) sendRequest() stepbuilder.Step {
@@ -25,7 +24,6 @@ func (steps) sendRequest() stepbuilder.Step {
 			}
 
 			protocol := backend.GetProtocol()
-			logger.InfoFf("Sending %s request...", protocol.GetProtocolName())
 
 			// Substitute variables in the backend context before sending
 			if err := backend.SubstituteVariables(scenarioCtx); err != nil {

@@ -13,6 +13,7 @@ import (
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/utils/fileutils"
 	"testflowkit/pkg/apperrors"
+	"testflowkit/pkg/formatter"
 	"testflowkit/pkg/graphql"
 	"testflowkit/pkg/logger"
 	"time"
@@ -92,7 +93,6 @@ func (*GraphQLAdapter) getQuery(operation string) (string, error) {
 		return "", fmt.Errorf("failed to read GraphQL query file '%s': %w", operation, err)
 	}
 
-	logger.InfoFf("GraphQL query loaded from file: %s", operation)
 	return string(content), nil
 }
 
@@ -134,8 +134,28 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	// Ensure variables are set in the request
 	request.Variables = scenarioCtx.GetGraphQLVariables()
-	if len(request.Variables) > 0 {
-		logger.InfoFf("GraphQL Variables: %v", request.Variables)
+	if scenarioCtx.GetConfig().IsDebugEnabled() {
+		// Marshal request body for debug output
+		reqBytes, _ := json.Marshal(request)
+		masked := logger.MaskBody("application/json", reqBytes)
+		logger.DebugFf("→ GraphQL Request %s", endpoint)
+		// convert headers map to http.Header for printing
+		reqHdr := http.Header{}
+		for k, v := range headers {
+			reqHdr.Set(k, v)
+		}
+		logger.DebugFf("Headers:\n%s", logger.HeadersToString(reqHdr))
+		if len(request.Variables) > 0 {
+			logger.DebugFf("GraphQL Variables: %v", request.Variables)
+		}
+		logger.DebugFf(
+			"Body (application/json):\n%s",
+			formatter.Format(
+				"application/json",
+				masked,
+				scenarioCtx.GetConfig().GetDebugMaxBodySize(formatter.DefaultMaxBodySize),
+			),
+		)
 	}
 
 	startTime := time.Now()
@@ -147,8 +167,29 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	scenarioCtx.SetGraphQLResponse(response)
 
-	logger.InfoFf("GraphQL request completed - Status: %d, Duration: %v, Errors: %d",
-		response.StatusCode, duration, len(response.Errors))
+	if scenarioCtx.GetConfig().IsDebugEnabled() {
+		// Mask headers and body for debug
+		respHdr := http.Header{}
+		for k, v := range headers {
+			respHdr.Set(k, v)
+		}
+		maskedHdrs := logger.MaskHeaders(respHdr)
+		maskedBody := logger.MaskBody("application/json", response.RawBody)
+		logger.DebugFf("← GraphQL Response %d (%v)", response.StatusCode, duration)
+		logger.DebugFf("Headers:\n%s", logger.HeadersToString(maskedHdrs))
+		logger.DebugFf(
+			"Body (application/json):\n%s",
+			formatter.Format(
+				"application/json",
+				maskedBody,
+				scenarioCtx.GetConfig().GetDebugMaxBodySize(formatter.DefaultMaxBodySize),
+			),
+		)
+
+		logger.DebugFf(
+			"GraphQL request completed - Status: %d, Duration: %v, Errors: %d",
+			response.StatusCode, duration, len(response.Errors))
+	}
 
 	return ctx, nil
 }

@@ -16,6 +16,7 @@ import (
 	"testflowkit/internal/config"
 	"testflowkit/internal/security"
 	"testflowkit/internal/security/providers"
+	"testflowkit/pkg/formatter"
 )
 
 // AuthTransport wraps a base http.RoundTripper and adds auth injection.
@@ -181,8 +182,19 @@ func NewClient(
 		Resolved: resolved,
 	}
 
+	// Wrap with DebugTransport when debug mode is enabled in config.
+	// DebugTransport sits outside AuthTransport: DebugTransport -> AuthTransport -> Base
+	var finalTransport http.RoundTripper = transport
+	if cfg, errCfg := config.Get(); errCfg == nil && cfg.IsDebugEnabled() {
+		dt := &DebugTransport{
+			Base:        transport,
+			MaxBodySize: cfg.GetDebugMaxBodySize(formatter.DefaultMaxBodySize),
+		}
+		finalTransport = dt
+	}
+
 	return &http.Client{
-		Transport: transport,
+		Transport: finalTransport,
 		Timeout:   timeout,
 	}, nil
 }

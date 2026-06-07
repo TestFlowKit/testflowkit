@@ -58,7 +58,6 @@ func ReplaceVariablesInString(ctx *Context, sentence string) string {
 				log.Printf("rand generation failed for '%s': %v", varName, err)
 				continue
 			}
-			log.Printf("[rand] generated '%s' → %s", varDef, generated)
 			replacedSentence = strings.ReplaceAll(replacedSentence, varDef, generated)
 			continue
 		}

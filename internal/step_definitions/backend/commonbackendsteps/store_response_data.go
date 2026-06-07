@@ -9,7 +9,6 @@ import (
 	"testflowkit/internal/step_definitions/core/stepbuilder"
 	"testflowkit/internal/step_definitions/helpers"
 	"testflowkit/pkg/apperrors"
-	"testflowkit/pkg/logger"
 )
 
 func (steps) storeResponseData() stepbuilder.Step {
@@ -36,7 +35,6 @@ func (steps) storeResponseData() stepbuilder.Step {
 			backend.SetGraphQLVariable(variableName, value)
 			scenarioCtx.SetVariable(variableName, value)
 
-			logger.InfoFf("Stored value from '%s' as '%s': %v", responsePath, variableName, value)
 			return ctx, nil
 		},
 		nil,

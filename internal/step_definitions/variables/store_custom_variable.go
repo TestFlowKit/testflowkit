@@ -4,7 +4,6 @@ import (
 	"context"
 	"testflowkit/internal/step_definitions/core/scenario"
 	"testflowkit/internal/step_definitions/core/stepbuilder"
-	"testflowkit/pkg/logger"
 )
 
 func (steps) storeCustomVariable() stepbuilder.Step {
@@ -16,7 +15,6 @@ func (steps) storeCustomVariable() stepbuilder.Step {
 			scenarioCtx := scenario.MustFromContext(ctx)
 
 			scenarioCtx.SetVariable(varName, value)
-			logger.InfoFf("Stored value '%s' into variable '%s'", value, varName)
 
 			return ctx, nil
 		},
