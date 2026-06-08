@@ -41,16 +41,29 @@ func NewMacroHelpers(macros []scenario) *Macrohelpers {
 func (mh *Macrohelpers) ApplyMacroToFeature(feature Feature) (*Feature, error) {
 	currContent := string(feature.Contents)
 
+	// Always compute BackgroundStepCount so the scenario tracker can offset correctly.
+	bgStepCount := 0
+	if feature.background != nil {
+		bgStepCount = mh.expandedStepCount(feature.background.Steps)
+	}
+
 	if len(mh.macroNameSet) == 0 || !mh.macroPattern.MatchString(currContent) {
+		feature.BackgroundStepCount = bgStepCount
 		return &feature, nil
 	}
 
+	// Accumulate macro entries across reparsing passes (feature = *f resets zero fields).
+	var bgMacros []MacroExpansionEntry
+	scMacros := make(map[string][]MacroExpansionEntry)
+
 	if feature.background != nil && mh.containsMacro(feature.background.Steps) {
-		f, err := mh.applyMacrosAndReparse(feature.background.Steps, currContent)
+		res, err := mh.applyMacrosAndReparse(feature.background.Steps, currContent)
 		if err != nil {
 			return nil, err
 		}
-		feature = *f
+		bgMacros = res.entries
+		bgStepCount = res.totalStepCount
+		feature = *res.feature
 	}
 
 	for i := range len(feature.scenarios) {
@@ -59,26 +72,33 @@ func (mh *Macrohelpers) ApplyMacroToFeature(feature Feature) (*Feature, error) {
 			continue
 		}
 
-		f, err := mh.applyMacrosAndReparse(sc.Steps, string(feature.Contents))
+		res, err := mh.applyMacrosAndReparse(sc.Steps, string(feature.Contents))
 		if errors.Is(err, errFeatureParse) {
 			continue
 		}
-
 		if err != nil {
 			return nil, err
 		}
-		feature = *f
+		scMacros[sc.Name] = res.entries
+		feature = *res.feature
 	}
 
+	feature.BackgroundMacros = bgMacros
+	feature.BackgroundStepCount = bgStepCount
+	feature.ScenarioMacros = scMacros
 	return &feature, nil
 }
 
-func (mh *Macrohelpers) applyMacrosAndReparse(stepsToExpand []*messages.Step, featureContent string) (*Feature, error) {
-	newFeatureContent, err := mh.applyMacro(stepsToExpand, featureContent)
+func (mh *Macrohelpers) applyMacrosAndReparse(
+	stepsToExpand []*messages.Step, featureContent string,
+) (macroExpansionResult, error) {
+	res, err := mh.applyMacro(stepsToExpand, featureContent)
 	if err != nil {
-		return nil, err
+		return macroExpansionResult{}, err
 	}
-	return parseFeatureContent(newFeatureContent)
+	f, parseErr := parseFeatureContent(res.content)
+	res.feature = f
+	return res, parseErr
 }
 
 func (mh *Macrohelpers) containsMacro(steps []*messages.Step) bool {
@@ -93,9 +113,36 @@ func (mh *Macrohelpers) containsMacro(steps []*messages.Step) bool {
 	return false
 }
 
-// apply macro and return updated feature content.
-func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureContent string) (string, error) {
+// applyMacro expands all macro calls in scenarioSteps within featureContent.
+// Returns a macroExpansionResult with the updated content, expansion entries, and
+// total expanded step count. The feature field is not populated here; use
+// applyMacrosAndReparse when the re-parsed Feature is also needed.
+func (mh *Macrohelpers) applyMacro(
+	scenarioSteps []*messages.Step, featureContent string,
+) (macroExpansionResult, error) {
+	var entries []MacroExpansionEntry
+	runningIdx := 0
 	featureContentLines := strings.Split(featureContent, "\n")
+
+	// Precompute the absolute expanded step index of each macro call. This
+	// count includes normal steps and expanded macro steps so the tracker can
+	// collapse the correct step sequence.
+	stepOffsets := make(map[*messages.Step]int, len(scenarioSteps))
+	for _, step := range scenarioSteps {
+		if step == nil {
+			continue
+		}
+		macroIdx := slices.IndexFunc(mh.macros, func(macro scenario) bool {
+			return macro.Name == step.Text
+		})
+		if macroIdx == -1 {
+			runningIdx++
+			continue
+		}
+		stepOffsets[step] = runningIdx
+		expandedCount := len(mh.macros[macroIdx].Steps)
+		runningIdx += expandedCount
+	}
 
 	// Collect only the steps that are macro calls, preserving their macro index.
 	type macroMatch struct {
@@ -104,6 +151,9 @@ func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureConten
 	}
 	var macroMatches []macroMatch
 	for _, step := range scenarioSteps {
+		if step == nil {
+			continue
+		}
 		macroIdx := slices.IndexFunc(mh.macros, func(macro scenario) bool {
 			return macro.Name == step.Text
 		})
@@ -119,6 +169,14 @@ func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureConten
 	})
 
 	for _, match := range macroMatches {
+		expandedCount := len(mh.macros[match.macroIdx].Steps)
+		callText := strings.TrimSpace(match.step.Keyword) + " " + match.step.Text
+		entries = append(entries, MacroExpansionEntry{
+			CallText:  callText,
+			StartIdx:  stepOffsets[match.step],
+			StepCount: expandedCount,
+		})
+
 		// Convert DataTable to map for efficient variable substitution
 		// Each row: [variable_name, value] → map entry
 		expandedSteps, err := mh.expandMacroSteps(ExpandMacroParam{
@@ -127,7 +185,7 @@ func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureConten
 			Variables: getMacroVariables(match.step.DataTable),
 		})
 		if err != nil {
-			return "", err
+			return macroExpansionResult{}, err
 		}
 
 		stepStartLine := int(match.step.Location.Line) - 1
@@ -137,7 +195,30 @@ func (mh *Macrohelpers) applyMacro(scenarioSteps []*messages.Step, featureConten
 		featureContentLines = slices.Insert(featureContentLines, stepStartLine, expandedSteps...)
 	}
 
-	return strings.Join(featureContentLines, "\n"), nil
+	return macroExpansionResult{
+		content:        strings.Join(featureContentLines, "\n"),
+		entries:        entries,
+		totalStepCount: runningIdx,
+	}, nil
+}
+
+// expandedStepCount returns the total number of godog step-hook calls that will be
+// produced when all steps in the slice are executed (macro calls count as their
+// expanded step count, regular steps count as one each).
+func (mh *Macrohelpers) expandedStepCount(steps []*messages.Step) int {
+	count := 0
+	for _, step := range steps {
+		if step == nil {
+			continue
+		}
+		macroIdx := slices.IndexFunc(mh.macros, func(m scenario) bool { return m.Name == step.Text })
+		if macroIdx == -1 {
+			count++
+		} else {
+			count += len(mh.macros[macroIdx].Steps)
+		}
+	}
+	return count
 }
 
 func (mh *Macrohelpers) getStepEndLine(stepStartLine int, featureContent []string) int {

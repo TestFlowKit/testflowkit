@@ -52,6 +52,8 @@ type GlobalSettings struct {
 
 	ReportFormat string `yaml:"report_format" validate:"oneof=html json junit"`
 
+	ReportMode string `yaml:"report_mode" validate:"omitempty,oneof=explicit implicit"`
+
 	GherkinLocation string `yaml:"gherkin_location" validate:"required"`
 
 	Tags string `yaml:"tags"`

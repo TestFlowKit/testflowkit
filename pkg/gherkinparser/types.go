@@ -26,9 +26,31 @@ type Feature struct {
 	scenarios   []*scenario
 	background  *messages.Background
 	featureTags []*messages.Tag
+
+	// Macro expansion metadata populated by ApplyMacroToFeature.
+	// Used in implicit report mode to collapse macro calls into a single step.
+	BackgroundMacros    []MacroExpansionEntry
+	BackgroundStepCount int
+	ScenarioMacros      map[string][]MacroExpansionEntry
 }
 
 type scenario = messages.Scenario
+
+// ScenarioNames returns scenario names in declaration order.
+func (f *Feature) ScenarioNames() []string {
+	if f == nil || len(f.scenarios) == 0 {
+		return nil
+	}
+
+	names := make([]string, 0, len(f.scenarios))
+	for _, sc := range f.scenarios {
+		if sc == nil {
+			continue
+		}
+		names = append(names, sc.Name)
+	}
+	return names
+}
 
 // HasAnyStep reports whether any step text across the background and all scenarios
 // of the given features satisfies the match function. It returns true on the first match.
@@ -65,4 +87,18 @@ func stepMatches(steps []*messages.Step, match func(string) bool) bool {
 		}
 	}
 	return false
+}
+
+func FindFeatureForScenario(features []*Feature, scenarioName string) *Feature {
+	for _, f := range features {
+		if f == nil {
+			continue
+		}
+		for _, sc := range f.scenarios {
+			if sc != nil && sc.Name == scenarioName {
+				return f
+			}
+		}
+	}
+	return nil
 }
