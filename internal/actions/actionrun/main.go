@@ -36,10 +36,11 @@ func Execute(appConfig *config.Config, errCfg error) {
 	testReport := reporters.New(appConfig.Settings.ReportFormat)
 
 	feats := getFeaturesToProcess(appConfig.Settings.GherkinLocation, appConfig.Settings.Tags)
-	if len(feats) == 0 {
-		logger.Warn("No scenarios executed!", []string{
+
+	mainFeatures := gherkinparser.Filter(feats, appConfig.Settings.Tags)
+	if len(mainFeatures) == 0 {
+		logger.Warn("No main scenarios to execute!", []string{
 			"Make sure your tags are correct",
-			"Make sure your gherkin files directory is configured",
 		})
 		os.Exit(0)
 	}
@@ -60,7 +61,7 @@ func Execute(appConfig *config.Config, errCfg error) {
 	runMainScenarios(RunScenariosParams{
 		appConfig:  appConfig,
 		testReport: testReport,
-		features:   gherkinparser.Filter(feats, appConfig.Settings.Tags),
+		features:   mainFeatures,
 		engine:     engine,
 	})
 	runAfterAllScenarios(RunScenariosParams{
