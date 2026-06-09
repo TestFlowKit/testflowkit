@@ -119,11 +119,12 @@ func getFeaturesToProcess(featureLoc, mainTagsExpr string) []*gherkinparser.Feat
 
 func runAfterAllScenarios(params RunScenariosParams) {
 	afterAllSuite := createTestSuite(createTestSuiteParams{
-		appConfig:   params.appConfig,
-		testReport:  params.testReport,
-		features:    gherkinParserFeaturesToGodogFeatures(params.features),
-		concurrency: 1,
-		engine:      params.engine,
+		appConfig:       params.appConfig,
+		testReport:      params.testReport,
+		features:        gherkinParserFeaturesToGodogFeatures(params.features),
+		gherkinFeatures: params.features,
+		concurrency:     1,
+		engine:          params.engine,
 		scenarioBuilder: func() *myScenarioCtx {
 			return &myScenarioCtx{
 				scenarioReport: reporters.NewAfterAllHook(),
@@ -138,11 +139,12 @@ func runAfterAllScenarios(params RunScenariosParams) {
 
 func runMainScenarios(params RunScenariosParams) {
 	mainSuite := createTestSuite(createTestSuiteParams{
-		appConfig:   params.appConfig,
-		testReport:  params.testReport,
-		features:    gherkinParserFeaturesToGodogFeatures(params.features),
-		concurrency: params.appConfig.GetConcurrency(),
-		engine:      params.engine,
+		appConfig:       params.appConfig,
+		testReport:      params.testReport,
+		features:        gherkinParserFeaturesToGodogFeatures(params.features),
+		gherkinFeatures: params.features,
+		concurrency:     params.appConfig.GetConcurrency(),
+		engine:          params.engine,
 		scenarioBuilder: func() *myScenarioCtx {
 			return &myScenarioCtx{
 				scenarioReport: reporters.NewMainScenario(),
@@ -157,11 +159,12 @@ func runMainScenarios(params RunScenariosParams) {
 func runBeforeAllScenarios(params RunScenariosParams) {
 	feats := gherkinParserFeaturesToGodogFeatures(params.features)
 	beforeAllSuite := createTestSuite(createTestSuiteParams{
-		appConfig:   params.appConfig,
-		testReport:  params.testReport,
-		features:    feats,
-		concurrency: 1,
-		engine:      params.engine,
+		appConfig:       params.appConfig,
+		testReport:      params.testReport,
+		features:        feats,
+		gherkinFeatures: params.features,
+		concurrency:     1,
+		engine:          params.engine,
 		scenarioBuilder: func() *myScenarioCtx {
 			return &myScenarioCtx{
 				scenarioReport: reporters.NewBeforeAllHook(),
@@ -204,6 +207,7 @@ func createTestSuite(params createTestSuiteParams) *godog.TestSuite {
 			testReport:      params.testReport,
 			engine:          params.engine,
 			scenarioBuilder: params.scenarioBuilder,
+			gherkinFeatures: params.gherkinFeatures,
 		}),
 	}
 }
@@ -215,6 +219,7 @@ type createTestSuiteParams struct {
 	concurrency     int
 	engine          browser.Engine
 	scenarioBuilder ScenarioBuilder
+	gherkinFeatures []*gherkinparser.Feature
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
@@ -228,6 +233,11 @@ func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteCon
 }
 
 func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioContext) {
+	isImplicit := params.config.IsReportModeImplicit()
+	scenarioFeatureLookup := make(map[string]*gherkinparser.Feature)
+	if isImplicit {
+		scenarioFeatureLookup = buildScenarioFeatureLookup(params.gherkinFeatures)
+	}
 	return func(sc *godog.ScenarioContext) {
 		// Inject global variables and engine here
 		scenarioCtx := scenario.NewContext(params.config, variables.GetGlobalVariables(), params.engine)
@@ -236,12 +246,37 @@ func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioC
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 			logger.InfoFf("Running scenario: %s", sc.Name)
 			ctx = scenario.WithContext(ctx, scenarioCtx)
+			if isImplicit {
+				f := scenarioFeatureLookup[sc.Name]
+				if f != nil {
+					groups := buildMacroGroups(f, sc.Name)
+					if len(groups) > 0 {
+						myCtx.macroTracker = newMacroTracker(groups)
+					}
+				}
+			}
 			return ctx, nil
 		})
 		sc.StepContext().Before(beforeStepHookInitializer(myCtx))
 		sc.StepContext().After(afterStepHookInitializer(myCtx, params.config))
 		sc.After(afterScenarioHookInitializer(params.testReport, myCtx))
 	}
+}
+
+func buildScenarioFeatureLookup(features []*gherkinparser.Feature) map[string]*gherkinparser.Feature {
+	lookup := make(map[string]*gherkinparser.Feature)
+	for _, feature := range features {
+		if feature == nil {
+			continue
+		}
+		for _, scenarioName := range feature.ScenarioNames() {
+			if _, exists := lookup[scenarioName]; exists {
+				continue
+			}
+			lookup[scenarioName] = feature
+		}
+	}
+	return lookup
 }
 
 func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog.AfterStepHook {
@@ -330,10 +365,19 @@ func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {
 type myScenarioCtx struct {
 	currentStepStartTime time.Time
 	scenarioReport       reporters.Scenario
+	macroTracker         *macroTracker
 }
 
 func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err error) {
-	c.scenarioReport.AddStep(title, status, time.Since(c.currentStepStartTime), err)
+	dur := time.Since(c.currentStepStartTime)
+	if c.macroTracker == nil {
+		c.scenarioReport.AddStep(title, status, dur, err)
+		return
+	}
+	out := c.macroTracker.processStep(title, status, dur, err)
+	if out.emit {
+		c.scenarioReport.AddStep(out.title, out.status, out.dur, out.err)
+	}
 }
 
 type stepError struct {
@@ -368,6 +412,7 @@ type ScenarioInitializerParams struct {
 	testReport      *reporters.Report
 	engine          browser.Engine
 	scenarioBuilder ScenarioBuilder
+	gherkinFeatures []*gherkinparser.Feature
 }
 
 type ScenarioBuilder = func() *myScenarioCtx

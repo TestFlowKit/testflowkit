@@ -1,6 +1,10 @@
 settings:
   concurrency: 1
   report_format: "html"
+  # report_mode controls how macro calls appear in reports.
+  # explicit (default): every expanded step is listed individually.
+  # implicit: each macro call is collapsed into a single step with aggregated status.
+  # report_mode: "explicit"
   gherkin_location: "./features"
   debug:
     pretty_print: true

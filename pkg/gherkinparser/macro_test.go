@@ -103,9 +103,9 @@ func Test_ApplyMacro(t *testing.T) {
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			newContent, err := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(testContent, "\n"))
+			res, err := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(testContent, "\n"))
 			require.NoError(t, err)
-			assert.Equal(t, strings.Join(tt.expected, "\n"), newContent)
+			assert.Equal(t, strings.Join(tt.expected, "\n"), res.content)
 		})
 	}
 }
@@ -304,6 +304,33 @@ var applyMacroTests = []testApplyMacro{
 	},
 }
 
+func Test_ApplyMacro_StartIdxUsesExpandedStepPositions(t *testing.T) {
+	macro := scenario{
+		Name: "a macro step",
+		Steps: []*step{
+			{Keyword: "Given", Text: "macro step 1"},
+			{Keyword: "And", Text: "macro step 2"},
+		},
+	}
+	featureContent := []string{
+		"Scenario: Test scenario",
+		"Given a step",
+		"When a macro step",
+		"Then a result",
+	}
+	scenarioSteps := []*step{
+		{Keyword: "Given", Text: "a step"},
+		{Keyword: "When", Text: "a macro step", Location: &messages.Location{Line: 3}},
+		{Keyword: "Then", Text: "a result"},
+	}
+	mh := NewMacroHelpers([]scenario{macro})
+	res, err := mh.applyMacro(scenarioSteps, strings.Join(featureContent, "\n"))
+	require.NoError(t, err)
+	assert.Len(t, res.entries, 1)
+	assert.Equal(t, 1, res.entries[0].StartIdx)
+	assert.Equal(t, 2, res.entries[0].StepCount)
+}
+
 func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 	tests := []struct {
 		name           string
@@ -417,7 +444,7 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 			testContent := make([]string, len(tt.featureContent))
 			copy(testContent, tt.featureContent)
 
-			content, err := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(tt.featureContent, "\n"))
+			res, err := macroHelper.applyMacro(tt.scenario.Steps, strings.Join(tt.featureContent, "\n"))
 			require.NoError(t, err)
 
 			// // Trim any trailing empty lines for comparison
@@ -425,7 +452,7 @@ func Test_ApplyMacro_WithDocstringAndDatatable(t *testing.T) {
 			// 	testContent = testContent[:len(testContent)-1]
 			// }
 
-			assert.Equal(t, strings.Join(tt.expected, "\n"), content)
+			assert.Equal(t, strings.Join(tt.expected, "\n"), res.content)
 		})
 	}
 }

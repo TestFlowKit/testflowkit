@@ -105,6 +105,10 @@ func (c *Config) GetConcurrency() int {
 	return c.Settings.Concurrency
 }
 
+func (c *Config) IsReportModeImplicit() bool {
+	return c.Settings.ReportMode == "implicit"
+}
+
 func (c *Config) GetFileBaseDirectory() string {
 	return c.Files.BaseDirectory
 }

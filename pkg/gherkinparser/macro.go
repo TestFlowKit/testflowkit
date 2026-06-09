@@ -171,3 +171,16 @@ type ExpandMacroParam struct {
 	Keyword   string
 	Variables MacroVariables // Map-based variables for efficient ${variable} substitution
 }
+
+type MacroExpansionEntry struct {
+	CallText  string // e.g. "Given Login with credentials"
+	StartIdx  int    // 0-based index within the expanded step group
+	StepCount int    // number of godog step-hook calls produced by this macro call
+}
+
+type macroExpansionResult struct {
+	feature        *Feature
+	content        string
+	entries        []MacroExpansionEntry
+	totalStepCount int
+}

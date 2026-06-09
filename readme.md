@@ -139,6 +139,7 @@ settings:
   concurrency: 1
   think_time: 1000
   report_format: "html"
+  report_mode: "explicit" # Options: "explicit" or "implicit"
   gherkin_location: "./e2e/features"
   env_file: ".env.yml"
 

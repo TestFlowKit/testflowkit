@@ -161,6 +161,9 @@ settings:
   
   # Test report format
   report_format: "html"
+
+  # Report mode for macro rendering: explicit (default) or implicit
+  report_mode: "explicit"
   
   # Location of Gherkin feature files
   gherkin_location: "./e2e/features"
@@ -243,6 +246,7 @@ settings:
   think_time: 1000
   screenshot_on_failure: true
   report_format: "html"
+  report_mode: "explicit"
   gherkin_location: "./e2e/features"
   env_file: ".env.local.yml"  # Optional
 

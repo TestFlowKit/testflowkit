@@ -71,6 +71,15 @@
                                     class="text-xs md:text-sm">report_format: json</code></td>
                         </tr>
                         <tr>
+                            <td class="border px-2 md:px-4 py-2"><code class="text-xs md:text-sm">report_mode</code>
+                            </td>
+                            <td class="border px-2 md:px-4 py-2 text-xs md:text-sm">How macro steps appear in reports:
+                                explicit (default, expanded steps) or implicit (collapsed macro call).</td>
+                            <td class="border px-2 md:px-4 py-2"><code class="text-xs md:text-sm">explicit</code></td>
+                            <td class="border px-2 md:px-4 py-2"><code
+                                    class="text-xs md:text-sm">report_mode: implicit</code></td>
+                        </tr>
+                        <tr>
                             <td class="border px-2 md:px-4 py-2"><code
                                     class="text-xs md:text-sm">gherkin_location</code></td>
                             <td class="border px-2 md:px-4 py-2 text-xs md:text-sm">Path to the directory containing the
@@ -142,6 +151,7 @@ settings:
   think_time: 1000
   screenshot_on_failure: true
   report_format: "html"
+  report_mode: "explicit"
   gherkin_location: "./e2e/features"
   tags: "@smoke"
   env_file: ".env.local.yml"  # Optional: default env file
@@ -192,3 +202,4 @@ backend:
       description: "Create a new user"
 `.trim();
 </script>
+
