@@ -76,6 +76,20 @@ frontend:
 # # Project-wide default (applied when no api-level or endpoint-level security is set)
 # default_security: my_oauth2
 
+# IDE Agent configuration (used by the TestFlowKit MCP server — not read by tkit CLI)
+agent:
+  # Tags added to every scenario drafted by the agent.
+  # Keep @wip so AI-generated scenarios only run when you explicitly include them.
+  default_tags_for_draft: "@wip @ai-generated"
+
+  # Command used to run draft tests (informational for now).
+  run_command: "tkit run --tags @wip"
+
+  step_catalog:
+    # Omit file/url to export step definitions automatically from the installed tkit CLI.
+    # file: "./build/step-definitions.json"  # local override (offline / feature branches)
+    # url: "https://..."                      # custom URL
+
 # APIs configuration
 # Define multiple REST and GraphQL APIs
 # apis:

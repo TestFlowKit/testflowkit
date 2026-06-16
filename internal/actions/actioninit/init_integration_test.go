@@ -40,6 +40,23 @@ func TestCompleteInitializationFlow(t *testing.T) {
 	t.Run("VerifyDirectoryStructure", verifyDirectoryStructure)
 	t.Run("VerifySampleFeatureFile", verifySampleFeatureFile)
 	t.Run("VerifyFilePermissions", verifyFilePermissions)
+	t.Run("VerifyAgentSectionInConfig", verifyAgentSectionInConfig)
+}
+
+func verifyAgentSectionInConfig(t *testing.T) {
+	t.Helper()
+
+	// Agent config is now part of testflowkit.yml — no separate file should exist.
+	_, statErr := os.Stat("testflowkit.agent.yml")
+	assert.True(t, os.IsNotExist(statErr), "testflowkit.agent.yml should not be generated anymore")
+
+	content, readErr := os.ReadFile(config.DefaultConfigFile)
+	require.NoError(t, readErr, "Failed to read testflowkit.yml")
+
+	configStr := string(content)
+	assert.Contains(t, configStr, "agent:")
+	assert.Contains(t, configStr, "default_tags_for_draft:")
+	assert.Contains(t, configStr, "step_catalog:")
 }
 
 func verifyConfigFileCreation(t *testing.T) {
@@ -195,6 +212,7 @@ func testConfigFileStructure(t *testing.T) {
 		"settings:",
 		"env:",
 		"frontend:",
+		"agent:",
 	}
 
 	for _, section := range requiredSections {

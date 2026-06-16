@@ -205,8 +205,8 @@ func displayGuidance() {
 	logger.Info("")
 
 	logger.Info("📁 Generated files:")
-	logger.Info("   ├── testflowkit.yml (TestFlowKit configuration)")
-	logger.Info("   └── features/sample.feature (Sample test file)")
+	logger.Info("   ├── testflowkit.yml          (runtime + IDE agent configuration)")
+	logger.Info("   ├── features/sample.feature  (Sample test file)")
 	logger.Info("")
 
 	logger.Info("🚀 Next steps:")
@@ -221,6 +221,7 @@ func displayGuidance() {
 	logger.Info("   • TestFlowKit Documentation: https://testflowkit.github.io")
 	logger.Info("   • Available Test Sentences: https://testflowkit.github.io/testflowkit/sentences")
 	logger.Info("   • Configuration Guide: https://testflowkit.github.io/testflowkit/configuration")
+	logger.Info("   • IDE Agent Guide: https://testflowkit.github.io/testflowkit/docs/getting-started/ide-agent")
 	logger.Info("")
 
 	logger.Info("✨ Welcome to TestFlowKit! Your sample test is ready to run against our documentation site.")
