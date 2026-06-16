@@ -7,7 +7,7 @@ Provides the `testflowkit` MCP server with tools for generating valid Gherkin te
 ## Prerequisites
 
 - Node.js >= 22
-- `tkit` CLI installed (for automatic catalog version resolution)
+- `tkit` CLI installed (the server exports the step catalog from the local CLI)
 - A `testflowkit.yml` in your project root (run `tkit init` to generate one)
 
 ## Getting started
@@ -60,8 +60,6 @@ Add to `.vscode/mcp.json`:
 }
 ```
 
-Also add a `copilot-instructions.md` at your project root to guide the Copilot model.
-
 ### Development (local path)
 
 ```bash
@@ -83,32 +81,53 @@ Then in `.cursor/mcp.json`:
 }
 ```
 
+## Typical workflow
+
+1. Call `get_step_categories` to list available step categories.
+2. Call `get_step_catalog` (optionally with a `category`) to fetch matching sentences.
+3. Call `read_test_config` to discover APIs, operations, pages, and element groups.
+4. Call `write_feature` to create or update a `.feature` file under `settings.gherkin_location`.
+
 ## Available tools
 
 | Tool | Description |
 |------|-------------|
-| `get_step_catalog` | Full step definitions catalog from the resolved source |
-| `search_sentences` | Search catalog by keyword and/or category |
+| `get_step_categories` | List step definition categories from the catalog |
+| `get_step_catalog` | Full step catalog; pass optional `category` (from `get_step_categories`) to filter |
 | `read_test_config` | Summary of `testflowkit.yml` (APIs, pages, elements — secrets redacted) |
-| `list_features` | List all `.feature` files under `features_glob` |
-| `read_feature` | Read a specific feature file |
-| `get_guidelines` | Return bundled concept guidelines (e.g. `concept: "macro"`; unknown/empty concept returns all) |
-| `write_feature` | Create or update a feature file (path-guarded to `features_glob`) |
-| `write_macro` | Create or update macro feature files containing `@macro` scenarios |
-
-## Available resources
-
-| Resource URI | Description |
-|---|---|
-| `testflowkit://guidelines/macros` | Macro authoring and usage documentation |
-| `testflowkit://guidelines/ide-agent` | IDE agent setup and usage documentation |
-| `testflowkit://guidelines/copilot-instructions` | Copilot instruction template rules |
-
-If a documentation resource is missing in the workspace, the server returns a fallback note and you can still call `get_guidelines` for bundled guidance.
+| `list_features` | List all `.feature` files under `settings.gherkin_location` |
+| `read_feature` | Read a specific feature file (`path` relative to project root) |
+| `write_feature` | Create or overwrite a feature file (path-guarded to `settings.gherkin_location`) |
 
 ## Catalog resolution
 
-The server exports the step catalog directly from the installed `tkit` CLI. The `agent.step_catalog.file` and `agent.step_catalog.url` fields in `testflowkit.yml` are reserved for a future release.
+The server exports the step catalog directly from the installed `tkit` CLI (`tkit export-step-definitions` under the hood). The `agent.step_catalog.file` and `agent.step_catalog.url` fields in `testflowkit.yml` are reserved for a future release.
+
+To generate a local catalog snapshot (useful on feature branches):
+
+```bash
+tkit export-step-definitions --format json > build/step-definitions.json
+```
+
+Set `TESTFLOWKIT_CLI_PATH` to point at a non-default `tkit` binary when needed.
+
+## Configuration
+
+The server loads `testflowkit.yml` from the workspace root. `config.yml` is accepted as a legacy fallback.
+
+Feature file tools resolve paths from `settings.gherkin_location` (default `./features`).
+
+## Troubleshooting
+
+**MCP server not starting**
+
+- Verify `testflowkit.yml` exists in the workspace root.
+- Run the server manually to see errors: `npx @testflowkit/mcp`
+
+**Catalog not loading**
+
+- Ensure `tkit` is installed and `tkit version` works.
+- Run `tkit export-step-definitions --format json` manually to confirm the CLI export works.
 
 ## `.gitignore` (recommended)
 
