@@ -6,7 +6,7 @@ Provides the `testflowkit` MCP server with tools for generating valid Gherkin te
 
 ## Prerequisites
 
-- Node.js >= 18
+- Node.js >= 22
 - `tkit` CLI installed (for automatic catalog version resolution)
 - A `testflowkit.yml` in your project root (run `tkit init` to generate one)
 
