@@ -1,5 +1,5 @@
 ---
-title: IDE agent
+title: IDE Agent
 description: Use the TestFlowKit MCP server to generate tests with Cursor or VS Code Copilot
 navigation:
   title: IDE Agent
