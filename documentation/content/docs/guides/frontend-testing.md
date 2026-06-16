@@ -45,7 +45,7 @@ Most UI scenarios follow the same pattern:
 
 TestFlowKit waits for elements automatically before interacting. Adjust `default_timeout` in config if needed.
 
-Use `{{variable_name}}` and `{{ rand:email }}` in any step value — see [Variables](/docs/features/variables).
+Use `{{variable_name}}` and `{{ rand:email }}` in any step value — see [Variables](/docs/patterns/variables).
 
 ## Example
 
@@ -65,9 +65,9 @@ Feature: User registration
 
 ## Step catalog
 
-For the full list of frontend sentences (clicks, forms, mouse, keyboard, assertions, tables…), browse the **[Step Definitions catalog](/sentences)** — searchable by keyword and category.
+For the full list of frontend sentences, browse the **[Step Definitions catalog](/sentences)** — searchable by keyword and category.
 
 ## Next Steps
 
-- [Selectors](/docs/concepts/selectors) — How elements are resolved
-- [Configuration](/docs/concepts/configuration) — Full frontend options
+- [Selectors](/docs/config/selectors) — How elements are resolved
+- [testflowkit.yml](/docs/config/overview) — Full frontend options

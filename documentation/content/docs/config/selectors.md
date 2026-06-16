@@ -82,5 +82,5 @@ Increase `frontend.default_timeout` or `settings.think_time` if elements load sl
 
 ## Next Steps
 
-- [Frontend Testing](/docs/features/frontend-testing) — Available UI steps
-- [Configuration](/docs/concepts/configuration) — Full frontend config
+- [Frontend Testing](/docs/guides/frontend-testing) — UI testing guide
+- [testflowkit.yml](/docs/config/overview) — Full frontend config

@@ -81,6 +81,6 @@ TestFlowKit launches the browser, executes steps, and generates an HTML report.
 
 ## Next Steps
 
-- [Gherkin Basics](/docs/concepts/gherkin-basics) — Syntax reference
-- [Configuration](/docs/concepts/configuration) — Full config options
-- [Frontend Testing](/docs/features/frontend-testing) — UI steps and assertions
+- [Writing Tests](/docs/guides/writing-tests) — Gherkin syntax and patterns
+- [testflowkit.yml](/docs/config/overview) — Full config options
+- [Frontend Testing](/docs/guides/frontend-testing) — UI testing guide

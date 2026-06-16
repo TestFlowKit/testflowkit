@@ -10,13 +10,17 @@
             </p>
 
             <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
-                <nuxt-link to="/docs/getting-started/qa-guide"
+                <nuxt-link to="/docs/guides/writing-tests"
                     class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-base sm:text-lg md:text-xl hover:bg-green-700 transition-colors">
-                    🧪 For QA Teams
+                    Writing Tests
                 </nuxt-link>
-                <nuxt-link to="/docs/getting-started/introduction"
+                <nuxt-link to="/docs"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors">
-                    Get Started Now
+                    Documentation
+                </nuxt-link>
+                <nuxt-link to="/sentences"
+                    class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-3 px-6 rounded-lg text-base sm:text-lg md:text-xl transition-colors">
+                    Step Catalog
                 </nuxt-link>
             </div>
         </section>
@@ -49,9 +53,9 @@
             </div>
 
             <div class="text-center">
-                <nuxt-link to="/docs/getting-started/qa-guide"
+                <nuxt-link to="/docs/guides/writing-tests"
                     class="bg-green-600 text-white font-bold py-3 px-6 sm:px-8 rounded-lg text-base sm:text-lg hover:bg-green-700 inline-flex items-center transition-colors">
-                    <span>Start with QA Guide</span>
+                    <span>Writing Tests Guide</span>
                     <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
@@ -65,8 +69,8 @@
                 <p>Write tests using clear, readable BDD syntax with natural language that's easy to understand and
                     maintain.</p>
             </FeatureCard>
-            <FeatureCard title="Multi-Environment Support" icon="cog">
-                <p>Configure and switch between different environments (local, staging, production) with ease.</p>
+            <FeatureCard title="Environment Variables" icon="cog">
+                <p>Switch between local, staging, and production with env files and variable interpolation in config.</p>
             </FeatureCard>
             <FeatureCard title="Frontend & Backend Testing" icon="code">
                 <p>Comprehensive web UI automation with smart element detection and full REST API testing capabilities.</p>
@@ -80,8 +84,8 @@
             <FeatureCard title="Rich Reporting" icon="chart-bar">
                 <p>HTML and JSON report formats with detailed test results and automatic screenshot capture on failures.</p>
             </FeatureCard>
-            <FeatureCard title="Smart Element Detection" icon="search">
-                <p>Multiple selector strategies with fallback mechanisms for robust element detection.</p>
+            <FeatureCard title="Step Catalog" icon="search">
+                <p>Searchable reference of every Gherkin sentence — frontend, backend, variables, and GraphQL.</p>
             </FeatureCard>
             <FeatureCard title="Headless Mode" icon="monitor">
                 <p>Run tests without browser UI for CI/CD environments with configurable headless execution.</p>

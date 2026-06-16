@@ -23,7 +23,7 @@ Then the value of the "name" field should be "{{user_name}}"
 | **Environment** | Defined in `testflowkit.yml` | `{{ env.api_key }}`, `{{ env.database.host }}` |
 | **Response path** | `I store the response path "data.id" from the response into "user_id" variable` | JSON (GJSON) or XML (XPath) |
 | **Page element** | `I store the content of "page_title" into "title" variable` | Text from a UI element |
-| **Random data** | `I store the value "{{ rand:uuid }}" into "id" variable` | See [Random Data](/docs/features/random-data-generation) |
+| **Random data** | `I store the value "{{ rand:uuid }}" into "id" variable` | See [Random Data](/docs/patterns/random-data) |
 
 ### Environment variables
 
@@ -92,7 +92,7 @@ Scenario: Create user via API and verify in UI
 |----------|-------|
 | Scenario (`{{name}}`) | Current scenario only |
 | Environment (`{{ env.* }}`) | All scenarios, loaded at startup |
-| Global (`{{name}}` set in hooks) | All scenarios — see [Global Hooks](/docs/features/global-hooks) |
+| Global (`{{name}}` set in hooks) | All scenarios — see [Global Hooks](/docs/patterns/global-hooks) |
 
 ::alert{type="warning"}
 Scenario variables do not persist across scenarios. Use global hooks when you need to share data between scenarios.
@@ -100,6 +100,6 @@ Scenario variables do not persist across scenarios. Use global hooks when you ne
 
 ## Next Steps
 
-- [Random Data Generation](/docs/features/random-data-generation) — Generate UUIDs, emails, dates inline
-- [Macros](/docs/features/macros) — Reusable parameterized steps
-- [Global Hooks](/docs/features/global-hooks) — Cross-scenario setup and teardown
+- [Random Data](/docs/patterns/random-data) — Generate UUIDs, emails, dates inline
+- [Macros](/docs/patterns/macros) — Reusable parameterized steps
+- [Global Hooks](/docs/patterns/global-hooks) — Cross-scenario setup and teardown

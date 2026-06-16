@@ -1,11 +1,11 @@
 ---
-title: Configuration
+title: testflowkit.yml
 description: Understanding TestFlowKit's YAML configuration system
 navigation:
-  title: Configuration
+  title: testflowkit.yml
 ---
 
-# Configuration
+# testflowkit.yml
 
 TestFlowKit reads `testflowkit.yml` from the project root (legacy `config.yml` also supported). Override with `--config path/to/file.yml`.
 
@@ -103,7 +103,7 @@ Priority: CLI `--env-file` → `settings.env_file` → inline `env:` block.
 | `driver` | **Required.** `rod` (default, bundled) or `playwright` (run `tkit install`) |
 | `base_url` | App root URL |
 | `pages` | Named paths — used in `the user goes to the "login" page` |
-| `elements` | Selectors grouped by page — see [Selectors](/docs/concepts/selectors) |
+| `elements` | Selectors grouped by page — see [Selectors](/docs/config/selectors) |
 
 ## APIs
 
@@ -160,7 +160,7 @@ Reference in steps: `I set the request body from file "sample_json"`.
 
 ## Next Steps
 
-- [Selectors](/docs/concepts/selectors) — Element selector strategies
-- [Frontend Testing](/docs/features/frontend-testing) — UI steps
-- [API Testing](/docs/features/api-testing) — REST and GraphQL steps
-- [IDE Agent](/docs/getting-started/ide-agent) — MCP server setup
+- [Selectors](/docs/config/selectors) — Element selector strategies
+- [Frontend Testing](/docs/guides/frontend-testing) — UI testing guide
+- [API Testing](/docs/guides/api-testing) — REST and GraphQL guide
+- [IDE Agent](/docs/guides/ide-agent) — MCP server setup

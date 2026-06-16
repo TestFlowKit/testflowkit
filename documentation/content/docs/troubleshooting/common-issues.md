@@ -66,7 +66,7 @@ And I set the header "Authorization" to "Bearer {{auth_token}}"
 |---------|-----|
 | Variable not substituted | Store before use; check spelling |
 | Empty value | Verify the storing step ran successfully |
-| Not available across scenarios | Use [global hooks](/docs/features/global-hooks) |
+| Not available across scenarios | Use [global hooks](/docs/patterns/global-hooks) |
 
 ## Debugging
 
@@ -90,4 +90,4 @@ Open a [GitHub issue](https://github.com/TestFlowKit/testflowkit/issues) with ve
 
 - [Platform Issues](/docs/troubleshooting/platform-issues) — OS-specific fixes
 - [CLI Reference](/docs/reference/cli) — Command options
-- [Configuration](/docs/concepts/configuration) — Config reference
+- [testflowkit.yml](/docs/config/overview) — Config reference

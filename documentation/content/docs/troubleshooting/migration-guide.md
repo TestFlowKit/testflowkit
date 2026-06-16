@@ -1,6 +1,6 @@
 ---
-title: Migration Guide - Environment Variables
-description: Guide for migrating from environments to environment variables system
+title: Migration Guide
+description: Guide for migrating from older TestFlowKit versions
 navigation:
   title: Migration Guide
 ---
@@ -117,5 +117,5 @@ apis:
 
 ## Next Steps
 
-- [Configuration](/docs/concepts/configuration) — Current config reference
-- [API Testing](/docs/features/api-testing) — Updated API steps
+- [testflowkit.yml](/docs/config/overview) — Current config reference
+- [API Testing](/docs/guides/api-testing) — Updated API steps

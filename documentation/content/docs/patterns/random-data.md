@@ -71,5 +71,5 @@ Use this output to reproduce failing tests.
 
 ## Next Steps
 
-- [Variables](/docs/features/variables) — Store and reuse values across steps
-- [API Testing](/docs/features/api-testing) — REST and GraphQL testing
+- [Variables](/docs/patterns/variables) — Store and reuse values across steps
+- [API Testing](/docs/guides/api-testing) — REST and GraphQL testing

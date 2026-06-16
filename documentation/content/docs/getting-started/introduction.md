@@ -38,3 +38,5 @@ Feature: User Login
 ## Next Steps
 
 [Installation](/docs/getting-started/installation) → [Quick Start](/docs/getting-started/quick-start)
+
+Or browse the [documentation hub](/docs) to pick a path for your role.
