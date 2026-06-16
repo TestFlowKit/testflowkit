@@ -61,6 +61,13 @@ jobs:
           yarn install --frozen-lockfile --ignore-optional
           yarn test
 
+      - name: Build and test testflowkit-mcp
+        working-directory: ./packages/testflowkit-mcp
+        run: |
+          yarn install --frozen-lockfile --ignore-optional
+          yarn build
+          yarn test
+
 
   e2e_tests:
     uses: "./.github/workflows/e2e.yml"

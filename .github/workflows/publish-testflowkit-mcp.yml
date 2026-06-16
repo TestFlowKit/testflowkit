@@ -1,0 +1,114 @@
+name: Publish @testflowkit/mcp
+
+# Isolated workflow for publishing the MCP server package to npmjs.
+# Trigger manually from the Actions tab and set the version to publish.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "npm version to publish (e.g. 0.1.0)"
+        required: true
+        type: string
+      npm-tag:
+        description: "npm dist-tag"
+        required: false
+        default: latest
+        type: choice
+        options:
+          - latest
+          - beta
+          - next
+
+permissions:
+  contents: read
+
+env:
+  PACKAGE_DIR: packages/testflowkit-mcp
+  PACKAGE_NAME: "@testflowkit/mcp"
+
+jobs:
+  quality:
+    name: Lint, test & build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate version input
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ! echo "${VERSION}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "Invalid semver version: ${VERSION}"
+            exit 1
+          fi
+          echo "Version to publish: ${VERSION}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Install dependencies
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: yarn lint
+
+      - name: Unit tests
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: yarn test
+
+      - name: Build
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: yarn build
+
+  publish:
+    name: Publish to npmjs
+    needs: quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Install dependencies
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: yarn install --frozen-lockfile
+
+      - name: Set package version
+        env:
+          VERSION: ${{ inputs.version }}
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: npm version "${VERSION}" --no-git-tag-version --allow-same-version
+
+      - name: Build
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: yarn build
+
+      - name: Publish (idempotent)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          NPM_TAG: ${{ inputs.npm-tag }}
+        working-directory: ${{ env.PACKAGE_DIR }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
+          if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null | grep -qF "${VERSION}"; then
+            echo "${PACKAGE_NAME}@${VERSION} already published, skipping."
+          else
+            npm publish --access public --tag "${NPM_TAG}"
+            echo "Published ${PACKAGE_NAME}@${VERSION} with dist-tag '${NPM_TAG}'."
+          fi

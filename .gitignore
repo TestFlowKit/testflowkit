@@ -45,4 +45,12 @@ testflowkit.yml
 .cursorrules/
 **/__debug*
 **/step-definitions.json
+
+# TestFlowKit agent cache
+.testflowkit/
+
+# MCP package build
+packages/testflowkit-mcp/dist/
+packages/testflowkit-mcp/dist-test/
+
 **/node_modules/

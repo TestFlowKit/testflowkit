@@ -1,0 +1,47 @@
+{
+  "name": "@testflowkit/mcp",
+  "version": "0.1.0",
+  "description": "TestFlowKit MCP server",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "testflowkit-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --platform node --target node22 --dts --clean --out-dir dist",
+    "dev": "tsup src/index.ts --format esm --platform node --target node22 --dts --watch --out-dir dist",
+    "start": "node dist/index.js",
+    "test": "node --import tsx --test 'src/**/*.test.ts'",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "yaml": "^2.9.0",
+    "zod": "^3.25.51"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "testflowkit",
+    "mcp",
+    "gherkin",
+    "bdd",
+    "testing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TestFlowKit/testflowkit"
+  }
+}
