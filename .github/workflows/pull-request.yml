@@ -64,7 +64,7 @@ jobs:
       - name: Build and test testflowkit-mcp
         working-directory: ./packages/testflowkit-mcp
         run: |
-          yarn install --frozen-lockfile --ignore-optional
+          yarn
           yarn build
           yarn test
 
