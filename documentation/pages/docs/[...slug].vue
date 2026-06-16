@@ -25,8 +25,8 @@
         <div class="text-center py-12">
           <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">Page Not Found</h1>
           <p class="text-gray-600 dark:text-gray-400 mb-6">The documentation page you're looking for doesn't exist.</p>
-          <NuxtLink to="/docs/getting-started/introduction" class="text-blue-600 dark:text-blue-400 hover:underline">
-            Go to Introduction
+          <NuxtLink to="/docs" class="text-blue-600 dark:text-blue-400 hover:underline">
+            Go to Documentation
           </NuxtLink>
         </div>
       </template>
@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import DocSidebar from '~/components/DocSidebar.vue';
 import DocNavigation from '~/components/DocNavigation.vue';
-
+import { allDocPages } from '~/navigation';
 
 const { $rehighlight } = useNuxtApp();
 
@@ -49,47 +49,20 @@ const { data: page } = await useAsyncData(`docs-${path.value}`, () => {
   return queryCollection('docs').path(path.value).first();
 });
 
-// Define all docs in order for navigation
-const allDocs = [
-  // Getting Started
-  { path: '/docs/getting-started/introduction', title: 'Introduction' },
-  { path: '/docs/getting-started/installation', title: 'Installation' },
-  { path: '/docs/getting-started/quick-start', title: 'Quick Start' },
-  { path: '/docs/getting-started/qa-guide', title: 'QA Guide' },
-  // Core Concepts
-  { path: '/docs/concepts/gherkin-basics', title: 'Gherkin Basics' },
-  { path: '/docs/concepts/configuration', title: 'Configuration' },
-  { path: '/docs/concepts/selectors', title: 'Selectors' },
-  // Features
-  { path: '/docs/features/variables', title: 'Variables' },
-  { path: '/docs/features/macros', title: 'Macros' },
-  { path: '/docs/features/frontend-testing', title: 'Frontend Testing' },
-  { path: '/docs/features/api-testing', title: 'API Testing' },
-  { path: '/docs/features/global-hooks', title: 'Global Hooks' },
-  { path: '/docs/features/random-data-generation', title: 'Random Data' },
-  // Reference
-  { path: '/docs/reference/cli', title: 'CLI Reference' },
-  { path: '/docs/reference/step-definitions', title: 'Step Definitions' },
-  // Troubleshooting
-  { path: '/docs/troubleshooting/common-issues', title: 'Common Issues' },
-  { path: '/docs/troubleshooting/platform-issues', title: 'Platform Issues' },
-];
-
-// Find current index and get prev/next
 const currentIndex = computed(() => {
-  return allDocs.findIndex(doc => doc.path === path.value);
+  return allDocPages.findIndex(doc => doc.path === path.value);
 });
 
 const prevPage = computed(() => {
   if (currentIndex.value > 0) {
-    return allDocs[currentIndex.value - 1];
+    return allDocPages[currentIndex.value - 1];
   }
   return null;
 });
 
 const nextPage = computed(() => {
-  if (currentIndex.value < allDocs.length - 1 && currentIndex.value >= 0) {
-    return allDocs[currentIndex.value + 1];
+  if (currentIndex.value < allDocPages.length - 1 && currentIndex.value >= 0) {
+    return allDocPages[currentIndex.value + 1];
   }
   return null;
 });
@@ -152,14 +125,12 @@ useHead({
   color: inherit;
 }
 
-/* Ensure hljs styles are applied with proper colors */
 .prose pre code.hljs {
   @apply p-0;
   background: transparent !important;
   color: #abb2bf !important;
 }
 
-/* Highlight.js syntax colors for atom-one-dark theme */
 .prose .hljs-keyword,
 .prose .hljs-selector-tag,
 .prose .hljs-literal,

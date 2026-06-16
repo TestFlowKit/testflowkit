@@ -14,7 +14,7 @@
                         <code class="bg-blue-100 dark:bg-blue-800 px-1 rounded">xpath:</code> prefix
                     </p>
                 </div>
-                <nuxt-link to="/docs/concepts/selectors" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium whitespace-nowrap">
+                <nuxt-link to="/docs/config/selectors" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium whitespace-nowrap">
                     View Examples →
                 </nuxt-link>
             </div>
@@ -27,7 +27,7 @@
                     <p class="text-xs sm:text-sm text-purple-700 dark:text-purple-400">Reusable test scenarios with parameter support to reduce code
                         duplication</p>
                 </div>
-                <nuxt-link to="/docs/features/macros" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 text-sm font-medium whitespace-nowrap">
+                <nuxt-link to="/docs/patterns/macros" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 text-sm font-medium whitespace-nowrap">
                     Learn More →
                 </nuxt-link>
             </div>
@@ -41,7 +41,7 @@
                         <code class="bg-green-100 dark:bg-green-800 px-1 rounded">&#123;&#123;variable_name&#125;&#125;</code> syntax for cross-step data sharing
                     </p>
                 </div>
-                <nuxt-link to="/docs/features/variables" class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 text-sm font-medium whitespace-nowrap">
+                <nuxt-link to="/docs/patterns/variables" class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 text-sm font-medium whitespace-nowrap">
                     Learn More →
                 </nuxt-link>
             </div>

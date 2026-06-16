@@ -21,7 +21,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-1 ml-6">
                     <nuxt-link 
-                        to="/docs/getting-started/introduction" 
+                        to="/docs" 
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                         Docs
@@ -30,7 +30,7 @@
                         to="/sentences" 
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
-                        Step Definitions
+                        Step Catalog
                     </nuxt-link>
                 </div>
             </div>

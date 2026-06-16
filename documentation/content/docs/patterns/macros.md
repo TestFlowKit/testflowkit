@@ -79,5 +79,5 @@ Scenario: Create a new post
 
 ## Next Steps
 
-- [Global Hooks](/docs/features/global-hooks) — Setup and teardown across the suite
-- [Variables](/docs/features/variables) — Scenario and environment variables
+- [Global Hooks](/docs/patterns/global-hooks) — Setup and teardown across the suite
+- [Variables](/docs/patterns/variables) — Scenario and environment variables

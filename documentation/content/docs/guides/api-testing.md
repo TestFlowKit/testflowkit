@@ -89,7 +89,7 @@ Scenario: Fetch a user
   And the response should have field "user.username"
 ```
 
-Operations can also be defined inline in config — see [Configuration](/docs/concepts/configuration).
+Operations can also be defined inline in config — see [testflowkit.yml](/docs/config/overview).
 
 ## Authentication
 
@@ -101,10 +101,10 @@ And I set the header "Authorization" to "Bearer {{auth_token}}"
 
 ## Step catalog
 
-For the full list of API sentences (params, headers, body, assertions, GraphQL errors…), browse the **[Step Definitions catalog](/sentences)** — searchable by keyword and category.
+For the full list of API sentences, browse the **[Step Definitions catalog](/sentences)** — searchable by keyword and category.
 
 ## Next Steps
 
-- [Variables](/docs/features/variables) — Store and reuse response data
-- [Random Data](/docs/features/random-data-generation) — Dynamic request payloads
-- [Global Hooks](/docs/features/global-hooks) — Auth and data setup before tests
+- [Variables](/docs/patterns/variables) — Store and reuse response data
+- [Random Data](/docs/patterns/random-data) — Dynamic request payloads
+- [Global Hooks](/docs/patterns/global-hooks) — Auth and data setup before tests

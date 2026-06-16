@@ -90,3 +90,8 @@ If no registered step matches your intent, the agent reports a `missing_sentence
 | MCP won't start | Run `npx @testflowkit/mcp` manually; check Node >= 22 |
 | Catalog empty | Verify `tkit version` works |
 | Wrong steps used | Ask the agent to call `get_step_catalog` first |
+
+## Next Steps
+
+- [Step Catalog](/sentences) — Browse all available sentences
+- [testflowkit.yml](/docs/config/overview) — Project configuration

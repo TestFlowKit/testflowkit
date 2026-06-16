@@ -83,5 +83,5 @@ If a `@BeforeAll` hook fails, no test scenarios run. Keep hooks focused and resi
 
 ## Next Steps
 
-- [Variables](/docs/features/variables) — Scenario and environment variables
-- [API Testing](/docs/features/api-testing) — API steps for hooks
+- [Variables](/docs/patterns/variables) — Scenario and environment variables
+- [API Testing](/docs/guides/api-testing) — API steps for hooks

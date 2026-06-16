@@ -102,5 +102,5 @@ tkit run --tags "@smoke and not @wip"
 
 ## Next Steps
 
-- [Configuration](/docs/concepts/configuration) — Config file reference
-- [Step Definitions Browser](/sentences) — Searchable step catalog
+- [testflowkit.yml](/docs/config/overview) — Config file reference
+- [Step Catalog](/sentences) — Searchable step catalog
