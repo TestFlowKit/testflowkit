@@ -9,4 +9,5 @@ const (
 	ValidationMode            Mode = "validate"
 	VersionMode               Mode = "version"
 	ExportStepDefinitionsMode Mode = "export-step-definitions"
+	ExportConfigSchemaMode    Mode = "export-config-schema"
 )
