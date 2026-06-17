@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"testflowkit/internal/actions"
+	"testflowkit/internal/actions/actionexportconfigschema"
 	"testflowkit/internal/actions/actionexportsteps"
 	"testflowkit/internal/config"
 	"testflowkit/pkg/logger"
@@ -27,6 +28,11 @@ func main() {
 
 	if mode == config.ExportStepDefinitionsMode {
 		actionexportsteps.Execute(args.ExportStepDefinitions.Format)
+		return
+	}
+
+	if mode == config.ExportConfigSchemaMode {
+		actionexportconfigschema.Execute(args.ExportConfigSchema.Format, Version)
 		return
 	}
 

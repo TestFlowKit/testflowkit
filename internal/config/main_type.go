@@ -9,19 +9,31 @@ import (
 	"testflowkit/pkg/logger"
 )
 
+// Config is the root object loaded from testflowkit.yml (or legacy config.yml).
 type Config struct {
+	// Env provides {{ env.* }} variables; overridden by settings.env_file for duplicate keys.
 	Env map[string]any `yaml:"env"`
 
+	// Settings holds global runner options (gherkin path, reports, concurrency, tags). Required.
 	Settings GlobalSettings `yaml:"settings" validate:"required"`
 
+	// Frontend configures browser UI testing; optional if the project is API-only.
 	Frontend *FrontendConfig `yaml:"frontend"`
 
+	// APIs configures REST/GraphQL clients referenced as "api_name.endpoint_name" in Gherkin.
 	APIs *APIsConfig `yaml:"apis"`
 
+	// Files maps logical names to paths under files.base_directory for upload/body steps.
 	Files FileConfig `yaml:"files"`
 
+	// SecuritySchemes defines reusable auth configs referenced via security_ref.name.
 	SecuritySchemes map[string]SecurityScheme `yaml:"security_schemes"`
-	DefaultSecurity string                    `yaml:"default_security"`
+
+	// DefaultSecurity is the scheme applied when no API or endpoint security_ref is set.
+	DefaultSecurity string `yaml:"default_security"`
+
+	// Agent configures the MCP IDE agent; optional and ignored by tkit run.
+	Agent *AgentConfig `yaml:"agent"`
 
 	configPath string
 	appVersion string

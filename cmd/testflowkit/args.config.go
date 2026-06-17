@@ -17,6 +17,8 @@ type argsConfig struct {
 	VersionCmd *versionCmd  `arg:"subcommand:version" help:"show version information"`
 	//nolint:lll // Subcommand name is intentionally long and fixed by CLI contract.
 	ExportStepDefinitions *exportStepDefinitionsCmd `arg:"subcommand:export-step-definitions" help:"export step definitions"`
+
+	ExportConfigSchema *exportConfigSchemaCmd `arg:"subcommand:export-config-schema" help:"export config schema"`
 }
 
 func (a *argsConfig) getConfigPath() (string, error) {
@@ -100,11 +102,18 @@ func (a *argsConfig) getMode() (config.Mode, error) {
 		return config.ExportStepDefinitionsMode, nil
 	}
 
+	if a.ExportConfigSchema != nil {
+		return config.ExportConfigSchemaMode, nil
+	}
+
 	return "", apperrors.ErrNoModeProvided
 }
 
 func (a *argsConfig) isSilent() bool {
-	return a.ExportStepDefinitions != nil && a.ExportStepDefinitions.Silent
+	if a.ExportStepDefinitions != nil && a.ExportStepDefinitions.Silent {
+		return true
+	}
+	return a.ExportConfigSchema != nil && a.ExportConfigSchema.Silent
 }
 
 func (a *argsConfig) GetTimeout() int {
@@ -143,6 +152,11 @@ type versionCmd struct {
 }
 
 type exportStepDefinitionsCmd struct {
+	Format string `arg:"--format" help:"output format (json)" default:"json"`
+	Silent bool   `arg:"--silent" help:"suppress all stderr output"`
+}
+
+type exportConfigSchemaCmd struct {
 	Format string `arg:"--format" help:"output format (json)" default:"json"`
 	Silent bool   `arg:"--silent" help:"suppress all stderr output"`
 }
