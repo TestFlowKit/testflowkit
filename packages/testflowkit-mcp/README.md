@@ -85,8 +85,9 @@ Then in `.cursor/mcp.json`:
 
 1. Call `get_step_categories` to list available step categories.
 2. Call `get_step_catalog` (optionally with a `category`) to fetch matching sentences.
-3. Call `read_test_config` to discover APIs, operations, pages, and element groups.
-4. Call `write_feature` to create or update a `.feature` file under `settings.gherkin_location`.
+3. Call `get_config_schema` to load the authoritative `testflowkit.yml` schema before generating or editing config.
+4. Call `read_test_config` to discover APIs, operations, pages, and element groups.
+5. Call `write_feature` to create or update a `.feature` file under `settings.gherkin_location`.
 
 ## Available tools
 
@@ -94,6 +95,7 @@ Then in `.cursor/mcp.json`:
 |------|-------------|
 | `get_step_categories` | List step definition categories from the catalog |
 | `get_step_catalog` | Full step catalog; pass optional `category` (from `get_step_categories`) to filter |
+| `get_config_schema` | Full JSON schema exported from `tkit export-config-schema` for AI-safe config authoring |
 | `read_test_config` | Summary of `testflowkit.yml` (APIs, pages, elements — secrets redacted) |
 | `list_features` | List all `.feature` files under `settings.gherkin_location` |
 | `read_feature` | Read a specific feature file (`path` relative to project root) |
