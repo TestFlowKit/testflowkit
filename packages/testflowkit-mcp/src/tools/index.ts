@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { ProjectConfig } from "../config/types.js";
+import { GetConfigSchemaTool } from "./get_config_schema.js";
 import { GetStepCategoriesTool } from "./get_step_categories.js";
 import { GetStepCatalogTool } from "./get_step_catalog.js";
 import { ListFeaturesTool } from "./list_features.js";
@@ -16,6 +17,7 @@ export function registerTools(
   const tools: Array<TkitTool<any>> = [
     new GetStepCategoriesTool(),
     new GetStepCatalogTool(),
+    new GetConfigSchemaTool(),
     new ReadTestConfigTool(),
     new ListFeaturesTool(),
     new ReadFeatureTool(),
