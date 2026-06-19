@@ -4,6 +4,24 @@ TestFlowKit MCP server for Cursor and VS Code Copilot.
 
 Provides the `testflowkit` MCP server with tools for generating valid Gherkin tests using the TestFlowKit step catalog.
 
+## Relationship with `@testflowkit/cli`
+
+This package is a companion to the TestFlowKit CLI (`tkit`, published as [`@testflowkit/cli`](https://www.npmjs.com/package/@testflowkit/cli)). It does not run tests itself — you still execute scenarios with `tkit run`.
+
+| Concern | CLI (`tkit`) | MCP server (`@testflowkit/mcp`) |
+|---------|--------------|----------------------------------|
+| Run and validate tests | Yes | No |
+| Export step catalog | `tkit export-step-definitions` | Calls the CLI command at runtime |
+| Export config schema | `tkit export-config-schema` | Calls the CLI command at runtime |
+| Project config | Reads `testflowkit.yml` / `config.yml` | Reads the same files from the workspace root |
+| `agent:` block in config | Ignored | Used for draft tags, run command, and future catalog overrides |
+
+**Install order:** install `@testflowkit/cli` globally (or ensure `tkit` is on your `PATH`), then configure this MCP server in your IDE. The server shells out to your local `tkit` binary; set `TESTFLOWKIT_CLI_PATH` if it is not on `PATH`.
+
+**Typical loop:** use MCP tools in the IDE to browse the catalog and write `.feature` files, then run `tkit run` (or the `agent.run_command` from `testflowkit.yml`) to execute them.
+
+CLI package README: [`npm/README.md`](https://github.com/TestFlowKit/testflowkit/tree/main/npm)
+
 ## Prerequisites
 
 - Node.js >= 22
