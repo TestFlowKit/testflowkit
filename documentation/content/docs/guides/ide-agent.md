@@ -63,11 +63,23 @@ The agent reads the step catalog and `testflowkit.yml`, then drafts scenarios wi
 | Tool | Purpose |
 |------|---------|
 | `get_step_catalog` | Full sentence list |
-| `search_sentences` | Filter by keyword/category |
 | `read_test_config` | APIs, pages, elements (secrets redacted) |
-| `list_features` / `read_feature` | Browse feature files |
-| `write_feature` / `write_macro` | Create or update `.feature` files |
-| `get_guidelines` | Macro and agent authoring docs |
+| `list_gherkin_files` / `read_gherkin_file` | Browse Gherkin feature files |
+| `write_gherkin_file` | Create or update `.feature` files |
+
+## Framework documentation resources
+
+Framework mechanics are exposed as **MCP resources**. Pin them in your IDE context:
+
+| URI | Topic |
+|-----|-------|
+| `docs://framework/features/index` | Documentation index |
+| `docs://framework/features/macros` | Reusable parameterized scenarios |
+| `docs://framework/features/random_data` | `{{ rand:... }}` generators |
+| `docs://framework/features/global_hooks` | `@BeforeAll` / `@AfterAll` hooks |
+| `docs://framework/features/variables` | Scenario and environment variables |
+| `docs://framework/features/api_testing` | REST and GraphQL API testing |
+| `docs://framework/features/frontend_testing` | Browser automation and UI testing |
 
 ## Agent config in testflowkit.yml
 

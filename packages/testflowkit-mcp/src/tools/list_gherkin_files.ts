@@ -5,13 +5,13 @@ import { HandlerParams, TkitTool } from "./tool.js";
 
 const inputSchema = z.object({});
 
-export class ListFeaturesTool implements TkitTool<typeof inputSchema> {
+export class ListGherkinFilesTool implements TkitTool<typeof inputSchema> {
   getName(): string {
-    return "list_features";
+    return "list_gherkin_files";
   }
 
   getDescription(): string {
-    return "List all feature files in the project matching settings.gherkin_location from testflowkit.yml.";
+    return "List all Gherkin feature files in the project matching settings.gherkin_location from testflowkit.yml.";
   }
 
   getInputSchema() {

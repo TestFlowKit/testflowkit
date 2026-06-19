@@ -7,18 +7,21 @@ import {
 } from "./config/loadProjectConfig.js";
 import { initializeSession } from "./context/session.js";
 import { Logger } from "./logger.js";
+import { buildFrameworkDocsIndex } from "./frameworkDocs/indexer.js";
+import { registerFrameworkDocResources } from "./frameworkDocs/registerResources.js";
 import { registerTools } from "./tools/index.js";
 
 async function main(): Promise<void> {
   const { config, configDir } = loadConfig();
   const session = initializeSession();
+  const docsIndex = buildFrameworkDocsIndex();
 
   const server = new McpServer({
     name: "testflowkit",
     version: "0.1.0",
   });
 
-
+  registerFrameworkDocResources(server, docsIndex);
   registerTools(server, config, configDir);
 
   const transport = new StdioServerTransport();

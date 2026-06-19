@@ -3,11 +3,11 @@ import type { ProjectConfig } from "../config/types.js";
 import { GetConfigSchemaTool } from "./get_config_schema.js";
 import { GetStepCategoriesTool } from "./get_step_categories.js";
 import { GetStepCatalogTool } from "./get_step_catalog.js";
-import { ListFeaturesTool } from "./list_features.js";
-import { ReadFeatureTool } from "./read_feature.js";
+import { ListGherkinFilesTool } from "./list_gherkin_files.js";
+import { ReadGherkinFileTool } from "./read_gherkin_file.js";
 import { ReadTestConfigTool } from "./read_test_config.js";
 import { TkitTool } from "./tool.js";
-import { WriteFeatureTool } from "./write_feature.js";
+import { WriteGherkinFileTool } from "./write_gherkin_file.js";
 
 export function registerTools(
   server: McpServer,
@@ -19,9 +19,9 @@ export function registerTools(
     new GetStepCatalogTool(),
     new GetConfigSchemaTool(),
     new ReadTestConfigTool(),
-    new ListFeaturesTool(),
-    new ReadFeatureTool(),
-    new WriteFeatureTool(),
+    new ListGherkinFilesTool(),
+    new ReadGherkinFileTool(),
+    new WriteGherkinFileTool(),
   ];
 
   for (const tool of tools) {

@@ -13,10 +13,11 @@
     "docs"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --platform node --target node22 --dts --clean --out-dir dist",
+    "sync-docs": "tsx scripts/sync-framework-docs.ts",
+    "build": "tsup src/index.ts --format esm --platform node --target node22 --dts --clean --out-dir dist && npm run sync-docs",
     "dev": "tsup src/index.ts --format esm --platform node --target node22 --dts --watch --out-dir dist",
     "start": "node dist/index.js",
-    "test": "node --import tsx --test 'src/**/*.test.ts'",
+    "test": "node --import tsx --test 'src/**/*.test.ts' 'scripts/**/*.test.ts'",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -25,7 +26,7 @@
     "zod": "^3.25.51"
   },
   "devDependencies": {
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.3",
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "typescript": "^5.8.3"

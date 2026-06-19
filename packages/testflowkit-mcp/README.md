@@ -83,11 +83,12 @@ Then in `.cursor/mcp.json`:
 
 ## Typical workflow
 
-1. Call `get_step_categories` to list available step categories.
-2. Call `get_step_catalog` (optionally with a `category`) to fetch matching sentences.
-3. Call `get_config_schema` to load the authoritative `testflowkit.yml` schema before generating or editing config.
-4. Call `read_test_config` to discover APIs, operations, pages, and element groups.
-5. Call `write_feature` to create or update a `.feature` file under `settings.gherkin_location`.
+1. Pin framework documentation resources (e.g. `docs://framework/features/api_testing`) when you need macros, variables, hooks, random data, API testing, or frontend testing mechanics.
+2. Call `get_step_categories` to list available step categories.
+3. Call `get_step_catalog` (optionally with a `category`) to fetch matching sentences.
+4. Call `get_config_schema` to load the authoritative `testflowkit.yml` schema before generating or editing config.
+5. Call `read_test_config` to discover APIs, operations, pages, and element groups.
+6. Call `write_gherkin_file` to create or update a `.feature` file under `settings.gherkin_location`.
 
 ## Available tools
 
@@ -97,9 +98,25 @@ Then in `.cursor/mcp.json`:
 | `get_step_catalog` | Full step catalog; pass optional `category` (from `get_step_categories`) to filter |
 | `get_config_schema` | Full JSON schema exported from `tkit export-config-schema` for AI-safe config authoring |
 | `read_test_config` | Summary of `testflowkit.yml` (APIs, pages, elements — secrets redacted) |
-| `list_features` | List all `.feature` files under `settings.gherkin_location` |
-| `read_feature` | Read a specific feature file (`path` relative to project root) |
-| `write_feature` | Create or overwrite a feature file (path-guarded to `settings.gherkin_location`) |
+| `list_gherkin_files` | List all `.feature` files under `settings.gherkin_location` |
+| `read_gherkin_file` | Read a specific Gherkin feature file (`path` relative to project root) |
+| `write_gherkin_file` | Create or overwrite a Gherkin feature file (path-guarded to `settings.gherkin_location`) |
+
+## Framework documentation resources
+
+Framework mechanics are exposed as **MCP resources** (not tools). Pin them in Cursor or read them via `resources/read`:
+
+| URI | Description |
+|-----|-------------|
+| `docs://framework/features/index` | Index of all framework documentation pages |
+| `docs://framework/features/macros` | Macros — reusable parameterized scenarios |
+| `docs://framework/features/random_data` | Random data generators (`{{ rand:... }}`) |
+| `docs://framework/features/global_hooks` | `@BeforeAll` / `@AfterAll` setup and teardown |
+| `docs://framework/features/variables` | Scenario, environment, and global variables |
+| `docs://framework/features/api_testing` | REST and GraphQL API testing |
+| `docs://framework/features/frontend_testing` | Browser automation and UI testing |
+
+Docs are synced from `documentation/content/docs/patterns/` and `documentation/content/docs/guides/` at build time into `docs/features/` inside this package.
 
 ## Catalog resolution
 
