@@ -6,7 +6,7 @@ const inputSchema = z.object({
   path: z
     .string()
     .describe(
-      "Relative path for the feature file from the project root (e.g. features/auth/registration.feature)",
+      "Relative path for the Gherkin feature file from the project root (e.g. features/auth/registration.feature)",
     ),
   content: z.string().describe("Full Gherkin content for the feature file"),
   createDirs: z
@@ -16,13 +16,13 @@ const inputSchema = z.object({
     .describe("Create parent directories if they do not exist"),
 });
 
-export class WriteFeatureTool implements TkitTool<typeof inputSchema> {
+export class WriteGherkinFileTool implements TkitTool<typeof inputSchema> {
   getName(): string {
-    return "write_feature";
+    return "write_gherkin_file";
   }
 
   getDescription(): string {
-    return "Create or overwrite a feature file. The path must be within settings.gherkin_location from testflowkit.yml. Parent directories are created automatically.";
+    return "Create or overwrite a Gherkin feature file. The path must be within settings.gherkin_location from testflowkit.yml. Parent directories are created automatically.";
   }
 
   getTagHint(defaultTagsForDraft?: string): string {

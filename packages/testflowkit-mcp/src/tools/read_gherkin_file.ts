@@ -6,17 +6,17 @@ const inputSchema = z.object({
   path: z
     .string()
     .describe(
-      "Relative path to the feature file from the project root (e.g. features/registration.feature)",
+      "Relative path to the Gherkin feature file from the project root (e.g. features/registration.feature)",
     ),
 });
 
-export class ReadFeatureTool implements TkitTool<typeof inputSchema> {
+export class ReadGherkinFileTool implements TkitTool<typeof inputSchema> {
   getName(): string {
-    return "read_feature";
+    return "read_gherkin_file";
   }
 
   getDescription(): string {
-    return "Read the content of a specific feature file.";
+    return "Read the content of a specific Gherkin feature file.";
   }
 
   getInputSchema() {

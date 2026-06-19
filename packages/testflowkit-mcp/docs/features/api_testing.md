@@ -1,8 +1,6 @@
 ---
 title: API Testing
 description: REST API and GraphQL testing capabilities
-navigation:
-  title: API Testing
 ---
 
 # API Testing
@@ -105,6 +103,6 @@ For the full list of API sentences, browse the **[Step Definitions catalog](/sen
 
 ## Next Steps
 
-- [Variables](/docs/patterns/variables) — Store and reuse response data
-- [Random Data](/docs/patterns/random-data) — Dynamic request payloads
-- [Global Hooks](/docs/patterns/global-hooks) — Auth and data setup before tests
+- [Variables](./variables.md) — Store and reuse response data
+- [Random Data](./random_data.md) — Dynamic request payloads
+- [Global Hooks](./global_hooks.md) — Auth and data setup before tests

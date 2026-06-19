@@ -1,8 +1,6 @@
 ---
 title: Macros
 description: Create reusable, parameterized test patterns with macros
-navigation:
-  title: Macros
 ---
 
 # Macros
@@ -83,5 +81,5 @@ Scenario: Create a new post
 
 ## Next Steps
 
-- [Global Hooks](/docs/patterns/global-hooks) — Setup and teardown across the suite
-- [Variables](/docs/patterns/variables) — Scenario and environment variables
+- [Global Hooks](./global_hooks.md) — Setup and teardown across the suite
+- [Variables](./variables.md) — Scenario and environment variables

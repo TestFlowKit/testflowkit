@@ -1,0 +1,73 @@
+---
+title: Random Data
+description: Generate dynamic test data inline in Gherkin with {{ rand:type:options }}
+---
+
+# Random Data Generation
+
+Use `{{ rand:type }}` anywhere in your Gherkin steps to generate a fresh value at runtime — no custom step code required.
+
+```gherkin
+And I store the value "{{ rand:uuid }}" into "user_id" variable
+And I store the value "{{ rand:email:domain=example.com }}" into "user_email" variable
+When I set the request body to:
+  """
+  { "id": "{{user_id}}", "email": "{{user_email}}" }
+  """
+```
+
+## Syntax
+
+```
+{{ rand:type }}
+{{ rand:type:option=value }}
+{{ rand:type:option=value,option=value }}
+```
+
+## Generators
+
+| Type | Example | Options |
+|------|---------|---------|
+| `uuid` | `{{ rand:uuid }}` | — |
+| `email` | `{{ rand:email:domain=example.com }}` | `domain` (optional) |
+| `phone` | `{{ rand:phone:country=FR,format=e164 }}` | `country` (default `US`), `format`: `e164`, `national`, `international` (default `e164`) |
+| `int` | `{{ rand:int:min=1,max=99 }}` | `min` (default `0`), `max` (default `1000`) |
+| `date` | `{{ rand:date:direction=future,format=2006-01-02 }}` | `direction`: `past`, `future`, `now` (default `past`); `format` (default RFC3339) |
+| `words` | `{{ rand:words:count=6 }}` | `count` (default `3`) |
+| `regex` | `{{ rand:regex:pattern=[A-Z]{3}-\d{4} }}` | `pattern` (required) |
+
+::alert{type="info"}
+For `regex`, `pattern=` consumes the rest of the expression — commas and colons inside the pattern are safe.
+::
+
+## Reuse a value
+
+Each `{{ rand:... }}` call produces a **new** value. Store it in a variable first if you need it in multiple places:
+
+```gherkin
+And I store the value "{{ rand:uuid }}" into "request_id" variable
+When I set the request body to:
+  """
+  { "id": "{{request_id}}" }
+  """
+Then the response should contain "{{request_id}}"
+```
+
+## Debugging
+
+Generated values are printed in the console with a `[rand]` prefix:
+
+```
+[rand] generated '{{ rand:uuid }}' → 4a8b2c1d-...
+```
+
+Use this output to reproduce failing tests.
+
+::alert{type="warning"}
+`{{ rand:... }}` is resolved at step execution time. It does not work in `testflowkit.yml`.
+::
+
+## Next Steps
+
+- [Variables](./variables.md) — Store and reuse values across steps
+- [API Testing](/docs/guides/api-testing) — REST and GraphQL testing

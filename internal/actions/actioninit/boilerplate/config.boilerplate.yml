@@ -85,7 +85,7 @@ agent:
   # Command used to run draft tests (informational for now).
   run_command: "tkit run --tags @wip"
 
-  step_catalog:
+  # step_catalog:
     # Omit file/url to export step definitions automatically from the installed tkit CLI.
     # file: "./build/step-definitions.json"  # local override (offline / feature branches)
     # url: "https://..."                      # custom URL
