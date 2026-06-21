@@ -30,7 +30,7 @@ func (steps) storeJSONPathIntoGlobalVariable() stepbuilder.Step {
 			}
 
 			variables.SetGlobalVariable(varName, value)
-			logger.InfoFf("Stored response path '%s' value '%v' into global variable '%s'", responsePath, value, varName)
+			logger.Infof("Stored response path '%s' value '%v' into global variable '%s'", responsePath, value, varName)
 
 			return ctx, nil
 		},

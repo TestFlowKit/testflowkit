@@ -26,7 +26,7 @@ func (steps) validateNoErrors() stepbuilder.Step {
 				return ctx, fmt.Errorf("expected no GraphQL errors but found %d: %v", len(gqlErrors), gqlErrors)
 			}
 
-			logger.InfoFf("GraphQL response validation passed: no errors")
+			logger.Infof("GraphQL response validation passed: no errors")
 			return ctx, nil
 		},
 		nil,

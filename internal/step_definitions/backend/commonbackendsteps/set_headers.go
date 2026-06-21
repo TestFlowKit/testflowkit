@@ -46,7 +46,7 @@ func (steps) setHeader() stepbuilder.Step {
 		},
 		func(ctx context.Context, name, value string) (context.Context, error) {
 			setHeadersHelper(ctx, map[string]string{name: value})
-			logger.InfoFf("Header set: %s=%s", name, value)
+			logger.Infof("Header set: %s=%s", name, value)
 			return ctx, nil
 		},
 		nil,

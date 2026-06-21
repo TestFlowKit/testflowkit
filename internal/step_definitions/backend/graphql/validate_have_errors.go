@@ -24,7 +24,7 @@ func (steps) validateHaveErrors() stepbuilder.Step {
 				return ctx, apperrors.ErrNoGraphQLErrors
 			}
 
-			logger.InfoFf("GraphQL response validation passed: errors present")
+			logger.Infof("GraphQL response validation passed: errors present")
 			return ctx, nil
 		},
 		nil,

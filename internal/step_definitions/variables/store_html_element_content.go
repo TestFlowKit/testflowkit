@@ -25,7 +25,7 @@ func (steps) storeElementContentIntoVariable() stepbuilder.Step {
 			content := element.TextContent()
 
 			scenarioCtx.SetVariable(varName, strings.TrimSpace(content))
-			logger.InfoFf("Stored content '%s' from element '%s' into variable '%s'", content, elementName, varName)
+			logger.Infof("Stored content '%s' from element '%s' into variable '%s'", content, elementName, varName)
 
 			return ctx, nil
 		},

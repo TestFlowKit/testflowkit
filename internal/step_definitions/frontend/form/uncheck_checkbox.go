@@ -27,7 +27,7 @@ func (steps) uncheckCheckbox() stepbuilder.Step {
 				return ctx, checkBox.Uncheck()
 			}
 
-			logger.InfoFf("checkbox %s is not unchecked because it is already unchecked", checkBoxName)
+			logger.Infof("checkbox %s is not unchecked because it is already unchecked", checkBoxName)
 			return ctx, nil
 		},
 		func(checkBoxName string) stepbuilder.ValidationErrors {

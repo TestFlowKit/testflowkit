@@ -24,7 +24,7 @@ func (steps) checkCheckbox() stepbuilder.Step {
 			}
 
 			if checkBox.IsChecked() {
-				logger.InfoFf("checkbox %s is already checked", checkBoxName)
+				logger.Infof("checkbox %s is already checked", checkBoxName)
 				return ctx, nil
 			}
 

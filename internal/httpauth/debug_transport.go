@@ -52,7 +52,7 @@ func (d *DebugTransport) logRequest(req *http.Request) {
 	if req.Body != nil {
 		b, err := io.ReadAll(req.Body)
 		if err != nil {
-			logger.DebugFf("Request body read error: %v", err)
+			logger.Debugf("Request body read error: %v", err)
 		} else {
 			body = b
 		}
@@ -70,9 +70,9 @@ func (d *DebugTransport) logRequest(req *http.Request) {
 	maskedBody := logger.MaskBody(contentType, body)
 	maxSize := d.effectiveMaxSize()
 
-	logger.DebugFf("→ Request %s %s", req.Method, maskedURL)
-	logger.DebugFf("Headers:\n%s", logger.HeadersToString(maskedHeaders))
-	logger.DebugFf("Body (%s):\n%s", contentType, formatter.Format(contentType, maskedBody, maxSize))
+	logger.Debugf("→ Request %s %s", req.Method, maskedURL)
+	logger.Debugf("Headers:\n%s", logger.HeadersToString(maskedHeaders))
+	logger.Debugf("Body (%s):\n%s", contentType, formatter.Format(contentType, maskedBody, maxSize))
 }
 
 func (d *DebugTransport) logResponse(resp *http.Response, duration time.Duration) {
@@ -80,7 +80,7 @@ func (d *DebugTransport) logResponse(resp *http.Response, duration time.Duration
 	if resp.Body != nil {
 		b, err := io.ReadAll(resp.Body)
 		if err != nil {
-			logger.DebugFf("Response body read error: %v", err)
+			logger.Debugf("Response body read error: %v", err)
 			// Attempt to restore what we have and continue
 			resp.Body = io.NopCloser(io.MultiReader(bytes.NewReader(b), resp.Body))
 			return
@@ -94,9 +94,9 @@ func (d *DebugTransport) logResponse(resp *http.Response, duration time.Duration
 	contentType := resp.Header.Get("Content-Type")
 	maskedBody := logger.MaskBody(contentType, body)
 
-	logger.DebugFf("← Response %d %s (%s)", resp.StatusCode, resp.Status, duration)
-	logger.DebugFf("Headers:\n%s", logger.HeadersToString(maskedHeaders))
-	logger.DebugFf("Body (%s):\n%s", contentType, formatter.Format(contentType, maskedBody, d.effectiveMaxSize()))
+	logger.Debugf("← Response %d %s (%s)", resp.StatusCode, resp.Status, duration)
+	logger.Debugf("Headers:\n%s", logger.HeadersToString(maskedHeaders))
+	logger.Debugf("Body (%s):\n%s", contentType, formatter.Format(contentType, maskedBody, d.effectiveMaxSize()))
 }
 
 func (d *DebugTransport) base() http.RoundTripper {

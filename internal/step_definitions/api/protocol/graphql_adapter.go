@@ -138,17 +138,17 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 		// Marshal request body for debug output
 		reqBytes, _ := json.Marshal(request)
 		masked := logger.MaskBody("application/json", reqBytes)
-		logger.DebugFf("→ GraphQL Request %s", endpoint)
+		logger.Debugf("→ GraphQL Request %s", endpoint)
 		// convert headers map to http.Header for printing
 		reqHdr := http.Header{}
 		for k, v := range headers {
 			reqHdr.Set(k, v)
 		}
-		logger.DebugFf("Headers:\n%s", logger.HeadersToString(reqHdr))
+		logger.Debugf("Headers:\n%s", logger.HeadersToString(reqHdr))
 		if len(request.Variables) > 0 {
-			logger.DebugFf("GraphQL Variables: %v", request.Variables)
+			logger.Debugf("GraphQL Variables: %v", request.Variables)
 		}
-		logger.DebugFf(
+		logger.Debugf(
 			"Body (application/json):\n%s",
 			formatter.Format(
 				"application/json",
@@ -175,9 +175,9 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 		}
 		maskedHdrs := logger.MaskHeaders(respHdr)
 		maskedBody := logger.MaskBody("application/json", response.RawBody)
-		logger.DebugFf("← GraphQL Response %d (%v)", response.StatusCode, duration)
-		logger.DebugFf("Headers:\n%s", logger.HeadersToString(maskedHdrs))
-		logger.DebugFf(
+		logger.Debugf("← GraphQL Response %d (%v)", response.StatusCode, duration)
+		logger.Debugf("Headers:\n%s", logger.HeadersToString(maskedHdrs))
+		logger.Debugf(
 			"Body (application/json):\n%s",
 			formatter.Format(
 				"application/json",
@@ -186,7 +186,7 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 			),
 		)
 
-		logger.DebugFf(
+		logger.Debugf(
 			"GraphQL request completed - Status: %d, Duration: %v, Errors: %d",
 			response.StatusCode, duration, len(response.Errors))
 	}

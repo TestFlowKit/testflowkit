@@ -20,26 +20,26 @@ func DisplayConfigSummary(cfg *config.Config) {
 	if cfg == nil {
 		return
 	}
-	logger.InfoFf("Testflowkit version %s", cfg.GetVersion())
+	logger.Infof("Testflowkit version %s", cfg.GetVersion())
 
 	logger.Info("--- Configuration Summary ---")
 
-	logger.InfoFf("Available Steps: %d", len(stepdefinitions.GetAll()))
+	logger.Infof("Available Steps: %d", len(stepdefinitions.GetAll()))
 
-	logger.InfoFf("Concurrency: %d", cfg.Settings.Concurrency)
-	logger.InfoFf("Report Format: %s", cfg.Settings.ReportFormat)
-	logger.InfoFf("Gherkin Location: %s", cfg.Settings.GherkinLocation)
-	logger.InfoFf("Test Tags: %s", cfg.Settings.Tags)
-	logger.InfoFf("Environment Variables: %d defined", len(cfg.Env))
+	logger.Infof("Concurrency: %d", cfg.Settings.Concurrency)
+	logger.Infof("Report Format: %s", cfg.Settings.ReportFormat)
+	logger.Infof("Gherkin Location: %s", cfg.Settings.GherkinLocation)
+	logger.Infof("Test Tags: %s", cfg.Settings.Tags)
+	logger.Infof("Environment Variables: %d defined", len(cfg.Env))
 
 	if cfg.IsFrontendDefined() {
 		displayFrontSummary(cfg)
 	}
 
 	if cfg.APIs != nil && cfg.APIs.Definitions != nil {
-		logger.InfoFf("APIs configured: %d", len(cfg.APIs.Definitions))
+		logger.Infof("APIs configured: %d", len(cfg.APIs.Definitions))
 		for apiName, apiDef := range cfg.APIs.Definitions {
-			logger.InfoFf("  - %s (%s)", apiName, apiDef.Type)
+			logger.Infof("  - %s (%s)", apiName, apiDef.Type)
 		}
 	}
 
@@ -48,11 +48,11 @@ func DisplayConfigSummary(cfg *config.Config) {
 
 func displayFrontSummary(conf *config.Config) {
 	frontConf := conf.Frontend
-	logger.InfoFf("Headless Mode: %t", frontConf.Headless)
-	logger.InfoFf("Default Timeout: %dms", frontConf.DefaultTimeout)
-	logger.InfoFf("Frontend Base URL: %s", conf.GetFrontendBaseURL())
-	logger.InfoFf("Pages Configured: %d", len(frontConf.Pages))
-	logger.InfoFf("Think Time Between Actions: %dms", frontConf.ThinkTime)
-	logger.InfoFf("Screenshot on Failure: %t", frontConf.ScreenshotOnFailure)
-	logger.InfoFf("Elements Configured: %d page groups", len(frontConf.Elements))
+	logger.Infof("Headless Mode: %t", frontConf.Headless)
+	logger.Infof("Default Timeout: %dms", frontConf.DefaultTimeout)
+	logger.Infof("Frontend Base URL: %s", conf.GetFrontendBaseURL())
+	logger.Infof("Pages Configured: %d", len(frontConf.Pages))
+	logger.Infof("Think Time Between Actions: %dms", frontConf.ThinkTime)
+	logger.Infof("Screenshot on Failure: %t", frontConf.ScreenshotOnFailure)
+	logger.Infof("Elements Configured: %d page groups", len(frontConf.Elements))
 }

@@ -32,7 +32,7 @@ func (steps) storeGraphQLError() stepbuilder.Step {
 			backend.SetGraphQLVariable(variableName, gqlErrors)
 			scenarioCtx.SetVariable(variableName, gqlErrors)
 
-			logger.InfoFf("Stored GraphQL errors as '%s': %d error(s)", variableName, len(gqlErrors))
+			logger.Infof("Stored GraphQL errors as '%s': %d error(s)", variableName, len(gqlErrors))
 			return ctx, nil
 		},
 		nil,

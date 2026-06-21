@@ -26,16 +26,16 @@ func (steps) debugAPIResponse() stepbuilder.Step {
 			response := backend.GetResponse()
 
 			statusCode := backend.GetStatusCode()
-			logger.DebugFf("Status Code: %d", statusCode)
+			logger.Debugf("Status Code: %d", statusCode)
 
 			// Headers
 			if len(response.Headers) > 0 {
-				logger.DebugFf("Headers:")
+				logger.Debugf("Headers:")
 				for key, value := range response.Headers {
-					logger.DebugFf("  %s: %s", key, value)
+					logger.Debugf("  %s: %s", key, value)
 				}
 			} else {
-				logger.DebugFf("No headers in response")
+				logger.Debugf("No headers in response")
 			}
 
 			// Body
@@ -43,7 +43,7 @@ func (steps) debugAPIResponse() stepbuilder.Step {
 			if len(body) > 0 {
 				contentType := response.Headers["Content-Type"]
 				formatted := formatter.Format(contentType, body, formatter.DefaultMaxBodySize)
-				logger.DebugFf("Body (%d bytes):", len(body))
+				logger.Debugf("Body (%d bytes):", len(body))
 				logger.Debug(formatted)
 			} else {
 				logger.Debug("No body in response")
