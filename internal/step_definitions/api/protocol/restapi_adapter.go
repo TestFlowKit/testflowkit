@@ -108,7 +108,7 @@ func (a *RESTAPIAdapter) SendRequest(ctx context.Context) (context.Context, erro
 	// Store response in unified format
 	scenarioCtx.SetResponse(resp.StatusCode, responseBody, headers)
 
-	logger.InfoFf("REST request completed - Status: %d, Duration: %v, Response size: %d bytes",
+	logger.Infof("REST request completed - Status: %d, Duration: %v, Response size: %d bytes",
 		resp.StatusCode, duration, len(responseBody))
 
 	return ctx, nil
@@ -167,10 +167,10 @@ func (a *RESTAPIAdapter) createRequest(ctx context.Context, scenarioCtx *scenari
 func (a *RESTAPIAdapter) getBodyReader(scenarioCtx *scenario.Context) io.Reader {
 	requestBody := scenarioCtx.GetRESTRequestBody()
 	if requestBody != nil {
-		logger.InfoFf("Request body found: %d bytes", len(requestBody))
+		logger.Infof("Request body found: %d bytes", len(requestBody))
 		return bytes.NewReader(requestBody)
 	}
-	logger.InfoFf("No request body set")
+	logger.Infof("No request body set")
 	return nil
 }
 

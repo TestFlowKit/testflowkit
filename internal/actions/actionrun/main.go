@@ -234,7 +234,7 @@ func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioC
 		registerTestRunnerStepDefinitions(sc)
 		myCtx := params.scenarioBuilder()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-			logger.InfoFf("Running scenario: %s", sc.Name)
+			logger.Infof("Running scenario: %s", sc.Name)
 			ctx = scenario.WithContext(ctx, scenarioCtx)
 			return ctx, nil
 		})
@@ -309,7 +309,7 @@ func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenari
 		// Dump variables summary when debug enabled or on failure.
 		if scCtx.GetConfig().IsDebugEnabled() {
 			summary := scCtx.GenerateVariablesSummary()
-			logger.DebugFf("--- Scenario Variables for '%s' ---\n%s", sc.Name, summary)
+			logger.Debugf("--- Scenario Variables for '%s' ---\n%s", sc.Name, summary)
 		}
 
 		scCtx.Done()

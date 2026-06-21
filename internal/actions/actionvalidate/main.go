@@ -81,7 +81,7 @@ func validateEnvVars(parsedFeatures []*gherkinparser.Feature, configFilePath str
 	if len(undefinedEnvs) > 0 {
 		logger.Info("⚠️  The following environment variables are referenced but not defined:")
 		for k := range undefinedEnvs {
-			logger.InfoFf("  - env.%s", k)
+			logger.Infof("  - env.%s", k)
 		}
 		logger.Info("\nDefine these variables in:")
 		logger.Info("  1. testflowkit.yml under 'env:' block, or")

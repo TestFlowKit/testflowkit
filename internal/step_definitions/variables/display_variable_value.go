@@ -21,7 +21,7 @@ func (steps) displayVariableValue() stepbuilder.Step {
 				return ctx, &apperrors.VariableNotFoundError{Name: varName}
 			}
 
-			logger.InfoFf("Variable '%s' value: %v", varName, value)
+			logger.Infof("Variable '%s' value: %v", varName, value)
 			return ctx, nil
 		},
 		nil,

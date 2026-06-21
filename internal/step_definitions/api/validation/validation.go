@@ -54,9 +54,9 @@ func ValidatePathValue(engine queryable.Queryable, path, expectedValue string, s
 	}
 
 	if shouldEqual {
-		logger.InfoFf("response validation passed: %s = %s", path, expectedValue)
+		logger.Infof("response validation passed: %s = %s", path, expectedValue)
 	} else {
-		logger.InfoFf("response validation passed: %s != %s", path, expectedValue)
+		logger.Infof("response validation passed: %s != %s", path, expectedValue)
 	}
 	return nil
 }
@@ -81,9 +81,9 @@ func ValidatePathExists(engine queryable.Queryable, path string, shouldExist boo
 	}
 
 	if shouldExist {
-		logger.InfoFf("response validation passed: path '%s' exists", path)
+		logger.Infof("response validation passed: path '%s' exists", path)
 	} else {
-		logger.InfoFf("response validation passed: path '%s' does not exist", path)
+		logger.Infof("response validation passed: path '%s' does not exist", path)
 	}
 	return nil
 }
@@ -186,7 +186,7 @@ func ValidatePathCount(engine queryable.Queryable, path string, expectedCount in
 		return fmt.Errorf("expected %d elements in '%s', but got %d", expectedCount, path, actualCount)
 	}
 
-	logger.InfoFf("response validation passed: path '%s' contains %d element(s)", path, expectedCount)
+	logger.Infof("response validation passed: path '%s' contains %d element(s)", path, expectedCount)
 	return nil
 }
 
@@ -242,7 +242,7 @@ func ValidateBodyContains(body []byte, expectedSubstring string) error {
 		return fmt.Errorf("response body does not contain expected substring '%s'", expectedSubstring)
 	}
 
-	logger.InfoFf("response validation passed: body contains '%s'", expectedSubstring)
+	logger.Infof("response validation passed: body contains '%s'", expectedSubstring)
 	return nil
 }
 
@@ -276,12 +276,12 @@ func ValidateBodyEquals(actual []byte, expected string) error {
 		if err := compareXMLBodies(expectedBody, actualBody); err != nil {
 			return fmt.Errorf("response XML validation failed: %w", err)
 		}
-		logger.InfoFf("response validation passed: XML matches expected content")
+		logger.Infof("response validation passed: XML matches expected content")
 	case queryable.FormatJSON, queryable.FormatAuto:
 		if err := jsonhelpers.CompareJSON(expectedBody, actualBody); err != nil {
 			return fmt.Errorf("response JSON validation failed: %w", err)
 		}
-		logger.InfoFf("response validation passed: JSON matches expected content")
+		logger.Infof("response validation passed: JSON matches expected content")
 	}
 
 	return nil

@@ -25,7 +25,7 @@ func (steps) setPathParams() stepbuilder.Step {
 
 			errSetParams := setPathParamsHelper(ctx, params)
 			if errSetParams == nil {
-				logger.InfoFf("Path parameters set: %v", params)
+				logger.Infof("Path parameters set: %v", params)
 			}
 
 			return ctx, errSetParams
@@ -55,7 +55,7 @@ func (steps) setPathParam() stepbuilder.Step {
 		func(ctx context.Context, name, value string) (context.Context, error) {
 			err := setPathParamsHelper(ctx, map[string]string{name: value})
 			if err == nil {
-				logger.InfoFf("Path parameter set: %s=%s", name, value)
+				logger.Infof("Path parameter set: %s=%s", name, value)
 			}
 			return ctx, err
 		},

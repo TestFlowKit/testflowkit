@@ -22,7 +22,7 @@ func (steps) setRequestBody() stepbuilder.Step {
 			// File paths would be passed directly, multiline strings would have newlines
 
 			backend.SetRESTRequestBody([]byte(body))
-			logger.InfoFf("Request body set (%d bytes)", len(body))
+			logger.Infof("Request body set (%d bytes)", len(body))
 			return ctx, nil
 		},
 		nil,

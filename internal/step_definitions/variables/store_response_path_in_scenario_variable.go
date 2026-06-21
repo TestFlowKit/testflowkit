@@ -31,7 +31,7 @@ func (steps) storeJSONPathIntoScenarioVariable() stepbuilder.Step {
 			}
 
 			scenarioCtx.SetVariable(varName, value)
-			logger.InfoFf("Stored response path '%s' value '%v' into variable '%s'", responsePath, value, varName)
+			logger.Infof("Stored response path '%s' value '%v' into variable '%s'", responsePath, value, varName)
 
 			return ctx, nil
 		},

@@ -9,7 +9,7 @@ func Debug(message string) {
 	log(debug, message)
 }
 
-// DebugFf logs a formatted message at DEBUG level.
-func DebugFf(format string, args ...interface{}) {
+// Debugf logs a formatted message at DEBUG level.
+func Debugf(format string, args ...interface{}) {
 	log(debug, fmt.Sprintf(format, args...))
 }

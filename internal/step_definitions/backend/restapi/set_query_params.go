@@ -23,7 +23,7 @@ func (steps) setQueryParams() stepbuilder.Step {
 
 			errSetParams := setQueryParamsHelper(ctx, params)
 			if errSetParams == nil {
-				logger.InfoFf("Query parameters set: %v", params)
+				logger.Infof("Query parameters set: %v", params)
 			}
 			return ctx, errSetParams
 		},
@@ -54,7 +54,7 @@ func (steps) setQueryParam() stepbuilder.Step {
 		func(ctx context.Context, name, value string) (context.Context, error) {
 			err := setQueryParamsHelper(ctx, map[string]string{name: value})
 			if err == nil {
-				logger.InfoFf("Query parameter set: %s=%s", name, value)
+				logger.Infof("Query parameter set: %s=%s", name, value)
 			}
 			return ctx, nil
 		},

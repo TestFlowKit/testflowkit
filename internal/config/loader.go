@@ -20,7 +20,7 @@ var (
 
 func Load(configFilePath string, overrides Overrides) error {
 	cfgOnce.Do(func() {
-		logger.InfoFf("Loading configuration from: %s", configFilePath)
+		logger.Infof("Loading configuration from: %s", configFilePath)
 
 		// 1. Read file raw content
 		configFileContent, err := os.ReadFile(configFilePath)
@@ -49,7 +49,7 @@ func Load(configFilePath string, overrides Overrides) error {
 		envVars := FlattenMap(preCfg.Env, "")
 
 		if envFile != "" {
-			logger.InfoFf("Loading environment variables from: %s", envFile)
+			logger.Infof("Loading environment variables from: %s", envFile)
 			fileVars, errLoadEnv := LoadEnvFile(envFile)
 			if errLoadEnv != nil {
 				errCfg = fmt.Errorf("failed to load env file '%s': %w", envFile, errLoadEnv)
@@ -57,11 +57,11 @@ func Load(configFilePath string, overrides Overrides) error {
 			}
 			// File vars override inline vars
 			maps.Copy(envVars, fileVars)
-			logger.InfoFf("Loaded %d environment variables from file", len(fileVars))
+			logger.Infof("Loaded %d environment variables from file", len(fileVars))
 		}
 
 		variables.SetEnvVariables(envVars)
-		logger.InfoFf("Environment variables initialized: %d total", len(envVars))
+		logger.Infof("Environment variables initialized: %d total", len(envVars))
 
 		// 5. Substitute variables in config content
 		dataStr := variables.ReplaceEnvVariables(string(configFileContent))

@@ -41,7 +41,7 @@ func (steps) setRequestBodyFromFile() stepbuilder.Step {
 			}
 
 			backend.SetRESTRequestBody(content)
-			logger.InfoFf("Request body set from file: %s (%d bytes)", filePath, len(content))
+			logger.Infof("Request body set from file: %s (%d bytes)", filePath, len(content))
 			return ctx, nil
 		},
 		nil,

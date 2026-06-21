@@ -6,5 +6,5 @@ import (
 )
 
 func version(conf *config.Config, _ error) {
-	logger.InfoFf("testflowkit version %s\n", conf.GetVersion())
+	logger.Infof("testflowkit version %s\n", conf.GetVersion())
 }

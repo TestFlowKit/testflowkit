@@ -18,24 +18,24 @@ func (steps) debugRequest() stepbuilder.Step {
 
 			endpoint := scenarioCtx.GetEndpoint()
 			if endpoint.Path != "" {
-				logger.DebugFf("Endpoint: %s", endpoint.GetFullURL())
-				logger.DebugFf("Method: %s", endpoint.Method)
+				logger.Debugf("Endpoint: %s", endpoint.GetFullURL())
+				logger.Debugf("Method: %s", endpoint.Method)
 			} else {
-				logger.DebugFf("No endpoint configured")
+				logger.Debugf("No endpoint configured")
 			}
 
 			headers := scenarioCtx.GetRequestHeaders()
 			if len(headers) > 0 {
-				logger.DebugFf("Headers: %v", headers)
+				logger.Debugf("Headers: %v", headers)
 			} else {
-				logger.DebugFf("No headers set")
+				logger.Debugf("No headers set")
 			}
 
 			body := scenarioCtx.GetRESTRequestBody()
 			if body != nil {
 				contentType := scenarioCtx.GetRequestHeaders()["Content-Type"]
 				formatted := formatter.Format(contentType, body, formatter.DefaultMaxBodySize)
-				logger.DebugFf("Body (%d bytes):", len(body))
+				logger.Debugf("Body (%d bytes):", len(body))
 				logger.Debug(formatted)
 			} else {
 				logger.Debug("No body set")
