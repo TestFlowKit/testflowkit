@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/alexflint/go-arg v1.6.1
-	github.com/cucumber/godog v0.15.1
+	github.com/cucumber/godog v0.16.0
 	github.com/cucumber/tag-expressions/go/v6 v6.2.0
 	github.com/go-rod/rod v0.116.2
 	github.com/goccy/go-yaml v1.19.2
@@ -18,21 +18,24 @@ require (
 	github.com/antchfx/xmlquery v1.5.1
 	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/fatih/color v1.19.0
-	github.com/gofrs/uuid/v5 v5.4.0
+	github.com/gofrs/uuid/v5 v5.5.1
 	github.com/lucasjones/reggen v0.0.0-20200904144131-37ba4fa293bb
-	github.com/nyaruka/phonenumbers v1.8.0
+	github.com/nyaruka/phonenumbers v1.8.1
 	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/tidwall/gjson v1.19.0
 )
 
 require (
 	github.com/antchfx/xpath v1.3.6 // indirect
+	github.com/cucumber/gherkin/go/v42 v42.0.0 // indirect
+	github.com/cucumber/messages/go/v34 v34.2.0 // indirect
 	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	golang.org/x/net v0.54.0 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/text v0.40.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
@@ -41,7 +44,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/image v0.42.0
+	golang.org/x/image v0.44.0
 	golang.org/x/sys v0.44.0 // indirect
 )
 
@@ -51,11 +54,11 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
-	github.com/hashicorp/go-memdb v1.3.4 // indirect
+	github.com/hashicorp/go-memdb v1.3.5 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rdumont/assistdog v0.0.0-20240711132531-b5b791dd7452
-	github.com/spf13/pflag v1.0.7 // indirect
+	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/tdewolff/test v1.0.11-0.20240106005702-7de5f7df4739 // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
