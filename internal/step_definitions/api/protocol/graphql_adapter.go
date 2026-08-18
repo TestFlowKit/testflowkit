@@ -134,7 +134,7 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	// Ensure variables are set in the request
 	request.Variables = scenarioCtx.GetGraphQLVariables()
-	if scenarioCtx.GetConfig().IsDebugEnabled() {
+	if logger.IsDebugEnabled() && logger.IsScopeEnabled(logger.ScopeHTTP) {
 		// Marshal request body for debug output
 		reqBytes, _ := json.Marshal(request)
 		masked := logger.MaskBody("application/json", reqBytes)
@@ -167,7 +167,7 @@ func (a *GraphQLAdapter) SendRequest(ctx context.Context) (context.Context, erro
 
 	scenarioCtx.SetGraphQLResponse(response)
 
-	if scenarioCtx.GetConfig().IsDebugEnabled() {
+	if logger.IsDebugEnabled() && logger.IsScopeEnabled(logger.ScopeHTTP) {
 		// Mask headers and body for debug
 		respHdr := http.Header{}
 		for k, v := range headers {

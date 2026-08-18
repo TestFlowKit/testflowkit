@@ -38,6 +38,11 @@ func main() {
 
 	cfg, err := getConfig(args, err)
 
+	dbg := cfg.Settings.Debug
+	if initErr := logger.Init(dbg.Verbosity, dbg.Scopes, dbg.LogFile, dbg.LogFormat); initErr != nil {
+		logger.Fatal("Failed to initialize logger", initErr)
+	}
+
 	actions.Execute(cfg, err, mode)
 }
 

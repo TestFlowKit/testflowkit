@@ -75,7 +75,7 @@ type GlobalSettings struct {
 	Debug DebugConfig `yaml:"debug"`
 }
 
-// DebugConfig holds debug-mode settings; enabled only via the CLI --debug flag.
+// DebugConfig holds debug-mode settings; enabled only via CLI flags.
 type DebugConfig struct {
 	// PrettyPrint indents request/response bodies in debug output.
 	PrettyPrint bool `yaml:"pretty_print"`
@@ -83,8 +83,25 @@ type DebugConfig struct {
 	// MaxBodySize caps debug body output in bytes (0 = unlimited, max 10 MiB).
 	MaxBodySize int64 `yaml:"max_body_size" validate:"min=0,max=10485760"`
 
-	// Enabled is set by CLI only and ignored during YAML unmarshalling.
-	Enabled bool `yaml:"-"`
+	// CLI-only fields; never read from YAML.
+
+	// Verbosity controls the debug detail level: 0=off, 1=summary, 2=detailed, 3=trace.
+	// --debug sets 2; --verbosity overrides this value.
+	Verbosity int `yaml:"-"`
+
+	// Scopes is a comma-separated list of debug scopes to enable: http,browser,variables,config.
+	// Empty means all scopes are active when Verbosity > 0.
+	Scopes string `yaml:"-"`
+
+	// Scenario restricts debug output to scenarios whose name or tags contain this string.
+	// Empty means all scenarios emit debug output.
+	Scenario string `yaml:"-"`
+
+	// LogFile writes debug output to this file path in addition to stdout.
+	LogFile string `yaml:"-"`
+
+	// LogFormat sets the log output format: "text" (default) or "json".
+	LogFormat string `yaml:"-"`
 }
 
 // FrontendElements maps group names to element names and their selector fallbacks.

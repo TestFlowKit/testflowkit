@@ -15,7 +15,7 @@ type argsConfig struct {
 	Install    *installCmd  `arg:"subcommand:install" help:"install browser drivers"`
 	Validate   *validateCmd `arg:"subcommand:validate" help:"validate gherkin files"`
 	VersionCmd *versionCmd  `arg:"subcommand:version" help:"show version information"`
-	//nolint:lll // Subcommand name is intentionally long and fixed by CLI contract.
+
 	ExportStepDefinitions *exportStepDefinitionsCmd `arg:"subcommand:export-step-definitions" help:"export step definitions"`
 
 	ExportConfigSchema *exportConfigSchemaCmd `arg:"subcommand:export-config-schema" help:"export config schema"`
@@ -40,13 +40,21 @@ func (a *argsConfig) getConfigPath() (string, error) {
 
 func (a *argsConfig) getAppConfigOverrides() config.Overrides {
 	if a.Run != nil {
+		verbosity := a.Run.Verbosity
+		if verbosity == 0 && a.Run.Debug {
+			verbosity = 2
+		}
 		return config.Overrides{
 			Settings: config.GlobalSettings{
 				GherkinLocation: a.Run.GherkinLocation,
 				Tags:            a.Run.Tags,
 				EnvFile:         a.Run.EnvFile,
 				Debug: config.DebugConfig{
-					Enabled: a.Run.Debug,
+					Verbosity: verbosity,
+					Scopes:    a.Run.DebugScope,
+					Scenario:  a.Run.DebugScenario,
+					LogFile:   a.Run.LogFile,
+					LogFormat: a.Run.LogFormat,
 				},
 			},
 			Frontend: config.FrontendConfig{
@@ -130,9 +138,14 @@ func (a *argsConfig) GetTimeout() int {
 
 type runCmd struct {
 	commonCmd
-	Headless bool   `arg:"--headless" help:"headless mode" default:"true"`
-	Timeout  string `arg:"--timeout" help:"timeout duration (e.g. 10s, 1m, 2h)"`
-	Debug    bool   `arg:"--debug" help:"enable debug output (full request/response payloads)"`
+	Headless      bool   `arg:"--headless" help:"headless mode" default:"true"`
+	Timeout       string `arg:"--timeout" help:"timeout duration (e.g. 10s, 1m, 2h)"`
+	Debug         bool   `arg:"--debug" help:"enable debug output (verbosity 2: headers and variable substitutions)"`
+	Verbosity     int    `arg:"--verbosity" help:"debug verbosity: 1=summary, 2=detailed, 3=trace (overrides --debug)" default:"0"`
+	DebugScope    string `arg:"--debug-scope" help:"restrict debug to comma-separated scopes: http,browser,variables,config"`
+	DebugScenario string `arg:"--debug-scenario" help:"restrict debug output to scenarios whose name or tag contains this value"`
+	LogFile       string `arg:"--log-file" help:"write debug output to this file path in addition to stdout"`
+	LogFormat     string `arg:"--log-format" help:"log output format: text or json" default:"text"`
 }
 
 type initCmd struct {
