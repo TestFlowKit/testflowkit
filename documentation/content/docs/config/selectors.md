@@ -75,7 +75,9 @@ $x("//button[text()='Submit']")           // XPath
 Run with debug output to see which selector matched:
 
 ```bash
-tkit run --debug
+tkit run --debug                    # headers and variable substitutions
+tkit run --verbosity 3              # + full page state and browser events
+tkit run --debug --debug-scope browser  # browser layer only
 ```
 
 Increase `frontend.default_timeout` or `settings.think_time` if elements load slowly.

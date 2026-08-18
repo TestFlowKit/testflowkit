@@ -87,9 +87,22 @@ And I set the header "Authorization" to "Bearer {{auth_token}}"
 ## Debugging
 
 ```bash
-tkit run --debug          # Full request/response payloads
-tkit validate             # Check config and env references
+tkit run --debug                          # Headers and variable substitutions (verbosity 2)
+tkit run --verbosity 3                    # Full bodies and all internals
+tkit run --debug --debug-scope http       # HTTP layer only
+tkit run --debug --debug-scenario "Login" # One scenario only
+tkit run --debug --log-file debug.log     # Persist to file
+tkit run --debug --log-format json | jq . # Structured output
+tkit validate                             # Check config and env references
 ```
+
+| Verbosity | Flag | Shows |
+|-----------|------|-------|
+| 1 | `--verbosity=1` | Scenario/step flow, timings |
+| 2 | `--debug` | + HTTP headers, variable substitutions |
+| 3 | `--verbosity=3` | + Full bodies, browser actions |
+
+Use `--debug-scope` to reduce noise: `http`, `browser`, `variables`, `config`.
 
 Enable screenshots on failure:
 

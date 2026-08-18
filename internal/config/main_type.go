@@ -167,9 +167,35 @@ func (c *Config) GetDebugMaxBodySize(defaultSize int64) int64 {
 	return defaultSize
 }
 
-// IsDebugEnabled returns true when debug mode is enabled via config or CLI.
+// IsDebugEnabled returns true when debug mode is enabled via CLI flags.
 func (c *Config) IsDebugEnabled() bool {
-	return c.Settings.Debug.Enabled
+	return c.Settings.Debug.Verbosity > 0
+}
+
+// GetDebugVerbosity returns the configured verbosity level (0–3).
+func (c *Config) GetDebugVerbosity() int {
+	return c.Settings.Debug.Verbosity
+}
+
+// IsDebugEnabledForScenario returns true when debug is enabled and either no scenario
+// filter is configured or the scenario name/tags contain the filter string.
+func (c *Config) IsDebugEnabledForScenario(scenarioName string, tags []string) bool {
+	if c.Settings.Debug.Verbosity == 0 {
+		return false
+	}
+	filter := c.Settings.Debug.Scenario
+	if filter == "" {
+		return true
+	}
+	if strings.Contains(strings.ToLower(scenarioName), strings.ToLower(filter)) {
+		return true
+	}
+	for _, tag := range tags {
+		if strings.EqualFold(tag, filter) || strings.EqualFold(strings.TrimPrefix(tag, "@"), filter) {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *Config) ValidateConfiguration() error {

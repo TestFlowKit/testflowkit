@@ -299,6 +299,9 @@ Feature: Dynamic User Testing
 
 # Run with specific configuration
 ./tkit run --config ./custom-config.yml
+
+# Debug a failing scenario (headers + variable substitutions)
+./tkit run --debug --debug-scenario "Login"
 ```
 
 ## 📚 Documentation
@@ -980,6 +983,42 @@ When the user fills the "username" field with oki
 # Use custom configuration file
 ./tkit run --config ./custom-config.yml
 ```
+
+### Debugging
+
+TestFlowKit provides granular debug output with four verbosity levels:
+
+| Flag | Verbosity | What it shows |
+|------|-----------|---------------|
+| *(off)* | 0 | No debug output |
+| `--verbosity=1` | 1 | Scenario names, step flow, timings |
+| `--debug` | 2 | + HTTP headers, variable substitutions |
+| `--verbosity=3` | 3 | + Full request/response bodies, browser events |
+
+```bash
+# Enable debug output (verbosity 2)
+./tkit run --debug
+
+# Full trace including bodies
+./tkit run --verbosity 3
+
+# Scope debug to one scenario only (reduces noise)
+./tkit run --debug --debug-scenario "Login"
+
+# Scope to specific layers
+./tkit run --debug --debug-scope http
+./tkit run --debug --debug-scope http,variables
+
+# Write debug output to a file
+./tkit run --debug --log-file debug.log
+
+# Structured JSON output for piping into jq
+./tkit run --debug --log-format json | jq 'select(.level == "ERROR")'
+```
+
+**Debug scopes**: `http`, `browser`, `variables`, `config`
+
+All debug output automatically redacts passwords, tokens, API keys, and other sensitive fields regardless of verbosity level.
 
 ### Tag-Based Execution
 

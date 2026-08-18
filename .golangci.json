@@ -212,6 +212,9 @@
           "prometheus.LinearBuckets"
         ]
       },
+      "lll": {
+        "line-length": 128
+      },
       "nakedret": {
         "max-func-lines": 0
       },

@@ -33,6 +33,10 @@ type DebugTransport struct {
 
 // RoundTrip implements http.RoundTripper.
 func (d *DebugTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if !logger.IsScopeEnabled(logger.ScopeHTTP) {
+		return d.base().RoundTrip(req)
+	}
+
 	d.logRequest(req)
 
 	start := time.Now()

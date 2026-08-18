@@ -38,7 +38,12 @@ tkit run [options]
 | `--env-file` | | Environment variables YAML | from config |
 | `--headless` | | Headless browser mode | `true` |
 | `--timeout` | | Request/element timeout (`10s`, `1m`) | from config |
-| `--debug` | | Log full request/response payloads | `false` |
+| `--debug` | | Enable debug output (verbosity 2: headers and variable substitutions) | `false` |
+| `--verbosity` | | Debug verbosity: `1`=summary, `2`=detailed, `3`=trace (overrides `--debug`) | `0` |
+| `--debug-scope` | | Restrict debug to comma-separated scopes: `http`, `browser`, `variables`, `config` | all |
+| `--debug-scenario` | | Restrict debug output to scenarios whose name or tag contains this value | all |
+| `--log-file` | | Write debug output to this file path in addition to stdout | |
+| `--log-format` | | Log output format: `text` or `json` | `text` |
 
 ```bash
 tkit run
@@ -47,6 +52,48 @@ tkit run --tags "@login and not @slow"
 tkit run --env-file .env.staging.yml
 tkit run --config staging.yml --location e2e/features
 tkit run --debug
+tkit run --verbosity 3
+tkit run --debug --debug-scope http
+tkit run --debug --debug-scenario "Login"
+tkit run --debug --log-format json | jq '.message'
+tkit run --debug --log-file debug.log
+```
+
+## Debug verbosity levels
+
+| Level | Flag | What it shows |
+|-------|------|---------------|
+| `0` | *(off)* | No debug output |
+| `1` | `--verbosity=1` | Scenario names, step flow, timings |
+| `2` | `--debug` or `--verbosity=2` | + HTTP headers, variable substitutions |
+| `3` | `--verbosity=3` | + Full request/response bodies, browser actions |
+
+## Debug scopes
+
+Use `--debug-scope` to reduce noise when you only need to inspect one layer:
+
+```bash
+tkit run --debug --debug-scope http           # HTTP requests/responses only
+tkit run --debug --debug-scope variables      # Variable resolution only
+tkit run --debug --debug-scope http,browser   # Multiple scopes
+```
+
+| Scope | What it covers |
+|-------|----------------|
+| `http` | REST and GraphQL request/response logging |
+| `browser` | Browser automation events |
+| `variables` | Variable resolution and end-of-scenario dump |
+| `config` | Configuration loading |
+
+## JSON log format
+
+The `--log-format json` flag emits one JSON object per line, useful for piping into `jq` or a log aggregator:
+
+```bash
+tkit run --debug --log-format json
+# {"timestamp":"2026-08-18T10:30:00Z","level":"DEBUG","message":"→ GET /api/users"}
+
+tkit run --debug --log-format json | jq 'select(.level == "ERROR")'
 ```
 
 ## validate

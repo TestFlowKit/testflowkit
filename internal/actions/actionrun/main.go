@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"testflowkit/internal/actions/actionutils"
 	"testflowkit/internal/browser"
 	"testflowkit/internal/config"
@@ -235,6 +236,13 @@ func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioC
 		myCtx := params.scenarioBuilder()
 		sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 			logger.Infof("Running scenario: %s", sc.Name)
+			if len(sc.Tags) > 0 {
+				tagNames := make([]string, len(sc.Tags))
+				for i, t := range sc.Tags {
+					tagNames[i] = t.Name
+				}
+				logger.Tracef("  Tags: %s", joinStrings(tagNames))
+			}
 			ctx = scenario.WithContext(ctx, scenarioCtx)
 			return ctx, nil
 		})
@@ -306,16 +314,23 @@ func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenari
 		testReport.AddScenario(myCtx.scenarioReport)
 
 		scCtx := scenario.MustFromContext(ctx)
-		// Dump variables summary when debug enabled or on failure.
-		if scCtx.GetConfig().IsDebugEnabled() {
+		tags := make([]string, len(sc.Tags))
+		for i, t := range sc.Tags {
+			tags[i] = t.Name
+		}
+		if scCtx.GetConfig().IsDebugEnabledForScenario(sc.Name, tags) {
 			summary := scCtx.GenerateVariablesSummary()
-			logger.Debugf("--- Scenario Variables for '%s' ---\n%s", sc.Name, summary)
+			logger.DebugInScopef(logger.ScopeVariables, "--- Scenario Variables for '%s' ---\n%s", sc.Name, summary)
 		}
 
 		scCtx.Done()
 
 		return ctx, err
 	}
+}
+
+func joinStrings(s []string) string {
+	return strings.Join(s, ", ")
 }
 
 func registerTestRunnerStepDefinitions(ctx *godog.ScenarioContext) {

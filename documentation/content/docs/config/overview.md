@@ -71,7 +71,7 @@ Use `{{ env.variable }}` anywhere in config. Nested env vars use dot notation: `
 
 | Section | Purpose |
 |---------|---------|
-| `settings` | Gherkin path, reports, concurrency, default env file, tag filter |
+| `settings` | Gherkin path, reports, concurrency, default env file, tag filter, debug settings |
 | `env` | Variables available as `{{ env.* }}` in config and Gherkin |
 | `frontend` | Browser driver, pages, element selectors |
 | `apis` | REST and GraphQL API definitions |
@@ -95,6 +95,30 @@ tkit run --env-file .env.staging.yml
 ```
 
 Priority: CLI `--env-file` → `settings.env_file` → inline `env:` block.
+
+## Settings debug block
+
+The `settings.debug` YAML block tunes debug output formatting. Debug mode itself is activated via CLI flags, not YAML.
+
+```yaml
+settings:
+  debug:
+    pretty_print: true       # indent JSON/XML bodies in debug output
+    max_body_size: 1048576   # cap body output at 1 MiB (max 10 MiB, 0 = no limit)
+```
+
+Control verbosity and scope via CLI at runtime:
+
+```bash
+tkit run --debug                          # verbosity 2: headers + variables
+tkit run --verbosity 3                    # verbosity 3: + full bodies
+tkit run --debug --debug-scope http       # HTTP layer only
+tkit run --debug --debug-scenario "Login" # one scenario only
+tkit run --debug --log-file debug.log     # persist to file
+tkit run --debug --log-format json        # machine-readable output
+```
+
+See [CLI Reference](/docs/reference/cli) for the full flag list.
 
 ## Frontend
 
