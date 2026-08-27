@@ -3,7 +3,7 @@ package playwright
 import (
 	"testflowkit/pkg/browser"
 
-	pw "github.com/playwright-community/playwright-go"
+	pw "github.com/mxschmitt/playwright-go"
 )
 
 var keyMap = map[browser.Key]string{

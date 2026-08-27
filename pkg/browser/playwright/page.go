@@ -7,7 +7,7 @@ import (
 	"testflowkit/pkg/logger"
 	"time"
 
-	pw "github.com/playwright-community/playwright-go"
+	pw "github.com/mxschmitt/playwright-go"
 )
 
 type playwrightPage struct {

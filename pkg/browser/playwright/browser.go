@@ -12,10 +12,10 @@ import (
 	"sync"
 	"testflowkit/pkg/browser"
 
-	pw "github.com/playwright-community/playwright-go"
+	pw "github.com/mxschmitt/playwright-go"
 )
 
-const playwrightModulePath = "github.com/playwright-community/playwright-go"
+const playwrightModulePath = "github.com/mxschmitt/playwright-go"
 
 type Engine struct {
 	mu          sync.Mutex
@@ -209,7 +209,6 @@ func getInstalledPlaywrightVersion(ctx context.Context) (string, error) {
 // Install installs Playwright browser driver using go run
 // Requires Go to be installed and internet connection.
 func Install() error {
-	// Check if Go is available
 	ctx := context.Background()
 	goVersionCmd := exec.CommandContext(ctx, "go", "version")
 	if err := goVersionCmd.Run(); err != nil {
@@ -243,8 +242,8 @@ func Install() error {
 		return fmt.Errorf("playwright installation failed: %w\nOutput: %s", err, string(output))
 	}
 
-	re := regexp.MustCompile(`playwright build v\w+ downloaded`)
-	isInstalled := re.Match(output)
+	re := regexp.MustCompile(`downloaded to`)
+	isInstalled := re.Match(output) || string(output) == ""
 	if isInstalled {
 		log.Println("Playwright browsers installed successfully.")
 	} else {

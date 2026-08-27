@@ -47,6 +47,22 @@ frontend:
 - Try headless: `tkit run --headless`
 - Playwright: run `tkit install` after setting `driver: "playwright"`
 
+### `tkit install` fails with `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`
+
+`tkit install` downloads the Playwright browsers via a bundled Node.js driver, which uses Node's own certificate store instead of the OS trust store. This error means Node can't validate the TLS certificate chain — almost always caused by a corporate proxy/VPN that inspects HTTPS traffic (Zscaler, Netskope, Fortinet, etc.).
+
+```bash
+# point Node at your organization's root CA certificate
+export NODE_EXTRA_CA_CERTS=/path/to/corporate-root-ca.pem
+tkit install
+```
+
+If you're behind an HTTP(S) proxy, also set `HTTPS_PROXY`/`HTTP_PROXY`. To confirm the cause (do not use permanently — disables cert validation):
+
+```bash
+NODE_TLS_REJECT_UNAUTHORIZED=0 tkit install
+```
+
 ## API issues
 
 | Problem | Fix |
