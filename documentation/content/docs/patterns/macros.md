@@ -40,6 +40,34 @@ Scenario: Admin can access dashboard
 
 Each row maps one `${variable}` to a value. Missing variables cause the macro to fail.
 
+## Reuse the same macro from multiple scenarios
+
+The whole point of a macro is calling it more than once with different data:
+
+```gherkin
+Scenario: Admin can access dashboard
+  Given Login as user
+    | email    | admin@example.com |
+    | password | admin123          |
+  When the user clicks the "admin_panel" link
+  Then the "admin_dashboard" should be visible
+
+Scenario: Regular user cannot access dashboard
+  Given Login as user
+    | email    | user@example.com |
+    | password | user123          |
+  Then the "admin_panel" link should not be visible
+```
+
+## Discover existing macros with the AI agent
+
+If you use the TestFlowKit MCP server ([IDE Agent](/docs/guides/ide-agent)), call
+the `list_macros` tool before drafting a new scenario. It scans your project's
+feature files for `@macro` scenarios and returns each macro's name, its
+required `${variable}` placeholders, and a ready-to-paste call example —
+so the agent reuses existing macros instead of duplicating steps or
+guessing variable names.
+
 ## API example
 
 `I prepare a request to ...` resets the current request state — headers, body, path/query parameters, GraphQL variables, and any previous response — then loads the endpoint defaults from `testflowkit.yml`.
@@ -72,6 +100,7 @@ Scenario: Create a new post
 - Put macro definitions in a dedicated `features/macros/` folder
 - `@macro` scenarios never run on their own with `tkit run` — call them from a regular scenario
 - Variable names in the table must match `${placeholders}` exactly
+- A plain description can go under `Scenario:` before the first step — it's ignored by both `tkit` and the `list_macros` MCP tool
 
 ## Troubleshooting
 

@@ -65,7 +65,13 @@ The agent reads the step catalog and `testflowkit.yml`, then drafts scenarios wi
 | `get_step_catalog` | Full sentence list |
 | `read_test_config` | APIs, pages, elements (secrets redacted) |
 | `list_gherkin_files` / `read_gherkin_file` | Browse Gherkin feature files |
+| `list_macros` | Discover existing `@macro` scenarios, their `${variable}`s, and a ready-to-paste call example |
 | `write_gherkin_file` | Create or update `.feature` files |
+| `validate_gherkin_files` | Statically check for undefined steps/macros, missing pages/elements, undefined env vars |
+
+**Tip:** call `list_macros` before drafting a new scenario to reuse existing setup flows instead of
+duplicating steps, and call `validate_gherkin_files` after `write_gherkin_file` to catch mistakes
+(including calling a macro that doesn't exist) before running the suite.
 
 ## Framework documentation resources
 
@@ -102,6 +108,7 @@ If no registered step matches your intent, the agent reports a `missing_sentence
 | MCP won't start | Run `npx @testflowkit/mcp` manually; check Node >= 22 |
 | Catalog empty | Verify `tkit version` works |
 | Wrong steps used | Ask the agent to call `get_step_catalog` first |
+| Macro not found | Ask the agent to call `list_macros` for the exact name, or run `validate_gherkin_files` |
 
 ## Next Steps
 
