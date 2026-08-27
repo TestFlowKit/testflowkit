@@ -20,8 +20,8 @@ require (
 	github.com/fatih/color v1.19.0
 	github.com/gofrs/uuid/v5 v5.5.1
 	github.com/lucasjones/reggen v0.0.0-20200904144131-37ba4fa293bb
+	github.com/mxschmitt/playwright-go v0.6201.1
 	github.com/nyaruka/phonenumbers v1.8.1
-	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/tidwall/gjson v1.19.0
 )
 
@@ -30,11 +30,9 @@ require (
 	github.com/cucumber/gherkin/go/v42 v42.0.0 // indirect
 	github.com/cucumber/messages/go/v34 v34.2.0 // indirect
 	github.com/deckarep/golang-set/v2 v2.9.0 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/mxschmitt/playwright-go v0.6201.1 // indirect
 	go.mongodb.org/mongo-driver v1.17.9 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.54.0 // indirect

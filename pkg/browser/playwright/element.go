@@ -10,7 +10,7 @@ import (
 	"testflowkit/pkg/apperrors"
 	"testflowkit/pkg/browser"
 
-	pw "github.com/playwright-community/playwright-go"
+	pw "github.com/mxschmitt/playwright-go"
 )
 
 type playwrightElement struct {
