@@ -4,9 +4,11 @@ import { GetConfigSchemaTool } from "./get_config_schema.js";
 import { GetStepCategoriesTool } from "./get_step_categories.js";
 import { GetStepCatalogTool } from "./get_step_catalog.js";
 import { ListGherkinFilesTool } from "./list_gherkin_files.js";
+import { ListMacrosTool } from "./list_macros.js";
 import { ReadGherkinFileTool } from "./read_gherkin_file.js";
 import { ReadTestConfigTool } from "./read_test_config.js";
 import { TkitTool } from "./tool.js";
+import { ValidateGherkinFilesTool } from "./validate_gherkin_files.js";
 import { WriteGherkinFileTool } from "./write_gherkin_file.js";
 
 export function registerTools(
@@ -20,8 +22,10 @@ export function registerTools(
     new GetConfigSchemaTool(),
     new ReadTestConfigTool(),
     new ListGherkinFilesTool(),
+    new ListMacrosTool(),
     new ReadGherkinFileTool(),
     new WriteGherkinFileTool(),
+    new ValidateGherkinFilesTool(),
   ];
 
   for (const tool of tools) {

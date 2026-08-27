@@ -10,7 +10,8 @@ This package is a companion to the TestFlowKit CLI (`tkit`, published as [`@test
 
 | Concern | CLI (`tkit`) | MCP server (`@testflowkit/mcp`) |
 |---------|--------------|----------------------------------|
-| Run and validate tests | Yes | No |
+| Run tests | Yes | No |
+| Validate tests (static, no execution) | Yes | Yes — calls `tkit validate` at runtime via `validate_gherkin_files` |
 | Export step catalog | `tkit export-step-definitions` | Calls the CLI command at runtime |
 | Export config schema | `tkit export-config-schema` | Calls the CLI command at runtime |
 | Project config | Reads `testflowkit.yml` / `config.yml` | Reads the same files from the workspace root |
@@ -106,7 +107,9 @@ Then in `.cursor/mcp.json`:
 3. Call `get_step_catalog` (optionally with a `category`) to fetch matching sentences.
 4. Call `get_config_schema` to load the authoritative `testflowkit.yml` schema before generating or editing config.
 5. Call `read_test_config` to discover APIs, operations, pages, and element groups.
-6. Call `write_gherkin_file` to create or update a `.feature` file under `settings.gherkin_location`.
+6. Call `list_macros` to reuse existing `@macro` scenarios instead of duplicating steps.
+7. Call `write_gherkin_file` to create or update a `.feature` file under `settings.gherkin_location`.
+8. Call `validate_gherkin_files` to catch undefined steps/macros, missing pages/elements, or undefined env vars before running the suite.
 
 ## Available tools
 
@@ -117,8 +120,10 @@ Then in `.cursor/mcp.json`:
 | `get_config_schema` | Full JSON schema exported from `tkit export-config-schema` for AI-safe config authoring |
 | `read_test_config` | Summary of `testflowkit.yml` (APIs, pages, elements — secrets redacted) |
 | `list_gherkin_files` | List all `.feature` files under `settings.gherkin_location` |
+| `list_macros` | List `@macro` scenarios defined in the project, with required `${variable}`s and a ready-to-paste call example |
 | `read_gherkin_file` | Read a specific Gherkin feature file (`path` relative to project root) |
 | `write_gherkin_file` | Create or overwrite a Gherkin feature file (path-guarded to `settings.gherkin_location`) |
+| `validate_gherkin_files` | Statically validate feature files via `tkit validate` (undefined steps/macros, missing pages/elements, undefined env vars); optional `tags` to scope the check |
 
 ## Framework documentation resources
 
