@@ -53,6 +53,7 @@ func preinitializeBrowserEngine(cfg *config.Config) internalbrowser.Engine {
 		UserAgent:     cfg.Frontend.UserAgent,
 		Locale:        cfg.Frontend.Locale,
 		TimezoneID:    cfg.Frontend.TimezoneID,
+		WarmUpCount:   1,
 	})
 
 	if errInit != nil {
