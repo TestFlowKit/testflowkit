@@ -20,6 +20,7 @@ go.work.sum
 # env file
 .env
 report.html
+reports/
 cover
 **/.DS_Store
 frontend.yml
