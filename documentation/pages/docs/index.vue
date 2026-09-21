@@ -10,20 +10,25 @@
         </p>
       </header>
 
+      <section class="mb-10 sm:mb-12">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">What do you want to do?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <NuxtLink v-for="shortcut in howToShortcuts" :key="shortcut.path" :to="shortcut.path"
+            class="flex items-center px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-800 dark:text-gray-200 hover:border-blue-400 hover:text-blue-700 dark:hover:text-blue-400 transition-colors">
+            {{ shortcut.title }}
+          </NuxtLink>
+        </div>
+      </section>
+
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Or, pick a path based on your role</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-10">
-        <section
-          v-for="path in hubPaths"
-          :key="path.id"
-          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5 sm:p-6"
-        >
+        <section v-for="path in hubPaths" :key="path.id"
+          class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ path.title }}</h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ path.description }}</p>
           <ul class="space-y-2">
             <li v-for="link in path.links" :key="link.path">
-              <NuxtLink
-                :to="link.path"
-                class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-              >
+              <NuxtLink :to="link.path" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                 {{ link.title }} →
               </NuxtLink>
             </li>
@@ -34,22 +39,16 @@
       <section class="border-t border-gray-200 dark:border-gray-700 pt-8">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">New here?</h2>
         <div class="flex flex-wrap gap-3">
-          <NuxtLink
-            to="/docs/getting-started/installation"
-            class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
-          >
+          <NuxtLink to="/docs/getting-started/installation"
+            class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors">
             Installation
           </NuxtLink>
-          <NuxtLink
-            to="/docs/getting-started/quick-start"
-            class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          >
+          <NuxtLink to="/docs/getting-started/quick-start"
+            class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
             Quick Start
           </NuxtLink>
-          <NuxtLink
-            to="/sentences"
-            class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          >
+          <NuxtLink to="/sentences"
+            class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
             Step Catalog
           </NuxtLink>
         </div>
@@ -60,7 +59,7 @@
 
 <script setup lang="ts">
 import DocSidebar from '~/components/DocSidebar.vue';
-import { docHubPaths } from '~/navigation';
+import { docHubPaths, howToShortcuts } from '~/navigation';
 
 const hubPaths = [
   {
