@@ -65,7 +65,7 @@
                             <td class="border px-2 md:px-4 py-2"><code class="text-xs md:text-sm">report_format</code>
                             </td>
                             <td class="border px-2 md:px-4 py-2 text-xs md:text-sm">Format of test reports (html, json,
-                                junit).</td>
+                                junit). <code>json</code> produces Cucumber JSON (<code>report/report.json</code>) and <code>junit</code> produces JUnit XML (<code>report/report.xml</code>).</td>
                             <td class="border px-2 md:px-4 py-2"><code class="text-xs md:text-sm">html</code></td>
                             <td class="border px-2 md:px-4 py-2"><code
                                     class="text-xs md:text-sm">report_format: json</code></td>

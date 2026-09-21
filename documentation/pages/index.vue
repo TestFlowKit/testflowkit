@@ -82,7 +82,7 @@
                 <p>Run tests concurrently for faster execution, leveraging the power of Go for incredible performance.</p>
             </FeatureCard>
             <FeatureCard title="Rich Reporting" icon="chart-bar">
-                <p>HTML and JSON report formats with detailed test results and automatic screenshot capture on failures.</p>
+                <p>HTML, Cucumber JSON and JUnit XML report formats with detailed test results and automatic screenshot capture on failures.</p>
             </FeatureCard>
             <FeatureCard title="Step Catalog" icon="search">
                 <p>Searchable reference of every Gherkin sentence — frontend, backend, variables, and GraphQL.</p>

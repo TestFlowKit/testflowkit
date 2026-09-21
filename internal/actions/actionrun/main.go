@@ -205,6 +205,7 @@ func createTestSuite(params createTestSuiteParams) *godog.TestSuite {
 			testReport:      params.testReport,
 			engine:          params.engine,
 			scenarioBuilder: params.scenarioBuilder,
+			stepKeywords:    stepKeywordsByFeature(params.features),
 		}),
 	}
 }
@@ -216,6 +217,14 @@ type createTestSuiteParams struct {
 	concurrency     int
 	engine          browser.Engine
 	scenarioBuilder ScenarioBuilder
+}
+
+func stepKeywordsByFeature(features []godog.Feature) map[string]map[string]string {
+	keywords := make(map[string]map[string]string, len(features))
+	for _, f := range features {
+		keywords[f.Name] = gherkinparser.StepKeywordsByID(f.Contents)
+	}
+	return keywords
 }
 
 func testSuiteInitializer(testReport *reporters.Report) func(*godog.TestSuiteContext) {
@@ -248,7 +257,7 @@ func scenarioInitializer(params ScenarioInitializerParams) func(*godog.ScenarioC
 		})
 		sc.StepContext().Before(beforeStepHookInitializer(myCtx))
 		sc.StepContext().After(afterStepHookInitializer(myCtx, params.config))
-		sc.After(afterScenarioHookInitializer(params.testReport, myCtx))
+		sc.After(afterScenarioHookInitializer(params.testReport, myCtx, params.stepKeywords))
 	}
 }
 
@@ -257,8 +266,12 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 		scenarioCtx := scenario.MustFromContext(ctx)
 
 		stepText := scenario.ReplaceVariablesInString(scenarioCtx, st.Text)
+		astNodeID := ""
+		if len(st.AstNodeIds) > 0 {
+			astNodeID = st.AstNodeIds[0]
+		}
 		if err == nil {
-			myCtx.addStep(stepText, status, nil)
+			myCtx.addStep(stepText, astNodeID, status, nil)
 			return ctx, nil
 		}
 
@@ -270,7 +283,7 @@ func afterStepHookInitializer(myCtx *myScenarioCtx, config *config.Config) godog
 			}
 		}
 
-		myCtx.addStep(stepText, status, stepError{
+		myCtx.addStep(stepText, astNodeID, status, stepError{
 			error:            err,
 			screenshotBase64: screenshotBase64,
 		})
@@ -306,18 +319,25 @@ func beforeStepHookInitializer(myCtx *myScenarioCtx) godog.BeforeStepHook {
 	}
 }
 
-func afterScenarioHookInitializer(testReport *reporters.Report, myCtx *myScenarioCtx) godog.AfterScenarioHook {
+func afterScenarioHookInitializer(
+	testReport *reporters.Report,
+	myCtx *myScenarioCtx,
+	stepKeywords map[string]map[string]string,
+) godog.AfterScenarioHook {
 	return func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
+		tags := make([]string, len(sc.Tags))
+		for i, t := range sc.Tags {
+			tags[i] = t.Name
+		}
+
 		myCtx.scenarioReport.SetTitle(sc.Name)
+		myCtx.scenarioReport.SetMetadata(sc.Id, sc.Uri, tags)
+		myCtx.scenarioReport.ResolveKeywords(stepKeywords[sc.Uri])
 
 		myCtx.scenarioReport.End()
 		testReport.AddScenario(myCtx.scenarioReport)
 
 		scCtx := scenario.MustFromContext(ctx)
-		tags := make([]string, len(sc.Tags))
-		for i, t := range sc.Tags {
-			tags[i] = t.Name
-		}
 		if scCtx.GetConfig().IsDebugEnabledForScenario(sc.Name, tags) {
 			summary := scCtx.GenerateVariablesSummary()
 			logger.DebugInScopef(logger.ScopeVariables, "--- Scenario Variables for '%s' ---\n%s", sc.Name, summary)
@@ -347,8 +367,8 @@ type myScenarioCtx struct {
 	scenarioReport       reporters.Scenario
 }
 
-func (c *myScenarioCtx) addStep(title string, status godog.StepResultStatus, err error) {
-	c.scenarioReport.AddStep(title, status, time.Since(c.currentStepStartTime), err)
+func (c *myScenarioCtx) addStep(title, astNodeID string, status godog.StepResultStatus, err error) {
+	c.scenarioReport.AddStep(title, astNodeID, status, time.Since(c.currentStepStartTime), err)
 }
 
 type stepError struct {
@@ -383,6 +403,7 @@ type ScenarioInitializerParams struct {
 	testReport      *reporters.Report
 	engine          browser.Engine
 	scenarioBuilder ScenarioBuilder
+	stepKeywords    map[string]map[string]string
 }
 
 type ScenarioBuilder = func() *myScenarioCtx

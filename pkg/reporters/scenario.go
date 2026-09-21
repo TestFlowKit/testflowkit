@@ -19,6 +19,9 @@ const (
 
 type Scenario struct {
 	Title     string
+	ID        string
+	URI       string
+	Tags      []string
 	Steps     []Step
 	ErrorMsg  string
 	StartDate time.Time
@@ -27,7 +30,7 @@ type Scenario struct {
 	Type      scenarioType
 }
 
-func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration time.Duration, err error) {
+func (s *Scenario) AddStep(title, astNodeID string, status godog.StepResultStatus, duration time.Duration, err error) {
 	if err != nil {
 		s.ErrorMsg = err.Error()
 	}
@@ -55,6 +58,7 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 
 	s.Steps = append(s.Steps, Step{
 		Title:                title,
+		astNodeID:            astNodeID,
 		Status:               status.String(),
 		HTMLStatusColorClass: fmt.Sprintf("text-%s-500", getColor(status)),
 		Duration:             duration,
@@ -65,6 +69,20 @@ func (s *Scenario) AddStep(title string, status godog.StepResultStatus, duration
 
 func (s *Scenario) SetTitle(title string) {
 	s.Title = title
+}
+
+// SetMetadata stores the feature and identification data used by structured reports.
+func (s *Scenario) SetMetadata(id, uri string, tags []string) {
+	s.ID = id
+	s.URI = uri
+	s.Tags = tags
+}
+
+// ResolveKeywords sets each step's Gherkin keyword from a map of step AST node id to keyword.
+func (s *Scenario) ResolveKeywords(keywordsByID map[string]string) {
+	for i := range s.Steps {
+		s.Steps[i].Keyword = keywordsByID[s.Steps[i].astNodeID]
+	}
 }
 
 func (s *Scenario) End() {
@@ -82,6 +100,8 @@ func (s *Scenario) End() {
 
 type Step struct {
 	Title                string
+	Keyword              string
+	astNodeID            string
 	Status               string
 	HTMLStatusColorClass string
 	Duration             time.Duration
