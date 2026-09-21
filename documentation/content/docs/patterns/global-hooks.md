@@ -5,8 +5,6 @@ navigation:
   title: Global Hooks
 ---
 
-# Global Hooks
-
 Run setup and teardown once per test run, before or after all scenarios. Use them to authenticate, seed data, or clean up — and to share values across scenarios via global variables.
 
 ## Tags

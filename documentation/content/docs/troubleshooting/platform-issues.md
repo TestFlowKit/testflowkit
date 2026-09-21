@@ -5,8 +5,6 @@ navigation:
   title: Platform Issues
 ---
 
-# Platform Issues
-
 ## macOS
 
 | Problem | Fix |

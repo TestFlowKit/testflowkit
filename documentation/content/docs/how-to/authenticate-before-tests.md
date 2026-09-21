@@ -5,8 +5,6 @@ navigation:
   title: Authenticate Before Tests
 ---
 
-# Authenticate Before Tests
-
 ## Goal
 
 Log in through your API's login endpoint once before the test run, then reuse the returned token in every scenario. Use this when credentials are not static (see [Configure Authentication](/docs/how-to/configure-authentication) for fixed tokens/OAuth2 client credentials).

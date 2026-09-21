@@ -5,8 +5,6 @@ navigation:
   title: Writing Tests
 ---
 
-# Writing Tests
-
 TestFlowKit scenarios live in `.feature` files written in Gherkin — plain English with a fixed structure. No coding required.
 
 ## Basic structure

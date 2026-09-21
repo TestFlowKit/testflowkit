@@ -5,8 +5,6 @@ navigation:
   title: Configure Authentication
 ---
 
-# Configure Authentication
-
 ## Goal
 
 Have TestFlowKit attach authentication to every request for an API, instead of setting an `Authorization` header manually in each scenario.

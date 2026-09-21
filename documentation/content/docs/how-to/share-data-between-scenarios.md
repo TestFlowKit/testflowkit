@@ -5,8 +5,6 @@ navigation:
   title: Share Data Between Scenarios
 ---
 
-# Share Data Between Scenarios
-
 ## Goal
 
 Compute or fetch a value once (a token, an ID, a generated email) and reuse it in several scenarios. Regular scenario variables are cleared after each scenario, so they can't be used for this.

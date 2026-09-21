@@ -5,8 +5,6 @@ navigation:
   title: Introduction
 ---
 
-# Introduction to TestFlowKit
-
 TestFlowKit lets you write automated tests in plain text (Gherkin). No Go or JavaScript required — define pages and APIs in YAML, write scenarios in `.feature` files, run with `tkit run`.
 
 ```gherkin
@@ -29,6 +27,16 @@ Feature: User Login
 | **Data** | Variables, random data, macros, global hooks |
 | **Tooling** | HTML reports, MCP server for AI-assisted test writing |
 
+## How it fits together
+
+Three things, and nothing else to install:
+
+1. **`testflowkit.yml`** declares your pages, elements and APIs under logical names.
+2. **`.feature` files** describe scenarios using those names.
+3. **`tkit`** runs the scenarios and writes a report.
+
+Unfamiliar word? See the [Glossary](/docs/reference/glossary).
+
 ## Who it's for
 
 - **QA** — Write and maintain tests without coding
@@ -39,4 +47,4 @@ Feature: User Login
 
 [Installation](/docs/getting-started/installation) → [Quick Start](/docs/getting-started/quick-start)
 
-Or browse the [documentation hub](/docs) to pick a path for your role.
+Or browse the [documentation hub](/docs) to pick a path for your role. After your first run, pick a recipe under **Recipes** in the sidebar.

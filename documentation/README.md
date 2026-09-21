@@ -1,15 +1,28 @@
-# TestFlowKit - Documentation
+# TestFlowKit documentation site
 
-Welcome to the TestFlowKit documentation! This directory contains comprehensive guides and references for using TestFlowKit.
+Nuxt 4 + `@nuxt/content` site, deployed to GitHub Pages: https://testflowkit.github.io/testflowkit/
 
+## Run locally
 
-## 📖 What is TestFlowKit?
+```bash
+yarn install
+yarn dev        # http://localhost:3000
+yarn generate   # static build, checks that every page renders
+```
 
-TestFlowKit is a comprehensive testing framework that provides powerful tools for writing, organizing, and executing tests with an intuitive API and rich feature set.
+## Where things live
 
+| What | Where |
+|---|---|
+| Doc pages (Markdown) | `content/docs/<section>/<page>.md` |
+| Step catalog (one JSON per step) | `content/sentences/<category>/*.json` |
+| Sidebar, prev/next, docs home shortcuts | `navigation.ts` |
+| Old URL redirects | `nuxt.config.ts` |
 
-## 🔗 Resources
+Do not start a page with a `# Title` line: the page template already renders `title` and `description` from the frontmatter as the H1 and subtitle.
 
-- [GitHub Repository](https://github.com/TestFlowKit/testflowkit)
-- [Report Issues](https://github.com/TestFlowKit/testflowkit/issues)
-- [Main Project Documentation](../README.md)
+## Adding a how-to
+
+Create `content/docs/how-to/<verb-the-task>.md` with the sections **Goal**, steps with code, **Verify**, **See also**, then add it to `navigation.ts`. If you move or rename a page, add a redirect in `nuxt.config.ts`.
+
+The project README is at [../readme.md](../readme.md).

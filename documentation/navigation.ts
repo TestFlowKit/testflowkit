@@ -19,7 +19,7 @@ export const docNavigation: NavGroup[] = [
     ],
   },
   {
-    title: "How-to",
+    title: "Recipes: API",
     children: [
       {
         path: "/docs/how-to/add-a-rest-endpoint",
@@ -41,6 +41,29 @@ export const docNavigation: NavGroup[] = [
         path: "/docs/how-to/send-a-json-body-or-file",
         title: "Send a JSON Body or File",
       },
+    ],
+  },
+  {
+    title: "Recipes: UI",
+    children: [
+      { path: "/docs/how-to/fill-in-a-form", title: "Fill in a Form" },
+      {
+        path: "/docs/how-to/wait-for-an-element",
+        title: "Wait for an Element",
+      },
+      {
+        path: "/docs/how-to/upload-a-file-in-the-browser",
+        title: "Upload a File (Browser)",
+      },
+      {
+        path: "/docs/how-to/capture-a-failure-screenshot",
+        title: "Screenshot on Failure",
+      },
+    ],
+  },
+  {
+    title: "Recipes: Organize & Run",
+    children: [
       {
         path: "/docs/how-to/test-multiple-environments",
         title: "Test Multiple Environments",
@@ -50,10 +73,16 @@ export const docNavigation: NavGroup[] = [
         title: "Share Data Between Scenarios",
       },
       { path: "/docs/how-to/skip-a-test", title: "Skip a Test" },
+      { path: "/docs/how-to/run-in-parallel", title: "Run in Parallel" },
+      { path: "/docs/how-to/run-in-ci", title: "Run in CI" },
+      {
+        path: "/docs/how-to/debug-a-failing-scenario",
+        title: "Debug a Failing Scenario",
+      },
     ],
   },
   {
-    title: "Guides",
+    title: "Concepts & Guides",
     children: [
       { path: "/docs/guides/writing-tests", title: "Writing Tests" },
       { path: "/docs/guides/frontend-testing", title: "Frontend Testing" },
@@ -75,19 +104,21 @@ export const docNavigation: NavGroup[] = [
       { path: "/docs/patterns/random-data", title: "Random Data" },
       { path: "/docs/patterns/macros", title: "Macros" },
       { path: "/docs/patterns/global-hooks", title: "Global Hooks" },
-      { path: "/docs/patterns/skip-tag", title: "Skipping Tests" },
     ],
   },
   {
     title: "Reference",
     children: [
       { path: "/docs/reference/cli", title: "CLI Reference" },
+      { path: "/docs/reference/reporters", title: "Reporters" },
+      { path: "/docs/reference/glossary", title: "Glossary" },
       { path: "/sentences", title: "Step Catalog", external: true },
     ],
   },
   {
-    title: "Troubleshooting",
+    title: "Help",
     children: [
+      { path: "/docs/troubleshooting/faq", title: "FAQ" },
       { path: "/docs/troubleshooting/common-issues", title: "Common Issues" },
       {
         path: "/docs/troubleshooting/platform-issues",
@@ -97,6 +128,7 @@ export const docNavigation: NavGroup[] = [
         path: "/docs/troubleshooting/migration-guide",
         title: "Migration Guide",
       },
+      { path: "/docs/changelog", title: "Changelog" },
     ],
   },
 ];
@@ -157,4 +189,20 @@ export const howToShortcuts: NavItem[] = [
     title: "Share data between scenarios",
   },
   { path: "/docs/how-to/skip-a-test", title: "Skip a test" },
+  { path: "/docs/how-to/fill-in-a-form", title: "Fill in a form" },
+  { path: "/docs/how-to/wait-for-an-element", title: "Wait for an element" },
+  {
+    path: "/docs/how-to/upload-a-file-in-the-browser",
+    title: "Upload a file in the browser",
+  },
+  {
+    path: "/docs/how-to/capture-a-failure-screenshot",
+    title: "Capture a screenshot on failure",
+  },
+  { path: "/docs/how-to/run-in-parallel", title: "Run in parallel" },
+  { path: "/docs/how-to/run-in-ci", title: "Run in CI" },
+  {
+    path: "/docs/how-to/debug-a-failing-scenario",
+    title: "Debug a failing scenario",
+  },
 ];

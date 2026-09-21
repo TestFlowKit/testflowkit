@@ -5,8 +5,6 @@ navigation:
   title: Macros
 ---
 
-# Macros
-
 Macros are reusable scenarios you define once and call with different parameters. Use `${variable}` placeholders in the macro, then pass values via a data table at call time.
 
 ## Define a macro

@@ -5,8 +5,6 @@ navigation:
   title: Migration Guide
 ---
 
-# Migration Guide
-
 Breaking changes from older TestFlowKit versions. Run `tkit validate` after migrating.
 
 ## 1. Environment variables (replaces `environments`)
@@ -106,6 +104,14 @@ apis:
 | `headers` | `default_headers` |
 | `queries` | `operations` |
 
+## 3. `json` report is now Cucumber JSON
+
+`report_format: "json"` still writes `report/report.json`, but the content changed. It used to be a single object listing scenarios with a start date and a duration; it is now the standard Cucumber JSON layout (features, then scenarios, then steps, with tags and durations in nanoseconds). Failure screenshots are now `image/png` embeddings on the failed step.
+
+Tools that read the old file must be updated to read Cucumber JSON, which most reporting tools already understand.
+
+A new `report_format: "junit"` writes `report/report.xml`. See [Reporters](/docs/reference/reporters).
+
 ## Checklist
 
 - [ ] Replace `environments` with `env:` + env files
@@ -113,6 +119,7 @@ apis:
 - [ ] Move `frontend.base_url` into `frontend` section with `{{ env.base_url }}`
 - [ ] Merge `backend` and `graphql` into `apis.definitions`
 - [ ] Update all feature files to `"api_name.endpoint_name"` syntax
+- [ ] If a tool reads `report/report.json`, update it to Cucumber JSON
 - [ ] Run `tkit validate`
 
 ## Next Steps

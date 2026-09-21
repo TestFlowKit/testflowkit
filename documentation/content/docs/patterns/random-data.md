@@ -5,8 +5,6 @@ navigation:
   title: Random Data
 ---
 
-# Random Data Generation
-
 Use `{{ rand:type }}` anywhere in your Gherkin steps to generate a fresh value at runtime — no custom step code required.
 
 ```gherkin

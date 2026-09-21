@@ -5,8 +5,6 @@ navigation:
   title: CLI Reference
 ---
 
-# CLI Reference
-
 ```bash
 tkit [command] [options]
 ```
