@@ -22,3 +22,13 @@ func TestHTMLReportInstantiation(t *testing.T) {
 
 	assert.True(t, isHTMLFormatter)
 }
+
+func TestJSONReportInstantiation(t *testing.T) {
+	_, ok := newReport("json").formatter.(jsonReportFormatter)
+	assert.True(t, ok)
+}
+
+func TestJUnitReportInstantiation(t *testing.T) {
+	_, ok := newReport("junit").formatter.(junitReportFormatter)
+	assert.True(t, ok)
+}

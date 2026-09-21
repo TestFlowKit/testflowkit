@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	stepStatusFailed  = "failed"
+	stepStatusSkipped = "skipped"
+)
+
 type scenarioResult string
 
 const (
@@ -87,6 +92,8 @@ func getFormatter(formatType string) formatter {
 		return htmlReportFormatter{}
 	case "json":
 		return jsonReportFormatter{}
+	case "junit":
+		return junitReportFormatter{}
 	default:
 		log.Printf("'%s' report format not supported\n", formatType)
 		return disabledFormatter{}

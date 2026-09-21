@@ -3,57 +3,67 @@ package reporters
 import (
 	"encoding/json"
 	"log"
-	"os"
-	"testflowkit/internal/utils/fileutils"
 )
+
+const reportJSONPath = "report/report.json"
 
 type jsonReportFormatter struct{}
 
 func (f jsonReportFormatter) WriteReport(details testSuiteDetails) {
-	scenariosReports := make([]jsonScenarioReport, len(details.Scenarios))
-	for i, sc := range details.Scenarios {
-		scenariosReports[i] = jsonScenarioReport{
-			Title:        sc.Title,
-			Duration:     sc.Duration.String(),
-			Result:       string(sc.Result),
-			Steps:        make([]jsonScenarioStepReport, len(sc.Steps)),
-			ErrorMessage: sc.ErrorMsg,
-		}
+	order, groups := groupByFeature(details.Scenarios)
 
-		for j, step := range sc.Steps {
-			scenariosReports[i].Steps[j] = jsonScenarioStepReport{
-				Title:            step.Title,
-				Status:           step.Status,
-				Duration:         step.Duration.String(),
-				ScreenshotBase64: step.ScreenshotBase64,
-			}
+	features := make([]cucumberFeature, 0, len(order))
+	for _, uri := range order {
+		feature := cucumberFeature{
+			URI:      uri,
+			ID:       uri,
+			Keyword:  "Feature",
+			Name:     uri,
+			Elements: make([]cucumberElement, 0, len(groups[uri])),
 		}
+		for _, sc := range groups[uri] {
+			feature.Elements = append(feature.Elements, toCucumberElement(sc))
+		}
+		features = append(features, feature)
 	}
 
-	report := jsonReport{
-		Scenarios: scenariosReports,
-		StartDate: details.ExecutionDate,
-		Duration:  details.TotalExecutionTime,
-	}
-
-	jsonData, err := json.MarshalIndent(report, "", "  ")
+	jsonData, err := json.MarshalIndent(features, "", "  ")
 	if err != nil {
-		log.Printf("Erreur lors de la sérialisation en JSON : %v\n", err)
+		log.Printf("error while serializing the JSON report: %v\n", err)
 		return
 	}
 
-	if mkdirErr := os.MkdirAll("report", fileutils.DirPermission); mkdirErr != nil {
-		log.Panicf("cannot create report directory ( %s )\n", mkdirErr)
+	writeReportFile(reportJSONPath, jsonData)
+}
+
+func toCucumberElement(sc Scenario) cucumberElement {
+	element := cucumberElement{
+		ID:      sc.ID,
+		Keyword: "Scenario",
+		Type:    "scenario",
+		Name:    sc.Title,
+		Steps:   make([]cucumberStep, len(sc.Steps)),
+	}
+	for _, tag := range sc.Tags {
+		element.Tags = append(element.Tags, cucumberTag{Name: tag})
 	}
 
-	file, reportCreationErr := os.Create("report/report.json")
-	if reportCreationErr != nil {
-		log.Panicf("cannot create reporters file in this folder ( %s )\n", reportCreationErr)
+	for i, step := range sc.Steps {
+		cs := cucumberStep{
+			Keyword: step.Keyword,
+			Name:    step.Title,
+			Result: cucumberResult{
+				Status:   step.Status,
+				Duration: step.Duration.Nanoseconds(),
+			},
+		}
+		if step.Status == stepStatusFailed {
+			cs.Result.ErrorMessage = sc.ErrorMsg
+		}
+		if step.ScreenshotBase64 != "" {
+			cs.Embeddings = []cucumberEmbedding{{MimeType: "image/png", Data: step.ScreenshotBase64}}
+		}
+		element.Steps[i] = cs
 	}
-	defer file.Close()
-
-	_, jsonWriteErr := file.Write(jsonData)
-	if jsonWriteErr != nil {
-		log.Panicf("error when reporters filling ( %s )", jsonWriteErr)
-	}
+	return element
 }

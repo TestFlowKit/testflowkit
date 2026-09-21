@@ -544,8 +544,8 @@ Multi-format test reporting with detailed execution information.
 **Supported Formats:**
 
 - **HTML**: Rich interactive reports with screenshots
-- **JSON**: Machine-readable structured data
-- **JUnit**: CI/CD integration format
+- **JSON**: Cucumber JSON format (`report/report.json`), consumable by standard Cucumber report tooling
+- **JUnit**: JUnit XML (`report/report.xml`) for CI/CD integration
 
 **Report Structure:**
 

@@ -19,7 +19,7 @@
 - **Macro System**: Reusable test scenarios to reduce code duplication
 - **Global Hooks**: Setup and teardown logic with `@BeforeAll` and `@AfterAll` tags
 - **Parallel Execution**: Run tests concurrently for faster execution
-- **Rich Reporting**: HTML and JSON report formats with detailed test results
+- **Rich Reporting**: HTML, Cucumber JSON (`report/report.json`) and JUnit XML (`report/report.xml`) reports with detailed test results
 - **XPath Support**: Full XPath 1.0 support for frontend selectors and XML response assertions
 
 ### Advanced Features

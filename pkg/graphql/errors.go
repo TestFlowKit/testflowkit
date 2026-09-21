@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+const errorFieldMessage = "message"
+
 // ErrorType represents different types of GraphQL client errors.
 type ErrorType string
 
@@ -120,10 +122,10 @@ func (r *Response) GetDetailedErrorInfo() []map[string]interface{} {
 	details := make([]map[string]interface{}, len(r.Errors))
 	for i, err := range r.Errors {
 		details[i] = map[string]any{
-			"message":    err.Message,
-			"locations":  err.Locations,
-			"path":       err.Path,
-			"extensions": err.Extensions,
+			errorFieldMessage: err.Message,
+			"locations":       err.Locations,
+			"path":            err.Path,
+			"extensions":      err.Extensions,
 		}
 	}
 	return details
