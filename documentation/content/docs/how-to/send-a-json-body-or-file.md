@@ -5,8 +5,6 @@ navigation:
   title: Send a JSON Body or File
 ---
 
-# Send a JSON Body or File
-
 ## Goal
 
 Send a request body as inline JSON, from a file, or upload a file as part of the request.

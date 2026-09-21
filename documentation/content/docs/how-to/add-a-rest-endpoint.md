@@ -5,8 +5,6 @@ navigation:
   title: Add a REST Endpoint
 ---
 
-# Add a REST Endpoint
-
 ## Goal
 
 Test a new REST endpoint of your backend without writing any code.

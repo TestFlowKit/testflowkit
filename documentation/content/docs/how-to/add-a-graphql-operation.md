@@ -5,8 +5,6 @@ navigation:
   title: Add a GraphQL Operation
 ---
 
-# Add a GraphQL Operation
-
 ## Goal
 
 Test a new GraphQL query or mutation without writing any code.

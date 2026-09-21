@@ -5,8 +5,6 @@ navigation:
   title: Installation
 ---
 
-# Installation
-
 ## npm (recommended)
 
 ```bash

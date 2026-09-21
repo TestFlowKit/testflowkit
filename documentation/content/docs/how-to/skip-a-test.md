@@ -5,8 +5,6 @@ navigation:
   title: Skip a Test
 ---
 
-# Skip a Test
-
 ## Goal
 
 Exclude a flaky, work-in-progress, or blocked scenario from every run without deleting it.
@@ -37,6 +35,8 @@ Feature: Experimental payments
     ...
 ```
 
+Use it for flaky tests, work-in-progress scenarios, or features waiting on an unfinished API. A skipped scenario is not run and does not appear as a failure.
+
 ## Verify
 
 Run `tkit run` and check the skipped scenario logs a warning instead of executing:
@@ -55,5 +55,4 @@ tkit run --tags "not @wip"
 
 ## See also
 
-- [Skipping Tests](/docs/patterns/skip-tag) — full reference
 - [CLI Reference](/docs/reference/cli) — `--tags` filtering

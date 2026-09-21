@@ -5,8 +5,6 @@ navigation:
   title: Selectors
 ---
 
-# Selectors
-
 Steps reference elements by name — TestFlowKit looks up the selector in `testflowkit.yml` and tries each fallback until one matches.
 
 ```gherkin

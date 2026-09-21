@@ -5,8 +5,6 @@ navigation:
   title: Test Multiple Environments
 ---
 
-# Test Multiple Environments
-
 ## Goal
 
 Run the same `.feature` files against different environments (local, staging, production) without changing any test.

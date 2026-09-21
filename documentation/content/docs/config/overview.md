@@ -5,8 +5,6 @@ navigation:
   title: testflowkit.yml
 ---
 
-# testflowkit.yml
-
 TestFlowKit reads `testflowkit.yml` from the project root (legacy `config.yml` also supported). Override with `--config path/to/file.yml`.
 
 ```bash
@@ -29,7 +27,7 @@ env:
   api_base_url: "http://localhost:3001"
 
 frontend:
-  driver: "rod"              # required: "rod" or "playwright"
+  driver: "rod"              # optional: "rod" (default) or "playwright"
   base_url: "{{ env.base_url }}"
   default_timeout: 10000
   headless: false
@@ -124,7 +122,7 @@ See [CLI Reference](/docs/reference/cli) for the full flag list.
 
 | Field | Description |
 |-------|-------------|
-| `driver` | **Required.** `rod` (default, bundled) or `playwright` (run `tkit install`) |
+| `driver` | Optional. `rod` (default, bundled) or `playwright` (run `tkit install`) |
 | `base_url` | App root URL |
 | `pages` | Named paths — used in `the user goes to the "login" page` |
 | `elements` | Selectors grouped by page — see [Selectors](/docs/config/selectors) |
@@ -141,34 +139,7 @@ Timeout precedence: endpoint/operation → API → `apis.default_timeout` → 30
 
 ## Authentication
 
-Define schemes once, reference with `security_ref`:
-
-```yaml
-security_schemes:
-  my_oauth2:
-    type: oauth2
-    token_url: "{{ env.auth_url }}"
-    client_id: "{{ env.client_id }}"
-    client_secret: "{{ env.client_secret }}"
-    token_endpoint_auth_method: client_secret_post
-    scopes: ["read"]
-
-default_security: "my_oauth2"
-
-apis:
-  definitions:
-    my_api:
-      type: rest
-      base_url: "{{ env.api_base_url }}"
-      security_ref:
-        name: my_oauth2
-      endpoints:
-        get_data:
-          method: GET
-          path: "/data"
-```
-
-Supported: `bearer`, `basic`, `apikey`, `oauth2`. Use `security_ref.name: none` to disable auth. `oidc` and `certificate` are not yet implemented.
+Declare schemes once under `security_schemes` and attach them to an API with `security_ref`. Supported types: `bearer`, `basic`, `apikey`, `oauth2`. Full walkthrough and examples: [Configure Authentication](/docs/how-to/configure-authentication). To log in at runtime and reuse a token: [Authenticate Before Tests](/docs/how-to/authenticate-before-tests).
 
 ## Files
 

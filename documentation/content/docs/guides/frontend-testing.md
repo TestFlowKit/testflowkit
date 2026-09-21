@@ -5,8 +5,6 @@ navigation:
   title: Frontend Testing
 ---
 
-# Frontend Testing
-
 Define pages and elements in `testflowkit.yml`, then reference them by name in your scenarios.
 
 ```yaml
@@ -32,7 +30,9 @@ Then the "dashboard" should be visible
 ```
 
 ::alert{type="warning"}
-The `driver` field is required when the `frontend` block is defined. Use `tkit install` to set up Playwright.
+`driver` is optional and defaults to `rod`. Set `driver: "playwright"` and run `tkit install` to use Playwright.
+
+Note: `tkit run` is headless by default and this overrides `frontend.headless` in the config. To see the browser, run `tkit run --headless=false`.
 ::
 
 ## Typical flow

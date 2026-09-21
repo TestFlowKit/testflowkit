@@ -5,8 +5,6 @@ navigation:
   title: IDE Agent
 ---
 
-# IDE Agent (Cursor / VS Code)
-
 The `@testflowkit/mcp` server connects your IDE to the step catalog and project config, so AI-generated tests use only registered sentences.
 
 ## Setup

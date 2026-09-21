@@ -5,8 +5,6 @@ navigation:
   title: Variables
 ---
 
-# Variables
-
 Use `{{variable_name}}` in any step — strings, tables, request bodies. Values are substituted automatically at runtime.
 
 ```gherkin

@@ -1,110 +1,45 @@
 ---
 title: API Testing
-description: REST API and GraphQL testing capabilities
+description: How an API scenario works and where to find each recipe
 navigation:
   title: API Testing
 ---
 
-# API Testing
-
-Define APIs in `testflowkit.yml`, then call them with `I prepare a request to "api_name.endpoint_name"`. Same syntax for REST and GraphQL.
-
-## REST configuration
-
-```yaml
-apis:
-  default_timeout: 10000
-  definitions:
-    jsonplaceholder:
-      type: rest
-      base_url: "https://jsonplaceholder.typicode.com"
-      default_headers:
-        Content-Type: "application/json"
-      endpoints:
-        get_posts:
-          method: GET
-          path: "/posts"
-        create_post:
-          method: POST
-          path: "/posts"
-        get_post_by_id:
-          method: GET
-          path: "/posts/{id}"
-```
-
-Timeout precedence: endpoint → API → `apis.default_timeout` → 30s fallback.
+Define APIs in `testflowkit.yml`, then call them with `I prepare a request to "api_name.endpoint_name"`. The syntax is the same for REST and GraphQL.
 
 ## Typical flow
 
-Most API scenarios follow the same pattern:
+1. **Prepare**: `I prepare a request to "api_name.endpoint_name"`. This resets the current request state (headers, body, path and query parameters, GraphQL variables, any previous response), then loads the endpoint defaults from `testflowkit.yml`.
+2. **Configure**: set the body, path or query parameters, headers (merged with `default_headers`).
+3. **Send**: `I send the request`.
+4. **Assert**: status code, response fields (GJSON for JSON, XPath for XML), headers.
+5. **Extract**: `I store the response path "data.id" from the response into "id" variable`.
 
-1. **Prepare** — `I prepare a request to "api_name.endpoint_name"`. This resets the current request state (headers, body, path/query parameters, GraphQL variables, and any previous response), then loads the selected endpoint with its defaults from `testflowkit.yml`.
-2. **Configure** — set body, path/query params, headers (merged with `default_headers`)
-3. **Send** — `I send the request`
-4. **Assert** — status code, response fields (GJSON for JSON, XPath for XML), headers
-5. **Extract** — `I store the response path "data.id" from the response into "id" variable`
-
-Use `{{variable}}` anywhere in step values.
-
-## REST example
+Use `{{variable}}` anywhere in a step value.
 
 ```gherkin
 Scenario: Create and verify a post
   Given I prepare a request to "jsonplaceholder.create_post"
   And I set the request body to:
     """
-    {
-      "title": "Test Post",
-      "body": "Test body",
-      "userId": 1
-    }
+    { "title": "Test Post", "userId": 1 }
     """
   When I send the request
   Then the response status code should be 201
-  And the response should have field "id"
   And the response field "title" should be "Test Post"
 ```
 
-## GraphQL
+## Find your recipe
 
-```yaml
-apis:
-  definitions:
-    my_graphql:
-      type: graphql
-      endpoint: "{{ env.graphql_endpoint }}"
-      operations:
-        get_user:
-          type: query
-          operation: "graphql/queries/get_user.graphql"
-```
+| I want to... | Go to |
+|---|---|
+| Declare and call a REST endpoint | [Add a REST endpoint](/docs/how-to/add-a-rest-endpoint) |
+| Declare and call a GraphQL query or mutation | [Add a GraphQL operation](/docs/how-to/add-a-graphql-operation) |
+| Send a JSON body, a body from a file, or upload a file | [Send a JSON body or file](/docs/how-to/send-a-json-body-or-file) |
+| Have every request authenticated | [Configure authentication](/docs/how-to/configure-authentication) |
+| Log in first and reuse the token | [Authenticate before tests](/docs/how-to/authenticate-before-tests) |
+| Reuse a value from one response in the next request | [Variables](/docs/patterns/variables) |
+| Generate unique payload data | [Random Data](/docs/patterns/random-data) |
+| Look up an exact step | [Step Catalog](/sentences) |
 
-```gherkin
-Scenario: Fetch a user
-  Given I prepare a request to "my_graphql.get_user"
-  And I set the following GraphQL variables:
-    | id | 1 |
-  When I send the request
-  Then the GraphQL response should not have errors
-  And the response should have field "user.username"
-```
-
-Operations can also be defined inline in config — see [testflowkit.yml](/docs/config/overview).
-
-## Authentication
-
-Configure reusable auth with `security_schemes` and `security_ref` (bearer, basic, apikey, oauth2), or set a header per request:
-
-```gherkin
-And I set the header "Authorization" to "Bearer {{auth_token}}"
-```
-
-## Step catalog
-
-For the full list of API sentences, browse the **[Step Definitions catalog](/sentences)** — searchable by keyword and category.
-
-## Next Steps
-
-- [Variables](/docs/patterns/variables) — Store and reuse response data
-- [Random Data](/docs/patterns/random-data) — Dynamic request payloads
-- [Global Hooks](/docs/patterns/global-hooks) — Auth and data setup before tests
+Timeouts, `default_headers` and the full `apis` block are documented in [testflowkit.yml](/docs/config/overview).
