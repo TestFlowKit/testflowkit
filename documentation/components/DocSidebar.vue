@@ -1,40 +1,47 @@
 <template>
   <div class="flex min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <div 
-      v-if="isOpen" 
-      class="mobile-overlay"
-      @click="toggleSidebar"
-    ></div>
+    <div v-if="isOpen" class="mobile-overlay" @click="toggleSidebar"></div>
 
-    <aside 
-      class="sidebar"
-      :class="{ '-translate-x-full': !isOpen, 'translate-x-0': isOpen }"
-    >
+    <aside class="sidebar" :class="{ '-translate-x-full': !isOpen, 'translate-x-0': isOpen }">
       <nav class="px-4 py-6">
         <div class="mb-6">
-          <NuxtLink
-            to="/docs"
+          <NuxtLink to="/docs"
             class="flex items-center px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             :class="{ 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400': isActive('/docs') }"
-            @click="closeSidebarOnMobile"
-          >
+            @click="closeSidebarOnMobile">
             Documentation Home
           </NuxtLink>
         </div>
 
-        <template v-for="group in docNavigation" :key="group.title">
+        <div class="mb-4 px-1">
+          <label for="doc-search" class="sr-only">Search documentation</label>
+          <input id="doc-search" v-model="searchQuery" type="search" placeholder="Search docs..."
+            class="w-full px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+
+        <p v-if="searchQuery.trim() && filteredNavigation.length === 0"
+          class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+          No matching page.
+        </p>
+
+        <template v-for="group in filteredNavigation" :key="group.title">
           <div class="mb-6">
-            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-              {{ group.title }}
-            </h3>
-            <ul class="space-y-1">
+            <button type="button"
+              class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+              @click="toggleGroup(group.title)">
+              <span>{{ group.title }}</span>
+              <svg class="w-3 h-3 flex-shrink-0 transition-transform"
+                :class="{ '-rotate-90': !isGroupOpen(group.title) }" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <ul v-if="isGroupOpen(group.title)" class="space-y-1">
               <li v-for="item in group.children" :key="item.path">
-                <NuxtLink
-                  :to="item.path"
+                <NuxtLink :to="item.path"
                   class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                   :class="{ 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-r-2 border-blue-700 dark:border-blue-400': isActive(item.path) }"
-                  @click="closeSidebarOnMobile"
-                >
+                  @click="closeSidebarOnMobile">
                   <component :is="getIcon(group.title)" class="w-4 h-4 mr-3 flex-shrink-0" />
                   {{ item.title }}
                 </NuxtLink>
@@ -44,28 +51,25 @@
         </template>
 
         <div class="mb-6">
-          <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Resources</h3>
+          <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Resources
+          </h3>
           <ul class="space-y-1">
             <li>
-              <a
-                :href="GITHUB_REPO_URL"
-                target="_blank"
-                class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
+              <a :href="GITHUB_REPO_URL" target="_blank"
+                class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                 </svg>
                 GitHub
               </a>
             </li>
             <li>
-              <a
-                :href="GITHUB_RELEASES_URL"
-                target="_blank"
-                class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
+              <a :href="GITHUB_RELEASES_URL" target="_blank"
+                class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Downloads
               </a>
@@ -110,6 +114,46 @@ function isActive(path: string) {
   return route.path === path;
 }
 
+const searchQuery = ref('');
+
+const filteredNavigation = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+  if (!query) return docNavigation;
+  return docNavigation
+    .map((group) => ({
+      ...group,
+      children: group.children.filter((item) => item.title.toLowerCase().includes(query)),
+    }))
+    .filter((group) => group.children.length > 0);
+});
+
+function activeGroupTitle() {
+  return docNavigation.find((group) => group.children.some((item) => isActive(item.path)))?.title;
+}
+
+// Groups the user has expanded; the group containing the active page starts open.
+const openGroups = reactive(new Set<string>([activeGroupTitle() ?? docNavigation[0]?.title]));
+
+watch(
+  () => route.path,
+  () => {
+    const title = activeGroupTitle();
+    if (title) openGroups.add(title);
+  }
+);
+
+function isGroupOpen(title: string) {
+  return searchQuery.value.trim() ? true : openGroups.has(title);
+}
+
+function toggleGroup(title: string) {
+  if (openGroups.has(title)) {
+    openGroups.delete(title);
+  } else {
+    openGroups.add(title);
+  }
+}
+
 function getIcon(sectionTitle: string) {
   const icons: Record<string, any> = {
     'Getting Started': {
@@ -123,6 +167,13 @@ function getIcon(sectionTitle: string) {
       render() {
         return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
           h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' })
+        ]);
+      }
+    },
+    'How-to': {
+      render() {
+        return h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+          h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' })
         ]);
       }
     },
@@ -156,21 +207,21 @@ function getIcon(sectionTitle: string) {
       }
     },
   };
-  
+
   return icons[sectionTitle] || icons['Getting Started'];
 }
 </script>
 
-<style scoped> 
-  .mobile-overlay {
-    @apply fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden;
-  }
+<style scoped>
+.mobile-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden;
+}
 
-  .sidebar {
-    @apply fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out pt-16 overflow-y-auto lg:translate-x-0;
-  }
+.sidebar {
+  @apply fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out pt-16 overflow-y-auto lg:translate-x-0;
+}
 
-  .content-area {
-    @apply flex-1 w-full lg:ml-64 transition-all duration-300;
-  }
+.content-area {
+  @apply flex-1 w-full lg:ml-64 transition-all duration-300;
+}
 </style>
