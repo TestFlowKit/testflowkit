@@ -1,6 +1,6 @@
 module testflowkit
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/alexflint/go-arg v1.6.1
@@ -15,18 +15,18 @@ require (
 require github.com/cucumber/messages/go/v21 v21.0.1
 
 require (
-	github.com/antchfx/xmlquery v1.5.1
+	github.com/antchfx/xmlquery v1.5.2
 	github.com/brianvoe/gofakeit/v6 v6.28.0
 	github.com/fatih/color v1.19.0
 	github.com/gofrs/uuid/v5 v5.5.1
 	github.com/lucasjones/reggen v0.0.0-20200904144131-37ba4fa293bb
 	github.com/mxschmitt/playwright-go v0.6201.1
 	github.com/nyaruka/phonenumbers v1.8.1
-	github.com/tidwall/gjson v1.19.0
+	github.com/tidwall/gjson v1.20.0
 )
 
 require (
-	github.com/antchfx/xpath v1.3.6 // indirect
+	github.com/antchfx/xpath v1.3.9 // indirect
 	github.com/cucumber/gherkin/go/v42 v42.0.0 // indirect
 	github.com/cucumber/messages/go/v34 v34.2.0 // indirect
 	github.com/deckarep/golang-set/v2 v2.9.0 // indirect
@@ -36,7 +36,7 @@ require (
 	go.mongodb.org/mongo-driver v1.17.9 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.54.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
@@ -45,8 +45,8 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/image v0.45.0
-	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/image v0.46.0
+	golang.org/x/sys v0.48.0 // indirect
 )
 
 require (
